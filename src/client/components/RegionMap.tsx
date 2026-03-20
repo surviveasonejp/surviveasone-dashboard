@@ -29,16 +29,16 @@ function groupByRegion(): Map<string, PrefectureEntry[]> {
 
 /** エリア別のラベル座標（手動調整） */
 const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
-  hokkaido: { x: 420, y: 120 },
-  tohoku: { x: 365, y: 250 },
-  tokyo: { x: 380, y: 340 },
-  chubu: { x: 320, y: 360 },
-  hokuriku: { x: 300, y: 310 },
-  kansai: { x: 280, y: 395 },
-  chugoku: { x: 220, y: 395 },
-  shikoku: { x: 260, y: 440 },
-  kyushu: { x: 160, y: 440 },
-  okinawa: { x: 260, y: 470 },
+  hokkaido: { x: 390, y: 110 },
+  tohoku: { x: 340, y: 240 },
+  tokyo: { x: 350, y: 330 },
+  chubu: { x: 290, y: 350 },
+  hokuriku: { x: 270, y: 300 },
+  kansai: { x: 250, y: 390 },
+  chugoku: { x: 190, y: 390 },
+  shikoku: { x: 230, y: 440 },
+  kyushu: { x: 140, y: 450 },
+  okinawa: { x: 120, y: 610 },
 };
 
 function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boolean): string {
