@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "source": "OWID energy-data 2024 + 資源エネルギー庁石油備蓄統計(2024年9月末推定)",
+    "updatedAt": "2025-03-20",
+    "owidYear": 2024
+  },
+  "oil": {
+    "nationalReserve_kL": 47370000,
+    "privateReserve_kL": 29260000,
+    "jointReserve_kL": 440000,
+    "totalReserve_kL": 77070000,
+    "nationalReserveDays": 145,
+    "privateReserveDays": 90,
+    "hormuzDependencyRate": 0.91,
+    "unit": "kL",
+    "note": "国家備蓄145日、民間備蓄90日は石油連盟消費量基準。ホルムズ依存率91%は2024年中東原油輸入比率"
+  },
+  "lng": {
+    "inventory_t": 2300000,
+    "hormuzDependencyRate": 0.22,
+    "unit": "t",
+    "note": "LNG在庫は約14日分の回転在庫。ホルムズ依存22%はカタール・UAE経由分"
+  },
+  "electricity": {
+    "thermalShareRate": 0.83,
+    "nuclearShareRate": 0.077,
+    "renewableShareRate": 0.093,
+    "note": "火力83%はOWID 2024年fossil_share_energy。原子力7.7%、再エネ9.3%"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "source": "OWID energy-data 2024 (TWh→物理単位変換)",
+    "updatedAt": "2025-03-20",
+    "owidYear": 2024,
+    "conversionNote": "石油: 1kL≈0.00001042TWh, LNG: 1t≈0.00001444TWh"
+  },
+  "oil": {
+    "annualConsumption_TWh": 1782.89,
+    "annualConsumption_kL": 171100000,
+    "dailyConsumption_kL": 469000,
+    "dailyImport_barrels": 2800000,
+    "unit": "kL/日"
+  },
+  "lng": {
+    "annualConsumption_TWh": 909.44,
+    "annualConsumption_t": 62980000,
+    "dailyConsumption_t": 173000,
+    "unit": "t/日"
+  }
+}
