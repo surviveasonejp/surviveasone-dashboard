@@ -36,7 +36,7 @@ const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
   hokuriku: { x: 270, y: 300 },
   kansai: { x: 250, y: 390 },
   chugoku: { x: 190, y: 390 },
-  shikoku: { x: 230, y: 440 },
+  shikoku: { x: 205, y: 440 },
   kyushu: { x: 140, y: 450 },
   okinawa: { x: 120, y: 610 },
 };
