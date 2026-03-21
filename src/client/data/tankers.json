@@ -21,6 +21,7 @@
       "cargo_t": 300000,
       "cargoType": "原油（アラビアンライト）",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
       "note": "SeaRoutes: ラスタヌラ→横浜 6,610NM。VLCC laden平均12.2kn(2025年AIS)"
     },
     {
@@ -37,6 +38,7 @@
       "cargo_t": 300000,
       "cargoType": "原油（アラビアンミディアム）",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
       "note": "ジュベイルはラスタヌラより約90NM北。出光タンカー運航想定"
     },
     {
@@ -53,6 +55,7 @@
       "cargo_t": 280000,
       "cargoType": "原油（イラニアンヘビー）",
       "status": "荷積中",
+      "arrivalProbability": { "insurance": 0.2, "route": 0.3, "military": 0.3, "combined": 0.018 },
       "note": "ハルグ島→堺(関西)。ports.com: ラスタヌラ→大阪7,529NMだがハルグ島は湾奥のため短縮"
     },
     {
@@ -69,6 +72,7 @@
       "cargo_t": 300000,
       "cargoType": "原油（ムルバンブレンド）",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.8, "route": 0.95, "military": 0.9, "combined": 0.684 },
       "note": "フジャイラはホルムズ海峡外。日本郵船VLCC22隻運航(2025年)"
     },
     {
@@ -85,6 +89,7 @@
       "cargo_t": 177000,
       "cargoType": "LNG",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
       "note": "豪州→日本はLNG最大供給源(39.7%)。DFDE船18-19kn。Q-Flex型177,000m3"
     },
     {
@@ -101,6 +106,7 @@
       "cargo_t": 155000,
       "cargoType": "LNG",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.9, "combined": 0.77 },
       "note": "マレーシアは日本LNG輸入2位(14.8%)。ビンツル→上越3,099NM(ports.com)参考"
     },
     {
@@ -117,6 +123,7 @@
       "cargo_t": 145000,
       "cargoType": "LNG",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.7, "route": 0.9, "military": 0.8, "combined": 0.504 },
       "note": "サハリンII LNGプラント。日本はサハリンLNGの56.4%を購入。宗谷海峡経由"
     },
     {
@@ -133,6 +140,7 @@
       "cargo_t": 210000,
       "cargoType": "LNG",
       "status": "航行中",
+      "arrivalProbability": { "insurance": 0.2, "route": 0.4, "military": 0.3, "combined": 0.024 },
       "note": "カタールはホルムズ依存LNG(5.3%)。ports.com: ラスラファン→大阪7,529NM。Q-Max型210,000m3"
     }
   ]

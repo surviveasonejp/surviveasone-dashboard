@@ -4,6 +4,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
 import { ScenarioSelector } from "../components/ScenarioSelector";
+import { FlowTimeline } from "../components/FlowTimeline";
 import { getAllCountdowns, calcOilDays, calcLngDays, calcPowerDays } from "../lib/calculations";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../lib/scenarios";
 import { DATA_SOURCES } from "../lib/dataSources";
@@ -78,6 +79,8 @@ export const SurvivalClock: FC = () => {
       </div>
 
       <SimulationBanner />
+
+      <FlowTimeline scenarioId={scenario} />
 
       <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">
