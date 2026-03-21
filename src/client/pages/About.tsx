@@ -147,18 +147,18 @@ export const About: FC = () => {
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Link
           to="/prepare"
           className="px-4 py-2 border border-[#00e676] text-[#00e676] hover:bg-[#00e676]/10 font-mono text-xs tracking-wider rounded transition-colors"
         >
-          SURVIVAL GUIDE →
+          SURVIVAL GUIDE &rarr;
         </Link>
         <Link
           to="/dashboard"
           className="px-4 py-2 border border-[#2a2a2a] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
         >
-          DASHBOARD →
+          DASHBOARD &rarr;
         </Link>
       </div>
 

@@ -114,6 +114,19 @@ export const Landing: FC = () => {
         />
       </div>
 
+      {/* 備蓄ガイド CTA */}
+      <div className="border border-[#00e676]/30 rounded-lg p-6 text-center space-y-3">
+        <p className="text-sm text-neutral-400">
+          数字を見たら、次は行動 — 今すぐ備えを確認する
+        </p>
+        <Link
+          to="/prepare"
+          className="inline-block px-6 py-2.5 border border-[#00e676] text-[#00e676] hover:bg-[#00e676]/10 font-mono text-sm tracking-wider rounded transition-colors"
+        >
+          SURVIVAL GUIDE &rarr;
+        </Link>
+      </div>
+
       <p className="text-xs text-neutral-600 font-mono text-center max-w-lg mx-auto">
         本シミュレーションは公開データに基づく推定値です。実際の備蓄運用は政府判断により変動します。
       </p>
