@@ -45,6 +45,22 @@ CREATE TABLE IF NOT EXISTS regions (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS electricity_demand (
+  date TEXT NOT NULL,
+  area_id TEXT NOT NULL,
+  peak_demand_mw REAL NOT NULL,
+  peak_supply_mw REAL,
+  usage_rate REAL,
+  solar_mw REAL,
+  wind_mw REAL,
+  thermal_mw REAL,
+  nuclear_mw REAL,
+  source TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (date, area_id)
+);
+
 -- インデックス
 CREATE INDEX IF NOT EXISTS idx_reserves_date ON reserves(date DESC);
 CREATE INDEX IF NOT EXISTS idx_consumption_date ON consumption(date DESC);
+CREATE INDEX IF NOT EXISTS idx_electricity_date ON electricity_demand(date DESC, area_id);

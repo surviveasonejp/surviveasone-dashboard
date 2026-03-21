@@ -56,6 +56,7 @@ export const CACHE_KEYS = {
   RESERVES_HISTORY: "api:reserves:history",
   CONSUMPTION_LATEST: "api:consumption:latest",
   REGIONS_ALL: "api:regions:all",
+  ELECTRICITY_LATEST: "api:electricity:latest",
 } as const;
 
 /** TTL定義（秒） */
@@ -63,4 +64,5 @@ export const CACHE_TTL = {
   RESERVES: 3600,      // 1時間（日次更新データ）
   CONSUMPTION: 86400,  // 24時間（年次ベースライン）
   REGIONS: 86400,      // 24時間（静的に近いデータ）
+  ELECTRICITY: 3600,   // 1時間（日次更新データ）
 } as const;

@@ -32,6 +32,8 @@ import {
   getReservesHistory,
   getLatestConsumption,
   getAllRegions,
+  getLatestElectricityDemand,
+  getElectricityHistory,
 } from "./db";
 import {
   getFromCache,
@@ -206,6 +208,8 @@ async function handleApiRoute(
       return handleConsumption(env);
     case "/api/regions":
       return handleRegions(env);
+    case "/api/electricity":
+      return handleElectricity(url, env);
     default:
       return jsonResponse({ error: "not_found", message: "Endpoint not found" }, 404);
   }
@@ -288,5 +292,25 @@ async function handleRegions(env: Env): Promise<Response> {
   }
   const data = await getAllRegions(env.DB);
   await setCache(env.CACHE, CACHE_KEYS.REGIONS_ALL, data, CACHE_TTL.REGIONS);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/electricity ─────────────────────────────────
+
+async function handleElectricity(url: URL, env: Env): Promise<Response> {
+  const areaId = url.searchParams.get("area");
+
+  if (areaId) {
+    const limit = Math.min(Number(url.searchParams.get("limit") ?? "30"), 365);
+    const data = await getElectricityHistory(env.DB, areaId, limit);
+    return jsonResponse({ data });
+  }
+
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.ELECTRICITY_LATEST);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+  const data = await getLatestElectricityDemand(env.DB);
+  await setCache(env.CACHE, CACHE_KEYS.ELECTRICITY_LATEST, data, CACHE_TTL.ELECTRICITY);
   return jsonResponse({ data, cache: "miss" });
 }

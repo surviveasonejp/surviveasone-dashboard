@@ -75,3 +75,38 @@ export async function getAllRegions(db: D1Database): Promise<RegionRow[]> {
     .all<RegionRow>();
   return result.results;
 }
+
+// ─── 電力需給 ────────────────────────────────────────
+
+export interface ElectricityDemandRow {
+  date: string;
+  area_id: string;
+  peak_demand_mw: number;
+  peak_supply_mw: number | null;
+  usage_rate: number | null;
+  solar_mw: number | null;
+  wind_mw: number | null;
+  thermal_mw: number | null;
+  nuclear_mw: number | null;
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestElectricityDemand(db: D1Database): Promise<ElectricityDemandRow[]> {
+  const result = await db
+    .prepare(`
+      SELECT * FROM electricity_demand
+      WHERE date = (SELECT MAX(date) FROM electricity_demand)
+      ORDER BY area_id
+    `)
+    .all<ElectricityDemandRow>();
+  return result.results;
+}
+
+export async function getElectricityHistory(db: D1Database, area_id: string, limit: number = 30): Promise<ElectricityDemandRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM electricity_demand WHERE area_id = ? ORDER BY date DESC LIMIT ?")
+    .bind(area_id, limit)
+    .all<ElectricityDemandRow>();
+  return result.results;
+}

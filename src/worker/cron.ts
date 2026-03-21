@@ -8,6 +8,7 @@
  */
 
 import { invalidateCache, CACHE_KEYS } from "./kv-cache";
+import { fetchElectricityDemand } from "./electricity";
 
 interface Env {
   DB: D1Database;
@@ -23,11 +24,22 @@ const TWH_TO_TONNE_LNG = 1 / 0.00001444; // 1 TWh ≈ 69,252 t LNG
 const KL_TO_BARRELS = 1 / 0.159; // 1 kL ≈ 6.29 barrels
 
 export async function handleScheduled(
-  _event: ScheduledEvent,
+  event: ScheduledEvent,
   env: Env,
   ctx: ExecutionContext,
 ): Promise<void> {
-  ctx.waitUntil(fetchArchiveAndUpdate(env));
+  // 毎週月曜 UTC 3:00: OWIDデータ取得 + D1更新
+  // 毎日 UTC 18:00: 電力需給データ取得
+  const hour = new Date(event.scheduledTime).getUTCHours();
+  const dayOfWeek = new Date(event.scheduledTime).getUTCDay();
+
+  if (hour === 3 && dayOfWeek === 1) {
+    ctx.waitUntil(fetchArchiveAndUpdate(env));
+  }
+
+  if (hour === 18) {
+    ctx.waitUntil(fetchElectricityDemand(env.DB));
+  }
 }
 
 async function fetchArchiveAndUpdate(env: Env): Promise<void> {
