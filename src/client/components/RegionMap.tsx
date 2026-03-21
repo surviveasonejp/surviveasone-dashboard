@@ -38,7 +38,7 @@ const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
   chugoku: { x: 148, y: 374 },
   shikoku: { x: 165, y: 406 },
   kyushu: { x: 101, y: 437 },
-  okinawa: { x: 100, y: 590 },
+  okinawa: { x: 470, y: 530 },
 };
 
 function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boolean): string {
@@ -54,71 +54,106 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
   const regionMap = useMemo(() => new Map(regions.map((r) => [r.id, r])), [regions]);
   const prefByRegion = useMemo(() => groupByRegion(), []);
 
+  /** 沖縄以外のエリアを描画 */
+  const renderRegion = (regionId: string, prefs: PrefectureEntry[]) => {
+    const region = regionMap.get(regionId);
+    if (!region) return null;
+    const isSelected = selectedId === regionId;
+    const isHovered = hoveredId === regionId;
+    const fill = getRegionFill(region.collapseDays, isSelected, isHovered);
+
+    return (
+      <g
+        key={regionId}
+        className="cursor-pointer"
+        onMouseEnter={() => setHoveredId(regionId)}
+        onMouseLeave={() => setHoveredId(null)}
+        onClick={() => onSelectRegion(region)}
+      >
+        {prefs.map((pref) => (
+          <path
+            key={pref.id}
+            d={pref.d}
+            fill={fill}
+            stroke={isSelected ? "#ffffff" : "#1a1a1a"}
+            strokeWidth={isSelected ? 1.2 : 0.5}
+            className="transition-colors duration-200"
+          />
+        ))}
+      </g>
+    );
+  };
+
+  const renderLabel = (regionId: string) => {
+    const region = regionMap.get(regionId);
+    if (!region) return null;
+    const label = LABEL_POSITIONS[regionId];
+    if (!label) return null;
+
+    return (
+      <text
+        key={`label-${regionId}`}
+        x={label.x}
+        y={label.y}
+        textAnchor="middle"
+        dominantBaseline="central"
+        className="pointer-events-none select-none"
+        fill="white"
+        fontSize="13"
+        fontWeight="bold"
+        fontFamily="'Noto Sans JP', sans-serif"
+        stroke="#0a0a0a"
+        strokeWidth="3"
+        paintOrder="stroke"
+      >
+        {region.name}
+      </text>
+    );
+  };
+
   return (
     <svg
-      viewBox="14 0 552 680"
+      viewBox="14 0 552 600"
       className="w-full h-full max-h-[600px] mx-auto block"
       role="img"
       aria-label="日本地図 — 10電力エリア崩壊順マップ"
     >
+      {/* 本州・九州のパス描画 */}
+      {Array.from(prefByRegion.entries())
+        .filter(([id]) => id !== "okinawa")
+        .map(([regionId, prefs]) => renderRegion(regionId, prefs))}
 
-      {/* パス描画レイヤー（全エリア） */}
-      {Array.from(prefByRegion.entries()).map(([regionId, prefs]) => {
-        const region = regionMap.get(regionId);
-        if (!region) return null;
-        const isSelected = selectedId === regionId;
-        const isHovered = hoveredId === regionId;
-        const fill = getRegionFill(region.collapseDays, isSelected, isHovered);
+      {/* 沖縄インセット */}
+      <defs>
+        <clipPath id="okinawa-clip">
+          <rect x="390" y="460" width="160" height="130" rx="4" />
+        </clipPath>
+      </defs>
+      <rect
+        x="390"
+        y="460"
+        width="160"
+        height="130"
+        fill="#0a0a0a"
+        stroke="#2a2a2a"
+        strokeWidth="1"
+        strokeDasharray="4 3"
+        rx="4"
+      />
+      <g clipPath="url(#okinawa-clip)">
+        <g transform="translate(-197, -432) scale(2.2)">
+          {prefByRegion.has("okinawa") &&
+            renderRegion("okinawa", prefByRegion.get("okinawa")!)}
+        </g>
+      </g>
 
-        return (
-          <g
-            key={regionId}
-            className="cursor-pointer"
-            onMouseEnter={() => setHoveredId(regionId)}
-            onMouseLeave={() => setHoveredId(null)}
-            onClick={() => onSelectRegion(region)}
-          >
-            {prefs.map((pref) => (
-              <path
-                key={pref.id}
-                d={pref.d}
-                fill={fill}
-                stroke={isSelected ? "#ffffff" : "#1a1a1a"}
-                strokeWidth={isSelected ? 1.2 : 0.5}
-                className="transition-colors duration-200"
-              />
-            ))}
-          </g>
-        );
-      })}
+      {/* ラベル描画（本州・九州） */}
+      {Array.from(prefByRegion.keys())
+        .filter((id) => id !== "okinawa")
+        .map(renderLabel)}
 
-      {/* ラベル描画レイヤー（全パスの上に重ねる） */}
-      {Array.from(prefByRegion.entries()).map(([regionId]) => {
-        const region = regionMap.get(regionId);
-        if (!region) return null;
-        const label = LABEL_POSITIONS[regionId];
-        if (!label) return null;
-
-        return (
-          <text
-            key={`label-${regionId}`}
-            x={label.x}
-            y={label.y}
-            textAnchor="middle"
-            dominantBaseline="central"
-            className="pointer-events-none select-none"
-            fill="white"
-            fontSize="13"
-            fontWeight="bold"
-            fontFamily="'Noto Sans JP', sans-serif"
-            stroke="#0a0a0a"
-            strokeWidth="3"
-            paintOrder="stroke"
-          >
-            {region.name}
-          </text>
-        );
-      })}
+      {/* 沖縄ラベル（インセット内） */}
+      {renderLabel("okinawa")}
     </svg>
   );
 };
