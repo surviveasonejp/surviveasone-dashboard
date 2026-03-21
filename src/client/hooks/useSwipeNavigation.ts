@@ -33,15 +33,17 @@ export function useSwipeNavigation() {
   }, [currentIndex]);
 
   const bind = useDrag(
-    ({ movement: [mx], last, cancel, event }) => {
-      const target = event?.target as HTMLElement | null;
-      if (
-        target?.closest(
-          "input, textarea, select, button, [role='slider'], a, [data-no-swipe]",
-        )
-      ) {
-        cancel();
-        return;
+    ({ movement: [mx], first, last, cancel, event }) => {
+      if (first) {
+        const target = event?.target as HTMLElement | null;
+        if (
+          target?.closest(
+            "input, textarea, select, button, [role='slider'], a, [data-no-swipe]",
+          )
+        ) {
+          cancel();
+          return;
+        }
       }
 
       if (!last) return;

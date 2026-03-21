@@ -64,7 +64,7 @@ export const FoodCollapse: FC = () => {
       />
 
       {/* エリア選択 */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
+      <div data-no-swipe className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="font-mono text-xs text-neutral-400 tracking-wider shrink-0">
             電力エリア選択
