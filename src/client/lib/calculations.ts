@@ -125,9 +125,14 @@ export interface FoodProduct {
   powerFactor: number;
 }
 
-export function calcFoodDepletion(): FoodProduct[] {
-  const oilDays = calcOilDays();
-  const powerDays = calcPowerDays();
+export interface FoodDepletionParams {
+  oilDays: number;
+  powerDays: number;
+}
+
+export function calcFoodDepletion(params?: FoodDepletionParams): FoodProduct[] {
+  const oilDays = params?.oilDays ?? calcOilDays();
+  const powerDays = params?.powerDays ?? calcPowerDays();
 
   return foodData.products.map((product) => {
     const dieselCollapse = product.dieselFactor > 0

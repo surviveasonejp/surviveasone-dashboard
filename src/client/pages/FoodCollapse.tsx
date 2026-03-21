@@ -1,9 +1,16 @@
-import { type FC } from "react";
+import { type FC, useState, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
-import { getAlertLevel, getAlertColor, calcOilDays, calcPowerDays } from "../lib/calculations";
+import {
+  getAlertLevel,
+  getAlertColor,
+  calcOilDays,
+  calcPowerDays,
+  type RegionCollapse,
+  type FoodDepletionParams,
+} from "../lib/calculations";
 import { formatDecimal, formatDepletionDate, formatNumber } from "../lib/formatters";
 
 const CHAIN_STEPS = [
@@ -16,10 +23,25 @@ const CHAIN_STEPS = [
 ];
 
 export const FoodCollapse: FC = () => {
-  const products = useFoodDepletion();
   const regions = useCollapseOrder();
-  const oilDays = calcOilDays();
-  const powerDays = calcPowerDays();
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+
+  const selectedRegion: RegionCollapse | null = useMemo(
+    () => regions.find((r) => r.id === selectedRegionId) ?? null,
+    [regions, selectedRegionId],
+  );
+
+  const foodParams: FoodDepletionParams | undefined = useMemo(() => {
+    if (!selectedRegion) return undefined;
+    return {
+      oilDays: selectedRegion.oilDepletionDays,
+      powerDays: selectedRegion.powerCollapseDays,
+    };
+  }, [selectedRegion]);
+
+  const products = useFoodDepletion(foodParams);
+  const oilDays = selectedRegion?.oilDepletionDays ?? calcOilDays();
+  const powerDays = selectedRegion?.powerCollapseDays ?? calcPowerDays();
 
   return (
     <div className="space-y-6">
@@ -34,8 +56,67 @@ export const FoodCollapse: FC = () => {
 
       <AlertBanner
         level="critical"
-        message="エネルギー途絶は食料供給を連鎖崩壊させる"
+        message={
+          selectedRegion
+            ? `${selectedRegion.name}エリアのエネルギー崩壊を起点とした食料消失予測`
+            : "エネルギー途絶は食料供給を連鎖崩壊させる"
+        }
       />
+
+      {/* エリア選択 */}
+      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <label className="font-mono text-xs text-neutral-400 tracking-wider shrink-0">
+            電力エリア選択
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setSelectedRegionId(null)}
+              className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors cursor-pointer ${
+                selectedRegionId === null
+                  ? "border-[#ff5252] text-[#ff5252] bg-[#ff5252]/10"
+                  : "border-[#2a2a2a] text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
+              }`}
+            >
+              全国
+            </button>
+            {regions.map((region) => {
+              const isActive = selectedRegionId === region.id;
+              const color = getAlertColor(getAlertLevel(region.collapseDays));
+              return (
+                <button
+                  key={region.id}
+                  onClick={() => setSelectedRegionId(region.id)}
+                  className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-white/10"
+                      : "border-[#2a2a2a] text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
+                  }`}
+                  style={isActive ? { borderColor: color, color } : undefined}
+                >
+                  {region.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        {selectedRegion && (
+          <div className="mt-3 flex flex-wrap gap-4 text-xs font-mono text-neutral-500">
+            <span>
+              崩壊予測: <span className="text-neutral-300">{formatDecimal(selectedRegion.collapseDays)}日</span>
+            </span>
+            <span>
+              石油枯渇: <span className="text-neutral-300">{formatDecimal(selectedRegion.oilDepletionDays)}日</span>
+            </span>
+            <span>
+              電力崩壊: <span className="text-neutral-300">{formatDecimal(selectedRegion.powerCollapseDays)}日</span>
+            </span>
+            <span>
+              食料自給率: <span className="text-neutral-300">{formatNumber(Math.round(selectedRegion.foodSelfSufficiency * 100))}%</span>
+            </span>
+          </div>
+        )}
+      </div>
 
       <SimulationBanner />
 
@@ -94,7 +175,8 @@ export const FoodCollapse: FC = () => {
           ))}
         </div>
         <div className="text-xs text-neutral-600 font-mono mt-2">
-          石油備蓄枯渇: {formatDecimal(oilDays)}日 / 電力崩壊: {formatDecimal(powerDays)}日
+          {selectedRegion ? `${selectedRegion.name}: ` : "全国: "}
+          石油枯渇 {formatDecimal(oilDays)}日 / 電力崩壊 {formatDecimal(powerDays)}日
         </div>
       </div>
 
@@ -121,9 +203,18 @@ export const FoodCollapse: FC = () => {
                 .map((region) => {
                   const pct = Math.min(region.foodSelfSufficiency * 100, 100);
                   const barColor = pct >= 75 ? "#00e676" : pct >= 40 ? "#ff9100" : "#ff1744";
+                  const isSelected = selectedRegionId === region.id;
                   return (
-                    <tr key={region.id} className="border-b border-[#1a1a1a]">
-                      <td className="px-4 py-2 font-bold text-neutral-200">{region.name}</td>
+                    <tr
+                      key={region.id}
+                      className={`border-b border-[#1a1a1a] cursor-pointer transition-colors ${
+                        isSelected ? "bg-white/5" : "hover:bg-white/[0.02]"
+                      }`}
+                      onClick={() => setSelectedRegionId(region.id)}
+                    >
+                      <td className={`px-4 py-2 font-bold ${isSelected ? "text-white" : "text-neutral-200"}`}>
+                        {region.name}
+                      </td>
                       <td className="px-4 py-2 text-right font-mono">
                         {formatNumber(Math.round(region.foodSelfSufficiency * 100))}%
                       </td>
