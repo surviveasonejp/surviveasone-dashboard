@@ -2,7 +2,7 @@
   "meta": {
     "source": "農水省食料需給表 + 物流依存推定（Phase 2で公式データ連携予定）",
     "updatedAt": "2026-03-21",
-    "note": "崩壊日数は封鎖時の物流・エネルギー途絶からの推定。dieselFactor=軽油依存(物流), napthaFactor=ナフサ依存(包装), powerFactor=電力依存(冷蔵/加工)"
+    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。collapse=resourceDays×(1-factor)+shelfLifeDays。dieselFactor=軽油依存(物流), napthaFactor=ナフサ依存(包装), powerFactor=電力依存(冷蔵/加工)"
   },
   "products": [
     {

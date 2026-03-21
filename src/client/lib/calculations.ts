@@ -137,18 +137,21 @@ export function calcFoodDepletion(params?: FoodDepletionParams): FoodProduct[] {
   const powerDays = params?.powerDays ?? calcPowerDays();
 
   return foodData.products.map((product) => {
+    // factor = 依存度(0-1)。高いほど依存 = (1-factor)が小さい = 早く崩壊
+    // collapse = resourceDays × (1 - factor)
     const dieselCollapse = product.dieselFactor > 0
-      ? oilDays * product.dieselFactor
+      ? oilDays * (1 - product.dieselFactor)
       : Infinity;
     const napthaCollapse = product.napthaFactor > 0
-      ? oilDays * product.napthaFactor
+      ? oilDays * (1 - product.napthaFactor)
       : Infinity;
     const powerCollapse = product.powerFactor > 0
-      ? powerDays / product.powerFactor
+      ? powerDays * (1 - product.powerFactor)
       : Infinity;
 
     const supplyChainCollapse = Math.min(dieselCollapse, napthaCollapse, powerCollapse);
-    const collapseDays = Math.min(supplyChainCollapse, product.shelfLifeDays > 0 ? supplyChainCollapse + product.shelfLifeDays : supplyChainCollapse);
+    // 供給途絶後も棚の在庫（賞味期限）分だけ延命
+    const collapseDays = supplyChainCollapse + product.shelfLifeDays;
 
     return {
       id: product.id,
