@@ -11,6 +11,8 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/countdown", label: "SURVIVAL CLOCK" },
   { path: "/collapse-map", label: "COLLAPSE MAP" },
   { path: "/dashboard", label: "DASHBOARD" },
+  { path: "/prepare", label: "PREPARE" },
+  { path: "/about", label: "ABOUT" },
 ];
 
 export const Header: FC = () => {
