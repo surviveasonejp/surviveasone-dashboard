@@ -11,6 +11,9 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/countdown", label: "SURVIVAL CLOCK" },
   { path: "/collapse-map", label: "COLLAPSE MAP" },
   { path: "/dashboard", label: "DASHBOARD" },
+  { path: "/last-tanker", label: "TANKER" },
+  { path: "/food-collapse", label: "FOOD" },
+  { path: "/family", label: "FAMILY" },
   { path: "/prepare", label: "PREPARE" },
   { path: "/about", label: "ABOUT" },
 ];

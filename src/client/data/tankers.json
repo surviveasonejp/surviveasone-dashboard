@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "source": "模擬データ（Phase 2でMarineTraffic AIS連携予定）",
+    "updatedAt": "2026-03-21",
+    "note": "距離はペルシャ湾→東京湾/瀬戸内海の航路概算。速度はVLCC 13-15knots、LNG船 17-19knotsの標準値"
+  },
+  "vessels": [
+    {
+      "id": "vlcc-01",
+      "name": "ENEOS OCEAN",
+      "type": "VLCC",
+      "departure": "ラスタヌラ（サウジ）",
+      "destination": "千葉",
+      "distanceToJapan_nm": 6500,
+      "speed_knots": 14,
+      "eta_days": 19.3,
+      "cargo_t": 280000,
+      "cargoType": "原油",
+      "status": "航行中"
+    },
+    {
+      "id": "vlcc-02",
+      "name": "IDEMITSU MARU",
+      "type": "VLCC",
+      "departure": "ジュベイル（サウジ）",
+      "destination": "四日市",
+      "distanceToJapan_nm": 6600,
+      "speed_knots": 13.5,
+      "eta_days": 20.4,
+      "cargo_t": 300000,
+      "cargoType": "原油",
+      "status": "航行中"
+    },
+    {
+      "id": "vlcc-03",
+      "name": "COSMO VENUS",
+      "type": "VLCC",
+      "departure": "ハルグ島（イラン）",
+      "destination": "堺",
+      "distanceToJapan_nm": 6400,
+      "speed_knots": 14.5,
+      "eta_days": 18.4,
+      "cargo_t": 260000,
+      "cargoType": "原油",
+      "status": "荷積中"
+    },
+    {
+      "id": "lng-01",
+      "name": "LNG SAKURA",
+      "type": "LNG",
+      "departure": "グラッドストン（豪州）",
+      "destination": "富津",
+      "distanceToJapan_nm": 3800,
+      "speed_knots": 18,
+      "eta_days": 8.8,
+      "cargo_t": 170000,
+      "cargoType": "LNG",
+      "status": "航行中"
+    },
+    {
+      "id": "lng-02",
+      "name": "PACIFIC BREEZE",
+      "type": "LNG",
+      "departure": "ビンツル（マレーシア）",
+      "destination": "知多",
+      "distanceToJapan_nm": 2700,
+      "speed_knots": 17.5,
+      "eta_days": 6.4,
+      "cargo_t": 150000,
+      "cargoType": "LNG",
+      "status": "航行中"
+    },
+    {
+      "id": "lng-03",
+      "name": "YAMAL SPIRIT",
+      "type": "LNG",
+      "departure": "サハリン（ロシア）",
+      "destination": "北九州",
+      "distanceToJapan_nm": 900,
+      "speed_knots": 19,
+      "eta_days": 2.0,
+      "cargo_t": 145000,
+      "cargoType": "LNG",
+      "status": "航行中"
+    }
+  ]
+}

@@ -64,6 +64,24 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
     source: "OCCTO + 各送配電事業者 (2025年時点)",
     note: "北本90万kW(2019年増強後)、本四120万kW、関門238万kW",
   },
+  tankerData: {
+    label: "タンカー追跡データ",
+    confidence: "simulated",
+    source: "模擬データ（Phase 2でMarineTraffic AIS連携予定）",
+    note: "航路距離・速度は標準値。実際の船舶位置はAISデータ必要",
+  },
+  foodSupplyChain: {
+    label: "食品サプライチェーン",
+    confidence: "estimated",
+    source: "農水省食料需給表 + 物流・エネルギー依存度推定",
+    note: "崩壊日数は物流・包装・冷蔵の依存度から推定",
+  },
+  familySurvival: {
+    label: "家庭サバイバル計算",
+    confidence: "estimated",
+    source: "内閣府防災ガイドライン + 1人あたり必要量の標準値",
+    note: "水3L/日、ガス30分/日、電力50Wh/日の基準値",
+  },
   regionParams: {
     label: "エリア別シミュレーションパラメータ",
     confidence: "estimated",

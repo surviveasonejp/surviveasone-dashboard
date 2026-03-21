@@ -1,6 +1,8 @@
 import reserves from "../data/reserves.json";
 import consumption from "../data/consumption.json";
 import regionsData from "../data/regions.json";
+import tankerData from "../data/tankers.json";
+import foodData from "../data/foodSupply.json";
 
 export type AlertLevel = "critical" | "warning" | "caution" | "safe";
 
@@ -80,6 +82,168 @@ export function getAllCountdowns(): ResourceCountdown[] {
       alertLevel: getAlertLevel(powerDays),
     },
   ];
+}
+
+// ─── タンカー ──────────────────────────────────────────
+
+export interface TankerInfo {
+  id: string;
+  name: string;
+  type: string;
+  departure: string;
+  destination: string;
+  distanceToJapan_nm: number;
+  speed_knots: number;
+  eta_days: number;
+  cargo_t: number;
+  cargoType: string;
+  status: string;
+}
+
+export function calcTankerArrivals(): TankerInfo[] {
+  return [...tankerData.vessels]
+    .sort((a, b) => a.eta_days - b.eta_days);
+}
+
+export function getLastTankerEta(): number {
+  const vessels = calcTankerArrivals();
+  return vessels[vessels.length - 1]?.eta_days ?? 0;
+}
+
+// ─── 食品崩壊 ──────────────────────────────────────────
+
+export interface FoodProduct {
+  id: string;
+  name: string;
+  icon: string;
+  collapseDays: number;
+  shelfLifeDays: number;
+  collapseReason: string;
+  note: string;
+  dieselFactor: number;
+  napthaFactor: number;
+  powerFactor: number;
+}
+
+export function calcFoodDepletion(): FoodProduct[] {
+  const oilDays = calcOilDays();
+  const powerDays = calcPowerDays();
+
+  return foodData.products.map((product) => {
+    const dieselCollapse = product.dieselFactor > 0
+      ? oilDays * product.dieselFactor
+      : Infinity;
+    const napthaCollapse = product.napthaFactor > 0
+      ? oilDays * product.napthaFactor
+      : Infinity;
+    const powerCollapse = product.powerFactor > 0
+      ? powerDays / product.powerFactor
+      : Infinity;
+
+    const supplyChainCollapse = Math.min(dieselCollapse, napthaCollapse, powerCollapse);
+    const collapseDays = Math.min(supplyChainCollapse, product.shelfLifeDays > 0 ? supplyChainCollapse + product.shelfLifeDays : supplyChainCollapse);
+
+    return {
+      id: product.id,
+      name: product.name,
+      icon: product.icon,
+      collapseDays,
+      shelfLifeDays: product.shelfLifeDays,
+      collapseReason: product.collapseReason,
+      note: product.note,
+      dieselFactor: product.dieselFactor,
+      napthaFactor: product.napthaFactor,
+      powerFactor: product.powerFactor,
+    };
+  }).sort((a, b) => a.collapseDays - b.collapseDays);
+}
+
+// ─── 家庭サバイバル ────────────────────────────────────
+
+export interface FamilyInputs {
+  members: number;
+  waterLiters: number;
+  foodDays: number;
+  gasCanisterCount: number;
+  batteryWh: number;
+  cashYen: number;
+}
+
+export type SurvivalRank = "S" | "A" | "B" | "C" | "D" | "F";
+
+export interface FamilySurvivalScore {
+  totalDays: number;
+  rank: SurvivalRank;
+  waterDays: number;
+  foodDays: number;
+  energyDays: number;
+  powerDays: number;
+  bottleneck: string;
+}
+
+const WATER_PER_PERSON_PER_DAY = 3; // リットル
+const GAS_CANISTER_MINUTES = 60; // 1本あたり
+const GAS_USAGE_MINUTES_PER_PERSON = 30; // 調理用 1人/日
+const POWER_WH_PER_PERSON_PER_DAY = 50; // 最低限
+
+export function calcFamilySurvival(inputs: FamilyInputs): FamilySurvivalScore {
+  const { members, waterLiters, foodDays, gasCanisterCount, batteryWh } = inputs;
+  const m = Math.max(members, 1);
+
+  const waterDays = waterLiters / (m * WATER_PER_PERSON_PER_DAY);
+  const energyDays = (gasCanisterCount * GAS_CANISTER_MINUTES) / (m * GAS_USAGE_MINUTES_PER_PERSON);
+  const powerDays = batteryWh / (m * POWER_WH_PER_PERSON_PER_DAY);
+
+  const totalDays = Math.min(waterDays, foodDays, energyDays, powerDays);
+
+  const limits = [
+    { days: waterDays, label: "水" },
+    { days: foodDays, label: "食料" },
+    { days: energyDays, label: "燃料" },
+    { days: powerDays, label: "電力" },
+  ];
+  const bottleneck = limits.sort((a, b) => a.days - b.days)[0]?.label ?? "不明";
+
+  return {
+    totalDays,
+    rank: getSurvivalRank(totalDays),
+    waterDays,
+    foodDays,
+    energyDays,
+    powerDays,
+    bottleneck,
+  };
+}
+
+export function getSurvivalRank(days: number): SurvivalRank {
+  if (days >= 60) return "S";
+  if (days >= 30) return "A";
+  if (days >= 14) return "B";
+  if (days >= 7) return "C";
+  if (days >= 3) return "D";
+  return "F";
+}
+
+export function getSurvivalRankColor(rank: SurvivalRank): string {
+  switch (rank) {
+    case "S": return "#00e676";
+    case "A": return "#66ffa6";
+    case "B": return "#ffea00";
+    case "C": return "#ff9100";
+    case "D": return "#ff5252";
+    case "F": return "#ff1744";
+  }
+}
+
+export function getSurvivalRankLabel(rank: SurvivalRank): string {
+  switch (rank) {
+    case "S": return "十分な備え";
+    case "A": return "良好";
+    case "B": return "最低限";
+    case "C": return "要準備";
+    case "D": return "危機的";
+    case "F": return "生存困難";
+  }
 }
 
 /** エリア別崩壊日数を計算 */

@@ -42,6 +42,10 @@ export function formatPercentage(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+export function formatDistance(nm: number): string {
+  return `${numberFormatter.format(nm)}海里`;
+}
+
 /** 今日から days 日後の日付を "YYYY/MM/DD" 形式で返す */
 export function formatDepletionDate(days: number): string {
   const date = new Date();
