@@ -29,16 +29,16 @@ function groupByRegion(): Map<string, PrefectureEntry[]> {
 
 /** エリア別のラベル座標（手動調整） */
 const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
-  hokkaido: { x: 390, y: 110 },
+  hokkaido: { x: 390, y: 90 },
   tohoku: { x: 340, y: 240 },
   tokyo: { x: 350, y: 330 },
-  chubu: { x: 290, y: 350 },
+  chubu: { x: 263, y: 350 },
   hokuriku: { x: 270, y: 300 },
-  kansai: { x: 250, y: 390 },
-  chugoku: { x: 190, y: 390 },
-  shikoku: { x: 205, y: 440 },
-  kyushu: { x: 140, y: 450 },
-  okinawa: { x: 120, y: 610 },
+  kansai: { x: 213, y: 380 },
+  chugoku: { x: 148, y: 374 },
+  shikoku: { x: 165, y: 406 },
+  kyushu: { x: 101, y: 437 },
+  okinawa: { x: 100, y: 590 },
 };
 
 function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boolean): string {
@@ -62,13 +62,13 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
       aria-label="日本地図 — 10電力エリア崩壊順マップ"
     >
 
+      {/* パス描画レイヤー（全エリア） */}
       {Array.from(prefByRegion.entries()).map(([regionId, prefs]) => {
         const region = regionMap.get(regionId);
         if (!region) return null;
         const isSelected = selectedId === regionId;
         const isHovered = hoveredId === regionId;
         const fill = getRegionFill(region.collapseDays, isSelected, isHovered);
-        const label = LABEL_POSITIONS[regionId];
 
         return (
           <g
@@ -88,25 +88,35 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
                 className="transition-colors duration-200"
               />
             ))}
-            {label && (
-              <text
-                x={label.x}
-                y={label.y}
-                textAnchor="middle"
-                dominantBaseline="central"
-                className="pointer-events-none select-none"
-                fill="white"
-                fontSize="13"
-                fontWeight="bold"
-                fontFamily="'Noto Sans JP', sans-serif"
-                stroke="#0a0a0a"
-                strokeWidth="3"
-                paintOrder="stroke"
-              >
-                {region.name}
-              </text>
-            )}
           </g>
+        );
+      })}
+
+      {/* ラベル描画レイヤー（全パスの上に重ねる） */}
+      {Array.from(prefByRegion.entries()).map(([regionId]) => {
+        const region = regionMap.get(regionId);
+        if (!region) return null;
+        const label = LABEL_POSITIONS[regionId];
+        if (!label) return null;
+
+        return (
+          <text
+            key={`label-${regionId}`}
+            x={label.x}
+            y={label.y}
+            textAnchor="middle"
+            dominantBaseline="central"
+            className="pointer-events-none select-none"
+            fill="white"
+            fontSize="13"
+            fontWeight="bold"
+            fontFamily="'Noto Sans JP', sans-serif"
+            stroke="#0a0a0a"
+            strokeWidth="3"
+            paintOrder="stroke"
+          >
+            {region.name}
+          </text>
         );
       })}
     </svg>
