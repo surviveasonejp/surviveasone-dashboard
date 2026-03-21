@@ -4,7 +4,8 @@ import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
-import { type RegionCollapse, getAlertLevel, getAlertColor } from "../lib/calculations";
+import type { RegionCollapse } from "../../shared/types";
+import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 
 export const CollapseMap: FC = () => {

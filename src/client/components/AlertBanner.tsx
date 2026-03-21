@@ -1,5 +1,6 @@
 import { type FC } from "react";
-import { type AlertLevel, getAlertColor } from "../lib/calculations";
+import type { AlertLevel } from "../../shared/types";
+import { getAlertColor } from "../lib/alertHelpers";
 
 interface AlertBannerProps {
   level: AlertLevel;

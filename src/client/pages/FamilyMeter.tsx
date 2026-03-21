@@ -2,13 +2,12 @@ import { type FC, useState } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
+import type { FamilyInputs } from "../../shared/types";
 import {
-  type FamilyInputs,
   getSurvivalRankColor,
   getSurvivalRankLabel,
   getAlertLevel,
-  getAlertColor,
-} from "../lib/calculations";
+} from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 
 interface SliderProps {

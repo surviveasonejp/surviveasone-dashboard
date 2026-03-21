@@ -1,5 +1,5 @@
 import { type FC } from "react";
-import { type ScenarioId, SCENARIO_LIST } from "../lib/scenarios";
+import { type ScenarioId, SCENARIO_LIST } from "../../shared/scenarios";
 
 interface ScenarioSelectorProps {
   selected: ScenarioId;

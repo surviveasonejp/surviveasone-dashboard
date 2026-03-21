@@ -72,7 +72,7 @@ export function isBlockedBot(userAgent: string | null): boolean {
 /**
  * 許可するHTTPメソッド（不要なメソッドでリクエスト消費しない）
  */
-const ALLOWED_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
+const ALLOWED_METHODS = new Set(["GET", "HEAD", "OPTIONS", "POST"]);
 
 export function isAllowedMethod(method: string): boolean {
   return ALLOWED_METHODS.has(method);

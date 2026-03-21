@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { type AlertLevel, getAlertLevel } from "../lib/calculations";
+import type { AlertLevel } from "../../shared/types";
+import { getAlertLevel } from "../lib/alertHelpers";
 
 interface CountdownState {
   remainingSeconds: number;

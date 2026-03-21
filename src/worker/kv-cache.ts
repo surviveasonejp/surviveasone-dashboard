@@ -57,7 +57,13 @@ export const CACHE_KEYS = {
   CONSUMPTION_LATEST: "api:consumption:latest",
   REGIONS_ALL: "api:regions:all",
   ELECTRICITY_LATEST: "api:electricity:latest",
+  TANKERS: "api:tankers",
 } as const;
+
+/** シナリオ別キャッシュキー生成 */
+export function scenarioCacheKey(base: string, scenario: string, extra?: string): string {
+  return extra ? `${base}:${scenario}:${extra}` : `${base}:${scenario}`;
+}
 
 /** TTL定義（秒） */
 export const CACHE_TTL = {
@@ -65,4 +71,5 @@ export const CACHE_TTL = {
   CONSUMPTION: 86400,  // 24時間（年次ベースライン）
   REGIONS: 86400,      // 24時間（静的に近いデータ）
   ELECTRICITY: 3600,   // 1時間（日次更新データ）
+  SIMULATION: 3600,    // 1時間（シミュレーション結果）
 } as const;

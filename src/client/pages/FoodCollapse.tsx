@@ -3,14 +3,8 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
-import {
-  getAlertLevel,
-  getAlertColor,
-  calcOilDays,
-  calcPowerDays,
-  type RegionCollapse,
-  type FoodDepletionParams,
-} from "../lib/calculations";
+import type { RegionCollapse } from "../../shared/types";
+import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate, formatNumber } from "../lib/formatters";
 
 const CHAIN_STEPS = [
@@ -31,17 +25,9 @@ export const FoodCollapse: FC = () => {
     [regions, selectedRegionId],
   );
 
-  const foodParams: FoodDepletionParams | undefined = useMemo(() => {
-    if (!selectedRegion) return undefined;
-    return {
-      oilDays: selectedRegion.oilDepletionDays,
-      powerDays: selectedRegion.powerCollapseDays,
-    };
-  }, [selectedRegion]);
-
-  const products = useFoodDepletion(foodParams);
-  const oilDays = selectedRegion?.oilDepletionDays ?? calcOilDays();
-  const powerDays = selectedRegion?.powerCollapseDays ?? calcPowerDays();
+  const products = useFoodDepletion("realistic", selectedRegionId ?? undefined);
+  const oilDays = selectedRegion?.oilDepletionDays ?? (products[0]?.collapseDays ?? 168.8);
+  const powerDays = selectedRegion?.powerCollapseDays ?? 487.8;
 
   return (
     <div className="space-y-6">

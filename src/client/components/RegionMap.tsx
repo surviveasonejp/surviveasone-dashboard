@@ -1,5 +1,6 @@
 import { type FC, useState, useMemo } from "react";
-import { type RegionCollapse, getAlertLevel, getAlertColor } from "../lib/calculations";
+import type { RegionCollapse } from "../../shared/types";
+import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import prefectureData from "../data/japan-prefectures.json";
 
 interface RegionMapProps {

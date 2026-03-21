@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { useCountdown } from "../hooks/useCountdown";
-import { getAlertColor } from "../lib/calculations";
+import { getAlertColor } from "../lib/alertHelpers";
 import { formatNumber, formatTimeHMS, formatDepletionDate } from "../lib/formatters";
 
 interface CountdownTimerProps {

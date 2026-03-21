@@ -3,12 +3,11 @@ import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useTankerData } from "../hooks/useTankerData";
-import { getLastTankerEta, getAlertLevel, getAlertColor } from "../lib/calculations";
+import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
 
 export const TankerTracker: FC = () => {
   const tankers = useTankerData();
-  const lastEta = getLastTankerEta();
   const vlccTankers = tankers.filter((t) => t.type === "VLCC");
   const lngTankers = tankers.filter((t) => t.type === "LNG");
 

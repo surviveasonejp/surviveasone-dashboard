@@ -40,8 +40,21 @@ import {
   setCache,
   CACHE_KEYS,
   CACHE_TTL,
+  scenarioCacheKey,
 } from "./kv-cache";
 import { handleScheduled } from "./cron";
+import { type ScenarioId, SCENARIOS } from "../shared/scenarios";
+import type { FamilyInputs } from "../shared/types";
+import {
+  getAllCountdowns,
+  calcTankerArrivals,
+  calcFoodDepletion,
+  calcFamilySurvival,
+  calcRegionCollapse,
+  mapReservesRow,
+  mapConsumptionRow,
+} from "./simulation/calculations";
+import { runFlowSimulation } from "./simulation/flowSimulation";
 
 interface Env {
   ASSETS: Fetcher;
@@ -116,7 +129,7 @@ export default {
       return new Response(null, {
         status: 204,
         headers: {
-          Allow: "GET, HEAD, OPTIONS",
+          Allow: "GET, HEAD, OPTIONS, POST",
           "Cache-Control": "max-age=86400",
         },
       });
@@ -174,7 +187,7 @@ export default {
     }
 
     // ── APIルーティング ──
-    const response = await handleApiRoute(url, env, globalCheck.count);
+    const response = await handleApiRoute(url, env, globalCheck.count, request);
 
     // レスポンスにレート制限ヘッダーを付与
     const headers = rateLimitHeaders(globalCheck.count);
@@ -198,6 +211,7 @@ async function handleApiRoute(
   url: URL,
   env: Env,
   requestCount: number,
+  request?: Request,
 ): Promise<Response> {
   switch (url.pathname) {
     case "/api/health":
@@ -210,6 +224,18 @@ async function handleApiRoute(
       return handleRegions(env);
     case "/api/electricity":
       return handleElectricity(url, env);
+    case "/api/countdowns":
+      return handleCountdowns(url, env);
+    case "/api/collapse":
+      return handleCollapse(url, env);
+    case "/api/simulation":
+      return handleSimulation(url, env);
+    case "/api/food-collapse":
+      return handleFoodCollapse(url, env);
+    case "/api/tankers":
+      return handleTankers(env);
+    case "/api/family-survival":
+      return handleFamilySurvival(request);
     default:
       return jsonResponse({ error: "not_found", message: "Endpoint not found" }, 404);
   }
@@ -313,4 +339,134 @@ async function handleElectricity(url: URL, env: Env): Promise<Response> {
   const data = await getLatestElectricityDemand(env.DB);
   await setCache(env.CACHE, CACHE_KEYS.ELECTRICITY_LATEST, data, CACHE_TTL.ELECTRICITY);
   return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── シナリオ検証ヘルパー ────────────────────────────
+
+function parseScenario(url: URL): ScenarioId {
+  const s = url.searchParams.get("scenario");
+  if (s && s in SCENARIOS) return s as ScenarioId;
+  return "realistic";
+}
+
+// ─── D1データ取得ヘルパー ────────────────────────────
+
+async function getReservesAndConsumption(env: Env) {
+  const [reservesRow, consumptionRow] = await Promise.all([
+    getLatestReserves(env.DB),
+    getLatestConsumption(env.DB),
+  ]);
+  const reservesData = reservesRow ? mapReservesRow(reservesRow) : null;
+  const consumptionData = consumptionRow ? mapConsumptionRow(consumptionRow) : null;
+  return { reservesData, consumptionData };
+}
+
+// ─── /api/countdowns ─────────────────────────────────
+
+async function handleCountdowns(url: URL, env: Env): Promise<Response> {
+  const scenario = parseScenario(url);
+  const cacheKey = scenarioCacheKey("api:countdowns", scenario);
+
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const { reservesData, consumptionData } = await getReservesAndConsumption(env);
+  const data = getAllCountdowns(reservesData, consumptionData, scenario);
+  await setCache(env.CACHE, cacheKey, data, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/collapse ───────────────────────────────────
+
+async function handleCollapse(url: URL, env: Env): Promise<Response> {
+  const scenario = parseScenario(url);
+  const cacheKey = scenarioCacheKey("api:collapse", scenario);
+
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const { reservesData, consumptionData } = await getReservesAndConsumption(env);
+  const [apiRegions, electricityData] = await Promise.all([
+    getAllRegions(env.DB),
+    getLatestElectricityDemand(env.DB),
+  ]);
+
+  const data = calcRegionCollapse(reservesData, consumptionData, apiRegions, electricityData, scenario);
+  await setCache(env.CACHE, cacheKey, data, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/simulation ─────────────────────────────────
+
+async function handleSimulation(url: URL, env: Env): Promise<Response> {
+  const scenario = parseScenario(url);
+  const maxDays = Math.min(Math.max(Number(url.searchParams.get("maxDays") ?? "365"), 1), 730);
+  const cacheKey = scenarioCacheKey("api:simulation", scenario, String(maxDays));
+
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const data = runFlowSimulation(scenario, maxDays);
+  await setCache(env.CACHE, cacheKey, data, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/food-collapse ──────────────────────────────
+
+async function handleFoodCollapse(url: URL, env: Env): Promise<Response> {
+  const scenario = parseScenario(url);
+  const region = url.searchParams.get("region") ?? "";
+  const cacheKey = scenarioCacheKey("api:food-collapse", scenario, region);
+
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const { reservesData, consumptionData } = await getReservesAndConsumption(env);
+  const data = calcFoodDepletion(reservesData, consumptionData, null, scenario);
+  await setCache(env.CACHE, cacheKey, data, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/tankers ────────────────────────────────────
+
+async function handleTankers(env: Env): Promise<Response> {
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.TANKERS);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const data = calcTankerArrivals();
+  await setCache(env.CACHE, CACHE_KEYS.TANKERS, data, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/family-survival ────────────────────────────
+
+async function handleFamilySurvival(request?: Request): Promise<Response> {
+  if (!request || request.method !== "POST") {
+    return jsonResponse({ error: "method_not_allowed", message: "POST only" }, 405);
+  }
+
+  let inputs: FamilyInputs;
+  try {
+    inputs = await request.json() as FamilyInputs;
+  } catch {
+    return jsonResponse({ error: "invalid_body", message: "JSON body required" }, 400);
+  }
+
+  // バリデーション
+  if (typeof inputs.members !== "number" || inputs.members < 1) {
+    return jsonResponse({ error: "invalid_input", message: "members must be >= 1" }, 400);
+  }
+
+  const data = calcFamilySurvival(inputs);
+  return jsonResponse({ data });
 }

@@ -5,8 +5,8 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
-import { getAllCountdowns, calcOilDays, calcLngDays, calcPowerDays } from "../lib/calculations";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../lib/scenarios";
+import type { ResourceCountdown } from "../../shared/types";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { DATA_SOURCES } from "../lib/dataSources";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
@@ -14,14 +14,24 @@ import staticReserves from "../data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 import { formatNumber } from "../lib/formatters";
 
+const FALLBACK_COUNTDOWNS: ResourceCountdown[] = [
+  { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
+  { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
+  { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
+];
+
 export const SurvivalClock: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
-  const countdowns = getAllCountdowns(scenario);
-  const worstLevel = countdowns[0]?.alertLevel ?? "safe";
-  const oilDays = calcOilDays(scenario);
-  const lngDays = calcLngDays(scenario);
-  const powerDays = calcPowerDays(scenario);
 
+  // サーバー側で計算済みのカウントダウンを取得
+  const { data: countdowns, isFromApi: countdownsFromApi } = useApiData<ResourceCountdown[]>(
+    `/api/countdowns?scenario=${scenario}`,
+    FALLBACK_COUNTDOWNS,
+  );
+  const displayCountdowns = countdowns ?? FALLBACK_COUNTDOWNS;
+  const worstLevel = displayCountdowns[0]?.alertLevel ?? "safe";
+
+  // 計算根拠の表示用データ（生データ）
   const { data: apiReserves, isFromApi: reservesFromApi } = useApiData<ReservesRow>(
     "/api/reserves",
     null as unknown as ReservesRow,
@@ -31,7 +41,6 @@ export const SurvivalClock: FC = () => {
     null as unknown as ConsumptionRow,
   );
 
-  // API or 静的JSONから表示値を取得
   const oilTotal = apiReserves?.oil_total_kL ?? staticReserves.oil.totalReserve_kL;
   const oilHormuz = apiReserves?.oil_hormuz_rate ?? staticReserves.oil.hormuzDependencyRate;
   const oilDailyKL = apiConsumption?.oil_daily_kL ?? staticConsumption.oil.dailyConsumption_kL;
@@ -40,7 +49,12 @@ export const SurvivalClock: FC = () => {
   const lngDaily = apiConsumption?.lng_daily_t ?? staticConsumption.lng.dailyConsumption_t;
   const thermalShare = apiReserves?.thermal_share ?? staticReserves.electricity.thermalShareRate;
 
-  const isLive = reservesFromApi || consumptionFromApi;
+  const isLive = countdownsFromApi || reservesFromApi || consumptionFromApi;
+
+  // 個別日数（計算根拠表示用）
+  const oilDays = displayCountdowns[0]?.totalDays ?? 0;
+  const lngDays = displayCountdowns[1]?.totalDays ?? 0;
+  const powerDays = displayCountdowns[2]?.totalDays ?? 0;
 
   return (
     <div className="space-y-6">
@@ -69,7 +83,7 @@ export const SurvivalClock: FC = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {countdowns.map((cd) => (
+        {displayCountdowns.map((cd) => (
           <CountdownTimer
             key={cd.label}
             label={cd.label}

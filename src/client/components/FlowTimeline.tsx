@@ -1,6 +1,7 @@
 import { type FC, useMemo } from "react";
-import { type ScenarioId } from "../lib/scenarios";
-import { runFlowSimulation, type ThresholdEvent } from "../lib/flowSimulation";
+import { type ScenarioId } from "../../shared/scenarios";
+import type { FlowSimulationResult, ThresholdEvent } from "../../shared/types";
+import { useApiData } from "../hooks/useApiData";
 
 interface FlowTimelineProps {
   scenarioId: ScenarioId;
@@ -31,20 +32,33 @@ const PHASE_BANDS: Array<{
   { minPct: 0, maxPct: 10, color: "#ff174415", label: "配給制" },
 ];
 
+const EMPTY_RESULT: FlowSimulationResult = {
+  timeline: [],
+  oilDepletionDay: 365,
+  lngDepletionDay: 365,
+  powerCollapseDay: 365,
+  thresholds: [],
+};
+
 export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
-  const result = useMemo(() => runFlowSimulation(scenarioId, 365), [scenarioId]);
+  const { data: apiResult } = useApiData<FlowSimulationResult>(
+    `/api/simulation?scenario=${scenarioId}`,
+    EMPTY_RESULT,
+  );
+  const result = apiResult ?? EMPTY_RESULT;
 
   const samples = useMemo(() => {
+    if (result.timeline.length === 0) return [];
     const step = Math.max(1, Math.floor(result.timeline.length / 120));
     return result.timeline.filter((_, i) => i % step === 0 || i === result.timeline.length - 1);
   }, [result]);
 
   const maxOil = useMemo(
-    () => Math.max(...result.timeline.map((s) => s.oilStock_kL), 1),
+    () => result.timeline.length > 0 ? Math.max(...result.timeline.map((s) => s.oilStock_kL), 1) : 1,
     [result],
   );
   const maxLng = useMemo(
-    () => Math.max(...result.timeline.map((s) => s.lngStock_t), 1),
+    () => result.timeline.length > 0 ? Math.max(...result.timeline.map((s) => s.lngStock_t), 1) : 1,
     [result],
   );
 

@@ -2,7 +2,8 @@ import { type FC } from "react";
 import { Link } from "react-router-dom";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
-import { getAllCountdowns } from "../lib/calculations";
+import type { ResourceCountdown } from "../../shared/types";
+import { useApiData } from "../hooks/useApiData";
 
 interface PanelCardProps {
   to: string;
@@ -27,7 +28,13 @@ const PanelCard: FC<PanelCardProps> = ({ to, title, subtitle, color }) => (
 );
 
 export const Landing: FC = () => {
-  const countdowns = getAllCountdowns();
+  const FALLBACK: ResourceCountdown[] = [
+    { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
+    { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
+    { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
+  ];
+  const { data } = useApiData<ResourceCountdown[]>("/api/countdowns?scenario=realistic", FALLBACK);
+  const countdowns = data ?? FALLBACK;
 
   return (
     <div className="space-y-8">

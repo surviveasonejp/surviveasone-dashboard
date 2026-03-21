@@ -1,5 +1,6 @@
 import { type FC } from "react";
-import { type RegionCollapse, getAlertLevel, getAlertColor } from "../lib/calculations";
+import type { RegionCollapse } from "../../shared/types";
+import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatPopulation, formatDepletionDate } from "../lib/formatters";
 import { DataBadge } from "./DataBadge";
 
