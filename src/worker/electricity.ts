@@ -131,6 +131,164 @@ async function fetchHokuriku(targetDate: string): Promise<FetchResult> {
   }
 }
 
+// ─── Tier 2/3: 残り6エリア ───────────────────────────
+
+/** 北海道電力: 年別需要CSV */
+async function fetchHokkaido(targetDate: string): Promise<FetchResult> {
+  const area_id = "hokkaido";
+  const year = targetDate.slice(0, 4);
+  try {
+    const res = await fetch(
+      `https://denkiyoho.hepco.co.jp/area/data/juyo_01_${year}.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/** 東北電力: 年別需要CSV */
+async function fetchTohoku(targetDate: string): Promise<FetchResult> {
+  const area_id = "tohoku";
+  const year = targetDate.slice(0, 4);
+  try {
+    const res = await fetch(
+      `https://setsuden.nw.tohoku-epco.co.jp/common/demand/juyo_${year}_tohoku.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/** 中国電力: 年別需要CSV */
+async function fetchChugoku(targetDate: string): Promise<FetchResult> {
+  const area_id = "chugoku";
+  const year = targetDate.slice(0, 4);
+  try {
+    const res = await fetch(
+      `https://www.energia.co.jp/nw/jukyuu/sys/juyo_07_${year}.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/** 四国電力: 年別需要CSV */
+async function fetchShikoku(targetDate: string): Promise<FetchResult> {
+  const area_id = "shikoku";
+  const year = targetDate.slice(0, 4);
+  try {
+    const res = await fetch(
+      `https://www.yonden.co.jp/nw/denkiyoho/csv/juyo_shikoku_${year}.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/** 九州電力: 日別需要CSV */
+async function fetchKyushu(targetDate: string): Promise<FetchResult> {
+  const area_id = "kyushu";
+  const dateStr = targetDate.replace(/-/g, "");
+  try {
+    const res = await fetch(
+      `https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-${dateStr}.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/** 沖縄電力: 年別需要CSV */
+async function fetchOkinawa(targetDate: string): Promise<FetchResult> {
+  const area_id = "okinawa";
+  const year = targetDate.slice(0, 4);
+  try {
+    const res = await fetch(
+      `https://www.okiden.co.jp/business-support/service/supply-and-demand/csv/juyo_10_${year}.csv`,
+    );
+    if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
+    const text = await res.text();
+    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    return { area_id, record, error: record ? null : "no matching date" };
+  } catch (e) {
+    return { area_id, record: null, error: String(e) };
+  }
+}
+
+/**
+ * 簡易需要CSVパーサー（Tier 2/3共通）
+ * 形式: DATE,TIME,実績(万kW)[,供給力(万kW),使用率(%)]
+ * ヘッダー行あり。1時間間隔。
+ */
+function parseSimpleDemandCsv(
+  text: string,
+  area_id: string,
+  targetDate: string,
+): AreaDemandRecord | null {
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+  if (lines.length < 2) return null;
+
+  let maxDemandManKw = 0;
+  let maxSupplyManKw = 0;
+  let count = 0;
+
+  const targetYmd = targetDate.replace(/-/g, "/");
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(",");
+    if (cols.length < 3) continue;
+
+    const dateCol = cols[0].trim();
+    if (dateCol !== targetYmd && dateCol !== targetDate) continue;
+
+    const demand = parseFloat(cols[2]) || 0;
+    const supply = cols.length >= 4 ? parseFloat(cols[3]) || 0 : 0;
+
+    if (demand > maxDemandManKw) maxDemandManKw = demand;
+    if (supply > maxSupplyManKw) maxSupplyManKw = supply;
+    count++;
+  }
+
+  if (count === 0) return null;
+
+  // 万kW → MW（1万kW = 10MW）
+  const peakDemand = Math.round(maxDemandManKw * 10);
+  const peakSupply = maxSupplyManKw > 0 ? Math.round(maxSupplyManKw * 10) : null;
+
+  return {
+    date: targetDate,
+    area_id,
+    peak_demand_mw: peakDemand,
+    peak_supply_mw: peakSupply,
+    usage_rate: peakSupply ? Math.round((peakDemand / peakSupply) * 1000) / 1000 : null,
+    solar_mw: null,
+    wind_mw: null,
+    thermal_mw: null,
+    nuclear_mw: null,
+    source: getSourceName(area_id),
+  };
+}
+
 // ─── 共通CSVパーサー ─────────────────────────────────
 
 /**
@@ -194,10 +352,16 @@ function parseTepcoAreaCsv(
 
 function getSourceName(area_id: string): string {
   const names: Record<string, string> = {
+    hokkaido: "北海道電力NW juyo_01.csv",
+    tohoku: "東北電力NW juyo_tohoku.csv",
     tokyo: "東京電力PG AREA_JISEKI.csv",
     chubu: "中部電力PG keito_jisseki.csv",
     hokuriku: "北陸電力送配電 jukyu_jisseki.csv",
     kansai: "関西電力送配電 jisseki.json",
+    chugoku: "中国電力NW juyo_07.csv",
+    shikoku: "四国電力送配電 juyo_shikoku.csv",
+    kyushu: "九州電力送配電 juyo-hourly.csv",
+    okinawa: "沖縄電力 juyo_10.csv",
   };
   return names[area_id] ?? area_id;
 }
@@ -205,10 +369,16 @@ function getSourceName(area_id: string): string {
 // ─── メイン: 全エリアフェッチ + D1更新 ──────────────
 
 const FETCHERS: AreaFetcher[] = [
+  fetchHokkaido,
+  fetchTohoku,
   fetchTepco,
-  fetchKansai,
   fetchChubu,
   fetchHokuriku,
+  fetchKansai,
+  fetchChugoku,
+  fetchShikoku,
+  fetchKyushu,
+  fetchOkinawa,
 ];
 
 export async function fetchElectricityDemand(db: D1Database): Promise<void> {

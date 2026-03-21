@@ -4,10 +4,10 @@ import { useApiData, type RegionRow, type ElectricityDemandRow } from "./useApiD
 import staticReserves from "../data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 
-/** D1のRegionRowからRegionCollapseを計算 */
+/** D1のRegionRow + 電力実測データからRegionCollapseを計算 */
 function calcFromApiRegions(
   apiRegions: RegionRow[],
-  liveAreaIds: Set<string>,
+  electricityMap: Map<string, ElectricityDemandRow>,
 ): RegionCollapse[] {
   const totalOil = staticReserves.oil.totalReserve_kL;
   const totalLng = staticReserves.lng.inventory_t;
@@ -15,7 +15,7 @@ function calcFromApiRegions(
   const dailyLng = staticConsumption.lng.dailyConsumption_t;
   const oilHormuz = staticReserves.oil.hormuzDependencyRate;
   const lngHormuz = staticReserves.lng.hormuzDependencyRate;
-  const thermalShare = staticReserves.electricity.thermalShareRate;
+  const defaultThermalShare = staticReserves.electricity.thermalShareRate;
 
   return apiRegions
     .map((region) => {
@@ -31,6 +31,13 @@ function calcFromApiRegions(
         region.winter_factor /
         region.isolation_risk;
 
+      // 電力実測データがあればエリア別火力依存率を使用
+      const liveData = electricityMap.get(region.id);
+      let thermalShare = defaultThermalShare;
+      if (liveData?.thermal_mw && liveData.peak_demand_mw > 0) {
+        thermalShare = liveData.thermal_mw / liveData.peak_demand_mw;
+      }
+
       const powerCollapse = lngDepletion * thermalShare;
       const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
 
@@ -45,7 +52,7 @@ function calcFromApiRegions(
         population: region.population,
         foodSelfSufficiency: region.food_self_sufficiency,
         note: region.note,
-        hasLiveData: liveAreaIds.has(region.id),
+        hasLiveData: electricityMap.has(region.id),
       };
     })
     .sort((a, b) => a.collapseDays - b.collapseDays);
@@ -61,15 +68,20 @@ export function useCollapseOrder(): RegionCollapse[] {
     null as unknown as ElectricityDemandRow[],
   );
 
-  const liveAreaIds = useMemo(() => {
-    if (!Array.isArray(electricityData)) return new Set<string>();
-    return new Set(electricityData.map((row) => row.area_id));
+  const electricityMap = useMemo(() => {
+    const map = new Map<string, ElectricityDemandRow>();
+    if (Array.isArray(electricityData)) {
+      for (const row of electricityData) {
+        map.set(row.area_id, row);
+      }
+    }
+    return map;
   }, [electricityData]);
 
   return useMemo(() => {
     if (Array.isArray(apiRegions) && apiRegions.length > 0) {
-      return calcFromApiRegions(apiRegions, liveAreaIds);
+      return calcFromApiRegions(apiRegions, electricityMap);
     }
     return calcRegionCollapse();
-  }, [apiRegions, liveAreaIds]);
+  }, [apiRegions, electricityMap]);
 }
