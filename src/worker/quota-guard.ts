@@ -1,11 +1,12 @@
 /**
- * D1/KV/R2 クォータガード（Phase 2準備）
+ * D1/KV/R2 クォータガード（Cache APIベース）
  *
- * 各サービスの操作を実行前にクォータチェックし、
- * 無料枠超過を未然に防止する。
+ * rate-limit.tsと同じ方式でCache APIのcoloレベル共有カウンターを使用。
+ * インメモリカウンターでは isolate間で状態が共有されないため、
+ * Cache APIで正確なクォータ追跡を実現する。
  *
- * Phase 1では未使用だが、D1/KV/R2バインディング追加時に
- * 全操作をこのガード経由で実行する。
+ * - KV/D1: 日次カウンター（UTC 00:00リセット）
+ * - R2: 月次カウンター（毎月1日リセット）
  */
 
 import {
@@ -18,46 +19,66 @@ import {
   getSecondsUntilMonthlyReset,
 } from "./free-tier";
 
-// ─── インメモリカウンター（coloレベル概算） ────────────
-// Phase 2でKVに移行予定。暫定的にisolateメモリで追跡。
+// ─── Cache API ヘルパー ───────────────────────────────
 
-interface DailyCounter {
-  day: string;
+const COUNTER_BASE = "https://internal.quota-guard.local";
+
+interface DailyEntry {
   count: number;
+  day: string;
 }
 
-interface MonthlyCounter {
-  month: string; // "2026-03"
+interface MonthlyEntry {
   count: number;
+  month: string;
 }
 
 function getCurrentMonth(): string {
   return new Date().toISOString().slice(0, 7);
 }
 
-const counters = {
-  kvReads: { day: "", count: 0 } as DailyCounter,
-  kvWrites: { day: "", count: 0 } as DailyCounter,
-  d1Reads: { day: "", count: 0 } as DailyCounter,
-  d1Writes: { day: "", count: 0 } as DailyCounter,
-  r2ClassA: { month: "", count: 0 } as MonthlyCounter,
-  r2ClassB: { month: "", count: 0 } as MonthlyCounter,
-};
-
-function resetDailyIfNeeded(counter: DailyCounter): void {
-  const today = getDayKey();
-  if (counter.day !== today) {
-    counter.day = today;
-    counter.count = 0;
-  }
+async function getDailyCounter(key: string): Promise<DailyEntry> {
+  const cache = await caches.open("quota-guard");
+  const cached = await cache.match(new Request(`${COUNTER_BASE}/${key}`));
+  if (!cached) return { count: 0, day: getDayKey() };
+  const entry: DailyEntry = await cached.json();
+  if (entry.day !== getDayKey()) return { count: 0, day: getDayKey() };
+  return entry;
 }
 
-function resetMonthlyIfNeeded(counter: MonthlyCounter): void {
-  const month = getCurrentMonth();
-  if (counter.month !== month) {
-    counter.month = month;
-    counter.count = 0;
-  }
+async function setDailyCounter(key: string, entry: DailyEntry): Promise<void> {
+  const cache = await caches.open("quota-guard");
+  await cache.put(
+    new Request(`${COUNTER_BASE}/${key}`),
+    new Response(JSON.stringify(entry), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `max-age=${getSecondsUntilDailyReset()}`,
+      },
+    }),
+  );
+}
+
+async function getMonthlyCounter(key: string): Promise<MonthlyEntry> {
+  const cache = await caches.open("quota-guard");
+  const cached = await cache.match(new Request(`${COUNTER_BASE}/${key}`));
+  if (!cached) return { count: 0, month: getCurrentMonth() };
+  const entry: MonthlyEntry = await cached.json();
+  if (entry.month !== getCurrentMonth()) return { count: 0, month: getCurrentMonth() };
+  return entry;
+}
+
+async function setMonthlyCounter(key: string, entry: MonthlyEntry): Promise<void> {
+  const cache = await caches.open("quota-guard");
+  await cache.put(
+    new Request(`${COUNTER_BASE}/${key}`),
+    new Response(JSON.stringify(entry), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `max-age=${getSecondsUntilMonthlyReset()}`,
+      },
+    }),
+  );
 }
 
 // ─── クォータチェック結果 ─────────────────────────────
@@ -68,91 +89,67 @@ type QuotaResult =
 
 // ─── KV ガード ────────────────────────────────────────
 
-export function checkKvRead(): QuotaResult {
-  resetDailyIfNeeded(counters.kvReads);
+export async function checkKvRead(): Promise<QuotaResult> {
+  const entry = await getDailyCounter("kv-reads");
   const cutoff = Math.floor(KV_FREE.DAILY_READS * SAFETY.KV_CUTOFF_RATIO);
-  if (counters.kvReads.count >= cutoff) {
-    return {
-      allowed: false,
-      service: "KV read",
-      retryAfter: getSecondsUntilDailyReset(),
-    };
+  if (entry.count >= cutoff) {
+    return { allowed: false, service: "KV read", retryAfter: getSecondsUntilDailyReset() };
   }
-  counters.kvReads.count++;
+  await setDailyCounter("kv-reads", { count: entry.count + 1, day: getDayKey() });
   return { allowed: true };
 }
 
-export function checkKvWrite(): QuotaResult {
-  resetDailyIfNeeded(counters.kvWrites);
+export async function checkKvWrite(): Promise<QuotaResult> {
+  const entry = await getDailyCounter("kv-writes");
   const cutoff = Math.floor(KV_FREE.DAILY_WRITES * SAFETY.KV_CUTOFF_RATIO);
-  if (counters.kvWrites.count >= cutoff) {
-    return {
-      allowed: false,
-      service: "KV write",
-      retryAfter: getSecondsUntilDailyReset(),
-    };
+  if (entry.count >= cutoff) {
+    return { allowed: false, service: "KV write", retryAfter: getSecondsUntilDailyReset() };
   }
-  counters.kvWrites.count++;
+  await setDailyCounter("kv-writes", { count: entry.count + 1, day: getDayKey() });
   return { allowed: true };
 }
 
 // ─── D1 ガード ────────────────────────────────────────
 
-export function checkD1Read(rowCount: number = 1): QuotaResult {
-  resetDailyIfNeeded(counters.d1Reads);
+export async function checkD1Read(rowCount: number = 1): Promise<QuotaResult> {
+  const entry = await getDailyCounter("d1-reads");
   const cutoff = Math.floor(D1_FREE.DAILY_ROWS_READ * SAFETY.D1_CUTOFF_RATIO);
-  if (counters.d1Reads.count + rowCount > cutoff) {
-    return {
-      allowed: false,
-      service: "D1 read",
-      retryAfter: getSecondsUntilDailyReset(),
-    };
+  if (entry.count + rowCount > cutoff) {
+    return { allowed: false, service: "D1 read", retryAfter: getSecondsUntilDailyReset() };
   }
-  counters.d1Reads.count += rowCount;
+  await setDailyCounter("d1-reads", { count: entry.count + rowCount, day: getDayKey() });
   return { allowed: true };
 }
 
-export function checkD1Write(rowCount: number = 1): QuotaResult {
-  resetDailyIfNeeded(counters.d1Writes);
+export async function checkD1Write(rowCount: number = 1): Promise<QuotaResult> {
+  const entry = await getDailyCounter("d1-writes");
   const cutoff = Math.floor(D1_FREE.DAILY_ROWS_WRITTEN * SAFETY.D1_CUTOFF_RATIO);
-  if (counters.d1Writes.count + rowCount > cutoff) {
-    return {
-      allowed: false,
-      service: "D1 write",
-      retryAfter: getSecondsUntilDailyReset(),
-    };
+  if (entry.count + rowCount > cutoff) {
+    return { allowed: false, service: "D1 write", retryAfter: getSecondsUntilDailyReset() };
   }
-  counters.d1Writes.count += rowCount;
+  await setDailyCounter("d1-writes", { count: entry.count + rowCount, day: getDayKey() });
   return { allowed: true };
 }
 
 // ─── R2 ガード ────────────────────────────────────────
 
-export function checkR2ClassA(): QuotaResult {
-  resetMonthlyIfNeeded(counters.r2ClassA);
+export async function checkR2ClassA(): Promise<QuotaResult> {
+  const entry = await getMonthlyCounter("r2-class-a");
   const cutoff = Math.floor(R2_FREE.MONTHLY_CLASS_A_OPS * SAFETY.KV_CUTOFF_RATIO);
-  if (counters.r2ClassA.count >= cutoff) {
-    return {
-      allowed: false,
-      service: "R2 Class A",
-      retryAfter: getSecondsUntilMonthlyReset(),
-    };
+  if (entry.count >= cutoff) {
+    return { allowed: false, service: "R2 Class A", retryAfter: getSecondsUntilMonthlyReset() };
   }
-  counters.r2ClassA.count++;
+  await setMonthlyCounter("r2-class-a", { count: entry.count + 1, month: getCurrentMonth() });
   return { allowed: true };
 }
 
-export function checkR2ClassB(): QuotaResult {
-  resetMonthlyIfNeeded(counters.r2ClassB);
+export async function checkR2ClassB(): Promise<QuotaResult> {
+  const entry = await getMonthlyCounter("r2-class-b");
   const cutoff = Math.floor(R2_FREE.MONTHLY_CLASS_B_OPS * SAFETY.KV_CUTOFF_RATIO);
-  if (counters.r2ClassB.count >= cutoff) {
-    return {
-      allowed: false,
-      service: "R2 Class B",
-      retryAfter: getSecondsUntilMonthlyReset(),
-    };
+  if (entry.count >= cutoff) {
+    return { allowed: false, service: "R2 Class B", retryAfter: getSecondsUntilMonthlyReset() };
   }
-  counters.r2ClassB.count++;
+  await setMonthlyCounter("r2-class-b", { count: entry.count + 1, month: getCurrentMonth() });
   return { allowed: true };
 }
 
@@ -181,26 +178,29 @@ export function quotaExceededResponse(
 
 // ─── 現在のクォータ状態（/api/health 用）───────────────
 
-export function getQuotaStatus() {
-  resetDailyIfNeeded(counters.kvReads);
-  resetDailyIfNeeded(counters.kvWrites);
-  resetDailyIfNeeded(counters.d1Reads);
-  resetDailyIfNeeded(counters.d1Writes);
-  resetMonthlyIfNeeded(counters.r2ClassA);
-  resetMonthlyIfNeeded(counters.r2ClassB);
+export async function getQuotaStatus() {
+  const [kvReads, kvWrites, d1Reads, d1Writes, r2ClassA, r2ClassB] =
+    await Promise.all([
+      getDailyCounter("kv-reads"),
+      getDailyCounter("kv-writes"),
+      getDailyCounter("d1-reads"),
+      getDailyCounter("d1-writes"),
+      getMonthlyCounter("r2-class-a"),
+      getMonthlyCounter("r2-class-b"),
+    ]);
 
   return {
     kv: {
-      reads: { used: counters.kvReads.count, limit: KV_FREE.DAILY_READS },
-      writes: { used: counters.kvWrites.count, limit: KV_FREE.DAILY_WRITES },
+      reads: { used: kvReads.count, limit: KV_FREE.DAILY_READS },
+      writes: { used: kvWrites.count, limit: KV_FREE.DAILY_WRITES },
     },
     d1: {
-      rows_read: { used: counters.d1Reads.count, limit: D1_FREE.DAILY_ROWS_READ },
-      rows_written: { used: counters.d1Writes.count, limit: D1_FREE.DAILY_ROWS_WRITTEN },
+      rows_read: { used: d1Reads.count, limit: D1_FREE.DAILY_ROWS_READ },
+      rows_written: { used: d1Writes.count, limit: D1_FREE.DAILY_ROWS_WRITTEN },
     },
     r2: {
-      class_a: { used: counters.r2ClassA.count, limit: R2_FREE.MONTHLY_CLASS_A_OPS },
-      class_b: { used: counters.r2ClassB.count, limit: R2_FREE.MONTHLY_CLASS_B_OPS },
+      class_a: { used: r2ClassA.count, limit: R2_FREE.MONTHLY_CLASS_A_OPS },
+      class_b: { used: r2ClassB.count, limit: R2_FREE.MONTHLY_CLASS_B_OPS },
     },
   };
 }

@@ -213,7 +213,7 @@ async function handleApiRoute(
 
 // ─── /api/health ───────────────────────────────────────
 
-function handleHealth(requestCount: number): Response {
+async function handleHealth(requestCount: number): Promise<Response> {
   const usageRatio = requestCount / WORKERS_FREE.DAILY_REQUESTS;
   const level = getGlobalUsageLevel(requestCount);
 
@@ -231,7 +231,7 @@ function handleHealth(requestCount: number): Response {
         warning_level: level,
         resets_in_seconds: getSecondsUntilDailyReset(),
       },
-      storage: getQuotaStatus(),
+      storage: await getQuotaStatus(),
     },
   });
 }
