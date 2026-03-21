@@ -24,6 +24,8 @@ export interface RegionCollapse {
   population: number;
   foodSelfSufficiency: number;
   note: string;
+  /** 電力需給の実測データがあるか */
+  hasLiveData: boolean;
 }
 
 /** 封鎖時の石油実効残存日数 */
@@ -282,6 +284,7 @@ export function calcRegionCollapse(): RegionCollapse[] {
       population: region.population,
       foodSelfSufficiency: region.foodSelfSufficiency,
       note: region.note,
+      hasLiveData: false,
     };
   }).sort((a, b) => a.collapseDays - b.collapseDays);
 }

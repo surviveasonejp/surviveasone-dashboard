@@ -45,6 +45,20 @@ export interface RegionRow {
   updated_at: string;
 }
 
+export interface ElectricityDemandRow {
+  date: string;
+  area_id: string;
+  peak_demand_mw: number;
+  peak_supply_mw: number | null;
+  usage_rate: number | null;
+  solar_mw: number | null;
+  wind_mw: number | null;
+  thermal_mw: number | null;
+  nuclear_mw: number | null;
+  source: string;
+  updated_at: string;
+}
+
 interface UseApiDataResult<T> {
   data: T | null;
   loading: boolean;

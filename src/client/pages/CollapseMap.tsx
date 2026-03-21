@@ -74,7 +74,14 @@ export const CollapseMap: FC = () => {
                     onClick={() => setSelectedRegion(region)}
                   >
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
-                    <td className="px-4 py-2 font-bold">{region.name}</td>
+                    <td className="px-4 py-2 font-bold flex items-center gap-1.5">
+                      {region.name}
+                      <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0"
+                        style={{ backgroundColor: region.hasLiveData ? "#00e676" : "#ff9100" }}
+                        title={region.hasLiveData ? "実測データ" : "推定値"}
+                      />
+                    </td>
                     <td className="px-4 py-2">
                       <span className="font-mono text-xs font-bold" style={{ color }}>
                         {region.vulnerabilityRank}

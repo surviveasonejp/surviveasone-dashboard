@@ -44,7 +44,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
       {/* 崩壊予測日数 */}
       <div className="text-center py-3">
         <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1 flex items-center justify-center gap-2">
-          崩壊予測 <DataBadge confidence="estimated" />
+          崩壊予測 <DataBadge confidence={region.hasLiveData ? "verified" : "estimated"} />
         </div>
         <div className="font-mono font-bold text-4xl" style={{ color: collapseColor }}>
           {formatDecimal(region.collapseDays)}
@@ -60,6 +60,21 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
         <DetailRow label="石油枯渇" value={`${formatDecimal(region.oilDepletionDays)}日`} sub={formatDepletionDate(region.oilDepletionDays)} />
         <DetailRow label="LNG枯渇" value={`${formatDecimal(region.lngDepletionDays)}日`} sub={formatDepletionDate(region.lngDepletionDays)} />
         <DetailRow label="電力崩壊" value={`${formatDecimal(region.powerCollapseDays)}日`} sub={formatDepletionDate(region.powerCollapseDays)} />
+      </div>
+
+      {/* データソース */}
+      <div className="text-[10px] font-mono text-neutral-600 flex items-center gap-1.5">
+        {region.hasLiveData ? (
+          <>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00e676]" />
+            電力需給: 実測データ
+          </>
+        ) : (
+          <>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#ff9100]" />
+            電力需給: 推定値（静的パラメータ）
+          </>
+        )}
       </div>
 
       <hr className="border-[#2a2a2a]" />

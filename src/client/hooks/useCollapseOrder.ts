@@ -1,11 +1,14 @@
 import { useMemo } from "react";
 import { calcRegionCollapse, type RegionCollapse } from "../lib/calculations";
-import { useApiData, type RegionRow } from "./useApiData";
+import { useApiData, type RegionRow, type ElectricityDemandRow } from "./useApiData";
 import staticReserves from "../data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 
 /** D1のRegionRowからRegionCollapseを計算 */
-function calcFromApiRegions(apiRegions: RegionRow[]): RegionCollapse[] {
+function calcFromApiRegions(
+  apiRegions: RegionRow[],
+  liveAreaIds: Set<string>,
+): RegionCollapse[] {
   const totalOil = staticReserves.oil.totalReserve_kL;
   const totalLng = staticReserves.lng.inventory_t;
   const dailyOil = staticConsumption.oil.dailyConsumption_kL;
@@ -42,6 +45,7 @@ function calcFromApiRegions(apiRegions: RegionRow[]): RegionCollapse[] {
         population: region.population,
         foodSelfSufficiency: region.food_self_sufficiency,
         note: region.note,
+        hasLiveData: liveAreaIds.has(region.id),
       };
     })
     .sort((a, b) => a.collapseDays - b.collapseDays);
@@ -52,11 +56,20 @@ export function useCollapseOrder(): RegionCollapse[] {
     "/api/regions",
     null as unknown as RegionRow[],
   );
+  const { data: electricityData } = useApiData<ElectricityDemandRow[]>(
+    "/api/electricity",
+    null as unknown as ElectricityDemandRow[],
+  );
+
+  const liveAreaIds = useMemo(() => {
+    if (!Array.isArray(electricityData)) return new Set<string>();
+    return new Set(electricityData.map((row) => row.area_id));
+  }, [electricityData]);
 
   return useMemo(() => {
     if (Array.isArray(apiRegions) && apiRegions.length > 0) {
-      return calcFromApiRegions(apiRegions);
+      return calcFromApiRegions(apiRegions, liveAreaIds);
     }
     return calcRegionCollapse();
-  }, [apiRegions]);
+  }, [apiRegions, liveAreaIds]);
 }
