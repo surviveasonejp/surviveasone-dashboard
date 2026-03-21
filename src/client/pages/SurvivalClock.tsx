@@ -1,9 +1,11 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
+import { ScenarioSelector } from "../components/ScenarioSelector";
 import { getAllCountdowns, calcOilDays, calcLngDays, calcPowerDays } from "../lib/calculations";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../lib/scenarios";
 import { DATA_SOURCES } from "../lib/dataSources";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
@@ -12,11 +14,12 @@ import staticConsumption from "../data/consumption.json";
 import { formatNumber } from "../lib/formatters";
 
 export const SurvivalClock: FC = () => {
-  const countdowns = getAllCountdowns();
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const countdowns = getAllCountdowns(scenario);
   const worstLevel = countdowns[0]?.alertLevel ?? "safe";
-  const oilDays = calcOilDays();
-  const lngDays = calcLngDays();
-  const powerDays = calcPowerDays();
+  const oilDays = calcOilDays(scenario);
+  const lngDays = calcLngDays(scenario);
+  const powerDays = calcPowerDays(scenario);
 
   const { data: apiReserves, isFromApi: reservesFromApi } = useApiData<ReservesRow>(
     "/api/reserves",
@@ -41,15 +44,18 @@ export const SurvivalClock: FC = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold font-mono">
-            <span className="text-[#ff1744]">SURVIVAL</span> CLOCK
-          </h1>
-          {isLive && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
-              LIVE
-            </span>
-          )}
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold font-mono">
+              <span className="text-[#ff1744]">SURVIVAL</span> CLOCK
+            </h1>
+            {isLive && (
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
+                LIVE
+              </span>
+            )}
+          </div>
+          <ScenarioSelector selected={scenario} onChange={setScenario} />
         </div>
         <p className="text-neutral-500 text-sm">
           ホルムズ海峡封鎖時の日本のエネルギー残存日数をリアルタイムでカウントダウン

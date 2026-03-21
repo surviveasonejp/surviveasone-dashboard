@@ -4,30 +4,36 @@ import { RegionMap } from "../components/RegionMap";
 import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { ScenarioSelector } from "../components/ScenarioSelector";
 import { getAllCountdowns, type RegionCollapse } from "../lib/calculations";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../lib/scenarios";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow } from "../hooks/useApiData";
 
 export const Dashboard: FC = () => {
-  const countdowns = getAllCountdowns();
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const countdowns = getAllCountdowns(scenario);
   const regions = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
   const { isFromApi } = useApiData<ReservesRow>("/api/reserves", null as unknown as ReservesRow);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ff1744]">SURVIVE</span> AS ONE
-        </h1>
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-bold font-mono">
+            <span className="text-[#ff1744]">SURVIVE</span> AS ONE
+          </h1>
           {isFromApi && (
             <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
               LIVE
             </span>
           )}
-          <span className="text-xs font-mono text-neutral-500 tracking-wider">
+        </div>
+        <div className="flex items-center gap-3">
+          <ScenarioSelector selected={scenario} onChange={setScenario} />
+          <span className="text-xs font-mono text-neutral-500 tracking-wider hidden sm:inline">
             INTEGRATED DASHBOARD
           </span>
         </div>

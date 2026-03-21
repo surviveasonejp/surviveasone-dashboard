@@ -3,6 +3,7 @@ import consumption from "../data/consumption.json";
 import regionsData from "../data/regions.json";
 import tankerData from "../data/tankers.json";
 import foodData from "../data/foodSupply.json";
+import { type ScenarioId, SCENARIOS } from "./scenarios";
 
 export type AlertLevel = "critical" | "warning" | "caution" | "safe";
 
@@ -29,18 +30,28 @@ export interface RegionCollapse {
 }
 
 /** 封鎖時の石油実効残存日数 */
-export function calcOilDays(): number {
-  return reserves.oil.totalReserve_kL / (consumption.oil.dailyConsumption_kL * reserves.oil.hormuzDependencyRate);
+export function calcOilDays(scenarioId: ScenarioId = "realistic"): number {
+  const s = SCENARIOS[scenarioId];
+  const effectiveConsumption = consumption.oil.dailyConsumption_kL
+    * s.oilBlockadeRate * (1 - s.demandReductionRate);
+  return effectiveConsumption > 0
+    ? reserves.oil.totalReserve_kL / effectiveConsumption
+    : Infinity;
 }
 
 /** 封鎖時のLNG実効残存日数 */
-export function calcLngDays(): number {
-  return reserves.lng.inventory_t / (consumption.lng.dailyConsumption_t * reserves.lng.hormuzDependencyRate);
+export function calcLngDays(scenarioId: ScenarioId = "realistic"): number {
+  const s = SCENARIOS[scenarioId];
+  const effectiveConsumption = consumption.lng.dailyConsumption_t
+    * s.lngBlockadeRate * (1 - s.demandReductionRate);
+  return effectiveConsumption > 0
+    ? reserves.lng.inventory_t / effectiveConsumption
+    : Infinity;
 }
 
 /** 電力崩壊日数（LNGがボトルネック） */
-export function calcPowerDays(): number {
-  return calcLngDays() * reserves.electricity.thermalShareRate;
+export function calcPowerDays(scenarioId: ScenarioId = "realistic"): number {
+  return calcLngDays(scenarioId) * reserves.electricity.thermalShareRate;
 }
 
 export function getAlertLevel(days: number): AlertLevel {
@@ -59,10 +70,10 @@ export function getAlertColor(level: AlertLevel): string {
   }
 }
 
-export function getAllCountdowns(): ResourceCountdown[] {
-  const oilDays = calcOilDays();
-  const lngDays = calcLngDays();
-  const powerDays = calcPowerDays();
+export function getAllCountdowns(scenarioId: ScenarioId = "realistic"): ResourceCountdown[] {
+  const oilDays = calcOilDays(scenarioId);
+  const lngDays = calcLngDays(scenarioId);
+  const powerDays = calcPowerDays(scenarioId);
 
   return [
     {
@@ -132,9 +143,9 @@ export interface FoodDepletionParams {
   powerDays: number;
 }
 
-export function calcFoodDepletion(params?: FoodDepletionParams): FoodProduct[] {
-  const oilDays = params?.oilDays ?? calcOilDays();
-  const powerDays = params?.powerDays ?? calcPowerDays();
+export function calcFoodDepletion(params?: FoodDepletionParams, scenarioId: ScenarioId = "realistic"): FoodProduct[] {
+  const oilDays = params?.oilDays ?? calcOilDays(scenarioId);
+  const powerDays = params?.powerDays ?? calcPowerDays(scenarioId);
 
   return foodData.products.map((product) => {
     // factor = 依存度(0-1)。高いほど依存 = (1-factor)が小さい = 早く崩壊
@@ -257,13 +268,14 @@ export function getSurvivalRankLabel(rank: SurvivalRank): string {
 }
 
 /** エリア別崩壊日数を計算 */
-export function calcRegionCollapse(): RegionCollapse[] {
+export function calcRegionCollapse(scenarioId: ScenarioId = "realistic"): RegionCollapse[] {
+  const s = SCENARIOS[scenarioId];
   const totalOil = reserves.oil.totalReserve_kL;
   const totalLng = reserves.lng.inventory_t;
-  const dailyOil = consumption.oil.dailyConsumption_kL;
-  const dailyLng = consumption.lng.dailyConsumption_t;
-  const oilHormuz = reserves.oil.hormuzDependencyRate;
-  const lngHormuz = reserves.lng.hormuzDependencyRate;
+  const dailyOil = consumption.oil.dailyConsumption_kL * (1 - s.demandReductionRate);
+  const dailyLng = consumption.lng.dailyConsumption_t * (1 - s.demandReductionRate);
+  const oilHormuz = s.oilBlockadeRate;
+  const lngHormuz = s.lngBlockadeRate;
 
   return regionsData.map((region) => {
     // 処理能力制約: min(需要, 処理能力)で実効消費を計算
