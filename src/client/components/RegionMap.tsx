@@ -31,10 +31,10 @@ function groupByRegion(): Map<string, PrefectureEntry[]> {
 const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
   hokkaido: { x: 390, y: 90 },
   tohoku: { x: 340, y: 240 },
-  tokyo: { x: 350, y: 330 },
+  tokyo: { x: 318, y: 330 },
   chubu: { x: 263, y: 350 },
-  hokuriku: { x: 270, y: 300 },
-  kansai: { x: 213, y: 380 },
+  hokuriku: { x: 240, y: 315 },
+  kansai: { x: 213, y: 368 },
   chugoku: { x: 148, y: 374 },
   shikoku: { x: 165, y: 406 },
   kyushu: { x: 101, y: 437 },
