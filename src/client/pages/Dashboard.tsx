@@ -6,11 +6,14 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { getAllCountdowns, type RegionCollapse } from "../lib/calculations";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
+import { useApiData } from "../hooks/useApiData";
+import type { ReservesRow } from "../hooks/useApiData";
 
 export const Dashboard: FC = () => {
   const countdowns = getAllCountdowns();
   const regions = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
+  const { isFromApi } = useApiData<ReservesRow>("/api/reserves", null as unknown as ReservesRow);
 
   return (
     <div className="space-y-6">
@@ -18,9 +21,16 @@ export const Dashboard: FC = () => {
         <h1 className="text-2xl font-bold font-mono">
           <span className="text-[#ff1744]">SURVIVE</span> AS ONE
         </h1>
-        <span className="text-xs font-mono text-neutral-500 tracking-wider">
-          INTEGRATED DASHBOARD
-        </span>
+        <div className="flex items-center gap-2">
+          {isFromApi && (
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
+              LIVE
+            </span>
+          )}
+          <span className="text-xs font-mono text-neutral-500 tracking-wider">
+            INTEGRATED DASHBOARD
+          </span>
+        </div>
       </div>
 
       <AlertBanner
