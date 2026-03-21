@@ -9,6 +9,28 @@
     "binding": "ASSETS",
     "not_found_handling": "single-page-application",
     "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "surviveasone-db",
+      "database_id": "2329aec3-7024-4f6b-9c4f-2a2ef9303af6"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "57ca4191efb3430086046e62f151bd6f"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ARCHIVE",
+      "bucket_name": "surviveasone-archive"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 3 * * 1"]
   }
   // ───────────────────────────────────────────────────
   // Cloudflare 無料枠制限（超過防止はWorkerコードで実装済み）

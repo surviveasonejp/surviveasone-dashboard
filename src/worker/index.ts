@@ -9,7 +9,7 @@
  * Layer 3: APIレスポンスキャッシュ → Cache APIで同一リクエストを吸収
  * Layer 4: Per-IPレート制限 → 単一IPの暴走を防止
  * Layer 5: グローバル日次予算 → 全体の85%で完全停止
- * Layer 6: D1/KV/R2クォータガード → Phase 2以降の操作制限
+ * Layer 6: D1/KV/R2クォータガード → ストレージ操作制限
  */
 
 import { WORKERS_FREE, SAFETY, getSecondsUntilDailyReset } from "./free-tier";
@@ -27,9 +27,25 @@ import {
 } from "./bot-guard";
 import { getCachedResponse, cacheResponse } from "./api-cache";
 import { getQuotaStatus } from "./quota-guard";
+import {
+  getLatestReserves,
+  getReservesHistory,
+  getLatestConsumption,
+  getAllRegions,
+} from "./db";
+import {
+  getFromCache,
+  setCache,
+  CACHE_KEYS,
+  CACHE_TTL,
+} from "./kv-cache";
+import { handleScheduled } from "./cron";
 
 interface Env {
   ASSETS: Fetcher;
+  DB: D1Database;
+  CACHE: KVNamespace;
+  ARCHIVE: R2Bucket;
 }
 
 // ─── セキュリティヘッダー ──────────────────────────────
@@ -58,6 +74,13 @@ function addSecurityHeaders(response: Response, isDev: boolean): Response {
     newResponse.headers.set(key, value);
   }
   return newResponse;
+}
+
+function jsonResponse(data: unknown, status: number = 200): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 
 // ─── メインハンドラー ──────────────────────────────────
@@ -149,7 +172,7 @@ export default {
     }
 
     // ── APIルーティング ──
-    const response = await handleApiRoute(url.pathname, globalCheck.count);
+    const response = await handleApiRoute(url, env, globalCheck.count);
 
     // レスポンスにレート制限ヘッダーを付与
     const headers = rateLimitHeaders(globalCheck.count);
@@ -161,55 +184,109 @@ export default {
     const cachedResponse = await cacheResponse(request, response, url.pathname);
     return addSecurityHeaders(cachedResponse, isDev);
   },
+
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    await handleScheduled(event, env, ctx);
+  },
 } satisfies ExportedHandler<Env>;
 
 // ─── APIルーティング ───────────────────────────────────
 
 async function handleApiRoute(
-  pathname: string,
+  url: URL,
+  env: Env,
   requestCount: number,
 ): Promise<Response> {
-  switch (pathname) {
+  switch (url.pathname) {
     case "/api/health":
       return handleHealth(requestCount);
+    case "/api/reserves":
+      return handleReserves(url, env);
+    case "/api/consumption":
+      return handleConsumption(env);
+    case "/api/regions":
+      return handleRegions(env);
     default:
-      return new Response(
-        JSON.stringify({ error: "not_found", message: "Endpoint not found" }),
-        {
-          status: 404,
-          headers: {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-store",
-          },
-        },
-      );
+      return jsonResponse({ error: "not_found", message: "Endpoint not found" }, 404);
   }
 }
+
+// ─── /api/health ───────────────────────────────────────
 
 function handleHealth(requestCount: number): Response {
   const usageRatio = requestCount / WORKERS_FREE.DAILY_REQUESTS;
   const level = getGlobalUsageLevel(requestCount);
 
-  return new Response(
-    JSON.stringify({
-      status: "ok",
-      timestamp: new Date().toISOString(),
-      version: "0.0.1",
-      free_tier: {
-        workers: {
-          requests_today: requestCount,
-          daily_limit: WORKERS_FREE.DAILY_REQUESTS,
-          usage_percent: Math.round(usageRatio * 100),
-          throttle_at_percent: Math.round(SAFETY.API_THROTTLE_RATIO * 100),
-          cutoff_at_percent: Math.round(SAFETY.API_CUTOFF_RATIO * 100),
-          warning_level: level,
-          resets_in_seconds: getSecondsUntilDailyReset(),
-        },
-        storage: getQuotaStatus(),
+  return jsonResponse({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    version: "0.2.0",
+    free_tier: {
+      workers: {
+        requests_today: requestCount,
+        daily_limit: WORKERS_FREE.DAILY_REQUESTS,
+        usage_percent: Math.round(usageRatio * 100),
+        throttle_at_percent: Math.round(SAFETY.API_THROTTLE_RATIO * 100),
+        cutoff_at_percent: Math.round(SAFETY.API_CUTOFF_RATIO * 100),
+        warning_level: level,
+        resets_in_seconds: getSecondsUntilDailyReset(),
       },
-    }),
-    {
-      headers: { "Content-Type": "application/json" },
+      storage: getQuotaStatus(),
     },
-  );
+  });
+}
+
+// ─── /api/reserves ─────────────────────────────────────
+
+async function handleReserves(url: URL, env: Env): Promise<Response> {
+  const history = url.searchParams.get("history") === "true";
+
+  if (history) {
+    const limit = Math.min(Number(url.searchParams.get("limit") ?? "30"), 365);
+    const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.RESERVES_HISTORY);
+    if (cached) {
+      return jsonResponse({ data: cached.data, cache: "hit" });
+    }
+    const data = await getReservesHistory(env.DB, limit);
+    await setCache(env.CACHE, CACHE_KEYS.RESERVES_HISTORY, data, CACHE_TTL.RESERVES);
+    return jsonResponse({ data, cache: "miss" });
+  }
+
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.RESERVES_LATEST);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+  const data = await getLatestReserves(env.DB);
+  if (!data) {
+    return jsonResponse({ error: "no_data", message: "備蓄データが見つかりません" }, 404);
+  }
+  await setCache(env.CACHE, CACHE_KEYS.RESERVES_LATEST, data, CACHE_TTL.RESERVES);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/consumption ──────────────────────────────────
+
+async function handleConsumption(env: Env): Promise<Response> {
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.CONSUMPTION_LATEST);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+  const data = await getLatestConsumption(env.DB);
+  if (!data) {
+    return jsonResponse({ error: "no_data", message: "消費データが見つかりません" }, 404);
+  }
+  await setCache(env.CACHE, CACHE_KEYS.CONSUMPTION_LATEST, data, CACHE_TTL.CONSUMPTION);
+  return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/regions ──────────────────────────────────────
+
+async function handleRegions(env: Env): Promise<Response> {
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.REGIONS_ALL);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+  const data = await getAllRegions(env.DB);
+  await setCache(env.CACHE, CACHE_KEYS.REGIONS_ALL, data, CACHE_TTL.REGIONS);
+  return jsonResponse({ data, cache: "miss" });
 }
