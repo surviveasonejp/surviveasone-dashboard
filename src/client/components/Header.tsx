@@ -20,6 +20,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export const Header: FC = () => {
   const location = useLocation();
+  const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
 
   return (
     <header className="border-b border-[#2a2a2a] bg-[#0a0a0a]/95 backdrop-blur-sm sticky top-0 z-50">
@@ -28,6 +29,13 @@ export const Header: FC = () => {
           <span className="text-[#ff1744] font-mono font-bold text-lg">SURVIVE</span>
           <span className="font-mono font-bold text-lg">AS ONE</span>
         </Link>
+        {/* モバイル: 現在ページ名 */}
+        {currentItem && (
+          <span className="md:hidden text-xs font-mono tracking-wider text-neutral-400">
+            {currentItem.label}
+          </span>
+        )}
+        {/* デスクトップ: フルナビ */}
         <nav className="hidden md:flex gap-1">
           {NAV_ITEMS.map((item) => (
             <Link
