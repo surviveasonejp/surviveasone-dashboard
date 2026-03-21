@@ -10,4 +10,21 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": true
   }
+  // ───────────────────────────────────────────────────
+  // Cloudflare 無料枠制限（超過防止はWorkerコードで実装済み）
+  // ───────────────────────────────────────────────────
+  // Workers:  100,000 req/日, 10ms CPU/req（静的アセットは対象外）
+  // KV:       100,000 read/日, 1,000 write/日, 1GB
+  // D1:       5M rows read/日, 100K rows write/日, 5GB
+  // R2:       1M Class A/月, 10M Class B/月, 10GB
+  // Cron:     最大5トリガー
+  //
+  // 防御レイヤー（src/worker/ で実装）:
+  // L1: Bot/クローラーブロック (bot-guard.ts)
+  // L2: HTTPメソッドフィルタ (bot-guard.ts)
+  // L3: APIレスポンスキャッシュ (api-cache.ts)
+  // L4: Per-IPレート制限 (rate-limit.ts)
+  // L5: グローバル日次予算 85%カットオフ (rate-limit.ts)
+  // L6: D1/KV/R2クォータガード (quota-guard.ts)
+  // ───────────────────────────────────────────────────
 }

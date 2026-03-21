@@ -1,32 +1,48 @@
 import { type FC, useState } from "react";
-import { DATA_SOURCES, getConfidenceLabel, getConfidenceColor } from "../lib/dataSources";
+import { DATA_SOURCES, hasSimulatedData } from "../lib/dataSources";
 import { DataBadge } from "./DataBadge";
 
 export const SimulationBanner: FC = () => {
   const [expanded, setExpanded] = useState(false);
-  const simulated = Object.values(DATA_SOURCES).filter((s) => s.confidence === "simulated");
+  const hasSimulated = hasSimulatedData();
   const estimated = Object.values(DATA_SOURCES).filter((s) => s.confidence === "estimated");
+  const verified = Object.values(DATA_SOURCES).filter((s) => s.confidence === "verified");
+
+  const borderColor = hasSimulated ? "#ff1744" : estimated.length > 0 ? "#ff9100" : "#00e676";
+  const label = hasSimulated
+    ? "DEV SIMULATION"
+    : estimated.length > 0
+      ? "DATA QUALITY"
+      : "VERIFIED";
+  const description = hasSimulated
+    ? `一部のデータは開発用シミュレーション値です（${Object.values(DATA_SOURCES).filter((s) => s.confidence === "simulated").length}項目）`
+    : `実績値${verified.length}項目 / 推定値${estimated.length}項目`;
 
   return (
-    <div className="border border-[#ff1744]/40 bg-[#ff1744]/5 rounded-lg overflow-hidden">
+    <div
+      className="border rounded-lg overflow-hidden"
+      style={{ borderColor: `${borderColor}40`, backgroundColor: `${borderColor}08` }}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full px-4 py-2.5 flex items-center gap-3 text-left cursor-pointer"
       >
-        <span className="w-2 h-2 rounded-full bg-[#ff1744] animate-pulse shrink-0" />
-        <span className="text-[#ff1744] font-mono text-xs font-bold tracking-wider">
-          DEV SIMULATION
+        <span
+          className="w-2 h-2 rounded-full shrink-0"
+          style={{ backgroundColor: borderColor, animation: hasSimulated ? "pulse 2s infinite" : undefined }}
+        />
+        <span className="font-mono text-xs font-bold tracking-wider" style={{ color: borderColor }}>
+          {label}
         </span>
         <span className="text-neutral-400 text-xs">
-          一部のデータは開発用シミュレーション値です
-          （{simulated.length}項目）
+          {description}
         </span>
         <span className="ml-auto text-neutral-500 text-xs font-mono">
           {expanded ? "▲" : "▼"}
         </span>
       </button>
       {expanded && (
-        <div className="px-4 pb-3 border-t border-[#ff1744]/20">
+        <div className="px-4 pb-3 border-t" style={{ borderColor: `${borderColor}20` }}>
           <table className="w-full text-xs mt-2">
             <thead>
               <tr className="text-neutral-500 font-mono">

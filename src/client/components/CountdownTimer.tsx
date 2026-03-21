@@ -1,7 +1,7 @@
 import { type FC } from "react";
 import { useCountdown } from "../hooks/useCountdown";
 import { getAlertColor } from "../lib/calculations";
-import { formatNumber, formatTimeHMS } from "../lib/formatters";
+import { formatNumber, formatTimeHMS, formatDepletionDate } from "../lib/formatters";
 
 interface CountdownTimerProps {
   label: string;
@@ -30,6 +30,9 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({ label, totalSeconds, c
             {formatTimeHMS(hours, minutes, seconds)}
           </span>
         </div>
+        <div className="text-xs font-mono text-neutral-500 mt-1">
+          枯渇日: {formatDepletionDate(days)}
+        </div>
       </div>
     );
   }
@@ -46,6 +49,9 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({ label, totalSeconds, c
       <div className="text-neutral-500 font-mono text-lg mb-3">日</div>
       <div className="font-mono text-2xl text-neutral-300">
         {formatTimeHMS(hours, minutes, seconds)}
+      </div>
+      <div className="text-sm font-mono text-neutral-500 mt-2">
+        枯渇日: {formatDepletionDate(days)}
       </div>
       <div className="mt-4 h-1 rounded-full bg-[#2a2a2a] overflow-hidden">
         <div

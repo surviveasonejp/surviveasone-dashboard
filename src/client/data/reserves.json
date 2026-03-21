@@ -1,30 +1,32 @@
 {
   "meta": {
-    "source": "OWID energy-data 2024 + 資源エネルギー庁石油備蓄統計(2024年9月末推定)",
-    "updatedAt": "2025-03-20",
-    "owidYear": 2024
+    "source": "資源エネルギー庁 石油備蓄統計(2025年12月末) + ISEP電力調査統計(2024年暦年) + JETRO(2025年)",
+    "updatedAt": "2026-03-20",
+    "baselineDate": "2025-12-31"
   },
   "oil": {
-    "nationalReserve_kL": 47370000,
-    "privateReserve_kL": 29260000,
-    "jointReserve_kL": 440000,
-    "totalReserve_kL": 77070000,
-    "nationalReserveDays": 145,
-    "privateReserveDays": 90,
-    "hormuzDependencyRate": 0.91,
+    "nationalReserve_kL": 43220000,
+    "privateReserve_kL": 29170000,
+    "jointReserve_kL": 2070000,
+    "totalReserve_kL": 74460000,
+    "nationalReserveDays": 146,
+    "privateReserveDays": 101,
+    "jointReserveDays": 7,
+    "totalReserveDays": 254,
+    "hormuzDependencyRate": 0.94,
     "unit": "kL",
-    "note": "国家備蓄145日、民間備蓄90日は石油連盟消費量基準。ホルムズ依存率91%は2024年中東原油輸入比率"
+    "note": "国家備蓄146日(原油4,179万kL+製品143万kL)、民間備蓄101日(原油1,372万kL+製品1,545万kL)、産油国共同備蓄7日(207万kL)。中東依存率94%(2025年貿易統計)、うちホルムズ海峡通過約8割"
   },
   "lng": {
-    "inventory_t": 2300000,
-    "hormuzDependencyRate": 0.22,
+    "inventory_t": 4500000,
+    "hormuzDependencyRate": 0.063,
     "unit": "t",
-    "note": "LNG在庫は約14日分の回転在庫。ホルムズ依存22%はカタール・UAE経由分"
+    "note": "LNG在庫450万t(2025年平均、経産省ガス事業統計+電力調査統計)。ホルムズ依存6.3%(カタール5.3%+UAE1.0%、JETRO 2025年実績)。主要輸入先: 豪州39.7%、マレーシア14.8%、ロシア8.9%"
   },
   "electricity": {
-    "thermalShareRate": 0.83,
-    "nuclearShareRate": 0.077,
-    "renewableShareRate": 0.093,
-    "note": "火力83%はOWID 2024年fossil_share_energy。原子力7.7%、再エネ9.3%"
+    "thermalShareRate": 0.65,
+    "nuclearShareRate": 0.082,
+    "renewableShareRate": 0.267,
+    "note": "火力65%(LNG29.1%+石炭28.2%+石油1.4%+その他6.3%)、原子力8.2%、再エネ26.7%(太陽光11.4%+水力7.9%+バイオマス5.9%+風力1.1%+地熱0.3%)。ISEP 2024年暦年速報値(電力調査統計ベース)"
   }
 }

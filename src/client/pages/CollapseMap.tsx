@@ -5,7 +5,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { type RegionCollapse, getAlertLevel, getAlertColor } from "../lib/calculations";
-import { formatDecimal } from "../lib/formatters";
+import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 
 export const CollapseMap: FC = () => {
   const regions = useCollapseOrder();
@@ -81,16 +81,20 @@ export const CollapseMap: FC = () => {
                       </span>
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
-                      {formatDecimal(region.collapseDays)}日
+                      <div>{formatDecimal(region.collapseDays)}日</div>
+                      <div className="text-xs font-normal text-neutral-500">{formatDepletionDate(region.collapseDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
-                      {formatDecimal(region.oilDepletionDays)}日
+                      <div>{formatDecimal(region.oilDepletionDays)}日</div>
+                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.oilDepletionDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
-                      {formatDecimal(region.lngDepletionDays)}日
+                      <div>{formatDecimal(region.lngDepletionDays)}日</div>
+                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.lngDepletionDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
-                      {formatDecimal(region.powerCollapseDays)}日
+                      <div>{formatDecimal(region.powerCollapseDays)}日</div>
+                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.powerCollapseDays)}</div>
                     </td>
                   </tr>
                 );

@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { type RegionCollapse, getAlertLevel, getAlertColor } from "../lib/calculations";
-import { formatDecimal, formatNumber, formatPopulation } from "../lib/formatters";
+import { formatDecimal, formatNumber, formatPopulation, formatDepletionDate } from "../lib/formatters";
 import { DataBadge } from "./DataBadge";
 
 interface RegionDetailProps {
@@ -44,19 +44,22 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
       {/* 崩壊予測日数 */}
       <div className="text-center py-3">
         <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1 flex items-center justify-center gap-2">
-          崩壊予測 <DataBadge confidence="simulated" />
+          崩壊予測 <DataBadge confidence="estimated" />
         </div>
         <div className="font-mono font-bold text-4xl" style={{ color: collapseColor }}>
           {formatDecimal(region.collapseDays)}
         </div>
         <div className="text-neutral-500 font-mono text-sm">日</div>
+        <div className="text-neutral-500 font-mono text-xs mt-1">
+          {formatDepletionDate(region.collapseDays)}
+        </div>
       </div>
 
       {/* 詳細ブレイクダウン */}
       <div className="space-y-2 text-sm">
-        <DetailRow label="石油枯渇" value={`${formatDecimal(region.oilDepletionDays)}日`} />
-        <DetailRow label="LNG枯渇" value={`${formatDecimal(region.lngDepletionDays)}日`} />
-        <DetailRow label="電力崩壊" value={`${formatDecimal(region.powerCollapseDays)}日`} />
+        <DetailRow label="石油枯渇" value={`${formatDecimal(region.oilDepletionDays)}日`} sub={formatDepletionDate(region.oilDepletionDays)} />
+        <DetailRow label="LNG枯渇" value={`${formatDecimal(region.lngDepletionDays)}日`} sub={formatDepletionDate(region.lngDepletionDays)} />
+        <DetailRow label="電力崩壊" value={`${formatDecimal(region.powerCollapseDays)}日`} sub={formatDepletionDate(region.powerCollapseDays)} />
       </div>
 
       <hr className="border-[#2a2a2a]" />
@@ -79,11 +82,15 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
 interface DetailRowProps {
   label: string;
   value: string;
+  sub?: string;
 }
 
-const DetailRow: FC<DetailRowProps> = ({ label, value }) => (
+const DetailRow: FC<DetailRowProps> = ({ label, value, sub }) => (
   <div className="flex justify-between">
     <span className="text-neutral-500">{label}</span>
-    <span className="font-mono">{value}</span>
+    <div className="text-right">
+      <span className="font-mono">{value}</span>
+      {sub && <div className="text-xs font-mono text-neutral-600">{sub}</div>}
+    </div>
   </div>
 );
