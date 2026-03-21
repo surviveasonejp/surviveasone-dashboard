@@ -14,6 +14,11 @@ const PAGES = [
   "/about",
 ];
 
+// ドラッグ中に早期発火する閾値
+const EARLY_DISTANCE = 100; // px: 確実なスワイプ
+const FLICK_DISTANCE = 30; // px: フリック時の最小距離
+const FLICK_VELOCITY = 1.0; // px/ms: フリック速度
+// 指を離した後の従来閾値
 const SWIPE_THRESHOLD = 50;
 
 export type SlideDirection = "left" | "right" | null;
@@ -32,8 +37,15 @@ export function useSwipeNavigation() {
     }
   }, [currentIndex]);
 
+  const navigateTo = (dir: -1 | 1) => {
+    const nextIndex = currentIndex + dir;
+    if (nextIndex >= 0 && nextIndex < PAGES.length) {
+      navigate(PAGES[nextIndex]);
+    }
+  };
+
   const bind = useDrag(
-    ({ movement: [mx], first, last, cancel, event }) => {
+    ({ movement: [mx], velocity: [vx], first, last, cancel, event }) => {
       if (first) {
         const target = event?.target as HTMLElement | null;
         if (
@@ -46,14 +58,23 @@ export function useSwipeNavigation() {
         }
       }
 
-      if (!last) return;
-      if (Math.abs(mx) < SWIPE_THRESHOLD) return;
+      // ドラッグ中: 速度or距離が閾値を超えたら即遷移
+      if (!last) {
+        const absMx = Math.abs(mx);
+        const earlyTrigger =
+          absMx > EARLY_DISTANCE ||
+          (absMx > FLICK_DISTANCE && vx > FLICK_VELOCITY);
 
-      if (mx < 0 && currentIndex < PAGES.length - 1) {
-        navigate(PAGES[currentIndex + 1]);
-      } else if (mx > 0 && currentIndex > 0) {
-        navigate(PAGES[currentIndex - 1]);
+        if (earlyTrigger) {
+          navigateTo(mx < 0 ? 1 : -1);
+          cancel();
+        }
+        return;
       }
+
+      // 指を離した時: ゆっくりスワイプ対応
+      if (Math.abs(mx) < SWIPE_THRESHOLD) return;
+      navigateTo(mx < 0 ? 1 : -1);
     },
     {
       axis: "x",
