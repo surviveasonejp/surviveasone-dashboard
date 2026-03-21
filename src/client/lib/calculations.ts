@@ -266,10 +266,28 @@ export function calcRegionCollapse(): RegionCollapse[] {
   const lngHormuz = reserves.lng.hormuzDependencyRate;
 
   return regionsData.map((region) => {
-    const oilDepletion = (totalOil * region.oilShare) / (dailyOil * region.powerDemandShare * oilHormuz)
+    // 処理能力制約: min(需要, 処理能力)で実効消費を計算
+    const oilDemand_kL = dailyOil * region.powerDemandShare * oilHormuz;
+    const refineryCapacity_kL = region.refineryCapacity_bpd > 0
+      ? region.refineryCapacity_bpd * 0.159 // bpd → kL/day
+      : 0;
+    // 製油所なし(0) → 在庫のみで消費（精製済み石油製品の備蓄を想定）
+    const effectiveOilConsumption = refineryCapacity_kL > 0
+      ? Math.min(oilDemand_kL, refineryCapacity_kL)
+      : oilDemand_kL;
+
+    const oilDepletion = (totalOil * region.oilShare) / effectiveOilConsumption
       * (1 / region.winterFactor) * (1 / region.isolationRisk);
 
-    const lngDepletion = (totalLng * region.lngShare) / (dailyLng * region.powerDemandShare * lngHormuz)
+    const lngDemand_t = dailyLng * region.powerDemandShare * lngHormuz;
+    const lngCapacity_t = region.lngRegasification_tpd > 0
+      ? region.lngRegasification_tpd
+      : 0;
+    const effectiveLngConsumption = lngCapacity_t > 0
+      ? Math.min(lngDemand_t, lngCapacity_t)
+      : lngDemand_t;
+
+    const lngDepletion = (totalLng * region.lngShare) / effectiveLngConsumption
       * (1 / region.winterFactor) * (1 / region.isolationRisk);
 
     const powerCollapse = lngDepletion * reserves.electricity.thermalShareRate;
