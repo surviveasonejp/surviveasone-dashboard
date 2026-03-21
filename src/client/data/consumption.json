@@ -1,23 +1,22 @@
 {
   "meta": {
-    "source": "OWID energy-data 2024 + 財務省貿易統計 2025年",
-    "updatedAt": "2026-03-20",
-    "owidYear": 2024,
-    "conversionNote": "石油: 1kL≈0.00001042TWh, LNG: 1t≈0.00001444TWh"
+    "source": "サンプルデータ（実データはサーバー側で管理）",
+    "updatedAt": "2026-01-01",
+    "note": "このファイルはフォールバック表示用のサンプルです。正確な値はAPIから取得されます。"
   },
   "oil": {
-    "annualConsumption_TWh": 1782.89,
-    "annualConsumption_kL": 171100000,
-    "dailyConsumption_kL": 469000,
-    "dailyImport_barrels": 2500000,
+    "annualConsumption_TWh": 1700,
+    "annualConsumption_kL": 160000000,
+    "dailyConsumption_kL": 440000,
+    "dailyImport_barrels": 2300000,
     "unit": "kL/日",
-    "note": "石油消費469千kL/日(OWID 2024)。原油輸入量は約250万バレル/日(2024年、減少傾向)。Worldometer基準では314万バレル/日だが製品含む総消費ベース"
+    "note": "サンプル値"
   },
   "lng": {
-    "annualConsumption_TWh": 938.35,
-    "annualConsumption_t": 64980000,
-    "dailyConsumption_t": 178000,
+    "annualConsumption_TWh": 900,
+    "annualConsumption_t": 60000000,
+    "dailyConsumption_t": 165000,
     "unit": "t/日",
-    "note": "LNG年間輸入6,498万t(2025年財務省貿易統計)。前年比1.4%減。日量178千t。主要輸入先: 豪州2,581万t(39.7%)、マレーシア961万t(14.8%)、ロシア580万t(8.9%)"
+    "note": "サンプル値"
   }
 }

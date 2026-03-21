@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "source": "資源エネルギー庁 石油備蓄統計(2025年12月末) + ISEP電力調査統計(2024年暦年) + JETRO(2025年)",
+    "updatedAt": "2026-03-20",
+    "baselineDate": "2025-12-31"
+  },
+  "oil": {
+    "nationalReserve_kL": 43220000,
+    "privateReserve_kL": 29170000,
+    "jointReserve_kL": 2070000,
+    "totalReserve_kL": 74460000,
+    "nationalReserveDays": 146,
+    "privateReserveDays": 101,
+    "jointReserveDays": 7,
+    "totalReserveDays": 254,
+    "hormuzDependencyRate": 0.94,
+    "unit": "kL",
+    "note": "国家備蓄146日(原油4,179万kL+製品143万kL)、民間備蓄101日(原油1,372万kL+製品1,545万kL)、産油国共同備蓄7日(207万kL)。中東依存率94%(2025年貿易統計)、うちホルムズ海峡通過約8割"
+  },
+  "lng": {
+    "inventory_t": 4500000,
+    "hormuzDependencyRate": 0.063,
+    "unit": "t",
+    "note": "LNG在庫450万t(2025年平均、経産省ガス事業統計+電力調査統計)。ホルムズ依存6.3%(カタール5.3%+UAE1.0%、JETRO 2025年実績)。主要輸入先: 豪州39.7%、マレーシア14.8%、ロシア8.9%"
+  },
+  "electricity": {
+    "thermalShareRate": 0.65,
+    "nuclearShareRate": 0.082,
+    "renewableShareRate": 0.267,
+    "note": "火力65%(LNG29.1%+石炭28.2%+石油1.4%+その他6.3%)、原子力8.2%、再エネ26.7%(太陽光11.4%+水力7.9%+バイオマス5.9%+風力1.1%+地熱0.3%)。ISEP 2024年暦年速報値(電力調査統計ベース)"
+  }
+}

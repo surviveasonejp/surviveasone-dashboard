@@ -18,12 +18,12 @@ import type {
 import { type ScenarioId, SCENARIOS } from "../../shared/scenarios";
 import type { ReservesRow, ConsumptionRow, RegionRow, ElectricityDemandRow } from "../db";
 
-// 静的JSON（D1フォールバック用）
-import staticReserves from "../../client/data/reserves.json";
-import staticConsumption from "../../client/data/consumption.json";
-import staticRegionsData from "../../client/data/regions.json";
-import staticTankerData from "../../client/data/tankers.json";
-import staticFoodData from "../../client/data/foodSupply.json";
+// 静的JSON（D1フォールバック用）— worker/data/ の実データを使用
+import staticReserves from "../data/reserves.json";
+import staticConsumption from "../data/consumption.json";
+import staticRegionsData from "../data/regions.json";
+import staticTankerData from "../data/tankers.json";
+import staticFoodData from "../data/foodSupply.json";
 
 // ─── データ取得ヘルパー ─────────────────────────────────
 

@@ -1,75 +1,39 @@
 {
   "meta": {
-    "source": "農水省食料需給表 + 物流依存推定（Phase 2で公式データ連携予定）",
-    "updatedAt": "2026-03-21",
-    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。collapse=resourceDays×(1-factor)+shelfLifeDays。dieselFactor=軽油依存(物流), napthaFactor=ナフサ依存(包装), powerFactor=電力依存(冷蔵/加工)"
+    "source": "サンプルデータ（実データはサーバー側で管理）",
+    "updatedAt": "2026-01-01",
+    "note": "このファイルはフォールバック表示用のサンプルです。正確な値はAPIから取得されます。"
   },
   "products": [
     {
-      "id": "milk",
-      "name": "牛乳・乳製品",
-      "icon": "🥛",
-      "shelfLifeDays": 2,
-      "dieselFactor": 0.9,
-      "napthaFactor": 0.3,
-      "powerFactor": 0.95,
-      "collapseReason": "冷蔵チェーン崩壊 → 配送停止 → 店頭在庫消失",
-      "note": "国産率67%だが冷蔵輸送が必須。電力停止で最も早く消失"
+      "id": "milk", "name": "牛乳・乳製品", "icon": "🥛",
+      "shelfLifeDays": 2, "dieselFactor": 0.9, "napthaFactor": 0.3, "powerFactor": 0.95,
+      "collapseReason": "冷蔵チェーン崩壊", "note": "サンプル値"
     },
     {
-      "id": "bread",
-      "name": "パン",
-      "icon": "🍞",
-      "shelfLifeDays": 3,
-      "dieselFactor": 0.7,
-      "napthaFactor": 0.6,
-      "collapseReason": "小麦輸入途絶 + 包装材不足 → 製造停止",
-      "powerFactor": 0.5,
-      "note": "小麦自給率15%。輸入小麦の在庫は約2.3ヶ月分"
+      "id": "bread", "name": "パン", "icon": "🍞",
+      "shelfLifeDays": 3, "dieselFactor": 0.7, "napthaFactor": 0.6, "powerFactor": 0.5,
+      "collapseReason": "小麦輸入途絶", "note": "サンプル値"
     },
     {
-      "id": "meat",
-      "name": "精肉",
-      "icon": "🥩",
-      "shelfLifeDays": 3,
-      "dieselFactor": 0.85,
-      "napthaFactor": 0.4,
-      "powerFactor": 0.9,
-      "collapseReason": "飼料輸入停止 → 畜産崩壊 + 冷蔵チェーン断絶",
-      "note": "飼料自給率25%。鶏肉→豚肉→牛肉の順で消失"
+      "id": "meat", "name": "精肉", "icon": "🥩",
+      "shelfLifeDays": 3, "dieselFactor": 0.85, "napthaFactor": 0.4, "powerFactor": 0.9,
+      "collapseReason": "飼料輸入停止", "note": "サンプル値"
     },
     {
-      "id": "frozen",
-      "name": "冷凍食品",
-      "icon": "🧊",
-      "shelfLifeDays": 0,
-      "dieselFactor": 0.5,
-      "napthaFactor": 0.5,
-      "powerFactor": 1.0,
-      "collapseReason": "停電即座に品質劣化 → 在庫全損",
-      "note": "電力依存100%。停電と同時に劣化開始"
+      "id": "frozen", "name": "冷凍食品", "icon": "🧊",
+      "shelfLifeDays": 0, "dieselFactor": 0.5, "napthaFactor": 0.5, "powerFactor": 1.0,
+      "collapseReason": "停電即品質劣化", "note": "サンプル値"
     },
     {
-      "id": "vegetable",
-      "name": "生鮮野菜",
-      "icon": "🥬",
-      "shelfLifeDays": 5,
-      "dieselFactor": 0.8,
-      "napthaFactor": 0.2,
-      "powerFactor": 0.6,
-      "collapseReason": "軽油不足で農機・輸送停止 → 収穫不能・配送不能",
-      "note": "国産率80%。地産地消は可能だが都市部への配送が課題"
+      "id": "vegetable", "name": "生鮮野菜", "icon": "🥬",
+      "shelfLifeDays": 5, "dieselFactor": 0.8, "napthaFactor": 0.2, "powerFactor": 0.6,
+      "collapseReason": "物流停止", "note": "サンプル値"
     },
     {
-      "id": "rice",
-      "name": "米",
-      "icon": "🍚",
-      "shelfLifeDays": 180,
-      "dieselFactor": 0.4,
-      "napthaFactor": 0.1,
-      "powerFactor": 0.1,
-      "collapseReason": "最も長く持つが精米・流通に軽油必要",
-      "note": "自給率97%。政府備蓄米あり。最後の砦"
+      "id": "rice", "name": "米", "icon": "🍚",
+      "shelfLifeDays": 180, "dieselFactor": 0.4, "napthaFactor": 0.1, "powerFactor": 0.1,
+      "collapseReason": "精米・流通に軽油必要", "note": "サンプル値"
     }
   ]
 }

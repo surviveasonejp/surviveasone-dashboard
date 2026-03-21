@@ -12,9 +12,9 @@ import type {
   FlowSimulationResult,
 } from "../../shared/types";
 import { type ScenarioId, SCENARIOS } from "../../shared/scenarios";
-import staticReserves from "../../client/data/reserves.json";
-import staticConsumption from "../../client/data/consumption.json";
-import staticTankerData from "../../client/data/tankers.json";
+import staticReserves from "../data/reserves.json";
+import staticConsumption from "../data/consumption.json";
+import staticTankerData from "../data/tankers.json";
 
 // ─── 閾値定義 ─────────────────────────────────────────
 
