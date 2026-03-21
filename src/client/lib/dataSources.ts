@@ -66,9 +66,9 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
   },
   tankerData: {
     label: "タンカー追跡データ",
-    confidence: "simulated",
-    source: "模擬データ（Phase 2でMarineTraffic AIS連携予定）",
-    note: "航路距離・速度は標準値。実際の船舶位置はAISデータ必要",
+    confidence: "estimated",
+    source: "ports.com/SeaRoutes航路距離 + 2025年AIS実運航速度データ",
+    note: "船名は模擬。距離と速度は公開データ基準。実際の船舶位置はPhase 2でAIS連携",
   },
   foodSupplyChain: {
     label: "食品サプライチェーン",
