@@ -42,6 +42,14 @@ export async function setCache<T>(
   });
 }
 
+/**
+ * D1更新後にキャッシュを無効化する。
+ * Cron更新後に呼び出して最新データをAPIに反映させる。
+ */
+export async function invalidateCache(kv: KVNamespace, keys: string[]): Promise<void> {
+  await Promise.all(keys.map((key) => kv.delete(key)));
+}
+
 /** キャッシュキー定義 */
 export const CACHE_KEYS = {
   RESERVES_LATEST: "api:reserves:latest",
