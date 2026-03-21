@@ -8,9 +8,9 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { path: "/", label: "TOP" },
-  { path: "/countdown", label: "SURVIVAL CLOCK" },
-  { path: "/collapse-map", label: "COLLAPSE MAP" },
   { path: "/dashboard", label: "DASHBOARD" },
+  { path: "/countdown", label: "CLOCK" },
+  { path: "/collapse-map", label: "MAP" },
   { path: "/last-tanker", label: "TANKER" },
   { path: "/food-collapse", label: "FOOD" },
   { path: "/family", label: "FAMILY" },

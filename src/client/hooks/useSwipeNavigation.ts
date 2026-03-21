@@ -4,9 +4,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const PAGES = [
   "/",
+  "/dashboard",
   "/countdown",
   "/collapse-map",
-  "/dashboard",
   "/last-tanker",
   "/food-collapse",
   "/family",
