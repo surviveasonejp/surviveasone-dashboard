@@ -25,6 +25,11 @@
     <meta name="twitter:description" content="石油94%中東依存。ホルムズ海峡封鎖時の崩壊タイムラインを可視化。あなたの家庭は何日生き延びられるか。" />
     <meta name="twitter:image" content="https://surviveasonejp.org/og-image.png" />
 
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="canonical" href="https://surviveasonejp.org/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,5 +57,12 @@
       </div>
     </noscript>
     <script type="module" src="/src/client/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>
