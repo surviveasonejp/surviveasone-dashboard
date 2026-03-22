@@ -194,7 +194,7 @@ body {
 }
 
 /* RegionMap 沖縄インセット枠 */
-[data-theme="light"] svg rect[fill="#0f1419"] {
+[data-theme="light"] svg rect[fill="#151c24"] {
   fill: #ffffff !important;
 }
 

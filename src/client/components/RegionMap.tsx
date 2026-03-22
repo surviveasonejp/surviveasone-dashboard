@@ -103,7 +103,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         fontSize="13"
         fontWeight="bold"
         fontFamily="'Noto Sans JP', sans-serif"
-        stroke="#0f1419"
+        stroke="#151c24"
         strokeWidth="3"
         paintOrder="stroke"
       >
@@ -135,9 +135,9 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         y="460"
         width="160"
         height="130"
-        fill="#0f1419"
+        fill="#151c24"
         stroke="#1e2a36"
-        strokeWidth="1"
+        strokeWidth="1.5"
         strokeDasharray="4 3"
         rx="4"
       />
