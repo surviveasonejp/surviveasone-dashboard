@@ -113,17 +113,6 @@ export default {
 
     // ── .net ドメイン: API専用 ──
     if (isApiDomain && !isApiPath) {
-      // ルート → APIランディングJSON
-      if (url.pathname === "/" || url.pathname === "") {
-        return jsonResponse({
-          name: "Survive as One API",
-          version: "0.2.0",
-          docs: "https://surviveasonejp.org/api-docs",
-          endpoints: "GET /api",
-          source: "https://github.com/surviveasonejp/surviveasone-dashboard",
-        });
-      }
-      // それ以外 → .org にリダイレクト
       return Response.redirect(`https://surviveasonejp.org${url.pathname}${url.search}`, 301);
     }
 
