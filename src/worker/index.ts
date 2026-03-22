@@ -72,7 +72,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Content-Security-Policy":
-    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
+    "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
 };
 
 function isDevRequest(request: Request): boolean {
@@ -111,6 +111,12 @@ export default {
     const isApiDomain = url.hostname === "surviveasonejp.net" || url.hostname === "www.surviveasonejp.net";
     const isApiPath = url.pathname === "/api" || url.pathname.startsWith("/api/");
 
+    // ── www リダイレクト → apex ──
+    if (url.hostname.startsWith("www.")) {
+      const apex = url.hostname.replace("www.", "");
+      return Response.redirect(`https://${apex}${url.pathname}${url.search}`, 301);
+    }
+
     // ── .net ドメイン: API専用 ──
     if (isApiDomain && !isApiPath) {
       return Response.redirect(`https://surviveasonejp.org${url.pathname}${url.search}`, 301);
@@ -119,7 +125,12 @@ export default {
     // ── 静的アセット: セキュリティヘッダー付与して返す ──
     if (!isApiPath) {
       const response = await env.ASSETS.fetch(request);
-      return addSecurityHeaders(response, isDev);
+      const secured = addSecurityHeaders(response, isDev);
+      // sw.js はブラウザが常に最新版をチェックするようno-cache
+      if (url.pathname === "/sw.js") {
+        secured.headers.set("Cache-Control", "no-cache");
+      }
+      return secured;
     }
 
     // ── 以下、APIリクエストのみ ──
