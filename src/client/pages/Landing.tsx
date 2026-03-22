@@ -74,6 +74,21 @@ export const Landing: FC = () => {
         </Link>
       </div>
 
+      {/* Family Meter CTA — 自分ごと化の核 */}
+      <Link
+        to="/family"
+        className="block bg-[#141414] border border-[#ff9100]/40 hover:border-[#ff9100]/70 rounded-lg p-6 transition-colors group"
+      >
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="font-mono text-xs tracking-widest text-[#ff9100]">FAMILY SURVIVAL METER</div>
+            <p className="text-lg font-bold">あなたの家庭は何日持つか？</p>
+            <p className="text-xs text-neutral-500">水・食料・燃料・電力の備蓄量から生存可能日数を算出</p>
+          </div>
+          <span className="text-[#ff9100] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </div>
+      </Link>
+
       {/* パネルカード */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <PanelCard
@@ -101,30 +116,11 @@ export const Landing: FC = () => {
           color="#ff5252"
         />
         <PanelCard
-          to="/family"
-          title="FAMILY METER"
-          subtitle="家庭サバイバル耐久ゲージ"
-          color="#ff9100"
-        />
-        <PanelCard
           to="/prepare"
           title="PREPARE"
           subtitle="備蓄ガイド・行動指針"
           color="#00e676"
         />
-      </div>
-
-      {/* 備蓄ガイド CTA */}
-      <div className="border border-[#00e676]/30 rounded-lg p-6 text-center space-y-3">
-        <p className="text-sm text-neutral-400">
-          数字を見たら、次は行動 — 今すぐ備えを確認する
-        </p>
-        <Link
-          to="/prepare"
-          className="inline-block px-6 py-2.5 border border-[#00e676] text-[#00e676] hover:bg-[#00e676]/10 font-mono text-sm tracking-wider rounded transition-colors"
-        >
-          SURVIVAL GUIDE &rarr;
-        </Link>
       </div>
 
       <p className="text-xs text-neutral-600 font-mono text-center max-w-lg mx-auto">
