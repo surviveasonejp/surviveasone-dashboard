@@ -246,7 +246,7 @@ async function handleApiRoute(
       return jsonResponse({
         name: "Survive as One API",
         version: "0.2.0",
-        docs: "https://github.com/surviveasonejp/surviveasone-dashboard#api",
+        docs: "https://surviveasonejp.org/api-docs",
         endpoints: {
           "GET /api/health": "ヘルスチェック",
           "GET /api/reserves": "石油・LNG備蓄データ（出典: 資源エネルギー庁）",
