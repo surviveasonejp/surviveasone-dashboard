@@ -104,14 +104,17 @@ export const SurvivalClock: FC = () => {
           <p>石油: {formatNumber(oilTotal)}kL ÷ ({formatNumber(oilDailyKL)}kL/日 × {Math.round(oilHormuz * 100)}%) ≈ {oilDays.toFixed(1)}日</p>
           {DATA_SOURCES.oilReserve && <DataBadge confidence={DATA_SOURCES.oilReserve.confidence} />}
         </div>
+        <p className="text-neutral-600 text-[10px]">出典: 資源エネルギー庁 石油備蓄統計(2025年12月末) / OWID energy-data</p>
         <div className="flex items-center gap-2">
           <p>LNG: {formatNumber(lngInv)}t ÷ ({formatNumber(lngDaily)}t/日 × {(lngHormuz * 100).toFixed(1)}%) ≈ {lngDays.toFixed(1)}日</p>
           {DATA_SOURCES.lngInventory && <DataBadge confidence={DATA_SOURCES.lngInventory.confidence} />}
         </div>
+        <p className="text-neutral-600 text-[10px]">出典: 経産省ガス事業統計 / JETRO貿易統計(2025年)</p>
         <div className="flex items-center gap-2">
           <p>電力: LNG枯渇 × 火力依存率{Math.round(thermalShare * 100)}% ≈ {powerDays.toFixed(1)}日</p>
           {DATA_SOURCES.thermalShare && <DataBadge confidence={DATA_SOURCES.thermalShare.confidence} />}
         </div>
+        <p className="text-neutral-600 text-[10px]">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
       </div>
     </div>
   );

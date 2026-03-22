@@ -351,7 +351,7 @@ const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, to
         {events.map((ev, i) => {
           const evColor = THRESHOLD_COLORS[ev.type] ?? color;
           // リソース名を除いたイベント名（「石油 価格暴騰」→「価格暴騰」）
-          const shortLabel = ev.label.replace(/^(石油|LNG|電力)\s*/, "");
+          const shortLabel = `Day${ev.day} ${ev.label.replace(/^(石油|LNG|電力)\s*/, "")}`;
           return (
             <div
               key={i}

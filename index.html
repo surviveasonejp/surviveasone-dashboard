@@ -25,6 +25,21 @@
     <meta name="twitter:description" content="石油94%中東依存。ホルムズ海峡経由の供給が止まったとき、日本のエネルギーはいつ尽きるか。あなたの家庭は何日生き延びられるか。" />
     <meta name="twitter:image" content="https://surviveasonejp.org/og-image.png" />
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Survive as One Japan",
+      "url": "https://surviveasonejp.org",
+      "description": "ホルムズ海峡経由の供給途絶時、日本のエネルギー崩壊タイムラインを可視化する戦術ダッシュボード。石油備蓄254日分、LNG在庫25日分、火力発電65%への影響を全国10エリア別にシミュレーション。",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "author": { "@type": "Person", "name": "idx", "url": "https://github.com/idx" },
+      "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+      "inLanguage": "ja"
+    }
+    </script>
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
@@ -54,7 +69,16 @@
           <a href="https://x.com/surviveasonejp" style="color:#1d9bf0;">X: @surviveasonejp</a> |
           <a href="https://github.com/surviveasonejp" style="color:#8b949e;">GitHub</a>
         </p>
-        <p style="color:#666;margin-top:2rem;font-size:0.85rem;">このサイトはJavaScriptで動作します。ブラウザで直接アクセスしてください。</p>
+        <h2 style="margin-top:2rem;font-size:1rem;">データソース</h2>
+        <ul style="font-size:0.85rem;color:#999;line-height:1.8;">
+          <li>資源エネルギー庁 石油備蓄統計（2025年12月末）</li>
+          <li>ISEP 電力調査統計（2024年暦年速報）</li>
+          <li>JETRO / 財務省 貿易統計（2025年実績）</li>
+          <li>OCCTO 電力広域的運営推進機関（連系線運用容量2025年度）</li>
+          <li>原子力規制委員会（稼働原発14基）</li>
+        </ul>
+        <p style="color:#666;margin-top:1rem;font-size:0.8rem;">本シミュレーションは最悪ケースに近いシナリオの推定値です。実際にはIEA協調備蓄放出・代替ルート確保等の対応が取られます。計算ロジックはAGPL-3.0で全量公開されています。</p>
+        <p style="color:#666;margin-top:1rem;font-size:0.85rem;">このサイトはJavaScriptで動作します。ブラウザで直接アクセスしてください。</p>
       </div>
     </noscript>
     <script type="module" src="/src/client/main.tsx"></script>

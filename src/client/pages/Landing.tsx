@@ -98,7 +98,7 @@ export const Landing: FC = () => {
           <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          火力の内訳: LNG 29% + 石炭 28% + 石油 7%。石油備蓄254日分はIEA基準で国際的に充実した水準だが、LNG在庫は約25日分と薄い
+          石油備蓄254日分(資源エネルギー庁2025年12月末)。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
 

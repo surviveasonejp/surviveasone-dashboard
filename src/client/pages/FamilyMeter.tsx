@@ -152,6 +152,12 @@ export const FamilyMeter: FC = () => {
             <div className="text-xs font-mono text-neutral-400">
               限界日: {formatDepletionDate(score.totalDays)}
             </div>
+            <div className="text-[10px] text-neutral-600 mt-2">
+              {inputs.members}人世帯 / 水{inputs.waterLiters}L / 食料{inputs.foodDays}日 / ボンベ{inputs.gasCanisterCount}本
+            </div>
+            <div className="text-[9px] text-neutral-700 font-mono mt-1">
+              surviveasonejp.org/family
+            </div>
           </div>
 
           {/* 内訳バー */}
@@ -200,6 +206,57 @@ export const FamilyMeter: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 行動エンジン: 不足量+購入リスト */}
+      {score.totalDays < 30 && (() => {
+        const TARGET_DAYS = 30;
+        const m = Math.max(inputs.members, 1);
+        const waterNeed = Math.max(0, TARGET_DAYS * m * 3 - inputs.waterLiters);
+        const foodNeed = Math.max(0, TARGET_DAYS - inputs.foodDays);
+        const gasNeed = Math.max(0, Math.ceil(TARGET_DAYS * m * 30 / 60) - inputs.gasCanisterCount);
+        const batteryNeed = Math.max(0, TARGET_DAYS * m * 50 - inputs.batteryWh);
+        const items: { name: string; amount: string; price: number; needed: boolean }[] = [
+          { name: "ペットボトル水(2L×6)", amount: `${Math.ceil(waterNeed / 12)}箱`, price: Math.ceil(waterNeed / 12) * 500, needed: waterNeed > 0 },
+          { name: "非常食セット(3日分)", amount: `${Math.ceil(foodNeed / 3)}セット`, price: Math.ceil(foodNeed / 3) * 3000, needed: foodNeed > 0 },
+          { name: "カセットボンベ(3本組)", amount: `${Math.ceil(gasNeed / 3)}パック`, price: Math.ceil(gasNeed / 3) * 350, needed: gasNeed > 0 },
+          { name: "ポータブル電源", amount: batteryNeed > 1000 ? "1000Wh級×1" : "500Wh級×1", price: batteryNeed > 1000 ? 80000 : batteryNeed > 0 ? 40000 : 0, needed: batteryNeed > 0 },
+        ];
+        const neededItems = items.filter((i) => i.needed);
+        const totalCost = neededItems.reduce((sum, i) => sum + i.price, 0);
+        if (neededItems.length === 0) return null;
+        return (
+          <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
+            <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">
+              30日生存に必要な追加備蓄
+            </h2>
+            <p className="text-xs text-neutral-400">
+              現在{formatDecimal(score.totalDays)}日 → 目標30日に到達するための不足分
+            </p>
+            <div className="space-y-2">
+              {neededItems.map((item) => (
+                <div key={item.name} className="flex items-center justify-between text-sm">
+                  <div>
+                    <span className="text-neutral-300">{item.name}</span>
+                    <span className="text-neutral-500 ml-2 text-xs">{item.amount}</span>
+                  </div>
+                  <span className="font-mono text-neutral-400 text-xs">
+                    ¥{item.price.toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-[#1e2a36] pt-3 flex items-center justify-between">
+              <span className="text-sm text-neutral-400">概算合計</span>
+              <span className="font-mono font-bold text-lg text-[#ef4444]">
+                ¥{totalCost.toLocaleString()}
+              </span>
+            </div>
+            <p className="text-[10px] text-neutral-600">
+              ※ 価格は参考値です。実際の価格は販売店・時期により変動します
+            </p>
+          </div>
+        );
+      })()}
     </div>
   );
 };
