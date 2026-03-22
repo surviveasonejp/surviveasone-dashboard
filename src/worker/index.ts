@@ -106,7 +106,7 @@ export default {
     const isDev = isDevRequest(request);
 
     // ── 静的アセット: セキュリティヘッダー付与して返す ──
-    if (!url.pathname.startsWith("/api/")) {
+    if (url.pathname !== "/api" && !url.pathname.startsWith("/api/")) {
       const response = await env.ASSETS.fetch(request);
       return addSecurityHeaders(response, isDev);
     }
