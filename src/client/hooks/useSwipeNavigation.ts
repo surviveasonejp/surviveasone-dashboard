@@ -28,8 +28,6 @@ export function useSwipeNavigation() {
   const prevIndexRef = useRef(currentIndex);
   const [direction, setDirection] = useState<SlideDirection>(null);
   const [dragX, setDragX] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [skipAnimation, setSkipAnimation] = useState(false);
 
   useEffect(() => {
     if (prevIndexRef.current !== currentIndex && currentIndex >= 0) {
@@ -43,11 +41,6 @@ export function useSwipeNavigation() {
 
   const bind = useDrag(
     ({ movement: [mx], velocity: [vx], first, last, cancel, event }) => {
-      if (isTransitioning) {
-        cancel();
-        return;
-      }
-
       if (first) {
         const target = event?.target as HTMLElement | null;
         if (
@@ -79,22 +72,13 @@ export function useSwipeNavigation() {
       const canGo = goDir === 1 ? canGoRight : canGoLeft;
 
       if ((isSnap || isFlick) && canGo) {
-        // 遷移確定: 画面外へスナップしてから遷移
-        const targetX = goDir === 1 ? -window.innerWidth : window.innerWidth;
-        setDragX(targetX);
-        setIsTransitioning(true);
-
-        setSkipAnimation(true);
-        setTimeout(() => {
-          navigate(PAGES[currentIndex + goDir]);
-          // 次フレームでリセット（新ページ描画後）
+        // 遷移確定: navigate先行、dragXは新ページ描画後にリセット
+        navigate(PAGES[currentIndex + goDir]);
+        requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             setDragX(0);
-            setIsTransitioning(false);
-            // fade-inスキップフラグを次の遷移まで維持
-            setTimeout(() => setSkipAnimation(false), 50);
           });
-        }, 200);
+        });
       } else {
         // キャンセル: 元に戻す
         setDragX(0);
@@ -113,7 +97,5 @@ export function useSwipeNavigation() {
     currentIndex,
     totalPages: PAGES.length,
     dragX,
-    isTransitioning,
-    skipAnimation,
   };
 }
