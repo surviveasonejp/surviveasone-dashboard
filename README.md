@@ -82,6 +82,40 @@ supply(t) = min(stock(t), processingCapacity)
 | 地図データ | Natural Earth 110m | 静的（Public Domain） |
 | 船舶データ | 公開船舶DB / 海運各社PR | 静的 |
 
+## API
+
+全エンドポイントは `surviveasonejp.org/api/` および `surviveasonejp.net/api/` で公開されています。
+
+**エンドポイント一覧:** `GET /api` でJSON形式の一覧を取得可能。
+
+| エンドポイント | メソッド | 説明 |
+|---|---|---|
+| `/api/health` | GET | ヘルスチェック |
+| `/api/reserves` | GET | 石油・LNG備蓄データ |
+| `/api/consumption` | GET | 日次消費量 |
+| `/api/regions` | GET | 10エリア別パラメータ（原子力・再エネ・連系線容量含む） |
+| `/api/countdowns?scenario={id}` | GET | 石油/LNG/電力の残存日数 |
+| `/api/collapse?scenario={id}` | GET | 10エリア崩壊順序 |
+| `/api/simulation?scenario={id}&maxDays={n}` | GET | フロー型在庫シミュレーション（日次タイムライン） |
+| `/api/food-collapse?scenario={id}` | GET | 食品カテゴリ別消失予測 |
+| `/api/tankers` | GET | タンカー12隻の到着予測 |
+| `/api/family-survival` | POST | 家庭生存日数算出 |
+| `/api/electricity?area={id}` | GET | 電力需給実測データ |
+
+**シナリオID:** `optimistic` / `realistic` / `pessimistic`
+
+### レスポンス例
+
+```bash
+# 現実シナリオのカウントダウン
+curl https://surviveasonejp.org/api/countdowns?scenario=realistic
+
+# 家庭生存日数算出
+curl -X POST https://surviveasonejp.org/api/family-survival \
+  -H "Content-Type: application/json" \
+  -d '{"members":3,"waterLiters":36,"foodDays":7,"gasCanisterCount":6,"batteryWh":500,"cashYen":30000}'
+```
+
 ## Architecture
 
 ```

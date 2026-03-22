@@ -3,7 +3,8 @@
   "main": "src/worker/index.ts",
   "compatibility_date": "2025-03-14",
   "routes": [
-    { "pattern": "surviveasonejp.org", "custom_domain": true }
+    { "pattern": "surviveasonejp.org", "custom_domain": true },
+    { "pattern": "surviveasonejp.net", "custom_domain": true }
   ],
   "assets": {
     "binding": "ASSETS",
