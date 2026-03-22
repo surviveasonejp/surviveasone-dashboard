@@ -103,7 +103,7 @@ export const TankerMap: FC<TankerMapProps> = ({
         </defs>
 
         {/* 緯度線グリッド */}
-        <g opacity="0.06" stroke="#fff" strokeWidth="0.5">
+        <g opacity="0.08" stroke="#fff" strokeWidth="0.8">
           {[-30, 0, 30].map((lat) => {
             const [, y] = project(0, lat);
             return <line key={lat} x1="0" y1={y} x2={W} y2={y} />;
@@ -116,7 +116,7 @@ export const TankerMap: FC<TankerMapProps> = ({
 
         {/* 大陸（Natural Earth 110m） */}
         <g clipPath="url(#map-clip)">
-          <path d={WORLD_LAND_PATH} fill="#151a20" stroke="#1e2530" strokeWidth="0.5" />
+          <path d={WORLD_LAND_PATH} fill="#1a2332" stroke="#263545" strokeWidth="0.8" />
         </g>
 
         {/* 航路線 */}
@@ -132,9 +132,9 @@ export const TankerMap: FC<TankerMapProps> = ({
                 d={d}
                 fill="none"
                 stroke={color}
-                strokeWidth={isActive ? 1.5 : 0.8}
-                strokeDasharray={isActive ? "6 3" : "3 4"}
-                opacity={isActive ? 0.5 : 0.15}
+                strokeWidth={isActive ? 2.5 : 1.5}
+                strokeDasharray={isActive ? "8 4" : "4 5"}
+                opacity={isActive ? 0.6 : 0.3}
               />
             );
           })}
@@ -146,20 +146,21 @@ export const TankerMap: FC<TankerMapProps> = ({
           return (
             <g key={cp.id}>
               <rect
-                x={cx - 4}
-                y={cy - 4}
-                width={8}
-                height={8}
+                x={cx - 6}
+                y={cy - 6}
+                width={12}
+                height={12}
                 transform={`rotate(45 ${cx} ${cy})`}
                 fill={cp.critical ? "#ef4444" : "#94a3b8"}
-                opacity={0.7}
+                opacity={0.8}
               />
               <text
-                x={cx + 10}
-                y={cy + 4}
-                fill={cp.critical ? "#ef4444" : "#666"}
-                fontSize="10"
+                x={cx + 14}
+                y={cy + 5}
+                fill={cp.critical ? "#ef4444" : "#8899aa"}
+                fontSize="14"
                 fontFamily="monospace"
+                fontWeight="bold"
               >
                 {cp.name}
               </text>
@@ -192,21 +193,21 @@ export const TankerMap: FC<TankerMapProps> = ({
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={12}
+                  r={18}
                   fill="none"
                   stroke={color}
-                  strokeWidth="1"
+                  strokeWidth="1.5"
                   opacity="0.3"
                 >
                   <animate
                     attributeName="r"
-                    values="6;14"
+                    values="10;22"
                     dur="1.5s"
                     repeatCount="indefinite"
                   />
                   <animate
                     attributeName="opacity"
-                    values="0.4;0"
+                    values="0.5;0"
                     dur="1.5s"
                     repeatCount="indefinite"
                   />
@@ -216,19 +217,19 @@ export const TankerMap: FC<TankerMapProps> = ({
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={isActive ? 5 : 4}
+                r={isActive ? 8 : 6}
                 fill={color}
-                stroke={isActive ? "#fff" : "none"}
-                strokeWidth={isActive ? 1.5 : 0}
-                opacity={isActive ? 1 : 0.85}
+                stroke={isActive ? "#fff" : "#0f1419"}
+                strokeWidth={isActive ? 2 : 1}
+                opacity={isActive ? 1 : 0.9}
               />
               {/* 船名ラベル（ホバー/選択時） */}
               {isActive && (
                 <text
                   x={p.x}
-                  y={p.y - 10}
+                  y={p.y - 14}
                   fill="#fff"
-                  fontSize="9"
+                  fontSize="13"
                   fontFamily="monospace"
                   textAnchor="middle"
                   fontWeight="bold"
@@ -244,7 +245,7 @@ export const TankerMap: FC<TankerMapProps> = ({
         {(() => {
           const [, eqY] = project(0, 0);
           return (
-            <text x="8" y={eqY - 4} fill="#333" fontSize="8" fontFamily="monospace">
+            <text x="8" y={eqY - 6} fill="#3a4a5a" fontSize="12" fontFamily="monospace">
               EQUATOR
             </text>
           );
