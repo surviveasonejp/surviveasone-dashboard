@@ -12,6 +12,9 @@ const THRESHOLD_COLORS: Record<string, string> = {
   rationing: "#f59e0b",
   distribution: "#ef4444",
   stop: "#ef4444",
+  water_pressure: "#3b82f6",
+  water_cutoff: "#2563eb",
+  water_sanitation: "#1d4ed8",
 };
 
 const RESOURCE_COLORS = {

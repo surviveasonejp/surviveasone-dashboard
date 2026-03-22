@@ -2,7 +2,7 @@
 
 export type AlertLevel = "critical" | "warning" | "caution" | "safe";
 export type SurvivalRank = "S" | "A" | "B" | "C" | "D" | "F";
-export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop";
+export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop" | "water_pressure" | "water_cutoff" | "water_sanitation";
 
 export interface ResourceCountdown {
   label: string;
@@ -94,7 +94,7 @@ export interface FlowState {
 export interface ThresholdEvent {
   day: number;
   type: ThresholdType;
-  resource: "oil" | "lng" | "power";
+  resource: "oil" | "lng" | "power" | "water";
   stockPercent: number;
   label: string;
 }

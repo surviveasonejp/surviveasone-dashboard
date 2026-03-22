@@ -15,6 +15,7 @@
     "lngRegasification_tpd": 25000,
     "winterFactor": 1.4,
     "isolationRisk": 1.2,
+    "nuclearCapacity_MW": 0,
     "note": "冬季暖房依存極大。北本連系線90万kW(2019年増強済、2028年120万kWへ増強予定)"
   },
   {
@@ -33,7 +34,8 @@
     "lngRegasification_tpd": 45000,
     "winterFactor": 1.3,
     "isolationRisk": 1.0,
-    "note": "暖房需要高。新潟LNG受入拠点で相対的に有利。東京向け連系線大容量"
+    "nuclearCapacity_MW": 825,
+    "note": "暖房需要高。新潟LNG受入拠点で相対的に有利。東京向け連系線大容量。女川2号(825MW)再稼働(2024年10月)"
   },
   {
     "id": "tokyo",
@@ -51,6 +53,7 @@
     "lngRegasification_tpd": 120000,
     "winterFactor": 1.1,
     "isolationRisk": 1.0,
+    "nuclearCapacity_MW": 0,
     "note": "最大需要エリア。製油所7基・LNG基地3基集中。消費速度が最速"
   },
   {
@@ -69,6 +72,7 @@
     "lngRegasification_tpd": 80000,
     "winterFactor": 1.15,
     "isolationRisk": 1.0,
+    "nuclearCapacity_MW": 0,
     "note": "自動車産業集積。知多LNG基地は国内最大級。ENEOS知多製油所は停止済み"
   },
   {
@@ -87,6 +91,7 @@
     "lngRegasification_tpd": 0,
     "winterFactor": 1.25,
     "isolationRisk": 1.0,
+    "nuclearCapacity_MW": 0,
     "note": "小規模エリア。LNG基地・製油所なく近隣エリアから供給依存。志賀原発停止中"
   },
   {
@@ -105,7 +110,8 @@
     "lngRegasification_tpd": 85000,
     "winterFactor": 1.1,
     "isolationRisk": 1.0,
-    "note": "第2の大需要圏。LNG基地3基。ENEOS和歌山製油所は2023年10月閉鎖済み"
+    "nuclearCapacity_MW": 6578,
+    "note": "第2の大需要圏。LNG基地3基。原発7基稼働(大飯3/4:2360MW+高浜1/2/3/4:3392MW+美浜3:826MW)。ENEOS和歌山製油所は2023年10月閉鎖済み"
   },
   {
     "id": "chugoku",
@@ -123,7 +129,8 @@
     "lngRegasification_tpd": 20000,
     "winterFactor": 1.1,
     "isolationRisk": 1.0,
-    "note": "瀬戸内工業地帯。水島コンビナート(35万b/d)は国内最大製油所。西部石油山口は2024年3月停止"
+    "nuclearCapacity_MW": 820,
+    "note": "瀬戸内工業地帯。水島コンビナート(35万b/d)は国内最大製油所。島根2号(820MW)再稼働(2024年12月)。西部石油山口は2024年3月停止"
   },
   {
     "id": "shikoku",
@@ -141,7 +148,8 @@
     "lngRegasification_tpd": 15000,
     "winterFactor": 1.05,
     "isolationRisk": 1.3,
-    "note": "本四連系線120万kW(1回線)。伊方原発3号機稼働中。太陽石油は愛媛県今治市"
+    "nuclearCapacity_MW": 890,
+    "note": "本四連系線120万kW(1回線)。伊方3号(890MW)稼働中。太陽石油は愛媛県今治市"
   },
   {
     "id": "kyushu",
@@ -159,7 +167,8 @@
     "lngRegasification_tpd": 40000,
     "winterFactor": 1.05,
     "isolationRisk": 1.0,
-    "note": "川内・玄海原発稼働で火力依存低。関門連系線238万kW。太陽光導入も多い"
+    "nuclearCapacity_MW": 4140,
+    "note": "川内1/2(1780MW)+玄海3/4(2360MW)=4140MW稼働。火力依存低。関門連系線238万kW。太陽光導入も多い"
   },
   {
     "id": "okinawa",
@@ -177,6 +186,7 @@
     "lngRegasification_tpd": 10000,
     "winterFactor": 1.0,
     "isolationRisk": 1.5,
+    "nuclearCapacity_MW": 0,
     "note": "完全島嶼。南西石油(西原)は2022年精製機能停止、稼働製油所なし。備蓄日数が生存日数に直結"
   }
 ]

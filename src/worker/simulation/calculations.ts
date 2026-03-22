@@ -261,8 +261,16 @@ export function calcRegionCollapse(
   }
 
   // D1リージョンデータがある場合
+  const NATIONAL_PEAK_MW_D1 = 160000;
+  const NUCLEAR_UTILIZATION_D1 = 0.80;
+  // 静的データから原子力容量を参照（D1にまだカラムがないため）
+  const nuclearMap = new Map<string, number>();
+  for (const sr of staticRegionsData) {
+    nuclearMap.set(sr.id, sr.nuclearCapacity_MW ?? 0);
+  }
+
   if (apiRegions && apiRegions.length > 0) {
-    return apiRegions
+    const results = apiRegions
       .map((region) => {
         const oilDepletion =
           (r.oilTotalReserve_kL * region.oil_share) /
@@ -281,6 +289,14 @@ export function calcRegionCollapse(
         if (liveData?.thermal_mw && liveData.peak_demand_mw > 0) {
           thermalShare = liveData.thermal_mw / liveData.peak_demand_mw;
         }
+
+        // 原子力補正
+        const regionDemand_MW = region.power_demand_share * NATIONAL_PEAK_MW_D1;
+        const nuclearOutput_MW = (nuclearMap.get(region.id) ?? 0) * NUCLEAR_UTILIZATION_D1;
+        const nuclearCoverage = regionDemand_MW > 0
+          ? Math.min(nuclearOutput_MW / regionDemand_MW, 0.7)
+          : 0;
+        thermalShare = thermalShare * (1 - nuclearCoverage);
 
         const powerCollapse = lngDepletion * thermalShare;
         const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
@@ -304,7 +320,10 @@ export function calcRegionCollapse(
   }
 
   // フォールバック: 静的JSONからの計算
-  return staticRegionsData
+  const NATIONAL_PEAK_MW = 160000; // 全国ピーク需要 約1.6億kW
+  const NUCLEAR_UTILIZATION = 0.80; // 原発設備利用率
+
+  const results = staticRegionsData
     .map((region) => {
       const oilDemand_kL = dailyOil * region.powerDemandShare * s.oilBlockadeRate;
       const refineryCapacity_kL = region.refineryCapacity_bpd > 0
@@ -328,7 +347,16 @@ export function calcRegionCollapse(
       const lngDepletion = (r.lngInventory_t * region.lngShare) / effectiveLngConsumption
         * (1 / region.winterFactor) * (1 / region.isolationRisk);
 
-      const powerCollapse = lngDepletion * r.thermalShareRate;
+      // 原子力による火力依存率の地域別補正
+      // 原発がある地域は火力依存が下がり、LNG枯渇後も原子力分だけ電力が残る
+      const regionDemand_MW = region.powerDemandShare * NATIONAL_PEAK_MW;
+      const nuclearOutput_MW = (region.nuclearCapacity_MW ?? 0) * NUCLEAR_UTILIZATION;
+      const nuclearCoverageRate = regionDemand_MW > 0
+        ? Math.min(nuclearOutput_MW / regionDemand_MW, 0.7) // 最大70%まで（送電損失・需給バランス考慮）
+        : 0;
+      const regionalThermalShare = r.thermalShareRate * (1 - nuclearCoverageRate);
+
+      const powerCollapse = lngDepletion * regionalThermalShare;
       const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
 
       return {

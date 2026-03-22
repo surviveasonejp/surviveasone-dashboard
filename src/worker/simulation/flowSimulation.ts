@@ -134,6 +134,34 @@ export function runFlowSimulation(
       stockPercent: 0,
       label: "電力 完全停止",
     });
+
+    // 水道崩壊カスケード（電力崩壊からの派生）
+    // 停電後6時間(0.25日)→水圧低下、1日→広域断水、3日→衛生崩壊
+    const waterPressureDay = powerCollapseDay;
+    const waterCutoffDay = Math.min(powerCollapseDay + 1, maxDays);
+    const waterSanitationDay = Math.min(powerCollapseDay + 3, maxDays);
+
+    thresholds.push({
+      day: waterPressureDay,
+      type: "water_pressure",
+      resource: "water",
+      stockPercent: 50,
+      label: "水道 水圧低下（高層階断水）",
+    });
+    thresholds.push({
+      day: waterCutoffDay,
+      type: "water_cutoff",
+      resource: "water",
+      stockPercent: 10,
+      label: "水道 広域断水（配水池枯渇）",
+    });
+    thresholds.push({
+      day: waterSanitationDay,
+      type: "water_sanitation",
+      resource: "water",
+      stockPercent: 0,
+      label: "下水処理停止（衛生崩壊）",
+    });
   }
 
   thresholds.sort((a, b) => a.day - b.day);
