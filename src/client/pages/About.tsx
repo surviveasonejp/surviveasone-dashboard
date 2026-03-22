@@ -127,6 +127,12 @@ export const About: FC = () => {
             <li>・Family Meterの計算式: 生存日数 = min(水÷3L人日, 食料日数, ガス÷30分人日, 電力÷50Wh人日)</li>
           </ul>
           <p className="text-xs text-neutral-600">ソースコードはAGPL-3.0で全量公開されており、計算ロジックは誰でも検証可能です。</p>
+          <Link
+            to="/methodology"
+            className="inline-block mt-2 px-4 py-2 border border-[#f59e0b] text-[#f59e0b] hover:bg-[#f59e0b]/10 font-mono text-xs tracking-wider rounded transition-colors"
+          >
+            計算モデル詳細（全11式） &rarr;
+          </Link>
         </div>
       </div>
 
