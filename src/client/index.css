@@ -193,6 +193,15 @@ body {
   stroke: #94a3b8 !important;
 }
 
+/* RegionMap 沖縄インセット枠 */
+[data-theme="light"] svg rect[fill="#0f1419"] {
+  fill: #ffffff !important;
+}
+
+[data-theme="light"] svg rect[stroke="#1e2a36"] {
+  stroke: #cbd5e1 !important;
+}
+
 /* noscript */
 [data-theme="light"] noscript div {
   background-color: #f1f5f9 !important;
