@@ -1,8 +1,10 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
+import { ScenarioSelector } from "../components/ScenarioSelector";
 import type { ResourceCountdown } from "../../shared/types";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { useApiData } from "../hooks/useApiData";
 
 interface PanelCardProps {
@@ -45,24 +47,31 @@ const Stat: FC<StatProps> = ({ value, unit, label, color }) => (
   </div>
 );
 
+const FALLBACK: ResourceCountdown[] = [
+  { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
+  { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
+  { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
+];
+
 export const Landing: FC = () => {
-  const FALLBACK: ResourceCountdown[] = [
-    { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
-    { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
-    { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
-  ];
-  const { data } = useApiData<ResourceCountdown[]>("/api/countdowns?scenario=realistic", FALLBACK);
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const { data } = useApiData<ResourceCountdown[]>(`/api/countdowns?scenario=${scenario}`, FALLBACK);
   const countdowns = data ?? FALLBACK;
 
   return (
     <div className="space-y-8">
       <AlertBanner
-        level="critical"
-        message="ホルムズ海峡封鎖シナリオ — シミュレーション稼働中"
+        level="warning"
+        message="これは予測ではなくリスクシナリオのシミュレーションです — 楽観/現実/悲観の3シナリオで分析"
       />
 
+      {/* シナリオ切替 */}
+      <div className="flex justify-center">
+        <ScenarioSelector selected={scenario} onChange={setScenario} />
+      </div>
+
       {/* ヒーロー */}
-      <div className="text-center space-y-4 pt-4">
+      <div className="text-center space-y-4">
         <span className="inline-block text-neutral-500 text-xs font-mono tracking-widest border border-[#1e2a36] px-3 py-1 rounded-full">
           HORMUZ STRAIT BLOCKADE SCENARIO
         </span>
