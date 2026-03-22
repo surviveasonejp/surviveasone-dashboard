@@ -5,7 +5,7 @@ import { useSwipeNavigation } from "../hooks/useSwipeNavigation";
 
 export const Layout: FC = () => {
   const location = useLocation();
-  const { bind, currentIndex, totalPages, dragX, isTransitioning } =
+  const { bind, currentIndex, totalPages, dragX, isTransitioning, skipAnimation } =
     useSwipeNavigation();
 
   const isDragging = dragX !== 0;
@@ -16,7 +16,7 @@ export const Layout: FC = () => {
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
         <div
           key={location.pathname}
-          className={isDragging ? "" : "animate-fade-in"}
+          className={isDragging || skipAnimation ? "" : "animate-fade-in"}
           style={{
             transform: dragX !== 0 ? `translateX(${dragX}px)` : undefined,
             transition: isTransitioning ? "transform 200ms ease-out" : isDragging ? "none" : undefined,

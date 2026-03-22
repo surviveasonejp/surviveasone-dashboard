@@ -29,6 +29,7 @@ export function useSwipeNavigation() {
   const [direction, setDirection] = useState<SlideDirection>(null);
   const [dragX, setDragX] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [skipAnimation, setSkipAnimation] = useState(false);
 
   useEffect(() => {
     if (prevIndexRef.current !== currentIndex && currentIndex >= 0) {
@@ -83,10 +84,16 @@ export function useSwipeNavigation() {
         setDragX(targetX);
         setIsTransitioning(true);
 
+        setSkipAnimation(true);
         setTimeout(() => {
           navigate(PAGES[currentIndex + goDir]);
-          setDragX(0);
-          setIsTransitioning(false);
+          // 次フレームでリセット（新ページ描画後）
+          requestAnimationFrame(() => {
+            setDragX(0);
+            setIsTransitioning(false);
+            // fade-inスキップフラグを次の遷移まで維持
+            setTimeout(() => setSkipAnimation(false), 50);
+          });
         }, 200);
       } else {
         // キャンセル: 元に戻す
@@ -107,5 +114,6 @@ export function useSwipeNavigation() {
     totalPages: PAGES.length,
     dragX,
     isTransitioning,
+    skipAnimation,
   };
 }
