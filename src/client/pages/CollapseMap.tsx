@@ -16,7 +16,7 @@ export const CollapseMap: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ff9100]">COLLAPSE</span> MAP
+          <span className="text-[#f59e0b]">COLLAPSE</span> MAP
         </h1>
         <p className="text-neutral-500 text-sm">
           全国10電力エリアの崩壊予測順序 — どのエリアが最初に機能停止するか
@@ -32,7 +32,7 @@ export const CollapseMap: FC = () => {
 
       {/* 地図 + 詳細 2カラム */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
+        <div className="lg:col-span-2 bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
           <RegionMap
             regions={regions}
             onSelectRegion={setSelectedRegion}
@@ -45,14 +45,14 @@ export const CollapseMap: FC = () => {
       </div>
 
       {/* 崩壊順ランキングテーブル */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36]">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">崩壊順ランキング</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#2a2a2a]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
                 <th className="px-4 py-2 text-left">#</th>
                 <th className="px-4 py-2 text-left">エリア</th>
                 <th className="px-4 py-2 text-left">ランク</th>
@@ -69,7 +69,7 @@ export const CollapseMap: FC = () => {
                 return (
                   <tr
                     key={region.id}
-                    className={`border-b border-[#1a1a1a] cursor-pointer transition-colors ${
+                    className={`border-b border-[#162029] cursor-pointer transition-colors ${
                       selectedRegion?.id === region.id ? "bg-white/5" : "hover:bg-white/[0.02]"
                     }`}
                     onClick={() => setSelectedRegion(region)}
@@ -79,7 +79,7 @@ export const CollapseMap: FC = () => {
                       {region.name}
                       <span
                         className="w-1.5 h-1.5 rounded-full shrink-0"
-                        style={{ backgroundColor: region.hasLiveData ? "#00e676" : "#ff9100" }}
+                        style={{ backgroundColor: region.hasLiveData ? "#22c55e" : "#f59e0b" }}
                         title={region.hasLiveData ? "実測データ" : "推定値"}
                       />
                     </td>

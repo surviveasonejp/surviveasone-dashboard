@@ -33,7 +33,7 @@ const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onCh
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-1.5 rounded-full appearance-none bg-[#2a2a2a] cursor-pointer accent-[#ff9100]"
+      className="w-full h-1.5 rounded-full appearance-none bg-[#1e2a36] cursor-pointer accent-[#f59e0b]"
     />
     <div className="flex justify-between text-[10px] text-neutral-600 font-mono">
       <span>{min}{unit}</span>
@@ -69,10 +69,10 @@ export const FamilyMeter: FC = () => {
     setInputs((prev) => ({ ...prev, [key]: value }));
 
   const breakdowns = [
-    { label: "水", days: score.waterDays, color: "#4fc3f7" },
-    { label: "食料", days: score.foodDays, color: "#81c784" },
-    { label: "燃料", days: score.energyDays, color: "#ff9100" },
-    { label: "電力", days: score.powerDays, color: "#ffea00" },
+    { label: "水", days: score.waterDays, color: "#94a3b8" },
+    { label: "食料", days: score.foodDays, color: "#4ade80" },
+    { label: "燃料", days: score.energyDays, color: "#f59e0b" },
+    { label: "電力", days: score.powerDays, color: "#94a3b8" },
   ];
 
   const maxDays = Math.max(...breakdowns.map((b) => b.days), 30);
@@ -81,7 +81,7 @@ export const FamilyMeter: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ff9100]">FAMILY SURVIVAL</span> METER
+          <span className="text-[#f59e0b]">FAMILY SURVIVAL</span> METER
         </h1>
         <p className="text-neutral-500 text-sm">
           あなたの家庭はどれだけ持ちこたえられるか — 備蓄を入力してランクを確認
@@ -97,7 +97,7 @@ export const FamilyMeter: FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
-        <div data-no-swipe className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 space-y-5">
+        <div data-no-swipe className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-5">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄入力</h2>
           <InputSlider label="世帯人数" value={inputs.members} min={1} max={10} step={1} unit="人" onChange={update("members")} />
           <InputSlider label="水備蓄" value={inputs.waterLiters} min={0} max={500} step={5} unit="L" onChange={update("waterLiters")} />
@@ -111,7 +111,7 @@ export const FamilyMeter: FC = () => {
         <div className="space-y-4">
           {/* ランク表示 */}
           <div
-            className="bg-[#141414] border rounded-lg p-6 text-center space-y-3"
+            className="bg-[#151c24] border rounded-lg p-6 text-center space-y-3"
             style={{ borderColor: `${rankColor}40` }}
           >
             <div className="text-xs font-mono text-neutral-500 tracking-wider">SURVIVAL RANK</div>
@@ -136,7 +136,7 @@ export const FamilyMeter: FC = () => {
           </div>
 
           {/* 内訳バー */}
-          <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 space-y-3">
+          <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
             <h3 className="font-mono text-xs text-neutral-500 tracking-wider">リソース別限界日数</h3>
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
@@ -144,14 +144,14 @@ export const FamilyMeter: FC = () => {
               return (
                 <div key={b.label} className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className={isBottleneck ? "text-[#ff1744] font-bold" : "text-neutral-400"}>
+                    <span className={isBottleneck ? "text-[#ef4444] font-bold" : "text-neutral-400"}>
                       {b.label} {isBottleneck && "← ボトルネック"}
                     </span>
                     <span className="font-mono" style={{ color: b.color }}>
                       {formatDecimal(b.days)}日
                     </span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-[#2a2a2a] overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-[#1e2a36] overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{ width: `${pct}%`, backgroundColor: b.color }}

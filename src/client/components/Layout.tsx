@@ -15,7 +15,7 @@ export const Layout: FC = () => {
         : "animate-fade-in";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#0f1419] text-white overflow-x-hidden">
       <Header />
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
         <div key={location.pathname} className={animationClass}>
@@ -23,7 +23,7 @@ export const Layout: FC = () => {
         </div>
       </main>
       {/* フッター */}
-      <footer className="border-t border-[#2a2a2a] bg-[#0a0a0a] py-4 px-4 pb-16 md:pb-4">
+      <footer className="border-t border-[#1e2a36] bg-[#0f1419] py-4 px-4 pb-16 md:pb-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-neutral-600">
           <span className="font-mono tracking-wider">Survive as One Japan</span>
           <div className="flex items-center gap-3 font-mono">
@@ -41,7 +41,7 @@ export const Layout: FC = () => {
           <div
             key={i}
             className={`w-1.5 h-1.5 rounded-full transition-colors ${
-              i === currentIndex ? "bg-[#ff1744]" : "bg-neutral-700"
+              i === currentIndex ? "bg-[#ef4444]" : "bg-neutral-700"
             }`}
           />
         ))}

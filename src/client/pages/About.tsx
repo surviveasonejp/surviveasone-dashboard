@@ -38,7 +38,7 @@ export const About: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ff1744]">ABOUT</span> THIS PROJECT
+          <span className="text-[#ef4444]">ABOUT</span> THIS PROJECT
         </h1>
         <p className="text-neutral-500 text-sm">
           Survive as One Japan — プロジェクト概要
@@ -46,8 +46,8 @@ export const About: FC = () => {
       </div>
 
       {/* ミッション */}
-      <div className="bg-[#141414] border border-[#ff1744]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#ff1744]">MISSION</h2>
+      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">MISSION</h2>
         <p className="text-neutral-300 leading-relaxed">
           ホルムズ海峡封鎖時に日本のエネルギーがどう崩壊するかを可視化し、市民の生存判断を支援する戦術ダッシュボード。
         </p>
@@ -58,22 +58,22 @@ export const About: FC = () => {
       </div>
 
       {/* なぜホルムズ海峡か */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 space-y-3">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">なぜホルムズ海峡か</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
-          <p>日本の石油輸入の<span className="text-[#ff9100] font-mono font-bold">94%</span>が中東依存。そのほぼ全量がホルムズ海峡を通過する。</p>
-          <p>LNGもカタール・UAEからの輸入分（<span className="text-[#ff9100] font-mono font-bold">6.3%</span>）がホルムズ経由。</p>
+          <p>日本の石油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。そのほぼ全量がホルムズ海峡を通過する。</p>
+          <p>LNGもカタール・UAEからの輸入分（<span className="text-[#f59e0b] font-mono font-bold">6.3%</span>）がホルムズ経由。</p>
           <p>封鎖が長期化すれば、国家備蓄254日分を使い切った時点でエネルギーインフラが崩壊する。電力・物流・食料供給が連鎖停止する。</p>
           <p className="text-neutral-500 text-xs">※ 石油備蓄254日分は資源エネルギー庁2025年12月末統計。LNGは約25日分の在庫。</p>
         </div>
       </div>
 
       {/* データソース */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36]">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">データソース</h2>
         </div>
-        <div className="divide-y divide-[#1a1a1a]">
+        <div className="divide-y divide-[#162029]">
           {DATA_SOURCES_LIST.map((ds) => (
             <div key={ds.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
               <span className="text-sm text-neutral-300 sm:w-64 shrink-0">{ds.name}</span>
@@ -90,12 +90,12 @@ export const About: FC = () => {
           {PHASE_STATUS.map((p) => (
             <div
               key={p.phase}
-              className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 flex gap-4"
+              className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 flex gap-4"
             >
               <div className="shrink-0 pt-0.5">
                 <span
                   className={`inline-block w-2 h-2 rounded-full mt-1.5 ${
-                    p.status === "completed" ? "bg-[#00e676]" : "bg-[#2a2a2a]"
+                    p.status === "completed" ? "bg-[#22c55e]" : "bg-[#1e2a36]"
                   }`}
                 />
               </div>
@@ -104,7 +104,7 @@ export const About: FC = () => {
                   <span className="font-mono text-sm font-bold text-neutral-300">{p.phase}</span>
                   <span className="text-xs text-neutral-500">{p.label}</span>
                   {p.status === "completed" && (
-                    <span className="text-xs font-mono text-[#00e676]">LIVE</span>
+                    <span className="text-xs font-mono text-[#22c55e]">LIVE</span>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -113,9 +113,9 @@ export const About: FC = () => {
                       key={item}
                       className="text-xs px-2 py-0.5 rounded font-mono"
                       style={{
-                        backgroundColor: p.status === "completed" ? "#00e67615" : "#2a2a2a",
-                        color: p.status === "completed" ? "#00e676" : "#555",
-                        border: `1px solid ${p.status === "completed" ? "#00e67630" : "#333"}`,
+                        backgroundColor: p.status === "completed" ? "#22c55e15" : "#1e2a36",
+                        color: p.status === "completed" ? "#22c55e" : "#555",
+                        border: `1px solid ${p.status === "completed" ? "#22c55e30" : "#333"}`,
                       }}
                     >
                       {item}
@@ -129,7 +129,7 @@ export const About: FC = () => {
       </div>
 
       {/* リンク */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 space-y-3">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">LINKS</h2>
         <div className="space-y-2 text-sm">
           <div className="flex gap-3">
@@ -150,13 +150,13 @@ export const About: FC = () => {
       <div className="flex flex-wrap gap-3">
         <Link
           to="/prepare"
-          className="px-4 py-2 border border-[#00e676] text-[#00e676] hover:bg-[#00e676]/10 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10 font-mono text-xs tracking-wider rounded transition-colors"
         >
           SURVIVAL GUIDE &rarr;
         </Link>
         <Link
           to="/dashboard"
-          className="px-4 py-2 border border-[#2a2a2a] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-[#1e2a36] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
         >
           DASHBOARD &rarr;
         </Link>

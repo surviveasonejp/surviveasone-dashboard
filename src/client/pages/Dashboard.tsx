@@ -32,10 +32,10 @@ export const Dashboard: FC = () => {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold font-mono">
-            <span className="text-[#ff1744]">SURVIVE</span> AS ONE
+            <span className="text-[#ef4444]">SURVIVE</span> AS ONE
           </h1>
           {isFromApi && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
               LIVE
             </span>
           )}
@@ -69,7 +69,7 @@ export const Dashboard: FC = () => {
 
       {/* 下段: 地図 + 詳細 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
+        <div className="lg:col-span-2 bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
           <div className="text-xs font-mono text-neutral-500 tracking-wider mb-2">
             COLLAPSE MAP — 全国10エリア崩壊順
           </div>

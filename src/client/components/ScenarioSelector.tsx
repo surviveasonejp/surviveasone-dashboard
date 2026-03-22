@@ -7,9 +7,9 @@ interface ScenarioSelectorProps {
 }
 
 const SCENARIO_COLORS: Record<ScenarioId, string> = {
-  optimistic: "#00e676",
-  realistic: "#ff9100",
-  pessimistic: "#ff1744",
+  optimistic: "#22c55e",
+  realistic: "#f59e0b",
+  pessimistic: "#ef4444",
 };
 
 export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange }) => (
@@ -29,7 +29,7 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
             style={
               isActive
                 ? { borderColor: color, color, backgroundColor: `${color}15` }
-                : { borderColor: "#2a2a2a", color: "#666" }
+                : { borderColor: "#1e2a36", color: "#666" }
             }
             title={s.description}
           >

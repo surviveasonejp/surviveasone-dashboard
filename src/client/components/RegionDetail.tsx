@@ -9,17 +9,17 @@ interface RegionDetailProps {
 }
 
 const RANK_COLORS: Record<string, string> = {
-  S: "#ff1744",
-  A: "#ff5252",
-  B: "#ff9100",
-  C: "#ffea00",
-  D: "#00e676",
+  S: "#ef4444",
+  A: "#dc2626",
+  B: "#f59e0b",
+  C: "#94a3b8",
+  D: "#22c55e",
 };
 
 export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
   if (!region) {
     return (
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 flex items-center justify-center min-h-[300px]">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 flex items-center justify-center min-h-[300px]">
         <p className="text-neutral-500 font-mono text-sm">エリアを選択してください</p>
       </div>
     );
@@ -30,7 +30,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
   const rankColor = RANK_COLORS[region.vulnerabilityRank] ?? "#888";
 
   return (
-    <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 space-y-4">
+    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold">{region.name}</h3>
@@ -67,18 +67,18 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
       <div className="text-[10px] font-mono text-neutral-600 flex items-center gap-1.5">
         {region.hasLiveData ? (
           <>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00e676]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
             電力需給: 実測データ
           </>
         ) : (
           <>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ff9100]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" />
             電力需給: 推定値（静的パラメータ）
           </>
         )}
       </div>
 
-      <hr className="border-[#2a2a2a]" />
+      <hr className="border-[#1e2a36]" />
 
       {/* エリア情報 */}
       <div className="space-y-2 text-sm">

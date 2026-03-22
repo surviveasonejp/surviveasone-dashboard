@@ -8,7 +8,7 @@ export const SimulationBanner: FC = () => {
   const estimated = Object.values(DATA_SOURCES).filter((s) => s.confidence === "estimated");
   const verified = Object.values(DATA_SOURCES).filter((s) => s.confidence === "verified");
 
-  const borderColor = hasSimulated ? "#ff1744" : estimated.length > 0 ? "#ff9100" : "#00e676";
+  const borderColor = hasSimulated ? "#ef4444" : estimated.length > 0 ? "#f59e0b" : "#22c55e";
   const label = hasSimulated
     ? "DEV SIMULATION"
     : estimated.length > 0
@@ -53,7 +53,7 @@ export const SimulationBanner: FC = () => {
             </thead>
             <tbody>
               {Object.values(DATA_SOURCES).map((ds) => (
-                <tr key={ds.label} className="border-t border-[#1a1a1a]">
+                <tr key={ds.label} className="border-t border-[#162029]">
                   <td className="py-1.5 pr-3 text-neutral-300">{ds.label}</td>
                   <td className="py-1.5 pr-3">
                     <DataBadge confidence={ds.confidence} />

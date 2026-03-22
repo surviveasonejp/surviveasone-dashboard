@@ -100,9 +100,9 @@ export function getConfidenceLabel(confidence: DataConfidence): string {
 
 export function getConfidenceColor(confidence: DataConfidence): string {
   switch (confidence) {
-    case "verified": return "#00e676";
-    case "estimated": return "#ff9100";
-    case "simulated": return "#ff1744";
+    case "verified": return "#22c55e";
+    case "estimated": return "#f59e0b";
+    case "simulated": return "#ef4444";
   }
 }
 

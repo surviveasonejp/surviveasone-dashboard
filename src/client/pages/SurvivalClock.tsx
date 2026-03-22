@@ -62,10 +62,10 @@ export const SurvivalClock: FC = () => {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold font-mono">
-              <span className="text-[#ff1744]">SURVIVAL</span> CLOCK
+              <span className="text-[#ef4444]">SURVIVAL</span> CLOCK
             </h1>
             {isLive && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#00e676]/15 text-[#00e676] border border-[#00e676]/30">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
                 LIVE
               </span>
             )}
@@ -96,7 +96,7 @@ export const SurvivalClock: FC = () => {
 
       <FlowTimeline scenarioId={scenario} />
 
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">
           計算根拠{isLive ? "（D1 データベース）" : "（静的データ）"}:
         </p>

@@ -23,10 +23,10 @@ export const Header: FC = () => {
   const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
 
   return (
-    <header className="border-b border-[#2a2a2a] bg-[#0a0a0a]/95 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-[#1e2a36] bg-[#0f1419]/95 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-[#ff1744] font-mono font-bold text-lg">SURVIVE</span>
+          <span className="text-[#ef4444] font-mono font-bold text-lg">SURVIVE</span>
           <span className="font-mono font-bold text-lg">AS ONE</span>
         </Link>
         {/* モバイル: 現在ページ名 */}
@@ -43,7 +43,7 @@ export const Header: FC = () => {
               to={item.path}
               className={`px-3 py-1.5 text-xs font-mono tracking-wider transition-colors rounded ${
                 location.pathname === item.path
-                  ? "text-[#ff1744] bg-[#ff1744]/10"
+                  ? "text-[#ef4444] bg-[#ef4444]/10"
                   : "text-neutral-400 hover:text-white hover:bg-white/5"
               }`}
             >

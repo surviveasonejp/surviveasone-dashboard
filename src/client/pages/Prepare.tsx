@@ -62,25 +62,25 @@ const PREPARE_LIST: PrepareItem[] = [
 const PHASE_GUIDE = [
   {
     phase: "封鎖0〜3日",
-    color: "#00e676",
+    color: "#22c55e",
     label: "SAFE",
     actions: ["備蓄確認・補充", "現金引き出し", "車に満タン給油", "情報収集態勢確立"],
   },
   {
     phase: "封鎖4〜14日",
-    color: "#ff9100",
+    color: "#f59e0b",
     label: "WARNING",
     actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携"],
   },
   {
     phase: "封鎖15〜60日",
-    color: "#ff5252",
+    color: "#ef4444",
     label: "CRITICAL",
     actions: ["燃料使用を暖房・調理のみに限定", "物々交換ネットワーク形成", "農地・食料生産拠点に近づく判断", "医薬品の優先確保"],
   },
   {
     phase: "封鎖60日〜",
-    color: "#ff1744",
+    color: "#ef4444",
     label: "COLLAPSE",
     actions: ["都市部からの退避を検討", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"],
   },
@@ -91,7 +91,7 @@ export const Prepare: FC = () => {
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#00e676]">SURVIVAL</span> GUIDE
+          <span className="text-[#22c55e]">SURVIVAL</span> GUIDE
         </h1>
         <p className="text-neutral-500 text-sm">
           ホルムズ海峡封鎖シナリオに備えるための備蓄・行動ガイド
@@ -110,7 +110,7 @@ export const Prepare: FC = () => {
           {PHASE_GUIDE.map((phase) => (
             <div
               key={phase.phase}
-              className="bg-[#141414] border rounded-lg p-4 space-y-2"
+              className="bg-[#151c24] border rounded-lg p-4 space-y-2"
               style={{ borderColor: `${phase.color}40` }}
             >
               <div className="flex items-center gap-2">
@@ -142,18 +142,18 @@ export const Prepare: FC = () => {
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄チェックリスト</h2>
         <div className="space-y-4">
           {PREPARE_LIST.map((section) => (
-            <div key={section.category} className="bg-[#141414] border border-[#2a2a2a] rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-[#2a2a2a] bg-[#1a1a1a]">
+            <div key={section.category} className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-[#1e2a36] bg-[#162029]">
                 <h3 className="font-mono text-sm font-bold text-neutral-300">{section.category}</h3>
               </div>
-              <div className="divide-y divide-[#1a1a1a]">
+              <div className="divide-y divide-[#162029]">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
                     <div className="sm:w-40 shrink-0">
                       <span className="text-sm font-bold text-neutral-200">{item.name}</span>
                     </div>
                     <div className="sm:w-52 shrink-0">
-                      <span className="text-xs font-mono text-[#ff9100]">{item.amount}</span>
+                      <span className="text-xs font-mono text-[#f59e0b]">{item.amount}</span>
                     </div>
                     <div>
                       <span className="text-xs text-neutral-500">{item.note}</span>

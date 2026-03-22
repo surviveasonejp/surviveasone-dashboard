@@ -26,7 +26,7 @@ export const TankerTracker: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ffea00]">LAST TANKER</span> TRACKER
+          <span className="text-[#94a3b8]">LAST TANKER</span> TRACKER
         </h1>
         <p className="text-neutral-500 text-sm">
           日本向け最終タンカーの到着予測 — 封鎖後、最後の積荷はいつ届くか
@@ -60,14 +60,14 @@ export const TankerTracker: FC = () => {
       />
 
       {/* 到着順テーブル */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#2a2a2a]">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36]">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">到着順ランキング</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#2a2a2a]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
                 <th className="px-4 py-2 text-left">#</th>
                 <th className="px-4 py-2 text-left">船名</th>
                 <th className="px-4 py-2 text-left">種別</th>
@@ -90,7 +90,7 @@ export const TankerTracker: FC = () => {
                     ref={(el) => {
                       if (el) rowRefs.current.set(tanker.id, el);
                     }}
-                    className={`border-b border-[#1a1a1a] cursor-pointer transition-colors ${
+                    className={`border-b border-[#162029] cursor-pointer transition-colors ${
                       isSelected ? "bg-white/[0.06]" : "hover:bg-white/[0.02]"
                     }`}
                     onClick={() => setSelectedId(isSelected ? null : tanker.id)}
@@ -101,8 +101,8 @@ export const TankerTracker: FC = () => {
                       <span
                         className="font-mono text-xs px-1.5 py-0.5 rounded"
                         style={{
-                          backgroundColor: tanker.type === "VLCC" ? "#ff910020" : "#00e67620",
-                          color: tanker.type === "VLCC" ? "#ff9100" : "#00e676",
+                          backgroundColor: tanker.type === "VLCC" ? "#f59e0b20" : "#22c55e20",
+                          color: tanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
                         }}
                       >
                         {tanker.type}
@@ -132,7 +132,7 @@ export const TankerTracker: FC = () => {
       </div>
 
       {/* 計算根拠 */}
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">計算根拠:</p>
         <p>到着予測日数 = 航路距離(海里) ÷ (速度(knots) × 24時間)</p>
         <p>推定位置 = 航路ウェイポイント上をETA進捗率で線形補間</p>

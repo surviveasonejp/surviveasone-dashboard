@@ -88,7 +88,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   const activeTanker = tankers.find((t) => t.id === activeId);
 
   return (
-    <div className="bg-[#0c1018] border border-[#2a2a2a] rounded-lg overflow-hidden relative">
+    <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg overflow-hidden relative">
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full h-auto"
@@ -124,7 +124,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           {routePaths.map(({ routeId, d, tankerId }) => {
             const t = tankers.find((v) => v.id === tankerId);
             const isVLCC = t?.type === "VLCC";
-            const color = isVLCC ? "#ff9100" : "#00e676";
+            const color = isVLCC ? "#f59e0b" : "#22c55e";
             const isActive = activeId && (tankerId === activeId || getRouteId(t?.departurePort ?? "") === getRouteId(tankers.find((v) => v.id === activeId)?.departurePort ?? ""));
             return (
               <path
@@ -151,13 +151,13 @@ export const TankerMap: FC<TankerMapProps> = ({
                 width={8}
                 height={8}
                 transform={`rotate(45 ${cx} ${cy})`}
-                fill={cp.critical ? "#ff1744" : "#ffea00"}
+                fill={cp.critical ? "#ef4444" : "#94a3b8"}
                 opacity={0.7}
               />
               <text
                 x={cx + 10}
                 y={cy + 4}
-                fill={cp.critical ? "#ff1744" : "#666"}
+                fill={cp.critical ? "#ef4444" : "#666"}
                 fontSize="10"
                 fontFamily="monospace"
               >
@@ -172,7 +172,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           const p = positions.get(t.id);
           if (!p) return null;
           const isVLCC = t.type === "VLCC";
-          const color = isVLCC ? "#ff9100" : "#00e676";
+          const color = isVLCC ? "#f59e0b" : "#22c55e";
           const isActive = t.id === activeId;
           const isSelected = t.id === selectedId;
 
@@ -253,15 +253,15 @@ export const TankerMap: FC<TankerMapProps> = ({
 
       {/* ツールチップ（選択/ホバー時） */}
       {activeTanker && positions.has(activeTanker.id) && (
-        <div className="absolute bottom-12 left-3 bg-[#141414]/95 border border-[#2a2a2a] rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
+        <div className="absolute bottom-12 left-3 bg-[#151c24]/95 border border-[#1e2a36] rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
           <div className="flex items-center gap-2">
             <span
               className="px-1 py-0.5 rounded text-[10px]"
               style={{
                 backgroundColor:
-                  activeTanker.type === "VLCC" ? "#ff910020" : "#00e67620",
+                  activeTanker.type === "VLCC" ? "#f59e0b20" : "#22c55e20",
                 color:
-                  activeTanker.type === "VLCC" ? "#ff9100" : "#00e676",
+                  activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
               }}
             >
               {activeTanker.type}
@@ -279,7 +279,7 @@ export const TankerMap: FC<TankerMapProps> = ({
               className="font-bold"
               style={{
                 color:
-                  activeTanker.type === "VLCC" ? "#ff9100" : "#00e676",
+                  activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
               }}
             >
               {activeTanker.eta_days.toFixed(1)}日
@@ -291,16 +291,16 @@ export const TankerMap: FC<TankerMapProps> = ({
       {/* 凡例 + 精度バッジ */}
       <div className="absolute bottom-2 left-3 flex items-center gap-3 text-[10px] font-mono text-neutral-600">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#ff9100]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-[#f59e0b]" />
           VLCC
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#00e676]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-[#22c55e]" />
           LNG
         </span>
         <span className="flex items-center gap-1">
           <span
-            className="inline-block w-1.5 h-1.5 bg-[#ff1744] rotate-45"
+            className="inline-block w-1.5 h-1.5 bg-[#ef4444] rotate-45"
           />
           封鎖点
         </span>

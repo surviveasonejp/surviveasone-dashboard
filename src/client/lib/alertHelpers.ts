@@ -9,10 +9,10 @@ export function getAlertLevel(days: number): AlertLevel {
 
 export function getAlertColor(level: AlertLevel): string {
   switch (level) {
-    case "critical": return "#ff1744";
-    case "warning": return "#ff9100";
-    case "caution": return "#ffea00";
-    case "safe": return "#00e676";
+    case "critical": return "#ef4444";
+    case "warning": return "#f59e0b";
+    case "caution": return "#94a3b8";
+    case "safe": return "#22c55e";
   }
 }
 
@@ -27,12 +27,12 @@ export function getSurvivalRank(days: number): SurvivalRank {
 
 export function getSurvivalRankColor(rank: SurvivalRank): string {
   switch (rank) {
-    case "S": return "#00e676";
-    case "A": return "#66ffa6";
-    case "B": return "#ffea00";
-    case "C": return "#ff9100";
-    case "D": return "#ff5252";
-    case "F": return "#ff1744";
+    case "S": return "#22c55e";
+    case "A": return "#4ade80";
+    case "B": return "#94a3b8";
+    case "C": return "#f59e0b";
+    case "D": return "#ef4444";
+    case "F": return "#dc2626";
   }
 }
 

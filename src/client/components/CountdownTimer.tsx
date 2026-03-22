@@ -16,7 +16,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({ label, totalSeconds, c
 
   if (compact) {
     return (
-      <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4">
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
         <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1">{label}</div>
         <div className="flex items-baseline gap-2">
           <span
@@ -38,7 +38,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({ label, totalSeconds, c
   }
 
   return (
-    <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-6 text-center">
+    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 text-center">
       <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">{label}</div>
       <div
         className={`font-mono font-bold text-6xl md:text-7xl mb-2 ${isCritical ? "animate-pulse-danger" : ""}`}
@@ -53,7 +53,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({ label, totalSeconds, c
       <div className="text-sm font-mono text-neutral-400 mt-2">
         枯渇日: {formatDepletionDate(days)}
       </div>
-      <div className="mt-4 h-1 rounded-full bg-[#2a2a2a] overflow-hidden">
+      <div className="mt-4 h-1 rounded-full bg-[#1e2a36] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-1000"
           style={{

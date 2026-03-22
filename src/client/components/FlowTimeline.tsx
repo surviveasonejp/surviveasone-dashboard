@@ -8,15 +8,15 @@ interface FlowTimelineProps {
 }
 
 const THRESHOLD_COLORS: Record<string, string> = {
-  price_spike: "#ffea00",
-  rationing: "#ff9100",
-  distribution: "#ff5252",
-  stop: "#ff1744",
+  price_spike: "#94a3b8",
+  rationing: "#f59e0b",
+  distribution: "#ef4444",
+  stop: "#ef4444",
 };
 
 const RESOURCE_COLORS = {
-  oil: "#ff9100",
-  lng: "#4fc3f7",
+  oil: "#f59e0b",
+  lng: "#94a3b8",
 };
 
 // 崩壊フェーズの背景帯
@@ -26,10 +26,10 @@ const PHASE_BANDS: Array<{
   color: string;
   label: string;
 }> = [
-  { minPct: 50, maxPct: 100, color: "#00e67608", label: "" },
-  { minPct: 30, maxPct: 50, color: "#ffea0008", label: "価格暴騰" },
-  { minPct: 10, maxPct: 30, color: "#ff910010", label: "供給制限" },
-  { minPct: 0, maxPct: 10, color: "#ff174415", label: "配給制" },
+  { minPct: 50, maxPct: 100, color: "#22c55e08", label: "" },
+  { minPct: 30, maxPct: 50, color: "#94a3b808", label: "価格暴騰" },
+  { minPct: 10, maxPct: 30, color: "#f59e0b10", label: "供給制限" },
+  { minPct: 0, maxPct: 10, color: "#ef444415", label: "配給制" },
 ];
 
 const EMPTY_RESULT: FlowSimulationResult = {
@@ -82,7 +82,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
   const powerEvents = result.thresholds.filter((t) => t.resource === "power");
 
   return (
-    <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 space-y-3">
+    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <div className="text-xs font-mono text-neutral-500 tracking-wider">
@@ -122,7 +122,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
       <div className="grid grid-cols-3 gap-2 text-center">
         <SummaryBox label="石油枯渇" days={result.oilDepletionDay} color={RESOURCE_COLORS.oil} totalDays={totalDays} />
         <SummaryBox label="LNG枯渇" days={result.lngDepletionDay} color={RESOURCE_COLORS.lng} totalDays={totalDays} />
-        <SummaryBox label="電力崩壊" days={result.powerCollapseDay} color="#ff1744" totalDays={totalDays} />
+        <SummaryBox label="電力崩壊" days={result.powerCollapseDay} color="#ef4444" totalDays={totalDays} />
       </div>
     </div>
   );
@@ -234,7 +234,7 @@ const CombinedChart: FC<CombinedChartProps> = ({
             y1={padTop}
             x2={toX(m.day)}
             y2={padTop + chartH}
-            stroke="#1a1a1a"
+            stroke="#162029"
             strokeWidth="0.3"
           />
           <text
@@ -310,7 +310,7 @@ const CombinedChart: FC<CombinedChartProps> = ({
         width={chartW}
         height={chartH}
         fill="none"
-        stroke="#2a2a2a"
+        stroke="#1e2a36"
         strokeWidth="0.5"
       />
     </svg>
@@ -328,14 +328,14 @@ interface EventRowProps {
 }
 
 const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, totalDays }) => {
-  const color = resource === "oil" ? RESOURCE_COLORS.oil : resource === "lng" ? RESOURCE_COLORS.lng : "#ff1744";
+  const color = resource === "oil" ? RESOURCE_COLORS.oil : resource === "lng" ? RESOURCE_COLORS.lng : "#ef4444";
 
   return (
     <div className="flex items-center gap-2">
       <div className="text-[10px] font-mono w-8 shrink-0" style={{ color }}>
         {label}
       </div>
-      <div className="relative flex-1 h-5 bg-[#0a0a0a] rounded overflow-hidden">
+      <div className="relative flex-1 h-5 bg-[#0f1419] rounded overflow-hidden">
         {/* 進行バー */}
         <div
           className="absolute inset-y-0 left-0 rounded-l"
@@ -375,7 +375,7 @@ const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, to
             className="absolute top-0 h-full"
             style={{ left: `${(depletionDay / totalDays) * 100}%` }}
           >
-            <div className="w-0.5 h-full bg-[#ff1744]" />
+            <div className="w-0.5 h-full bg-[#ef4444]" />
           </div>
         )}
       </div>
@@ -398,14 +398,14 @@ interface SummaryBoxProps {
 const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
   const pct = Math.min((days / totalDays) * 100, 100);
   return (
-    <div className="bg-[#0a0a0a] rounded p-3 space-y-1.5">
+    <div className="bg-[#0f1419] rounded p-3 space-y-1.5">
       <div className="text-[10px] font-mono text-neutral-500">{label}</div>
       <div className="font-mono font-bold text-xl" style={{ color }}>
         {days >= totalDays ? `${totalDays}+` : days}
         <span className="text-xs font-normal text-neutral-600 ml-1">日</span>
       </div>
       {/* ミニゲージ */}
-      <div className="w-full h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
+      <div className="w-full h-1 bg-[#162029] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full"
           style={{
