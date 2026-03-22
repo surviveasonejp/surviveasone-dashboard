@@ -130,7 +130,7 @@ export const FamilyMeter: FC = () => {
               </span>
               <span className="text-neutral-500 font-mono text-sm">日生存可能</span>
             </div>
-            <div className="text-xs font-mono text-neutral-500">
+            <div className="text-xs font-mono text-neutral-400">
               限界日: {formatDepletionDate(score.totalDays)}
             </div>
           </div>

@@ -90,7 +90,7 @@ export const TankerTracker: FC = () => {
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
                       <div>{formatDecimal(tanker.eta_days)}日</div>
-                      <div className="text-xs font-normal text-neutral-500">{formatDepletionDate(tanker.eta_days)}</div>
+                      <div className="text-xs font-normal text-neutral-400">{formatDepletionDate(tanker.eta_days)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       {formatNumber(tanker.cargo_t)}t

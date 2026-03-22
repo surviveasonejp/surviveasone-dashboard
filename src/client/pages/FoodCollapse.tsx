@@ -124,7 +124,7 @@ export const FoodCollapse: FC = () => {
               <div className="font-mono font-bold text-3xl" style={{ color }}>
                 {formatDecimal(product.collapseDays)}
               </div>
-              <div className="text-neutral-500 font-mono text-xs">
+              <div className="text-neutral-400 font-mono text-xs">
                 日で消失 — {formatDepletionDate(product.collapseDays)}
               </div>
               <p className="text-[10px] text-neutral-600 leading-relaxed">

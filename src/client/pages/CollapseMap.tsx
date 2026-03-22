@@ -90,19 +90,19 @@ export const CollapseMap: FC = () => {
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
                       <div>{formatDecimal(region.collapseDays)}日</div>
-                      <div className="text-xs font-normal text-neutral-500">{formatDepletionDate(region.collapseDays)}</div>
+                      <div className="text-xs font-normal text-neutral-400">{formatDepletionDate(region.collapseDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       <div>{formatDecimal(region.oilDepletionDays)}日</div>
-                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.oilDepletionDays)}</div>
+                      <div className="text-xs text-neutral-400">{formatDepletionDate(region.oilDepletionDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       <div>{formatDecimal(region.lngDepletionDays)}日</div>
-                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.lngDepletionDays)}</div>
+                      <div className="text-xs text-neutral-400">{formatDepletionDate(region.lngDepletionDays)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       <div>{formatDecimal(region.powerCollapseDays)}日</div>
-                      <div className="text-xs text-neutral-600">{formatDepletionDate(region.powerCollapseDays)}</div>
+                      <div className="text-xs text-neutral-400">{formatDepletionDate(region.powerCollapseDays)}</div>
                     </td>
                   </tr>
                 );

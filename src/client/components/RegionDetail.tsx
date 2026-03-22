@@ -51,7 +51,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
           {formatDecimal(region.collapseDays)}
         </div>
         <div className="text-neutral-500 font-mono text-sm">日</div>
-        <div className="text-neutral-500 font-mono text-xs mt-1">
+        <div className="text-neutral-400 font-mono text-xs mt-1">
           {formatDepletionDate(region.collapseDays)}
         </div>
       </div>
@@ -106,7 +106,7 @@ const DetailRow: FC<DetailRowProps> = ({ label, value, sub }) => (
     <span className="text-neutral-500">{label}</span>
     <div className="text-right">
       <span className="font-mono">{value}</span>
-      {sub && <div className="text-xs font-mono text-neutral-600">{sub}</div>}
+      {sub && <div className="text-xs font-mono text-neutral-400">{sub}</div>}
     </div>
   </div>
 );
