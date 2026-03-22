@@ -203,6 +203,27 @@ export const About: FC = () => {
         </div>
       </div>
 
+      {/* 支援 */}
+      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
+        <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">SUPPORT THIS PROJECT</h2>
+        <p className="text-neutral-300 text-sm leading-relaxed">
+          Survive as One は広告なしのオープンソースプロジェクトです。スポンサーシップはリアルタイムタンカー追跡（AIS API）の実現に直接使われます。
+        </p>
+        <div className="text-xs text-neutral-500 space-y-1 font-mono">
+          <p>$0〜$36/月 → チョークポイント監視開始</p>
+          <p>$150/月 → 衛星AIS追加、外洋タンカー追跡</p>
+          <p>$300/月 → 全ルート40〜55隻のリアルタイム追跡</p>
+        </div>
+        <a
+          href="https://github.com/sponsors/idx"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-6 py-2 bg-[#ef4444] hover:bg-[#ef4444]/80 text-white font-mono text-xs tracking-wider rounded transition-colors"
+        >
+          GitHub Sponsors で支援する &rarr;
+        </a>
+      </div>
+
       {/* リンク */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">LINKS</h2>

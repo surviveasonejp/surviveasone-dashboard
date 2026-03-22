@@ -23,9 +23,15 @@ React 19 + Vite 6 + TypeScript (strict) / Cloudflare Workers + D1 + KV + R2
 
 商用利用・SaaSホスティングには別途ライセンスが必要です。
 
-## Support
+## Funding
 
-このプロジェクトは個人で運営・維持しています。
+このプロジェクトは広告なしのオープンソースプロジェクトです。
+
+スポンサーシップはリアルタイムタンカー追跡（AIS API）の実現に直接使われます。開発は個人の時間で行っており、人件費としては使用しません。
+
+**[GitHub Sponsors で支援する](https://github.com/sponsors/idx)**
+
+## Support
 
 - GitHub Issues: バグ報告・機能提案
 - X: [@surviveasonejp](https://x.com/surviveasonejp)

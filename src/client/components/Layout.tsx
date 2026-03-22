@@ -30,6 +30,8 @@ export const Layout: FC = () => {
             <span className="text-neutral-700">&middot;</span>
             <a href="https://x.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">X</a>
             <span className="text-neutral-700">&middot;</span>
+            <a href="https://github.com/sponsors/idx" target="_blank" rel="noopener noreferrer" className="text-[#ef4444] hover:text-[#ef4444]/80 transition-colors">Sponsor</a>
+            <span className="text-neutral-700">&middot;</span>
             <Link to="/about" className="hover:text-neutral-400 transition-colors">About</Link>
           </div>
         </div>
