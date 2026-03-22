@@ -33,7 +33,7 @@ const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onCh
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
-      className="w-full h-1.5 rounded-full appearance-none bg-[#1e2a36] cursor-pointer accent-[#f59e0b]"
+      className="w-full h-2 rounded-full appearance-none bg-[#1e2a36] cursor-pointer"
     />
     <div className="flex justify-between text-[10px] text-neutral-600 font-mono">
       <span>{min}{unit}</span>
@@ -51,22 +51,40 @@ const RANK_ADVICE: Record<string, string[]> = {
   F: ["生存困難。水の確保が最優先。ペットボトル水を今すぐ購入してください"],
 };
 
+const STORAGE_KEY = "familyMeterInputs";
+
+const DEFAULT_INPUTS: FamilyInputs = {
+  members: 3,
+  waterLiters: 36,
+  foodDays: 7,
+  gasCanisterCount: 6,
+  batteryWh: 500,
+  cashYen: 30000,
+};
+
+function loadInputs(): FamilyInputs {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_INPUTS;
+    return { ...DEFAULT_INPUTS, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_INPUTS;
+  }
+}
+
 export const FamilyMeter: FC = () => {
-  const [inputs, setInputs] = useState<FamilyInputs>({
-    members: 3,
-    waterLiters: 36,
-    foodDays: 7,
-    gasCanisterCount: 6,
-    batteryWh: 500,
-    cashYen: 30000,
-  });
+  const [inputs, setInputs] = useState<FamilyInputs>(loadInputs);
 
   const score = useFamilySurvival(inputs);
   const rankColor = getSurvivalRankColor(score.rank);
   const rankLabel = getSurvivalRankLabel(score.rank);
 
   const update = (key: keyof FamilyInputs) => (value: number) =>
-    setInputs((prev) => ({ ...prev, [key]: value }));
+    setInputs((prev) => {
+      const next = { ...prev, [key]: value };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
 
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const breakdowns = [
