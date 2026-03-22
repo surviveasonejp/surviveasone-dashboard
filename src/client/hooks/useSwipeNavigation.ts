@@ -14,12 +14,10 @@ const PAGES = [
   "/about",
 ];
 
-// ドラッグ中に早期発火する閾値
-const EARLY_DISTANCE = 100; // px: 確実なスワイプ
-const FLICK_DISTANCE = 30; // px: フリック時の最小距離
-const FLICK_VELOCITY = 1.0; // px/ms: フリック速度
-// 指を離した後の従来閾値
-const SWIPE_THRESHOLD = 50;
+const SNAP_THRESHOLD = 80; // px: この距離を超えたら遷移確定
+const FLICK_VELOCITY = 0.8; // px/ms: フリック速度
+const FLICK_MIN_DIST = 20; // px: フリック判定の最小距離
+const RUBBER_BAND = 0.3; // 端でのラバーバンド係数
 
 export type SlideDirection = "left" | "right" | null;
 
@@ -29,6 +27,8 @@ export function useSwipeNavigation() {
   const currentIndex = PAGES.indexOf(location.pathname);
   const prevIndexRef = useRef(currentIndex);
   const [direction, setDirection] = useState<SlideDirection>(null);
+  const [dragX, setDragX] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     if (prevIndexRef.current !== currentIndex && currentIndex >= 0) {
@@ -37,15 +37,16 @@ export function useSwipeNavigation() {
     }
   }, [currentIndex]);
 
-  const navigateTo = (dir: -1 | 1) => {
-    const nextIndex = currentIndex + dir;
-    if (nextIndex >= 0 && nextIndex < PAGES.length) {
-      navigate(PAGES[nextIndex]);
-    }
-  };
+  const canGoLeft = currentIndex > 0;
+  const canGoRight = currentIndex < PAGES.length - 1;
 
   const bind = useDrag(
     ({ movement: [mx], velocity: [vx], first, last, cancel, event }) => {
+      if (isTransitioning) {
+        cancel();
+        return;
+      }
+
       if (first) {
         const target = event?.target as HTMLElement | null;
         if (
@@ -58,23 +59,39 @@ export function useSwipeNavigation() {
         }
       }
 
-      // ドラッグ中: 速度or距離が閾値を超えたら即遷移
+      // ドラッグ中: translateXをリアルタイム反映
       if (!last) {
-        const absMx = Math.abs(mx);
-        const earlyTrigger =
-          absMx > EARLY_DISTANCE ||
-          (absMx > FLICK_DISTANCE && vx > FLICK_VELOCITY);
-
-        if (earlyTrigger) {
-          navigateTo(mx < 0 ? 1 : -1);
-          cancel();
+        let dx = mx;
+        // 端でのラバーバンド抵抗
+        if ((dx > 0 && !canGoLeft) || (dx < 0 && !canGoRight)) {
+          dx = dx * RUBBER_BAND;
         }
+        setDragX(dx);
         return;
       }
 
-      // 指を離した時: ゆっくりスワイプ対応
-      if (Math.abs(mx) < SWIPE_THRESHOLD) return;
-      navigateTo(mx < 0 ? 1 : -1);
+      // リリース: 遷移判定
+      const absMx = Math.abs(mx);
+      const isFlick = absMx > FLICK_MIN_DIST && vx > FLICK_VELOCITY;
+      const isSnap = absMx > SNAP_THRESHOLD;
+      const goDir = mx < 0 ? 1 : -1; // 1=次ページ, -1=前ページ
+      const canGo = goDir === 1 ? canGoRight : canGoLeft;
+
+      if ((isSnap || isFlick) && canGo) {
+        // 遷移確定: 画面外へスナップしてから遷移
+        const targetX = goDir === 1 ? -window.innerWidth : window.innerWidth;
+        setDragX(targetX);
+        setIsTransitioning(true);
+
+        setTimeout(() => {
+          navigate(PAGES[currentIndex + goDir]);
+          setDragX(0);
+          setIsTransitioning(false);
+        }, 200);
+      } else {
+        // キャンセル: 元に戻す
+        setDragX(0);
+      }
     },
     {
       axis: "x",
@@ -83,5 +100,12 @@ export function useSwipeNavigation() {
     },
   );
 
-  return { bind, direction, currentIndex, totalPages: PAGES.length };
+  return {
+    bind,
+    direction,
+    currentIndex,
+    totalPages: PAGES.length,
+    dragX,
+    isTransitioning,
+  };
 }

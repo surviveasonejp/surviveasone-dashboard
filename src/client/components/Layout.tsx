@@ -5,20 +5,25 @@ import { useSwipeNavigation } from "../hooks/useSwipeNavigation";
 
 export const Layout: FC = () => {
   const location = useLocation();
-  const { bind, direction, currentIndex, totalPages } = useSwipeNavigation();
+  const { bind, currentIndex, totalPages, dragX, isTransitioning } =
+    useSwipeNavigation();
 
-  const animationClass =
-    direction === "left"
-      ? "animate-slide-in-right"
-      : direction === "right"
-        ? "animate-slide-in-left"
-        : "animate-fade-in";
+  const isDragging = dragX !== 0;
 
   return (
     <div className="min-h-screen bg-[#0f1419] text-white overflow-x-hidden">
       <Header />
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
-        <div key={location.pathname} className={animationClass}>
+        <div
+          key={location.pathname}
+          className={isDragging ? "" : "animate-fade-in"}
+          style={{
+            transform: dragX !== 0 ? `translateX(${dragX}px)` : undefined,
+            transition: isTransitioning ? "transform 200ms ease-out" : isDragging ? "none" : undefined,
+            opacity: isDragging ? Math.max(0.3, 1 - Math.abs(dragX) / window.innerWidth) : undefined,
+            willChange: isDragging ? "transform, opacity" : undefined,
+          }}
+        >
           <Outlet />
         </div>
       </main>
