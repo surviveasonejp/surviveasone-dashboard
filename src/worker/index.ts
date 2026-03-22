@@ -105,6 +105,12 @@ export default {
     const url = new URL(request.url);
     const isDev = isDevRequest(request);
 
+    // ── .net ドメイン: API専用。非APIパスは .org にリダイレクト ──
+    const isApiDomain = url.hostname === "surviveasonejp.net" || url.hostname === "www.surviveasonejp.net";
+    if (isApiDomain && url.pathname !== "/api" && !url.pathname.startsWith("/api/")) {
+      return Response.redirect(`https://surviveasonejp.org${url.pathname}${url.search}`, 301);
+    }
+
     // ── 静的アセット: セキュリティヘッダー付与して返す ──
     if (url.pathname !== "/api" && !url.pathname.startsWith("/api/")) {
       const response = await env.ASSETS.fetch(request);
