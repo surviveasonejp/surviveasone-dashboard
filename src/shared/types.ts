@@ -31,7 +31,9 @@ export interface TankerInfo {
   name: string;
   type: string;
   departure: string;
+  departurePort: string;
   destination: string;
+  destinationPort: string;
   distanceToJapan_nm: number;
   speed_knots: number;
   eta_days: number;

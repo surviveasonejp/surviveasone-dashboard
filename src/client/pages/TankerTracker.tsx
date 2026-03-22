@@ -1,7 +1,8 @@
-import { type FC } from "react";
+import { type FC, useState, useRef, useEffect } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { TankerMap } from "../components/TankerMap";
 import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
@@ -10,6 +11,16 @@ export const TankerTracker: FC = () => {
   const tankers = useTankerData();
   const vlccTankers = tankers.filter((t) => t.type === "VLCC");
   const lngTankers = tankers.filter((t) => t.type === "LNG");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
+
+  // マップで船舶選択時、テーブルの該当行にスクロール
+  useEffect(() => {
+    if (selectedId) {
+      const row = rowRefs.current.get(selectedId);
+      row?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [selectedId]);
 
   return (
     <div className="space-y-6">
@@ -41,6 +52,13 @@ export const TankerTracker: FC = () => {
         />
       </div>
 
+      {/* 推定航跡マップ */}
+      <TankerMap
+        tankers={tankers}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+      />
+
       {/* 到着順テーブル */}
       <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-[#2a2a2a]">
@@ -65,8 +83,18 @@ export const TankerTracker: FC = () => {
               {tankers.map((tanker, index) => {
                 const level = getAlertLevel(tanker.eta_days);
                 const color = getAlertColor(level);
+                const isSelected = tanker.id === selectedId;
                 return (
-                  <tr key={tanker.id} className="border-b border-[#1a1a1a] hover:bg-white/[0.02]">
+                  <tr
+                    key={tanker.id}
+                    ref={(el) => {
+                      if (el) rowRefs.current.set(tanker.id, el);
+                    }}
+                    className={`border-b border-[#1a1a1a] cursor-pointer transition-colors ${
+                      isSelected ? "bg-white/[0.06]" : "hover:bg-white/[0.02]"
+                    }`}
+                    onClick={() => setSelectedId(isSelected ? null : tanker.id)}
+                  >
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
                     <td className="px-4 py-2 font-bold text-neutral-200">{tanker.name}</td>
                     <td className="px-4 py-2">
@@ -107,8 +135,10 @@ export const TankerTracker: FC = () => {
       <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">計算根拠:</p>
         <p>到着予測日数 = 航路距離(海里) ÷ (速度(knots) × 24時間)</p>
-        <p>VLCC標準速度: 13〜15knots / LNG船標準速度: 17〜19knots</p>
+        <p>推定位置 = 航路ウェイポイント上をETA進捗率で線形補間</p>
+        <p>VLCC標準速度: 12〜12.5knots / LNG船標準速度: 17〜19.5knots</p>
         <p className="text-neutral-600">※ 封鎖時は海峡通過前に出港済みの船舶のみ。封鎖後の新規出港は不可</p>
+        <p className="text-neutral-600">※ 地図上の位置はETA逆算による推定値です。AIS未接続のため実際の位置とは異なります</p>
       </div>
     </div>
   );

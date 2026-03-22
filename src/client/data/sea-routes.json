@@ -1,0 +1,32 @@
+{
+  "hormuz-malacca": {
+    "waypoints": [[56.5,26],[59,23],[65,16],[75,10],[85,4],[95,2],[101.8,2.5],[107,5],[115,12],[122,22],[128,30]],
+    "chokepoints": ["hormuz","malacca"]
+  },
+  "fujairah-malacca": {
+    "waypoints": [[60,23],[65,16],[75,10],[85,4],[95,2],[101.8,2.5],[107,5],[115,12],[122,22],[128,30]],
+    "chokepoints": ["malacca"]
+  },
+  "australia-east": {
+    "waypoints": [[150,-18],[145,-8],[140,5],[137,18],[135,30]],
+    "chokepoints": []
+  },
+  "australia-west": {
+    "waypoints": [[116,-12],[115.7,-8.5],[118,-2],[122,8],[127,18],[132,30]],
+    "chokepoints": ["lombok"]
+  },
+  "southeast-asia": {
+    "waypoints": [[116,8],[122,15],[128,25]],
+    "chokepoints": []
+  },
+  "sakhalin": {
+    "waypoints": [[142,44],[140.8,41.65],[138,38]],
+    "chokepoints": ["tsugaru"]
+  },
+  "us-pacific": {
+    "waypoints": [[170,28],[165,30],[155,32],[148,34]],
+    "chokepoints": ["panama"],
+    "partialRoute": true,
+    "visibleStartProgress": 0.82
+  }
+}
