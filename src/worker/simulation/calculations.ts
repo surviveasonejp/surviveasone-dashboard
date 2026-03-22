@@ -354,9 +354,21 @@ export function calcRegionCollapse(
       const nuclearCoverageRate = regionDemand_MW > 0
         ? Math.min(nuclearOutput_MW / regionDemand_MW, 0.7) // 最大70%まで（送電損失・需給バランス考慮）
         : 0;
-      const regionalThermalShare = r.thermalShareRate * (1 - nuclearCoverageRate);
+      // #6 再エネバッファ: 太陽光+風力+水力の設備容量 × 平均設備利用率
+      const SOLAR_CF = 0.15;  // 太陽光設備利用率
+      const WIND_CF = 0.22;   // 風力設備利用率
+      const HYDRO_CF = 0.35;  // 水力設備利用率
+      const renewableOutput_MW =
+        (region.solarCapacity_MW ?? 0) * SOLAR_CF +
+        (region.windCapacity_MW ?? 0) * WIND_CF +
+        (region.hydroCapacity_MW ?? 0) * HYDRO_CF;
+      const renewableCoverageRate = regionDemand_MW > 0
+        ? Math.min(renewableOutput_MW / regionDemand_MW, 0.4) // 最大40%（蓄電なしの限界）
+        : 0;
 
-      const powerCollapse = lngDepletion * regionalThermalShare;
+      const regionalThermalShare = r.thermalShareRate * (1 - nuclearCoverageRate - renewableCoverageRate);
+
+      const powerCollapse = lngDepletion * Math.max(0, regionalThermalShare);
       const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
 
       return {

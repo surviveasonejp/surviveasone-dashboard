@@ -1,8 +1,26 @@
 {
   "meta": {
-    "source": "農水省食料需給表 + 物流依存推定（Phase 2で公式データ連携予定）",
-    "updatedAt": "2026-03-21",
-    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。collapse=resourceDays×(1-factor)+shelfLifeDays。dieselFactor=軽油依存(物流), napthaFactor=ナフサ依存(包装), powerFactor=電力依存(冷蔵/加工)"
+    "source": "農水省食料需給表 + 流通経済研究所在庫データ + 全日本トラック協会燃料統計",
+    "updatedAt": "2026-03-22",
+    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。retailStockDays=小売在庫日数。warehouseStockDays=物流センター在庫日数。coldChainHours=停電後の品質保持時間"
+  },
+  "supplyChain": {
+    "truckDiesel_kL_per_day": 100000,
+    "truckDieselNote": "物流用軽油は日量約10万kL。備蓄30%切で長距離輸送制限開始",
+    "supermarketInventoryDays": {
+      "fresh": 0.5,
+      "processed": 4,
+      "frozen": 10,
+      "dry": 30
+    },
+    "warehouseInventoryDays": {
+      "gms": 5,
+      "cvs": 1.5
+    },
+    "coldChainFailureHours": {
+      "refrigerator": 24,
+      "freezer": 72
+    }
   },
   "products": [
     {
@@ -10,17 +28,23 @@
       "name": "牛乳・乳製品",
       "icon": "🥛",
       "shelfLifeDays": 2,
+      "retailStockDays": 0.5,
+      "warehouseStockDays": 1,
+      "coldChainHours": 24,
       "dieselFactor": 0.9,
       "napthaFactor": 0.3,
       "powerFactor": 0.95,
       "collapseReason": "冷蔵チェーン崩壊 → 配送停止 → 店頭在庫消失",
-      "note": "国産率67%だが冷蔵輸送が必須。電力停止で最も早く消失"
+      "note": "国産率67%だが冷蔵輸送が必須。停電24時間で品質劣化開始"
     },
     {
       "id": "bread",
       "name": "パン",
       "icon": "🍞",
       "shelfLifeDays": 3,
+      "retailStockDays": 1,
+      "warehouseStockDays": 2,
+      "coldChainHours": null,
       "dieselFactor": 0.7,
       "napthaFactor": 0.6,
       "collapseReason": "小麦輸入途絶 + 包装材不足 → 製造停止",
@@ -32,6 +56,9 @@
       "name": "精肉",
       "icon": "🥩",
       "shelfLifeDays": 3,
+      "retailStockDays": 0.5,
+      "warehouseStockDays": 3,
+      "coldChainHours": 24,
       "dieselFactor": 0.85,
       "napthaFactor": 0.4,
       "powerFactor": 0.9,
@@ -43,17 +70,23 @@
       "name": "冷凍食品",
       "icon": "🧊",
       "shelfLifeDays": 0,
+      "retailStockDays": 10,
+      "warehouseStockDays": 14,
+      "coldChainHours": 72,
       "dieselFactor": 0.5,
       "napthaFactor": 0.5,
       "powerFactor": 1.0,
-      "collapseReason": "停電即座に品質劣化 → 在庫全損",
-      "note": "電力依存100%。停電と同時に劣化開始"
+      "collapseReason": "停電72時間で在庫全損。解凍後は数日で廃棄",
+      "note": "電力依存100%。冷凍倉庫の在庫は停電72時間で全損"
     },
     {
       "id": "vegetable",
       "name": "生鮮野菜",
       "icon": "🥬",
       "shelfLifeDays": 5,
+      "retailStockDays": 1,
+      "warehouseStockDays": 2,
+      "coldChainHours": 48,
       "dieselFactor": 0.8,
       "napthaFactor": 0.2,
       "powerFactor": 0.6,
@@ -65,11 +98,14 @@
       "name": "米",
       "icon": "🍚",
       "shelfLifeDays": 180,
+      "retailStockDays": 14,
+      "warehouseStockDays": 60,
+      "coldChainHours": null,
       "dieselFactor": 0.4,
       "napthaFactor": 0.1,
       "powerFactor": 0.1,
       "collapseReason": "最も長く持つが精米・流通に軽油必要",
-      "note": "自給率97%。政府備蓄米あり。最後の砦"
+      "note": "自給率97%。政府備蓄米100万t(約2ヶ月分)。最後の砦"
     }
   ]
 }
