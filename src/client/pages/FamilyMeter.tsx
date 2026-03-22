@@ -98,7 +98,7 @@ export const FamilyMeter: FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
-        <div data-no-swipe className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-5">
+        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-5">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄入力</h2>
           <InputSlider label="世帯人数" value={inputs.members} min={1} max={10} step={1} unit="人" onChange={update("members")} />
           <InputSlider label="水備蓄" value={inputs.waterLiters} min={0} max={500} step={5} unit="L" onChange={update("waterLiters")} />
