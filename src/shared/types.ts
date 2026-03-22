@@ -24,6 +24,8 @@ export interface RegionCollapse {
   note: string;
   /** 電力需給の実測データがあるか */
   hasLiveData: boolean;
+  /** 連系線融通による延命日数（正=受電側で延命, 0=影響なし） */
+  interconnectionBonusDays: number;
 }
 
 export interface TankerInfo {

@@ -24,6 +24,7 @@ import staticConsumption from "../data/consumption.json";
 import staticRegionsData from "../data/regions.json";
 import staticTankerData from "../data/tankers.json";
 import staticFoodData from "../data/foodSupply.json";
+import staticInterconnections from "../data/interconnections.json";
 
 // ─── データ取得ヘルパー ─────────────────────────────────
 
@@ -296,9 +297,10 @@ export function calcRegionCollapse(
           foodSelfSufficiency: region.food_self_sufficiency,
           note: region.note,
           hasLiveData: electricityMap.has(region.id),
+          interconnectionBonusDays: 0,
         };
-      })
-      .sort((a, b) => a.collapseDays - b.collapseDays);
+      });
+    return applyInterconnectionBonus(results);
   }
 
   // フォールバック: 静的JSONからの計算
@@ -341,7 +343,97 @@ export function calcRegionCollapse(
         foodSelfSufficiency: region.foodSelfSufficiency,
         note: region.note,
         hasLiveData: false,
+        interconnectionBonusDays: 0,
       };
-    })
-    .sort((a, b) => a.collapseDays - b.collapseDays);
+    });
+  return applyInterconnectionBonus(results);
+}
+
+// ─── 連系線融通による崩壊日の延命計算 ─────────────────
+
+/**
+ * 隣接エリアの電力崩壊日に差がある場合、連系線を通じて
+ * 余剰エリアから不足エリアへ電力を融通し、崩壊日を延命する。
+ *
+ * モデル:
+ * - 余剰電力 = (供給側の崩壊日 - 受電側の崩壊日) × 連系線容量 × 稼働率 × (1-損失率)
+ * - 延命日数 = 余剰電力量 / 受電側の日次需要
+ * - 上限: 供給側の崩壊日を超えない（共倒れ防止）
+ */
+function applyInterconnectionBonus(regions: RegionCollapse[]): RegionCollapse[] {
+  const regionMap = new Map(regions.map((r) => [r.id, { ...r }]));
+  const UTILIZATION_RATE = 0.7; // 危機時の連系線稼働率
+
+  // 各地域の日次電力需要（正規化用、kW換算の目安）
+  const demandMap = new Map<string, number>();
+  for (const r of staticRegionsData) {
+    // powerDemandShare × 全国ピーク需要(約1.6億kW)で概算kW値
+    demandMap.set(r.id, r.powerDemandShare * 160_000_000);
+  }
+
+  // ベースの電力崩壊日を保存（融通前）
+  const basePowerDays = new Map<string, number>();
+  for (const r of regionMap.values()) {
+    basePowerDays.set(r.id, r.powerCollapseDays);
+  }
+
+  // 反復計算で多段融通を安定化（A→B→C チェーン）
+  for (let iteration = 0; iteration < 3; iteration++) {
+    for (const line of staticInterconnections.lines) {
+      const fromRegion = regionMap.get(line.from);
+      const toRegion = regionMap.get(line.to);
+      if (!fromRegion || !toRegion) continue;
+
+      // 崩壊日が遅い方が供給側
+      const fromIsSupplier = fromRegion.powerCollapseDays >= toRegion.powerCollapseDays;
+      const supplier = fromIsSupplier ? fromRegion : toRegion;
+      const receiver = fromIsSupplier ? toRegion : fromRegion;
+
+      const daysDiff = supplier.powerCollapseDays - receiver.powerCollapseDays;
+      if (daysDiff <= 1) continue; // 1日未満の差は無視
+
+      // 方向に応じた連系線容量を選択（非対称対応）
+      // supplier→receiver方向の容量を使う
+      let directedCapacity_kW: number;
+      if (fromIsSupplier) {
+        // from(supplier)→to(receiver): capacity_kW（from→to方向）
+        directedCapacity_kW = line.capacity_kW;
+      } else {
+        // to(supplier)→from(receiver): capacityReverse_kW（to→from方向）
+        directedCapacity_kW = line.capacityReverse_kW;
+      }
+
+      const transferCapacity_kW = directedCapacity_kW * UTILIZATION_RATE * (1 - line.lossRate);
+      const receiverDemand_kW = demandMap.get(receiver.id) ?? 1;
+
+      // 連系線容量が受電側需要の何%を賄えるか
+      const coverageRatio = transferCapacity_kW / receiverDemand_kW;
+
+      // 延命日数 = 差分日数 × カバー率（供給側が余裕のある期間だけ融通可能）
+      // 上限: 差分の50%（供給側も自エリアの需要があるため共倒れ防止）
+      const bonusDays = Math.min(
+        daysDiff * Math.min(coverageRatio, 0.5),
+        daysDiff * 0.5,
+      );
+
+      if (bonusDays > 0.1 && bonusDays > receiver.interconnectionBonusDays) {
+        receiver.interconnectionBonusDays = Math.round(bonusDays * 10) / 10;
+      }
+    }
+  }
+
+  // 融通効果を崩壊日に反映
+  for (const region of regionMap.values()) {
+    if (region.interconnectionBonusDays > 0) {
+      const base = basePowerDays.get(region.id) ?? region.powerCollapseDays;
+      region.powerCollapseDays = base + region.interconnectionBonusDays;
+      region.collapseDays = Math.min(
+        region.oilDepletionDays,
+        region.lngDepletionDays,
+        region.powerCollapseDays,
+      );
+    }
+  }
+
+  return [...regionMap.values()].sort((a, b) => a.collapseDays - b.collapseDays);
 }

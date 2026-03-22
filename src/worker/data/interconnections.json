@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "source": "OCCTO 電力広域的運営推進機関 2025年度運用容量（年間・長期）+ 各送配電事業者公表値",
+    "updatedAt": "2026-03-22",
+    "note": "運用容量は季節・方向・時間帯で変動。平日昼間帯の代表的最大値を採用。capacity_kWは双方向のうち小さい方（ボトルネック方向）。capacityReverse_kWは逆方向"
+  },
+  "lines": [
+    {
+      "id": "hokkaido-tohoku",
+      "name": "北本連系線",
+      "from": "hokkaido",
+      "to": "tohoku",
+      "capacity_kW": 900000,
+      "capacityReverse_kW": 900000,
+      "type": "HVDC",
+      "note": "海底HVDC。60万kW(1979)+30万kW(2019)。2027年度末120万kWへ増強予定",
+      "lossRate": 0.03
+    },
+    {
+      "id": "tohoku-tokyo",
+      "name": "東北東京間連系線",
+      "from": "tohoku",
+      "to": "tokyo",
+      "capacity_kW": 5730000,
+      "capacityReverse_kW": 2360000,
+      "type": "AC",
+      "note": "国内最大級。東北→東京方向が支配的。2027年11月に東京向10,280万kWへ増強予定",
+      "lossRate": 0.02
+    },
+    {
+      "id": "tokyo-chubu",
+      "name": "東京中部間連系設備（FC）",
+      "from": "tokyo",
+      "to": "chubu",
+      "capacity_kW": 2100000,
+      "capacityReverse_kW": 2100000,
+      "type": "FC",
+      "note": "50Hz/60Hz周波数変換。佐久間30万+新信濃150万+東清水30万=210万kW。2027年度末300万kWへ増強予定",
+      "lossRate": 0.04
+    },
+    {
+      "id": "chubu-hokuriku",
+      "name": "中部北陸間連系設備（BTB）",
+      "from": "chubu",
+      "to": "hokuriku",
+      "capacity_kW": 300000,
+      "capacityReverse_kW": 300000,
+      "type": "DC_BTB",
+      "note": "南福光BTB。交流ループ回避のためDC方式。2025年4月からループ運用開始の動きあり",
+      "lossRate": 0.03
+    },
+    {
+      "id": "chubu-kansai",
+      "name": "中部関西間連系線",
+      "from": "chubu",
+      "to": "kansai",
+      "capacity_kW": 2500000,
+      "capacityReverse_kW": 2500000,
+      "type": "AC",
+      "note": "双方向融通。熱容量278万kW(夏)～326万kW(冬)。2030年6月に600万kWへ増強予定",
+      "lossRate": 0.02
+    },
+    {
+      "id": "hokuriku-kansai",
+      "name": "北陸関西間連系線",
+      "from": "hokuriku",
+      "to": "kansai",
+      "capacity_kW": 1300000,
+      "capacityReverse_kW": 1810000,
+      "type": "AC",
+      "note": "北陸水力→関西が歴史的。関西向181万kW、北陸向130万kW",
+      "lossRate": 0.02
+    },
+    {
+      "id": "kansai-chugoku",
+      "name": "関西中国間連系線",
+      "from": "kansai",
+      "to": "chugoku",
+      "capacity_kW": 2780000,
+      "capacityReverse_kW": 4050000,
+      "type": "AC",
+      "note": "西日本最大級。中国向278～326万kW、関西向405～485万kW。非対称",
+      "lossRate": 0.02
+    },
+    {
+      "id": "kansai-shikoku",
+      "name": "関西四国間連系設備（紀伊水道DC）",
+      "from": "kansai",
+      "to": "shikoku",
+      "capacity_kW": 700000,
+      "capacityReverse_kW": 1400000,
+      "type": "HVDC",
+      "note": "阿南-紀北直流幹線。±250kV海底ケーブル48.9km(2000年運開)。四国向70万kW/関西向140万kW（片極停止時考慮）",
+      "lossRate": 0.03
+    },
+    {
+      "id": "chugoku-shikoku",
+      "name": "中国四国間連系線（本四連系線）",
+      "from": "chugoku",
+      "to": "shikoku",
+      "capacity_kW": 1200000,
+      "capacityReverse_kW": 1200000,
+      "type": "AC",
+      "note": "本州四国連絡橋ルート。2回線合計240万kW(設備)、運用120万kW。1994/2000年運開",
+      "lossRate": 0.02
+    },
+    {
+      "id": "chugoku-kyushu",
+      "name": "関門連系線",
+      "from": "chugoku",
+      "to": "kyushu",
+      "capacity_kW": 300000,
+      "capacityReverse_kW": 2780000,
+      "type": "AC",
+      "note": "強い非対称。九州→中国278万kW（太陽光余剰送電）、中国→九州18～30万kW。2039年に新関門HVDC(+100万kW)予定",
+      "lossRate": 0.02
+    }
+  ]
+}
