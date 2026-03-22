@@ -68,11 +68,12 @@ export const FamilyMeter: FC = () => {
   const update = (key: keyof FamilyInputs) => (value: number) =>
     setInputs((prev) => ({ ...prev, [key]: value }));
 
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const breakdowns = [
-    { label: "水", days: score.waterDays, color: "#94a3b8" },
-    { label: "食料", days: score.foodDays, color: "#4ade80" },
-    { label: "燃料", days: score.energyDays, color: "#f59e0b" },
-    { label: "電力", days: score.powerDays, color: "#94a3b8" },
+    { label: "水", days: score.waterDays, color: isLight ? "#3b82f6" : "#94a3b8" },
+    { label: "食料", days: score.foodDays, color: isLight ? "#16a34a" : "#4ade80" },
+    { label: "燃料", days: score.energyDays, color: isLight ? "#d97706" : "#f59e0b" },
+    { label: "電力", days: score.powerDays, color: isLight ? "#7c3aed" : "#94a3b8" },
   ];
 
   const maxDays = Math.max(...breakdowns.map((b) => b.days), 30);

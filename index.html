@@ -36,6 +36,14 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-[#0f1419] text-white antialiased">
+    <script>
+      // FOUC防止: Reactより先にテーマを適用
+      (function(){
+        var t = localStorage.getItem('theme');
+        if (!t) t = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
     <div id="root"></div>
     <noscript>
       <div style="background:#0f1419;color:#fff;font-family:sans-serif;padding:2rem;max-width:800px;margin:0 auto;">

@@ -1,5 +1,6 @@
 import { type FC } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface NavItem {
   path: string;
@@ -29,14 +30,17 @@ export const Header: FC = () => {
           <span className="text-[#ef4444] font-mono font-bold text-lg">SURVIVE</span>
           <span className="font-mono font-bold text-lg">AS ONE</span>
         </Link>
-        {/* モバイル: 現在ページ名 */}
-        {currentItem && (
-          <span className="md:hidden text-xs font-mono tracking-wider text-neutral-400">
-            {currentItem.label}
-          </span>
-        )}
-        {/* デスクトップ: フルナビ */}
-        <nav className="hidden md:flex gap-1">
+        {/* モバイル: 現在ページ名 + テーマ切替 */}
+        <div className="md:hidden flex items-center gap-2">
+          {currentItem && (
+            <span className="text-xs font-mono tracking-wider text-neutral-400">
+              {currentItem.label}
+            </span>
+          )}
+          <ThemeToggle />
+        </div>
+        {/* デスクトップ: フルナビ + テーマ切替 */}
+        <nav className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.path}
@@ -50,6 +54,7 @@ export const Header: FC = () => {
               {item.label}
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
       </div>
     </header>
