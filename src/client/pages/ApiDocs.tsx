@@ -192,8 +192,11 @@ export const ApiDocs: FC = () => {
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-sm text-neutral-400 space-y-2">
         <p><span className="text-neutral-200 font-bold">Base URL:</span> <code className="font-mono text-[#f59e0b]">{API_BASE}/api</code></p>
         <p><span className="text-neutral-200 font-bold">形式:</span> JSON</p>
-        <p><span className="text-neutral-200 font-bold">認証:</span> 不要（レート制限あり）</p>
+        <p><span className="text-neutral-200 font-bold">認証:</span> 不要</p>
+        <p><span className="text-neutral-200 font-bold">CORS:</span> <code className="font-mono">Access-Control-Allow-Origin: *</code>（.netドメイン）</p>
+        <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）</p>
         <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code> / <code className="font-mono">realistic</code> / <code className="font-mono">pessimistic</code></p>
+        <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:underline font-mono">/api/openapi.json</a></p>
         <p><span className="text-neutral-200 font-bold">ライセンス:</span> AGPL-3.0</p>
       </div>
 

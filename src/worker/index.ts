@@ -91,11 +91,13 @@ function addSecurityHeaders(response: Response, isDev: boolean): Response {
   return newResponse;
 }
 
-function jsonResponse(data: unknown, status: number = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
+function jsonResponse(data: unknown, status: number = 200, cors: boolean = false): Response {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (cors) {
+    headers["Access-Control-Allow-Origin"] = "*";
+    headers["Access-Control-Allow-Methods"] = "GET, HEAD, OPTIONS, POST";
+  }
+  return new Response(JSON.stringify(data), { status, headers });
 }
 
 // ─── メインハンドラー ──────────────────────────────────
@@ -105,24 +107,40 @@ export default {
     const url = new URL(request.url);
     const isDev = isDevRequest(request);
 
-    // ── .net ドメイン: API専用。非APIパスは .org にリダイレクト ──
+    // ── ドメイン判定 ──
     const isApiDomain = url.hostname === "surviveasonejp.net" || url.hostname === "www.surviveasonejp.net";
-    if (isApiDomain && url.pathname !== "/api" && !url.pathname.startsWith("/api/")) {
+    const isApiPath = url.pathname === "/api" || url.pathname.startsWith("/api/");
+
+    // ── .net ドメイン: API専用 ──
+    if (isApiDomain && !isApiPath) {
+      // ルート → APIランディングJSON
+      if (url.pathname === "/" || url.pathname === "") {
+        return jsonResponse({
+          name: "Survive as One API",
+          version: "0.2.0",
+          docs: "https://surviveasonejp.org/api-docs",
+          endpoints: "GET /api",
+          source: "https://github.com/surviveasonejp/surviveasone-dashboard",
+        });
+      }
+      // それ以外 → .org にリダイレクト
       return Response.redirect(`https://surviveasonejp.org${url.pathname}${url.search}`, 301);
     }
 
     // ── 静的アセット: セキュリティヘッダー付与して返す ──
-    if (url.pathname !== "/api" && !url.pathname.startsWith("/api/")) {
+    if (!isApiPath) {
       const response = await env.ASSETS.fetch(request);
       return addSecurityHeaders(response, isDev);
     }
 
     // ── 以下、APIリクエストのみ ──
 
-    // Layer 1: Botブロック
-    const ua = request.headers.get("User-Agent");
-    if (isBlockedBot(ua)) {
-      return blockedResponse();
+    // Layer 1: Botブロック（.netドメインではプログラムアクセスを許可）
+    if (!isApiDomain) {
+      const ua = request.headers.get("User-Agent");
+      if (isBlockedBot(ua)) {
+        return blockedResponse();
+      }
     }
 
     // Layer 2: メソッドフィルタ
@@ -130,12 +148,16 @@ export default {
       return methodNotAllowedResponse();
     }
 
-    // OPTIONSプリフライト: 即座に返す
+    // OPTIONSプリフライト: CORS対応
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
         headers: {
           Allow: "GET, HEAD, OPTIONS, POST",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS, POST",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Max-Age": "86400",
           "Cache-Control": "max-age=86400",
         },
       });
@@ -195,11 +217,21 @@ export default {
     // ── APIルーティング ──
     const response = await handleApiRoute(url, env, globalCheck.count, request);
 
+    // CORSヘッダー（.netドメイン or プリフライト後）
+    if (isApiDomain) {
+      response.headers.set("Access-Control-Allow-Origin", "*");
+      response.headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST");
+    }
+
     // レスポンスにレート制限ヘッダーを付与
     const headers = rateLimitHeaders(globalCheck.count);
     for (const [key, value] of Object.entries(headers)) {
       response.headers.set(key, value);
     }
+
+    // X-RateLimit ヘッダー（API消費者向け）
+    response.headers.set("X-RateLimit-Limit-PerMinute", "30");
+    response.headers.set("X-RateLimit-Limit-Daily-Global", "100000");
 
     // Layer 3: レスポンスをキャッシュに格納 + セキュリティヘッダー付与
     const cachedResponse = await cacheResponse(request, response, url.pathname);
@@ -242,11 +274,15 @@ async function handleApiRoute(
       return handleTankers(env);
     case "/api/family-survival":
       return handleFamilySurvival(request);
+    case "/api/openapi.json":
+      // OpenAPI仕様は静的ファイルとして配信
+      return env.ASSETS.fetch(new Request("https://surviveasonejp.org/openapi.json"));
     case "/api":
       return jsonResponse({
         name: "Survive as One API",
         version: "0.2.0",
         docs: "https://surviveasonejp.org/api-docs",
+        openapi: "https://surviveasonejp.net/api/openapi.json",
         endpoints: {
           "GET /api/health": "ヘルスチェック",
           "GET /api/reserves": "石油・LNG備蓄データ（出典: 資源エネルギー庁）",

@@ -1,0 +1,100 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Survive as One API",
+    "description": "ホルムズ海峡経由の供給途絶時、日本のエネルギー崩壊タイムラインをシミュレーションするAPI",
+    "version": "0.2.0",
+    "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },
+    "contact": { "url": "https://github.com/surviveasonejp/surviveasone-dashboard" }
+  },
+  "servers": [
+    { "url": "https://surviveasonejp.net", "description": "API専用ドメイン" },
+    { "url": "https://surviveasonejp.org", "description": "メインサイト" }
+  ],
+  "paths": {
+    "/api": {
+      "get": { "summary": "エンドポイント一覧", "responses": { "200": { "description": "JSON" } } }
+    },
+    "/api/health": {
+      "get": { "summary": "ヘルスチェック", "responses": { "200": { "description": "サーバー稼働状況" } } }
+    },
+    "/api/reserves": {
+      "get": { "summary": "石油・LNG備蓄データ", "responses": { "200": { "description": "備蓄量・依存率・火力比率" } } }
+    },
+    "/api/consumption": {
+      "get": { "summary": "日次消費量", "responses": { "200": { "description": "石油・LNGの日次消費量" } } }
+    },
+    "/api/regions": {
+      "get": { "summary": "10エリア別パラメータ", "responses": { "200": { "description": "原子力・再エネ・連系線・製油所能力" } } }
+    },
+    "/api/countdowns": {
+      "get": {
+        "summary": "残存日数カウントダウン",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
+        "responses": { "200": { "description": "石油/LNG/電力の残存日数" } }
+      }
+    },
+    "/api/collapse": {
+      "get": {
+        "summary": "10エリア崩壊順序",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
+        "responses": { "200": { "description": "崩壊順序・連系線融通・原子力補正" } }
+      }
+    },
+    "/api/simulation": {
+      "get": {
+        "summary": "フロー型在庫シミュレーション",
+        "parameters": [
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
+          { "name": "maxDays", "in": "query", "schema": { "type": "integer", "default": 365, "maximum": 730 } }
+        ],
+        "responses": { "200": { "description": "日次タイムライン+閾値イベント" } }
+      }
+    },
+    "/api/food-collapse": {
+      "get": {
+        "summary": "食品カテゴリ別消失予測",
+        "parameters": [
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
+          { "name": "region", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "食品別崩壊日数" } }
+      }
+    },
+    "/api/tankers": {
+      "get": { "summary": "タンカー12隻到着予測", "responses": { "200": { "description": "船名・IMO・航路・ETA" } } }
+    },
+    "/api/family-survival": {
+      "post": {
+        "summary": "家庭生存日数算出",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["members","waterLiters","foodDays","gasCanisterCount","batteryWh","cashYen"],
+                "properties": {
+                  "members": { "type": "integer", "minimum": 1, "maximum": 50 },
+                  "waterLiters": { "type": "number", "minimum": 0, "maximum": 10000 },
+                  "foodDays": { "type": "number", "minimum": 0, "maximum": 365 },
+                  "gasCanisterCount": { "type": "integer", "minimum": 0, "maximum": 1000 },
+                  "batteryWh": { "type": "number", "minimum": 0, "maximum": 100000 },
+                  "cashYen": { "type": "number", "minimum": 0, "maximum": 100000000 }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "ランク・生存日数・ボトルネック" } }
+      }
+    },
+    "/api/electricity": {
+      "get": {
+        "summary": "電力需給実測データ",
+        "parameters": [{ "name": "area", "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "ピーク需要・供給・火力/原子力/再エネ内訳" } }
+      }
+    }
+  }
+}
