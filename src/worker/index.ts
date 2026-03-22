@@ -244,25 +244,13 @@ async function handleApiRoute(
 // ─── /api/health ───────────────────────────────────────
 
 async function handleHealth(requestCount: number): Promise<Response> {
-  const usageRatio = requestCount / WORKERS_FREE.DAILY_REQUESTS;
   const level = getGlobalUsageLevel(requestCount);
 
   return jsonResponse({
     status: "ok",
     timestamp: new Date().toISOString(),
     version: "0.2.0",
-    free_tier: {
-      workers: {
-        requests_today: requestCount,
-        daily_limit: WORKERS_FREE.DAILY_REQUESTS,
-        usage_percent: Math.round(usageRatio * 100),
-        throttle_at_percent: Math.round(SAFETY.API_THROTTLE_RATIO * 100),
-        cutoff_at_percent: Math.round(SAFETY.API_CUTOFF_RATIO * 100),
-        warning_level: level,
-        resets_in_seconds: getSecondsUntilDailyReset(),
-      },
-      storage: await getQuotaStatus(),
-    },
+    level,
   });
 }
 
@@ -462,9 +450,19 @@ async function handleFamilySurvival(request?: Request): Promise<Response> {
     return jsonResponse({ error: "invalid_body", message: "JSON body required" }, 400);
   }
 
-  // バリデーション
-  if (typeof inputs.members !== "number" || inputs.members < 1) {
-    return jsonResponse({ error: "invalid_input", message: "members must be >= 1" }, 400);
+  // バリデーション: 全フィールドの型・範囲チェック
+  const v = [
+    { key: "members", val: inputs.members, min: 1, max: 50 },
+    { key: "waterLiters", val: inputs.waterLiters, min: 0, max: 10000 },
+    { key: "foodDays", val: inputs.foodDays, min: 0, max: 365 },
+    { key: "gasCanisterCount", val: inputs.gasCanisterCount, min: 0, max: 1000 },
+    { key: "batteryWh", val: inputs.batteryWh, min: 0, max: 100000 },
+    { key: "cashYen", val: inputs.cashYen, min: 0, max: 100000000 },
+  ];
+  for (const { key, val, min, max } of v) {
+    if (typeof val !== "number" || !Number.isFinite(val) || val < min || val > max) {
+      return jsonResponse({ error: "invalid_input", message: `${key} must be a number between ${min} and ${max}` }, 400);
+    }
   }
 
   const data = calcFamilySurvival(inputs);
