@@ -94,11 +94,11 @@ export const Landing: FC = () => {
         </div>
         <div className="grid grid-cols-3 gap-4">
           <Stat value="94" unit="%" label="中東石油依存" color="#f59e0b" />
-          <Stat value="83" unit="%" label="火力発電比率" color="#f59e0b" />
-          <Stat value="25" unit="日" label="LNG在庫" color="#ef4444" />
+          <Stat value="65" unit="%" label="火力発電比率" color="#f59e0b" />
+          <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          備蓄254日分は「平時の消費量」基準。封鎖パニックで需要急増すれば大幅短縮
+          火力の内訳: LNG 29% + 石炭 28% + 石油 7%。石油備蓄254日分はIEA基準で国際的に充実した水準だが、LNG在庫は約25日分と薄い
         </p>
       </div>
 
@@ -171,9 +171,10 @@ export const Landing: FC = () => {
       {/* フッター注記 */}
       <div className="text-center space-y-2 pt-2">
         <p className="text-xs text-neutral-600 font-mono max-w-lg mx-auto leading-relaxed">
-          本シミュレーションは公開統計データに基づく推定値です。
-          実際の備蓄運用は政府判断により変動します。
-          データソースの詳細は<Link to="/about" className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400">ABOUTページ</Link>を参照してください。
+          本シミュレーションは公開統計データに基づく最悪ケースに近いシナリオの推定値です。
+          実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
+          日本の石油備蓄はIEA基準で国際的に充実した水準にあります。
+          前提条件・計算モデルの詳細は<Link to="/about" className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400">ABOUTページ</Link>を参照してください。
         </p>
       </div>
     </div>

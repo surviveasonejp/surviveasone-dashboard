@@ -94,8 +94,8 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の石油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。そのほぼ全量がホルムズ海峡を通過する。</p>
           <p>LNGもカタール・UAEからの輸入分（<span className="text-[#f59e0b] font-mono font-bold">6.3%</span>）がホルムズ経由。</p>
-          <p>封鎖が長期化すれば、電力（火力83%依存）→物流→食料供給→水道が連鎖停止する。</p>
-          <p className="text-neutral-500 text-xs">※ 石油備蓄254日分は資源エネルギー庁2025年12月末統計。LNGは約25日分の在庫。</p>
+          <p>封鎖が長期化すれば、火力発電（LNG29%+石炭28%+石油7%=全体の65%）への燃料供給が影響を受け、電力→物流→食料→水道が連鎖的に影響を受ける。</p>
+          <p className="text-neutral-500 text-xs">※ 石油備蓄254日分（IEA基準204日分）は国際的に充実した水準。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。</p>
         </div>
       </div>
 
@@ -111,6 +111,22 @@ export const About: FC = () => {
               <div className="text-xs text-neutral-500 mt-0.5">{f.desc}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 前提条件と制約 */}
+      <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">前提条件と制約</h2>
+        <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
+          <p>本シミュレーションは<span className="text-neutral-200 font-bold">最悪ケースに近いシナリオ</span>の可視化を目的としており、以下の前提に基づいています。</p>
+          <ul className="space-y-1.5 text-xs text-neutral-500">
+            <li>・石油備蓄254日分（IEA基準204日分）は国際的に充実した水準。実際にはIEA協調放出や代替ルート確保等の対応が取られる</li>
+            <li>・LNG在庫25日分は全量在庫であり、ホルムズ直接依存は6.3%（カタール+UAE）に限定される。ただし封鎖による保険料高騰・船舶退避は非依存ルートにも波及し得る</li>
+            <li>・火力発電65%の内訳はLNG29%+石炭28%+石油7%。石炭は豪州・インドネシアからの輸入でありホルムズ非依存だが、原油価格高騰によるエネルギー価格全般への波及は考慮</li>
+            <li>・シミュレーションには楽観/現実/悲観の3シナリオがあり、封鎖解除曲線・需要破壊・SPR放出メカニズムを含む</li>
+            <li>・Family Meterの計算式: 生存日数 = min(水÷3L人日, 食料日数, ガス÷30分人日, 電力÷50Wh人日)</li>
+          </ul>
+          <p className="text-xs text-neutral-600">ソースコードはAGPL-3.0で全量公開されており、計算ロジックは誰でも検証可能です。</p>
         </div>
       </div>
 
