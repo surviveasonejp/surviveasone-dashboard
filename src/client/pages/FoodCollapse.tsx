@@ -17,7 +17,7 @@ const CHAIN_STEPS = [
 ];
 
 export const FoodCollapse: FC = () => {
-  const regions = useCollapseOrder();
+  const { regions } = useCollapseOrder();
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
   const selectedRegion: RegionCollapse | null = useMemo(

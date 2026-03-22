@@ -9,7 +9,7 @@ import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 
 export const CollapseMap: FC = () => {
-  const regions = useCollapseOrder();
+  const { regions, loading: regionsLoading } = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
 
   return (
@@ -37,6 +37,7 @@ export const CollapseMap: FC = () => {
             regions={regions}
             onSelectRegion={setSelectedRegion}
             selectedId={selectedRegion?.id ?? null}
+            loading={regionsLoading}
           />
         </div>
         <div>

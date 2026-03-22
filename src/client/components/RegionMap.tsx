@@ -7,6 +7,7 @@ interface RegionMapProps {
   regions: RegionCollapse[];
   onSelectRegion: (region: RegionCollapse) => void;
   selectedId: string | null;
+  loading?: boolean;
 }
 
 interface PrefectureEntry {
@@ -50,18 +51,21 @@ function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boo
   return `${base}88`;
 }
 
-export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selectedId }) => {
+export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selectedId, loading = false }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const regionMap = useMemo(() => new Map(regions.map((r) => [r.id, r])), [regions]);
   const prefByRegion = useMemo(() => groupByRegion(), []);
 
-  /** 沖縄以外のエリアを描画 */
+  const isLoading = loading || regions.length === 0;
+  const LOADING_FILL = "#1e2a36";
+
   const renderRegion = (regionId: string, prefs: PrefectureEntry[]) => {
     const region = regionMap.get(regionId);
-    if (!region) return null;
     const isSelected = selectedId === regionId;
     const isHovered = hoveredId === regionId;
-    const fill = getRegionFill(region.collapseDays, isSelected, isHovered);
+    const fill = !region || isLoading
+      ? LOADING_FILL
+      : getRegionFill(region.collapseDays, isSelected, isHovered);
 
     return (
       <g
@@ -78,7 +82,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
             fill={fill}
             stroke={isSelected ? "#ffffff" : "#162029"}
             strokeWidth={isSelected ? 1.2 : 0.5}
-            className="transition-colors duration-200"
+            style={{ transition: "fill 0.4s ease, stroke 0.2s ease" }}
           />
         ))}
       </g>

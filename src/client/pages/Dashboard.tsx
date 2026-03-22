@@ -23,7 +23,7 @@ export const Dashboard: FC = () => {
     FALLBACK,
   );
   const countdowns = countdownData ?? FALLBACK;
-  const regions = useCollapseOrder(scenario);
+  const { regions } = useCollapseOrder(scenario);
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
   const { isFromApi } = useApiData<ReservesRow>("/api/reserves", null as unknown as ReservesRow);
 
