@@ -1,45 +1,45 @@
 {
   "meta": {
     "source": "サンプルデータ（実データはサーバー側で管理）",
-    "updatedAt": "2026-01-01",
-    "note": "このファイルはフォールバック表示用のサンプルです。正確な値はAPIから取得されます。"
+    "updatedAt": "2026-03-22",
+    "note": "このファイルはフォールバック表示用のサンプルです。正確な値はAPIから取得されます。船名は実在船舶名を使用"
   },
   "vessels": [
     {
-      "id": "vlcc-sample-01", "name": "SAMPLE VLCC A", "type": "VLCC",
-      "departure": "中東", "departurePort": "Ras Tanura",
-      "destination": "日本", "destinationPort": "Chiba",
-      "distanceToJapan_nm": 6500, "speed_knots": 12.0, "eta_days": 22.6,
-      "cargo_t": 280000, "cargoType": "原油", "status": "航行中",
+      "id": "vlcc-sample-01", "name": "TATESHINA", "type": "VLCC",
+      "departure": "中東（サウジアラビア）", "departurePort": "Ras Tanura",
+      "destination": "千葉", "destinationPort": "Chiba",
+      "distanceToJapan_nm": 6610, "speed_knots": 12.2, "eta_days": 22.6,
+      "cargo_t": 312000, "cargoType": "原油", "status": "航行中",
       "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "サンプル値"
+      "note": "サンプル値（日本郵船VLCC）"
     },
     {
-      "id": "vlcc-sample-02", "name": "SAMPLE VLCC B", "type": "VLCC",
-      "departure": "中東", "departurePort": "Fujairah",
-      "destination": "日本", "destinationPort": "Mizushima",
-      "distanceToJapan_nm": 6200, "speed_knots": 12.5, "eta_days": 20.7,
-      "cargo_t": 280000, "cargoType": "原油", "status": "航行中",
-      "arrivalProbability": { "insurance": 0.8, "route": 0.95, "military": 0.9, "combined": 0.68 },
-      "note": "サンプル値"
+      "id": "vlcc-sample-02", "name": "TAKASAGO", "type": "VLCC",
+      "departure": "中東（UAE）", "departurePort": "Fujairah",
+      "destination": "水島", "destinationPort": "Mizushima",
+      "distanceToJapan_nm": 6300, "speed_knots": 12.5, "eta_days": 21.0,
+      "cargo_t": 312000, "cargoType": "原油", "status": "航行中",
+      "arrivalProbability": { "insurance": 0.8, "route": 0.95, "military": 0.9, "combined": 0.684 },
+      "note": "サンプル値（日本郵船VLCC）"
     },
     {
-      "id": "lng-sample-01", "name": "SAMPLE LNG A", "type": "LNG",
-      "departure": "豪州", "departurePort": "Gladstone",
-      "destination": "日本", "destinationPort": "Futtsu",
-      "distanceToJapan_nm": 3800, "speed_knots": 18.5, "eta_days": 8.6,
-      "cargo_t": 170000, "cargoType": "LNG", "status": "航行中",
-      "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.88 },
-      "note": "サンプル値"
+      "id": "lng-sample-01", "name": "QUEST KIRISHIMA", "type": "LNG",
+      "departure": "豪州（QLD）", "departurePort": "Gladstone",
+      "destination": "富津", "destinationPort": "Futtsu",
+      "distanceToJapan_nm": 3850, "speed_knots": 19.0, "eta_days": 8.4,
+      "cargo_t": 174000, "cargoType": "LNG", "status": "航行中",
+      "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
+      "note": "サンプル値（日本郵船LNG船）"
     },
     {
-      "id": "lng-sample-02", "name": "SAMPLE LNG B", "type": "LNG",
-      "departure": "東南アジア", "departurePort": "Bintulu",
-      "destination": "日本", "destinationPort": "Chita",
-      "distanceToJapan_nm": 3000, "speed_knots": 18.0, "eta_days": 6.9,
-      "cargo_t": 150000, "cargoType": "LNG", "status": "航行中",
+      "id": "lng-sample-02", "name": "MARVEL EAGLE", "type": "LNG",
+      "departure": "東南アジア（マレーシア）", "departurePort": "Bintulu",
+      "destination": "知多", "destinationPort": "Chita",
+      "distanceToJapan_nm": 3100, "speed_knots": 18.0, "eta_days": 7.2,
+      "cargo_t": 155000, "cargoType": "LNG", "status": "航行中",
       "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.9, "combined": 0.77 },
-      "note": "サンプル値"
+      "note": "サンプル値（商船三井LNG船）"
     }
   ]
 }

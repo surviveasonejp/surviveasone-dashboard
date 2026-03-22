@@ -1,15 +1,25 @@
 {
   "meta": {
-    "source": "模擬データ（Phase 2でMarineTraffic AIS連携予定）",
-    "updatedAt": "2026-03-21",
+    "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
+    "updatedAt": "2026-03-22",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
-    "speedSource": "VLCC: 2025年AIS実運航データ平均12.0-12.5kn(laden)。LNG: DFDE船18-19kn、ST船14-16kn",
-    "note": "距離はマラッカ海峡経由の標準航路。速度はladen(積荷)状態の実運航値。eta_daysは距離÷(速度×24)で算出。VLCCはマラッカマックス型(30万DWT)を想定"
+    "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, Hellenic Shipping News, 各社プレスリリース）から取得",
+    "note": "Phase 3初期スコープ: 8-12隻の指定船舶 + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。距離はマラッカ/ロンボク海峡経由の標準航路"
   },
+  "chokepoints": [
+    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存" },
+    { "id": "malacca", "name": "マラッカ海峡", "lat": 2.500, "lon": 101.800, "note": "全長約800km、最狭部2.8km。日量1,600万バレル。VLCCアジア向け主要航路" },
+    { "id": "lombok", "name": "ロンボク海峡", "lat": -8.500, "lon": 115.700, "note": "マラッカ代替航路（深喫水VLCC対応）。バリ-ロンボク間" },
+    { "id": "babel", "name": "バベルマンデブ海峡", "lat": 12.583, "lon": 43.333, "note": "幅26km。紅海入口。日量600万バレル。スエズ経由代替ルート" },
+    { "id": "tsugaru", "name": "津軽海峡", "lat": 41.650, "lon": 140.800, "note": "本州-北海道間。サハリンLNG北九州向け航路。ロシア海軍の通過あり" },
+    { "id": "panama", "name": "パナマ運河", "lat": 9.080, "lon": -79.680, "note": "ネオパナマックス閘門。米国LNG太平洋向け航路。船型制限あり" },
+    { "id": "good-hope", "name": "喜望峰", "lat": -34.357, "lon": 18.474, "note": "スエズ/バベルマンデブ迂回ルート。紅海リスク時の代替（+10-15日）" }
+  ],
   "vessels": [
     {
       "id": "vlcc-01",
-      "name": "ENEOS OCEAN",
+      "name": "TATESHINA",
       "type": "VLCC",
       "departure": "ラスタヌラ（サウジアラビア）",
       "departurePort": "Ras Tanura",
@@ -18,15 +28,15 @@
       "distanceToJapan_nm": 6610,
       "speed_knots": 12.2,
       "eta_days": 22.6,
-      "cargo_t": 300000,
+      "cargo_t": 312000,
       "cargoType": "原油（アラビアンライト）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "SeaRoutes: ラスタヌラ→横浜 6,610NM。VLCC laden平均12.2kn(2025年AIS)"
+      "note": "日本郵船VLCC。IMO 9858042。311,979DWT。NACKS建造(2021)。LOA 339.5m。ClassNK初のサイバーレジリエンス認証船"
     },
     {
       "id": "vlcc-02",
-      "name": "IDEMITSU MARU",
+      "name": "NISSHO MARU",
       "type": "VLCC",
       "departure": "ジュベイル（サウジアラビア）",
       "departurePort": "Jubail",
@@ -39,11 +49,11 @@
       "cargoType": "原油（アラビアンミディアム）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "ジュベイルはラスタヌラより約90NM北。出光タンカー運航想定"
+      "note": "出光タンカーVLCC。IMO 9274710。~300,000DWT。IHI Marine United建造(2004)。2021年日本初カーボンニュートラル中東往復達成"
     },
     {
       "id": "vlcc-03",
-      "name": "COSMO VENUS",
+      "name": "KAZUSA",
       "type": "VLCC",
       "departure": "ハルグ島（イラン）",
       "departurePort": "Kharg Island",
@@ -52,15 +62,15 @@
       "distanceToJapan_nm": 6800,
       "speed_knots": 12.3,
       "eta_days": 23.0,
-      "cargo_t": 280000,
+      "cargo_t": 300000,
       "cargoType": "原油（イラニアンヘビー）",
       "status": "荷積中",
       "arrivalProbability": { "insurance": 0.2, "route": 0.3, "military": 0.3, "combined": 0.018 },
-      "note": "ハルグ島→堺(関西)。ports.com: ラスタヌラ→大阪7,529NMだがハルグ島は湾奥のため短縮"
+      "note": "商船三井VLCC。IMO 9397022。~300,000DWT。ハルグ島はペルシャ湾奥のためホルムズ依存度最大"
     },
     {
       "id": "vlcc-04",
-      "name": "NYK PHOENIX",
+      "name": "TAKASAGO",
       "type": "VLCC",
       "departure": "フジャイラ（UAE）",
       "departurePort": "Fujairah",
@@ -69,32 +79,49 @@
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.5,
       "eta_days": 21.0,
-      "cargo_t": 300000,
+      "cargo_t": 312000,
       "cargoType": "原油（ムルバンブレンド）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.8, "route": 0.95, "military": 0.9, "combined": 0.684 },
-      "note": "フジャイラはホルムズ海峡外。日本郵船VLCC22隻運航(2025年)"
+      "note": "日本郵船VLCC。IMO 9858054。~312,000DWT。NACKS建造(2022)。TATESHINAの姉妹船。フジャイラはホルムズ海峡外のため封鎖時も出港可能"
+    },
+    {
+      "id": "vlcc-05",
+      "name": "HAKATA",
+      "type": "VLCC",
+      "departure": "バスラ（イラク）",
+      "departurePort": "Basrah",
+      "destination": "喜入",
+      "destinationPort": "Kiire",
+      "distanceToJapan_nm": 6900,
+      "speed_knots": 12.1,
+      "eta_days": 23.8,
+      "cargo_t": 302000,
+      "cargoType": "原油（バスラミディアム）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.25, "route": 0.45, "military": 0.35, "combined": 0.039 },
+      "note": "出光タンカーVLCC。IMO 9473592。~302,000DWT。Universal Shipbuilding建造(2011)。日本船籍。喜入はENEOS最大原油備蓄基地"
     },
     {
       "id": "lng-01",
-      "name": "LNG SAKURA",
+      "name": "QUEST KIRISHIMA",
       "type": "LNG",
-      "departure": "グラッドストン（豪州）",
+      "departure": "グラッドストン（豪州QLD）",
       "departurePort": "Gladstone",
       "destination": "富津",
       "destinationPort": "Futtsu",
       "distanceToJapan_nm": 3850,
-      "speed_knots": 18.5,
-      "eta_days": 8.7,
-      "cargo_t": 177000,
+      "speed_knots": 19.0,
+      "eta_days": 8.4,
+      "cargo_t": 174000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
-      "note": "豪州→日本はLNG最大供給源(39.7%)。DFDE船18-19kn。Q-Flex型177,000m3"
+      "note": "日本郵船LNG船。IMO 9938250。174,000m3。Samsung HI建造(2024)。豪州は日本LNG最大供給源(37-38%)"
     },
     {
       "id": "lng-02",
-      "name": "PACIFIC BREEZE",
+      "name": "MARVEL EAGLE",
       "type": "LNG",
       "departure": "ビンツル（マレーシア）",
       "departurePort": "Bintulu",
@@ -107,7 +134,7 @@
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.9, "combined": 0.77 },
-      "note": "マレーシアは日本LNG輸入2位(14.8%)。ビンツル→上越3,099NM(ports.com)参考"
+      "note": "商船三井LNG船。IMO 9806837。155,000m3(MOSS型)。川崎重工坂出建造(2018)。マレーシアは日本LNG輸入2位(14.8%)"
     },
     {
       "id": "lng-03",
@@ -124,24 +151,75 @@
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.7, "route": 0.9, "military": 0.8, "combined": 0.504 },
-      "note": "サハリンII LNGプラント。日本はサハリンLNGの56.4%を購入。宗谷海峡経由"
+      "note": "サハリンII LNG船。IMO 9305064。145,000m3。サハリン→北九州は最短ルート(2-3日)。地政学リスクあり(ロシア制裁影響)"
     },
     {
       "id": "lng-04",
-      "name": "AL DAFNA",
+      "name": "SHARQ",
       "type": "LNG",
       "departure": "ラスラファン（カタール）",
       "departurePort": "Ras Laffan",
       "destination": "姫路",
       "destinationPort": "Himeji",
       "distanceToJapan_nm": 7530,
-      "speed_knots": 19.0,
-      "eta_days": 16.5,
-      "cargo_t": 210000,
+      "speed_knots": 19.5,
+      "eta_days": 16.1,
+      "cargo_t": 174000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.2, "route": 0.4, "military": 0.3, "combined": 0.024 },
-      "note": "カタールはホルムズ依存LNG(5.3%)。ports.com: ラスラファン→大阪7,529NM。Q-Max型210,000m3"
+      "note": "QatarEnergy/NYK/K Line/MISC JV LNG船。IMO 9939784。174,000m3。HD Hyundai HHI蔚山建造(2025)。NFEプロジェクト向け。ホルムズ依存"
+    },
+    {
+      "id": "lng-05",
+      "name": "ENERGY NAVIGATOR",
+      "type": "LNG",
+      "departure": "サビンパス（米国テキサス）",
+      "departurePort": "Sabine Pass",
+      "destination": "袖ケ浦",
+      "destinationPort": "Sodegaura",
+      "distanceToJapan_nm": 9500,
+      "speed_knots": 19.0,
+      "eta_days": 20.8,
+      "cargo_t": 155000,
+      "cargoType": "LNG",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.85, "route": 0.9, "military": 0.95, "combined": 0.727 },
+      "note": "商船三井LNG船。IMO 9247065。155,000m3(MOSS型)。川崎重工坂出建造(2003)。Best Quality Ship Award 2023。パナマ運河経由。米国LNGシェア9-10%"
+    },
+    {
+      "id": "lng-06",
+      "name": "ELISA HALCYON",
+      "type": "LNG",
+      "departure": "ダンピア（豪州WA）",
+      "departurePort": "Dampier",
+      "destination": "堺",
+      "destinationPort": "Sakai",
+      "distanceToJapan_nm": 3600,
+      "speed_knots": 19.0,
+      "eta_days": 7.9,
+      "cargo_t": 174000,
+      "cargoType": "LNG",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
+      "note": "日本郵船LNG船。IMO 9929854。174,000m3。Hyundai Samho HI建造(2024)。EDF LNG Shippingチャーター。NW Shelf/Plutoプロジェクト向け"
+    },
+    {
+      "id": "lng-07",
+      "name": "AL ZUWAIR",
+      "type": "LNG",
+      "departure": "ボンタン（インドネシア）",
+      "departurePort": "Bontang",
+      "destination": "富津",
+      "destinationPort": "Futtsu",
+      "distanceToJapan_nm": 3200,
+      "speed_knots": 19.0,
+      "eta_days": 7.0,
+      "cargo_t": 174000,
+      "cargoType": "LNG",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.9, "combined": 0.77 },
+      "note": "QatarEnergy/NYK JV LNG船。IMO 9939801。174,000m3。HD Hyundai HHI蔚山建造(2025)。NFE 12隻中3番船。インドネシアBadak LNG積出"
     }
   ]
 }
