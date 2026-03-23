@@ -185,6 +185,41 @@ export const Methodology: FC = () => {
         </ul>
       </div>
 
+      {/* 引用フォーマット */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">引用・参照</h2>
+        <p className="text-neutral-500 text-xs">
+          本シミュレーションを論文・レポート・記事等で参照する場合、以下のフォーマットを使用してください。
+        </p>
+        <div className="space-y-3">
+          <div>
+            <div className="text-[10px] font-mono text-neutral-600 mb-1">APA</div>
+            <code className="block text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 select-all">
+              Survive as One Japan. (2026). Hormuz Strait blockade energy simulation for Japan. https://surviveasonejp.org
+            </code>
+          </div>
+          <div>
+            <div className="text-[10px] font-mono text-neutral-600 mb-1">BibTeX</div>
+            <pre className="text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 overflow-x-auto select-all">
+{`@misc{surviveasonejp2026,
+  title  = {Survive as One Japan: Hormuz Strait
+            Blockade Energy Simulation},
+  author = {idx},
+  year   = {2026},
+  url    = {https://surviveasonejp.org},
+  note   = {AGPL-3.0, API: surviveasonejp.net/api}
+}`}
+            </pre>
+          </div>
+          <div>
+            <div className="text-[10px] font-mono text-neutral-600 mb-1">API経由のデータ引用</div>
+            <code className="block text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 select-all">
+              Survive as One Japan API (https://surviveasonejp.net/api/simulate?scenario=realistic), accessed {new Date().toISOString().slice(0, 10)}.
+            </code>
+          </div>
+        </div>
+      </div>
+
       {/* 検証への招待 */}
       <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">検証と貢献</h2>

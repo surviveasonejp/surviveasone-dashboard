@@ -11,7 +11,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://surviveasonejp.org/" />
     <meta property="og:title" content="日本のエネルギーが尽きるまで — Survive as One" />
-    <meta property="og:description" content="石油の94%は中東依存、全量がホルムズ海峡を通る。石油備蓄254日、LNG在庫25日。火力発電65%への影響を全国10エリア別に可視化し、あなたの家庭の生存日数を算出する戦術ダッシュボード。" />
+    <meta property="og:description" content="石油の94%は中東依存、うち93%がホルムズ海峡を通過。石油備蓄241日、LNG在庫25日。火力発電65%への影響を全国10エリア別に可視化し、あなたの家庭の生存日数を算出する戦術ダッシュボード。" />
     <meta property="og:image" content="https://surviveasonejp.org/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -31,13 +31,44 @@
       "@type": "WebApplication",
       "name": "Survive as One Japan",
       "url": "https://surviveasonejp.org",
-      "description": "ホルムズ海峡経由の供給途絶時、日本のエネルギー崩壊タイムラインを可視化する戦術ダッシュボード。石油備蓄254日分、LNG在庫25日分、火力発電65%への影響を全国10エリア別にシミュレーション。",
+      "description": "ホルムズ海峡封鎖時、日本のエネルギー・食料・水道の連鎖崩壊タイムラインを可視化。石油備蓄241日分、LNG在庫25日分、火力発電65%への影響を全国10エリア別にシミュレーション。11の計算モデルと3シナリオで分析。",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "All",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
       "author": { "@type": "Person", "name": "idx", "url": "https://github.com/idx" },
       "license": "https://www.gnu.org/licenses/agpl-3.0.html",
       "inLanguage": "ja"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "Japan Energy Reserve Simulation Data",
+      "description": "日本のホルムズ海峡封鎖シナリオにおけるエネルギー備蓄・消費・崩壊シミュレーションデータ。石油備蓄、LNG在庫、電力需給、食料サプライチェーンを含む。",
+      "url": "https://surviveasonejp.net/api",
+      "license": "https://www.gnu.org/licenses/agpl-3.0.html",
+      "creator": { "@type": "Person", "name": "idx", "url": "https://github.com/idx" },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://surviveasonejp.net/api/reserves"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://surviveasonejp.net/api/simulation?scenario=realistic"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "text/plain",
+          "contentUrl": "https://surviveasonejp.net/api/summary"
+        }
+      ],
+      "temporalCoverage": "2024/..",
+      "spatialCoverage": { "@type": "Place", "name": "Japan" },
+      "keywords": ["石油備蓄", "LNG", "エネルギー安全保障", "ホルムズ海峡", "シミュレーション", "日本"]
     }
     </script>
     <link rel="manifest" href="/manifest.json" />
@@ -66,7 +97,7 @@
         <h2 style="font-size:1rem;margin-top:1.5rem;">エネルギー依存構造</h2>
         <ul>
           <li>石油輸入の<strong style="color:#f59e0b;">94%</strong>が中東依存（全量がホルムズ海峡を通過）</li>
-          <li>石油備蓄: <strong style="color:#f59e0b;">254日分</strong>（国家146日+民間101日+産油国共同7日 — 資源エネルギー庁2025年12月末）</li>
+          <li>石油備蓄: <strong style="color:#f59e0b;">241日分</strong>（国家146日+民間89日+産油国共同6日 — 経産省2026年3月20日推計）</li>
           <li>LNG在庫: <strong>約25日分</strong>（ホルムズ直接依存は6.3%。主要輸入先: 豪州39.7%、マレーシア14.8% — JETRO 2025年）</li>
           <li>火力発電比率: <strong>65%</strong>（LNG29% + 石炭28% + 石油7% — ISEP 2024年暦年速報）</li>
           <li>原子力: 14基稼働中（関西7基/九州4基/四国1基/東北1基/中国1基 — 原子力規制委員会）</li>
@@ -119,7 +150,7 @@
 
         <h2 style="font-size:1rem;margin-top:1.5rem;">データソース（全て公開データ）</h2>
         <ul style="font-size:0.85rem;color:#999;">
-          <li>資源エネルギー庁 石油備蓄統計（2025年12月末）</li>
+          <li>経産省 石油備蓄推計量（2026年3月20日時点）</li>
           <li>ISEP 電力調査統計（2024年暦年速報）</li>
           <li>JETRO / 財務省 貿易統計（2025年実績）</li>
           <li>OCCTO 電力広域的運営推進機関（連系線運用容量2025年度）</li>
