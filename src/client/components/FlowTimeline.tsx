@@ -7,19 +7,21 @@ interface FlowTimelineProps {
   scenarioId: ScenarioId;
 }
 
-const THRESHOLD_COLORS: Record<string, string> = {
-  price_spike: "#94a3b8",
-  rationing: "#f59e0b",
-  distribution: "#ef4444",
-  stop: "#ef4444",
-  water_pressure: "#3b82f6",
-  water_cutoff: "#2563eb",
-  water_sanitation: "#1d4ed8",
-};
-
 const RESOURCE_COLORS = {
   oil: "#f59e0b",
   lng: "#94a3b8",
+  power: "#ef4444",
+  water: "#3b82f6",
+};
+
+const EVENT_ICON: Record<string, string> = {
+  price_spike: "△",
+  rationing: "▽",
+  distribution: "◆",
+  stop: "■",
+  water_pressure: "〜",
+  water_cutoff: "✕",
+  water_sanitation: "☠",
 };
 
 // 崩壊フェーズの背景帯
@@ -27,12 +29,11 @@ const PHASE_BANDS: Array<{
   minPct: number;
   maxPct: number;
   color: string;
-  label: string;
 }> = [
-  { minPct: 50, maxPct: 100, color: "#22c55e08", label: "" },
-  { minPct: 30, maxPct: 50, color: "#94a3b808", label: "価格暴騰" },
-  { minPct: 10, maxPct: 30, color: "#f59e0b10", label: "供給制限" },
-  { minPct: 0, maxPct: 10, color: "#ef444415", label: "配給制" },
+  { minPct: 50, maxPct: 100, color: "#22c55e08" },
+  { minPct: 30, maxPct: 50, color: "#94a3b810" },
+  { minPct: 10, maxPct: 30, color: "#f59e0b12" },
+  { minPct: 0, maxPct: 10, color: "#ef444418" },
 ];
 
 const EMPTY_RESULT: FlowSimulationResult = {
@@ -52,7 +53,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
 
   const samples = useMemo(() => {
     if (result.timeline.length === 0) return [];
-    const step = Math.max(1, Math.floor(result.timeline.length / 120));
+    const step = Math.max(1, Math.floor(result.timeline.length / 150));
     return result.timeline.filter((_, i) => i % step === 0 || i === result.timeline.length - 1);
   }, [result]);
 
@@ -79,13 +80,16 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
     return markers;
   }, [totalDays]);
 
-  // 閾値イベントをリソース別にグループ化
-  const oilEvents = result.thresholds.filter((t) => t.resource === "oil");
-  const lngEvents = result.thresholds.filter((t) => t.resource === "lng");
-  const powerEvents = result.thresholds.filter((t) => t.resource === "power");
+  // イベントを時系列でソート（歴史マーカー除外）
+  const sortedEvents = useMemo(() =>
+    result.thresholds
+      .filter((t) => t.stockPercent >= 0)
+      .sort((a, b) => a.day - b.day),
+    [result],
+  );
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <div className="text-xs font-mono text-neutral-500 tracking-wider">
@@ -104,7 +108,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
       </div>
 
       {/* 統合チャート */}
-      <CombinedChart
+      <StockChart
         samples={samples}
         maxOil={maxOil}
         maxLng={maxLng}
@@ -112,51 +116,34 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
         monthMarkers={monthMarkers}
         oilDepletionDay={result.oilDepletionDay}
         lngDepletionDay={result.lngDepletionDay}
+        events={sortedEvents}
       />
 
-      {/* イベントタイムライン */}
-      <div className="space-y-1.5">
-        <EventRow resource="oil" label="石油" events={oilEvents} depletionDay={result.oilDepletionDay} totalDays={totalDays} />
-        <EventRow resource="lng" label="LNG" events={lngEvents} depletionDay={result.lngDepletionDay} totalDays={totalDays} />
-        <EventRow resource="power" label="電力" events={powerEvents} depletionDay={result.powerCollapseDay} totalDays={totalDays} />
-      </div>
-
-      {/* イベント凡例 */}
-      {result.thresholds.length > 0 && (
-        <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-[8px] font-mono text-neutral-400 pt-1">
-          {result.thresholds
-            .filter((t) => t.stockPercent >= 0)
-            .map((ev, i) => {
-              const evColor = THRESHOLD_COLORS[ev.type] ?? "#888";
-              return (
-                <div key={i} className="flex items-center gap-1.5 min-w-0">
-                  <span
-                    className="inline-block w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: evColor }}
-                  />
-                  <span className="truncate">
-                    <span style={{ color: evColor }}>{ev.day}日</span>
-                    {" "}{ev.label}
-                  </span>
-                </div>
-              );
-            })}
-        </div>
-      )}
-
-      {/* サマリー */}
+      {/* サマリー（3カラム） */}
       <div className="grid grid-cols-3 gap-2 text-center">
         <SummaryBox label="石油枯渇" days={result.oilDepletionDay} color={RESOURCE_COLORS.oil} totalDays={totalDays} />
         <SummaryBox label="LNG枯渇" days={result.lngDepletionDay} color={RESOURCE_COLORS.lng} totalDays={totalDays} />
-        <SummaryBox label="電力崩壊" days={result.powerCollapseDay} color="#ef4444" totalDays={totalDays} />
+        <SummaryBox label="電力崩壊" days={result.powerCollapseDay} color={RESOURCE_COLORS.power} totalDays={totalDays} />
       </div>
+
+      {/* イベントタイムライン（縦リスト） */}
+      {sortedEvents.length > 0 && (
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
+            EVENT TIMELINE
+          </div>
+          {sortedEvents.map((ev, i) => (
+            <EventItem key={i} event={ev} totalDays={totalDays} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-// ─── 統合チャート ────────────────────────────────────
+// ─── 在庫チャート ────────────────────────────────────
 
-interface CombinedChartProps {
+interface StockChartProps {
   samples: Array<{ day: number; oilStock_kL: number; lngStock_t: number }>;
   maxOil: number;
   maxLng: number;
@@ -164,9 +151,10 @@ interface CombinedChartProps {
   monthMarkers: Array<{ day: number; label: string }>;
   oilDepletionDay: number;
   lngDepletionDay: number;
+  events: ThresholdEvent[];
 }
 
-const CombinedChart: FC<CombinedChartProps> = ({
+const StockChart: FC<StockChartProps> = ({
   samples,
   maxOil,
   maxLng,
@@ -174,11 +162,12 @@ const CombinedChart: FC<CombinedChartProps> = ({
   monthMarkers,
   oilDepletionDay,
   lngDepletionDay,
+  events,
 }) => {
   const viewW = 400;
-  const viewH = 160;
-  const padTop = 8;
-  const padBottom = 18;
+  const viewH = 200;
+  const padTop = 12;
+  const padBottom = 20;
   const padLeft = 36;
   const padRight = 8;
   const chartW = viewW - padLeft - padRight;
@@ -187,48 +176,37 @@ const CombinedChart: FC<CombinedChartProps> = ({
   const toX = (day: number) => padLeft + (day / totalDays) * chartW;
   const toY = (ratio: number) => padTop + chartH - Math.min(ratio, 1) * chartH;
 
-  // 石油ライン
+  // 石油パス
   const oilPoints = samples
     .map((s) => `${toX(s.day)},${toY(s.oilStock_kL / maxOil)}`)
     .join(" ");
   const oilAreaPoints = `${toX(samples[0]?.day ?? 0)},${toY(0)} ${oilPoints} ${toX(samples[samples.length - 1]?.day ?? totalDays)},${toY(0)}`;
 
-  // LNGライン
+  // LNGパス
   const lngPoints = samples
     .map((s) => `${toX(s.day)},${toY(s.lngStock_t / maxLng)}`)
     .join(" ");
   const lngAreaPoints = `${toX(samples[0]?.day ?? 0)},${toY(0)} ${lngPoints} ${toX(samples[samples.length - 1]?.day ?? totalDays)},${toY(0)}`;
 
+  // チャート内イベントマーカー（主要イベントのみ）
+  const majorEvents = events.filter(
+    (e) => e.type === "rationing" || e.type === "distribution" || e.type === "stop" || e.type === "water_cutoff",
+  );
+
   return (
-    <svg viewBox={`0 0 ${viewW} ${viewH}`} className="w-full" style={{ height: "clamp(140px, 25vw, 200px)" }}>
+    <svg viewBox={`0 0 ${viewW} ${viewH}`} className="w-full" style={{ height: "clamp(160px, 30vw, 240px)" }}>
       {/* 崩壊フェーズ背景帯 */}
       {PHASE_BANDS.map((band) => {
         const y1 = toY(band.maxPct / 100);
         const y2 = toY(band.minPct / 100);
         return (
           <g key={band.minPct}>
-            <rect
-              x={padLeft}
-              y={y1}
-              width={chartW}
-              height={y2 - y1}
-              fill={band.color}
-            />
-            {band.label && (
-              <text
-                x={padLeft + 3}
-                y={y1 + (y2 - y1) / 2 + 2}
-                className="text-[5px] font-mono"
-                fill="#ffffff18"
-              >
-                {band.label}
-              </text>
-            )}
+            <rect x={padLeft} y={y1} width={chartW} height={y2 - y1} fill={band.color} />
           </g>
         );
       })}
 
-      {/* Y軸ラベル（%） */}
+      {/* Y軸 */}
       {[100, 50, 30, 10, 0].map((pct) => (
         <g key={pct}>
           <line
@@ -244,7 +222,7 @@ const CombinedChart: FC<CombinedChartProps> = ({
             x={padLeft - 3}
             y={toY(pct / 100) + 2}
             textAnchor="end"
-            className="text-[5px] font-mono"
+            className="text-[6px] font-mono"
             fill="#555"
           >
             {pct}%
@@ -252,7 +230,7 @@ const CombinedChart: FC<CombinedChartProps> = ({
         </g>
       ))}
 
-      {/* X軸ラベル（月） */}
+      {/* X軸（月） */}
       {monthMarkers.map((m) => (
         <g key={m.day}>
           <line
@@ -267,7 +245,7 @@ const CombinedChart: FC<CombinedChartProps> = ({
             x={toX(m.day)}
             y={viewH - 4}
             textAnchor="middle"
-            className="text-[5px] font-mono"
+            className="text-[6px] font-mono"
             fill="#555"
           >
             {m.label}
@@ -275,141 +253,135 @@ const CombinedChart: FC<CombinedChartProps> = ({
         </g>
       ))}
 
-      {/* 石油エリアフィル + ライン */}
-      <polygon points={oilAreaPoints} fill={`${RESOURCE_COLORS.oil}15`} />
-      <polyline points={oilPoints} fill="none" stroke={RESOURCE_COLORS.oil} strokeWidth="1.2" />
+      {/* 石油 */}
+      <polygon points={oilAreaPoints} fill={`${RESOURCE_COLORS.oil}18`} />
+      <polyline points={oilPoints} fill="none" stroke={RESOURCE_COLORS.oil} strokeWidth="1.5" />
 
-      {/* LNGエリアフィル + ライン */}
-      <polygon points={lngAreaPoints} fill={`${RESOURCE_COLORS.lng}12`} />
-      <polyline points={lngPoints} fill="none" stroke={RESOURCE_COLORS.lng} strokeWidth="1.2" />
+      {/* LNG */}
+      <polygon points={lngAreaPoints} fill={`${RESOURCE_COLORS.lng}14`} />
+      <polyline points={lngPoints} fill="none" stroke={RESOURCE_COLORS.lng} strokeWidth="1.5" />
+
+      {/* イベントマーカー（主要イベントのみチャート上に表示） */}
+      {majorEvents.map((ev, i) => {
+        const x = toX(ev.day);
+        const resourceColor = RESOURCE_COLORS[ev.resource as keyof typeof RESOURCE_COLORS] ?? "#ef4444";
+        return (
+          <g key={i}>
+            <line
+              x1={x} y1={padTop} x2={x} y2={padTop + chartH}
+              stroke={resourceColor}
+              strokeWidth="0.6"
+              strokeDasharray="2 3"
+              opacity="0.5"
+            />
+            <circle cx={x} cy={padTop + 6} r="3" fill={resourceColor} opacity="0.8" />
+            <text
+              x={x}
+              y={padTop + 8}
+              textAnchor="middle"
+              className="text-[4px] font-mono font-bold"
+              fill="#0f1419"
+            >
+              {ev.day}
+            </text>
+          </g>
+        );
+      })}
 
       {/* 枯渇日マーカー */}
       {oilDepletionDay < totalDays && (
         <g>
           <line
-            x1={toX(oilDepletionDay)}
-            y1={padTop}
-            x2={toX(oilDepletionDay)}
-            y2={padTop + chartH}
-            stroke={RESOURCE_COLORS.oil}
-            strokeWidth="0.8"
-            strokeDasharray="3 2"
+            x1={toX(oilDepletionDay)} y1={padTop}
+            x2={toX(oilDepletionDay)} y2={padTop + chartH}
+            stroke={RESOURCE_COLORS.oil} strokeWidth="1" strokeDasharray="4 2"
           />
           <text
             x={toX(oilDepletionDay)}
-            y={padTop - 2}
+            y={padTop - 3}
             textAnchor="middle"
-            className="text-[5px] font-mono font-bold"
+            className="text-[6px] font-mono font-bold"
             fill={RESOURCE_COLORS.oil}
           >
-            石油枯渇 Day {oilDepletionDay}
+            石油枯渇 {oilDepletionDay}日
           </text>
         </g>
       )}
       {lngDepletionDay < totalDays && (
         <g>
           <line
-            x1={toX(lngDepletionDay)}
-            y1={padTop}
-            x2={toX(lngDepletionDay)}
-            y2={padTop + chartH}
-            stroke={RESOURCE_COLORS.lng}
-            strokeWidth="0.8"
-            strokeDasharray="3 2"
+            x1={toX(lngDepletionDay)} y1={padTop}
+            x2={toX(lngDepletionDay)} y2={padTop + chartH}
+            stroke={RESOURCE_COLORS.lng} strokeWidth="1" strokeDasharray="4 2"
           />
           <text
             x={toX(lngDepletionDay)}
-            y={padTop + chartH + 10}
+            y={padTop + chartH + 12}
             textAnchor="middle"
-            className="text-[5px] font-mono font-bold"
+            className="text-[6px] font-mono font-bold"
             fill={RESOURCE_COLORS.lng}
           >
-            LNG枯渇 Day {lngDepletionDay}
+            LNG枯渇 {lngDepletionDay}日
           </text>
         </g>
       )}
 
       {/* チャート枠 */}
       <rect
-        x={padLeft}
-        y={padTop}
-        width={chartW}
-        height={chartH}
-        fill="none"
-        stroke="#1e2a36"
-        strokeWidth="0.5"
+        x={padLeft} y={padTop}
+        width={chartW} height={chartH}
+        fill="none" stroke="#1e2a36" strokeWidth="0.5"
       />
     </svg>
   );
 };
 
-// ─── イベントタイムライン行 ─────────────────────────
+// ─── イベントアイテム ────────────────────────────────
 
-interface EventRowProps {
-  resource: string;
-  label: string;
-  events: ThresholdEvent[];
-  depletionDay: number;
+interface EventItemProps {
+  event: ThresholdEvent;
   totalDays: number;
 }
 
-const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, totalDays }) => {
-  const color = resource === "oil" ? RESOURCE_COLORS.oil : resource === "lng" ? RESOURCE_COLORS.lng : "#ef4444";
+const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
+  const resourceColor = RESOURCE_COLORS[event.resource as keyof typeof RESOURCE_COLORS] ?? "#888";
+  const icon = EVENT_ICON[event.type] ?? "●";
+  const pct = Math.min((event.day / totalDays) * 100, 100);
+
+  const resourceLabel =
+    event.resource === "oil" ? "石油" :
+    event.resource === "lng" ? "LNG" :
+    event.resource === "power" ? "電力" :
+    event.resource === "water" ? "水道" : "";
 
   return (
-    <div className="flex items-center gap-2">
-      <div className="text-[10px] font-mono w-8 shrink-0" style={{ color }}>
-        {label}
+    <div className="flex items-center gap-2 group">
+      {/* 日数 */}
+      <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
+        {event.day}<span className="text-[9px] font-normal text-neutral-600">日</span>
       </div>
-      <div className="relative flex-1 h-5 bg-[#0f1419] rounded overflow-hidden group">
-        {/* 進行バー */}
+      {/* アイコン + バー */}
+      <div className="relative flex-1 h-6 bg-[#0c1018] rounded overflow-hidden">
         <div
           className="absolute inset-y-0 left-0 rounded-l"
           style={{
-            width: `${Math.min((depletionDay / totalDays) * 100, 100)}%`,
-            background: `linear-gradient(90deg, ${color}30, ${color}08)`,
+            width: `${pct}%`,
+            background: `linear-gradient(90deg, ${resourceColor}25, ${resourceColor}08)`,
           }}
         />
-        {/* イベントマーカー（ドット＋ホバーでツールチップ） */}
-        {events.map((ev, i) => {
-          const evColor = THRESHOLD_COLORS[ev.type] ?? color;
-          const shortLabel = ev.label.replace(/^(石油|LNG|電力|石化)\s*/, "");
-          return (
-            <div
-              key={i}
-              className="absolute top-0 h-full"
-              style={{ left: `${(ev.day / totalDays) * 100}%` }}
-              title={`Day ${ev.day} — ${shortLabel}`}
-            >
-              <div
-                className="w-px h-full opacity-60"
-                style={{ backgroundColor: evColor }}
-              />
-              <div
-                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full border border-[#0f1419]"
-                style={{ backgroundColor: evColor }}
-              />
-              <span
-                className="absolute left-1.5 top-0.5 text-[7px] font-mono whitespace-nowrap leading-tight opacity-80"
-                style={{ color: evColor }}
-              >
-                {ev.day}d
-              </span>
-            </div>
-          );
-        })}
-        {/* 枯渇マーカー */}
-        {depletionDay < totalDays && (
-          <div
-            className="absolute top-0 h-full"
-            style={{ left: `${(depletionDay / totalDays) * 100}%` }}
-          >
-            <div className="w-0.5 h-full bg-[#ef4444]" />
-          </div>
-        )}
-      </div>
-      <div className="text-[10px] font-mono w-12 text-right shrink-0" style={{ color }}>
-        {depletionDay >= totalDays ? `${totalDays}+日` : `${depletionDay}日`}
+        <div className="absolute inset-0 flex items-center px-2 gap-1.5">
+          <span className="text-[9px] shrink-0" style={{ color: resourceColor }}>{icon}</span>
+          <span className="text-[10px] font-mono text-neutral-300 truncate">
+            {event.label}
+          </span>
+        </div>
+        {/* リソースタグ */}
+        <div
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
+          style={{ backgroundColor: `${resourceColor}18`, color: resourceColor }}
+        >
+          {resourceLabel}
+        </div>
       </div>
     </div>
   );
@@ -433,15 +405,10 @@ const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
         {days >= totalDays ? `${totalDays}+` : days}
         <span className="text-xs font-normal text-neutral-600 ml-1">日</span>
       </div>
-      {/* ミニゲージ */}
       <div className="w-full h-1 bg-[#162029] rounded-full overflow-hidden">
         <div
           className="h-full rounded-full"
-          style={{
-            width: `${pct}%`,
-            backgroundColor: color,
-            opacity: 0.6,
-          }}
+          style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.6 }}
         />
       </div>
     </div>

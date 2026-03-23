@@ -7,22 +7,19 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import type { ResourceCountdown, RegionCollapse } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { FALLBACK_COUNTDOWNS } from "../lib/fallbackCountdowns";
+import { DataFreshness } from "../components/DataFreshness";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow } from "../hooks/useApiData";
 
 export const Dashboard: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
-  const FALLBACK: ResourceCountdown[] = [
-    { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
-    { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
-    { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
-  ];
   const { data: countdownData } = useApiData<ResourceCountdown[]>(
     `/api/countdowns?scenario=${scenario}`,
-    FALLBACK,
+    FALLBACK_COUNTDOWNS,
   );
-  const countdowns = countdownData ?? FALLBACK;
+  const countdowns = countdownData ?? FALLBACK_COUNTDOWNS;
   const { regions } = useCollapseOrder(scenario);
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
   const { isFromApi } = useApiData<ReservesRow>("/api/reserves", null as unknown as ReservesRow);
@@ -54,6 +51,8 @@ export const Dashboard: FC = () => {
       />
 
       <SimulationBanner />
+
+      <DataFreshness />
 
       {/* 上段: 3つのカウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

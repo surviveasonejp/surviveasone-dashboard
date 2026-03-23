@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import type { ResourceCountdown } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { useApiData } from "../hooks/useApiData";
+import { FALLBACK_COUNTDOWNS, getReservesSummaryText } from "../lib/fallbackCountdowns";
+import type { ResourceCountdown } from "../../shared/types";
 
 interface PanelCardProps {
   to: string;
@@ -47,16 +48,10 @@ const Stat: FC<StatProps> = ({ value, unit, label, color }) => (
   </div>
 );
 
-const FALLBACK: ResourceCountdown[] = [
-  { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
-  { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
-  { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
-];
-
 export const Landing: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
-  const { data } = useApiData<ResourceCountdown[]>(`/api/countdowns?scenario=${scenario}`, FALLBACK);
-  const countdowns = data ?? FALLBACK;
+  const { data } = useApiData<ResourceCountdown[]>(`/api/countdowns?scenario=${scenario}`, FALLBACK_COUNTDOWNS);
+  const countdowns = data ?? FALLBACK_COUNTDOWNS;
 
   return (
     <div className="space-y-8">
@@ -107,7 +102,7 @@ export const Landing: FC = () => {
           <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          石油備蓄241日分(経産省2026年3月20日推計、民間備蓄放出中)。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
+          {getReservesSummaryText()}。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
 

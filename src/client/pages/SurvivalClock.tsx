@@ -7,18 +7,14 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
 import type { ResourceCountdown } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { FALLBACK_COUNTDOWNS } from "../lib/fallbackCountdowns";
 import { DATA_SOURCES } from "../lib/dataSources";
+import { DataFreshness } from "../components/DataFreshness";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
 import staticReserves from "../data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 import { formatNumber } from "../lib/formatters";
-
-const FALLBACK_COUNTDOWNS: ResourceCountdown[] = [
-  { label: "石油備蓄", totalDays: 168.8, totalSeconds: 168.8 * 86400, alertLevel: "safe" },
-  { label: "LNG在庫", totalDays: 750.4, totalSeconds: 750.4 * 86400, alertLevel: "safe" },
-  { label: "電力供給", totalDays: 487.8, totalSeconds: 487.8 * 86400, alertLevel: "safe" },
-];
 
 export const SurvivalClock: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
@@ -104,7 +100,7 @@ export const SurvivalClock: FC = () => {
           <p>石油: {formatNumber(oilTotal)}kL ÷ ({formatNumber(oilDailyKL)}kL/日 × {Math.round(oilHormuz * 100)}%) ≈ {oilDays.toFixed(1)}日</p>
           {DATA_SOURCES.oilReserve && <DataBadge confidence={DATA_SOURCES.oilReserve.confidence} />}
         </div>
-        <p className="text-neutral-600 text-[10px]">出典: 資源エネルギー庁 石油備蓄統計(2025年12月末) / OWID energy-data</p>
+        <p className="text-neutral-600 text-[10px]">出典: 経産省 石油備蓄推計量({staticReserves.meta.baselineDate}) / OWID energy-data</p>
         <div className="flex items-center gap-2">
           <p>LNG: {formatNumber(lngInv)}t ÷ ({formatNumber(lngDaily)}t/日 × {(lngHormuz * 100).toFixed(1)}%) ≈ {lngDays.toFixed(1)}日</p>
           {DATA_SOURCES.lngInventory && <DataBadge confidence={DATA_SOURCES.lngInventory.confidence} />}
@@ -115,6 +111,9 @@ export const SurvivalClock: FC = () => {
           {DATA_SOURCES.thermalShare && <DataBadge confidence={DATA_SOURCES.thermalShare.confidence} />}
         </div>
         <p className="text-neutral-600 text-[10px]">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
+        <div className="pt-2 border-t border-[#1e2a36] mt-2">
+          <DataFreshness />
+        </div>
       </div>
     </div>
   );

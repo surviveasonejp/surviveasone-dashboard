@@ -11,8 +11,8 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
   oilReserve: {
     label: "石油備蓄量",
     confidence: "verified",
-    source: "資源エネルギー庁 石油備蓄統計 (2025年12月末)",
-    note: "国家146日+民間101日+産油国共同7日=254日分",
+    source: "経産省 石油備蓄推計量",
+    note: "備蓄日数は reserves.json から参照（月次自動更新）",
   },
   oilConsumption: {
     label: "石油消費量",
