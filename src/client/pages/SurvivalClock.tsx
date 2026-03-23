@@ -10,6 +10,7 @@ import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DATA_SOURCES } from "../lib/dataSources";
 import { DataFreshness } from "../components/DataFreshness";
+import { UpdateLog } from "../components/UpdateLog";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
 import staticReserves from "../data/reserves.json";
@@ -115,6 +116,9 @@ export const SurvivalClock: FC = () => {
         <p className="text-neutral-600 text-[10px]">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
         <div className="pt-2 border-t border-[#1e2a36] mt-2">
           <DataFreshness />
+        </div>
+        <div className="pt-2 border-t border-[#1e2a36] mt-2">
+          <UpdateLog />
         </div>
       </div>
     </div>
