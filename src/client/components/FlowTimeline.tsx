@@ -121,6 +121,29 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
         <EventRow resource="power" label="電力" events={powerEvents} depletionDay={result.powerCollapseDay} totalDays={totalDays} />
       </div>
 
+      {/* イベント凡例 */}
+      {result.thresholds.length > 0 && (
+        <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 text-[8px] font-mono text-neutral-400 pt-1">
+          {result.thresholds
+            .filter((t) => t.stockPercent >= 0)
+            .map((ev, i) => {
+              const evColor = THRESHOLD_COLORS[ev.type] ?? "#888";
+              return (
+                <div key={i} className="flex items-center gap-1.5 min-w-0">
+                  <span
+                    className="inline-block w-1.5 h-1.5 rounded-full shrink-0"
+                    style={{ backgroundColor: evColor }}
+                  />
+                  <span className="truncate">
+                    <span style={{ color: evColor }}>{ev.day}日</span>
+                    {" "}{ev.label}
+                  </span>
+                </div>
+              );
+            })}
+        </div>
+      )}
+
       {/* サマリー */}
       <div className="grid grid-cols-3 gap-2 text-center">
         <SummaryBox label="石油枯渇" days={result.oilDepletionDay} color={RESOURCE_COLORS.oil} totalDays={totalDays} />
@@ -338,7 +361,7 @@ const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, to
       <div className="text-[10px] font-mono w-8 shrink-0" style={{ color }}>
         {label}
       </div>
-      <div className="relative flex-1 h-5 bg-[#0f1419] rounded overflow-hidden">
+      <div className="relative flex-1 h-5 bg-[#0f1419] rounded overflow-hidden group">
         {/* 進行バー */}
         <div
           className="absolute inset-y-0 left-0 rounded-l"
@@ -347,27 +370,30 @@ const EventRow: FC<EventRowProps> = ({ resource, label, events, depletionDay, to
             background: `linear-gradient(90deg, ${color}30, ${color}08)`,
           }}
         />
-        {/* イベントマーカー */}
+        {/* イベントマーカー（ドット＋ホバーでツールチップ） */}
         {events.map((ev, i) => {
           const evColor = THRESHOLD_COLORS[ev.type] ?? color;
-          // リソース名を除いたイベント名（「石油 価格暴騰」→「価格暴騰」）
-          const shortLabel = `Day${ev.day} ${ev.label.replace(/^(石油|LNG|電力)\s*/, "")}`;
+          const shortLabel = ev.label.replace(/^(石油|LNG|電力|石化)\s*/, "");
           return (
             <div
               key={i}
               className="absolute top-0 h-full"
               style={{ left: `${(ev.day / totalDays) * 100}%` }}
+              title={`Day ${ev.day} — ${shortLabel}`}
             >
               <div
-                className="w-px h-full"
+                className="w-px h-full opacity-60"
+                style={{ backgroundColor: evColor }}
+              />
+              <div
+                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full border border-[#0f1419]"
                 style={{ backgroundColor: evColor }}
               />
               <span
-                className="absolute top-0.5 left-1.5 text-[8px] font-mono whitespace-nowrap leading-tight"
+                className="absolute left-1.5 top-0.5 text-[7px] font-mono whitespace-nowrap leading-tight opacity-80"
                 style={{ color: evColor }}
               >
-                {shortLabel}
-                <span className="text-[7px] opacity-60 ml-1">{ev.day}日</span>
+                {ev.day}d
               </span>
             </div>
           );

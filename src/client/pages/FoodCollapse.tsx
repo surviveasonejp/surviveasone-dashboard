@@ -1,23 +1,83 @@
 import { type FC, useState, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { ScenarioSelector } from "../components/ScenarioSelector";
 import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
-import type { RegionCollapse } from "../../shared/types";
+import { useApiData } from "../hooks/useApiData";
+import type { RegionCollapse, FlowSimulationResult } from "../../shared/types";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate, formatNumber } from "../lib/formatters";
 
-const CHAIN_STEPS = [
-  { label: "ホルムズ海峡封鎖", color: "#ef4444", days: 0 },
-  { label: "原油輸入途絶", color: "#ef4444", days: 0 },
-  { label: "軽油不足 → 物流停止", color: "#ef4444", days: 14 },
-  { label: "ナフサ不足 → 包装停止", color: "#f59e0b", days: 30 },
-  { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: null },
-  { label: "スーパー棚 → 空", color: "#ef4444", days: null },
-];
+const EMPTY_SIM: FlowSimulationResult = {
+  timeline: [],
+  oilDepletionDay: 365,
+  lngDepletionDay: 365,
+  powerCollapseDay: 365,
+  thresholds: [],
+};
+
+/** フローシミュレーションの閾値イベントから動的にサプライチェーン崩壊ステップを生成 */
+function buildChainSteps(sim: FlowSimulationResult): Array<{ label: string; color: string; days: number }> {
+  const findOilThresholdDay = (type: string): number | null => {
+    const ev = sim.thresholds.find((t) => t.resource === "oil" && t.type === type);
+    return ev ? ev.day : null;
+  };
+
+  const oilRationingDay = findOilThresholdDay("rationing");
+  const oilDistributionDay = findOilThresholdDay("distribution");
+  const oilPriceSpikeDay = findOilThresholdDay("price_spike");
+
+  // タンカー最終到着 = oilStockがまだ増加している最後の日
+  let lastInflowDay = 0;
+  for (let i = 1; i < sim.timeline.length; i++) {
+    const curr = sim.timeline[i];
+    const prev = sim.timeline[i - 1];
+    if (curr && prev && curr.oilStock_kL > prev.oilStock_kL) {
+      lastInflowDay = curr.day;
+    }
+  }
+
+  // 石化カスケード: 石油供給制限の前段で発生（ナフサは原油精製の副産物）
+  // 価格高騰時点でナフサ調達が困難化し、その後段階的に崩壊
+  const naphthaConstraintDay = oilPriceSpikeDay != null
+    ? Math.max(oilPriceSpikeDay - 5, 1)
+    : Math.round(sim.oilDepletionDay * 0.2);
+  const packagingShortageDay = oilRationingDay != null
+    ? oilRationingDay
+    : Math.round(sim.oilDepletionDay * 0.5);
+  const petrochemStopDay = oilDistributionDay != null
+    ? oilDistributionDay
+    : Math.round(sim.oilDepletionDay * 0.7);
+
+  // 物流停止: 供給制限発令時点
+  const logisticsDay = oilRationingDay ?? Math.round(sim.oilDepletionDay * 0.5);
+
+  const steps: Array<{ label: string; color: string; days: number }> = [
+    { label: "ホルムズ海峡封鎖", color: "#ef4444", days: 0 },
+  ];
+
+  if (lastInflowDay > 0) {
+    steps.push({ label: `航行中タンカー最終到着（Day ${lastInflowDay}まで入荷継続）`, color: "#94a3b8", days: lastInflowDay });
+  }
+
+  steps.push(
+    { label: "ナフサ供給制約 → エチレン減産開始", color: "#f59e0b", days: naphthaConstraintDay },
+    { label: "軽油不足 → 物流制限", color: "#ef4444", days: logisticsDay },
+    { label: "包装材・容器・食品トレーの品薄", color: "#f59e0b", days: packagingShortageDay },
+    { label: "石化製品の供給停止（塩ビ・PE・PP）", color: "#ef4444", days: petrochemStopDay },
+    { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
+    { label: "石油枯渇 → スーパー棚が空に", color: "#ef4444", days: sim.oilDepletionDay },
+  );
+
+  steps.sort((a, b) => a.days - b.days);
+  return steps;
+}
 
 export const FoodCollapse: FC = () => {
-  const { regions } = useCollapseOrder();
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const { regions } = useCollapseOrder(scenario);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
 
   const selectedRegion: RegionCollapse | null = useMemo(
@@ -25,16 +85,26 @@ export const FoodCollapse: FC = () => {
     [regions, selectedRegionId],
   );
 
-  const products = useFoodDepletion("realistic", selectedRegionId ?? undefined);
-  const oilDays = selectedRegion?.oilDepletionDays ?? (products[0]?.collapseDays ?? 168.8);
-  const powerDays = selectedRegion?.powerCollapseDays ?? 487.8;
+  const products = useFoodDepletion(scenario, selectedRegionId ?? undefined);
+  const { data: simResult } = useApiData<FlowSimulationResult>(
+    `/api/simulation?scenario=${scenario}`,
+    EMPTY_SIM,
+  );
+  const sim = simResult ?? EMPTY_SIM;
+  const chainSteps = useMemo(() => buildChainSteps(sim), [sim]);
+
+  const oilDays = selectedRegion?.oilDepletionDays ?? sim.oilDepletionDay;
+  const powerDays = selectedRegion?.powerCollapseDays ?? sim.powerCollapseDay;
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ef4444]">FOOD CHAIN</span> COLLAPSE
-        </h1>
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h1 className="text-2xl font-bold font-mono">
+            <span className="text-[#ef4444]">FOOD CHAIN</span> COLLAPSE
+          </h1>
+          <ScenarioSelector selected={scenario} onChange={setScenario} />
+        </div>
         <p className="text-neutral-500 text-sm">
           商品カテゴリ別の消失予測 — スーパーの棚はいつ空になるか
         </p>
@@ -139,16 +209,16 @@ export const FoodCollapse: FC = () => {
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">サプライチェーン崩壊フロー</h2>
         <div className="flex flex-col gap-1">
-          {CHAIN_STEPS.map((step, i) => (
-            <div key={step.label} className="flex items-center gap-3">
+          {chainSteps.map((step, i) => (
+            <div key={i} className="flex items-center gap-3">
               <div className="w-16 text-right font-mono text-xs text-neutral-500 shrink-0">
-                {step.days !== null ? `${step.days}日` : ""}
+                {step.days}日
               </div>
               <div
                 className="w-2 h-2 rounded-full shrink-0"
                 style={{ backgroundColor: step.color }}
               />
-              {i < CHAIN_STEPS.length - 1 && (
+              {i < chainSteps.length - 1 && (
                 <div
                   className="absolute ml-[4.75rem] mt-6 w-0.5 h-4"
                   style={{ backgroundColor: `${step.color}40` }}

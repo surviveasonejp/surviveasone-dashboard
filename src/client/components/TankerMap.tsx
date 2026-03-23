@@ -2,6 +2,7 @@ import { type FC, useState, useMemo } from "react";
 import type { TankerInfo } from "../../shared/types";
 import {
   estimatePosition,
+  estimateHeading,
   getRoutePath,
   getRouteId,
   MAP_BOUNDS,
@@ -51,14 +52,15 @@ export const TankerMap: FC<TankerMapProps> = ({
 }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
 
-  // 各タンカーの推定位置を算出
+  // 各タンカーの推定位置・進行方向を算出
   const positions = useMemo(() => {
-    const map = new Map<string, { x: number; y: number; pos: { lat: number; lon: number } }>();
+    const map = new Map<string, { x: number; y: number; pos: { lat: number; lon: number }; heading: number | null }>();
     for (const t of tankers) {
       const pos = estimatePosition(t);
       if (pos && isInBounds(pos)) {
         const [x, y] = project(pos.lon, pos.lat);
-        map.set(t.id, { x, y, pos });
+        const heading = estimateHeading(t);
+        map.set(t.id, { x, y, pos, heading });
       }
     }
     return map;
@@ -213,16 +215,28 @@ export const TankerMap: FC<TankerMapProps> = ({
                   />
                 </circle>
               )}
-              {/* 本体 */}
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r={isActive ? 8 : 6}
-                fill={color}
-                stroke={isActive ? "#fff" : "#0f1419"}
-                strokeWidth={isActive ? 2 : 1}
-                opacity={isActive ? 1 : 0.9}
-              />
+              {/* 本体（進行方向付き三角形） */}
+              {p.heading != null ? (
+                <polygon
+                  points={isActive ? "-7,8 7,8 0,-10" : "-5,6 5,6 0,-8"}
+                  transform={`translate(${p.x},${p.y}) rotate(${p.heading})`}
+                  fill={color}
+                  stroke={isActive ? "#fff" : "#0f1419"}
+                  strokeWidth={isActive ? 2 : 1}
+                  strokeLinejoin="round"
+                  opacity={isActive ? 1 : 0.9}
+                />
+              ) : (
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r={isActive ? 8 : 6}
+                  fill={color}
+                  stroke={isActive ? "#fff" : "#0f1419"}
+                  strokeWidth={isActive ? 2 : 1}
+                  opacity={isActive ? 1 : 0.9}
+                />
+              )}
               {/* 船名ラベル（ホバー/選択時） */}
               {isActive && (
                 <text

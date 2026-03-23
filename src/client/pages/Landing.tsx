@@ -107,7 +107,7 @@ export const Landing: FC = () => {
           <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          石油備蓄254日分(資源エネルギー庁2025年12月末)。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
+          石油備蓄241日分(経産省2026年3月20日推計、民間備蓄放出中)。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
 

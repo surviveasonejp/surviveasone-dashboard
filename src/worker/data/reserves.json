@@ -1,21 +1,21 @@
 {
   "meta": {
-    "source": "資源エネルギー庁 石油備蓄統計(2025年12月末) + ISEP電力調査統計(2024年暦年) + JETRO(2025年)",
-    "updatedAt": "2026-03-20",
-    "baselineDate": "2025-12-31"
+    "source": "経産省 石油備蓄推計量(2026年3月20日時点) + 資源エネルギー庁 石油備蓄統計 + ISEP電力調査統計(2024年暦年) + JETRO(2025年)",
+    "updatedAt": "2026-03-23",
+    "baselineDate": "2026-03-20"
   },
   "oil": {
     "nationalReserve_kL": 43220000,
-    "privateReserve_kL": 29170000,
-    "jointReserve_kL": 2070000,
-    "totalReserve_kL": 74460000,
+    "privateReserve_kL": 26330000,
+    "jointReserve_kL": 1780000,
+    "totalReserve_kL": 71330000,
     "nationalReserveDays": 146,
-    "privateReserveDays": 101,
-    "jointReserveDays": 7,
-    "totalReserveDays": 254,
+    "privateReserveDays": 89,
+    "jointReserveDays": 6,
+    "totalReserveDays": 241,
     "hormuzDependencyRate": 0.94,
     "unit": "kL",
-    "note": "国家備蓄146日(原油4,179万kL+製品143万kL)、民間備蓄101日(原油1,372万kL+製品1,545万kL)、産油国共同備蓄7日(207万kL)。中東依存率94%(2025年貿易統計)、うちホルムズ海峡通過約8割"
+    "note": "経産省2026年3月23日公表(3/20時点推計)。国家備蓄146日(43,220千kL、未放出)、民間備蓄89日(26,330千kL、3/16から義務量引下げにより放出中)、産油国共同備蓄6日(1,780千kL)。3月下旬から国家備蓄約1ヶ月分の放出開始予定。中東依存率94%、うちホルムズ海峡通過93%(TBS報道)"
   },
   "lng": {
     "inventory_t": 4500000,

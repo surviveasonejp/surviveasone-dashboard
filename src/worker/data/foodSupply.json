@@ -1,8 +1,8 @@
 {
   "meta": {
-    "source": "農水省食料需給表 + 流通経済研究所在庫データ + 全日本トラック協会燃料統計",
-    "updatedAt": "2026-03-22",
-    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。retailStockDays=小売在庫日数。warehouseStockDays=物流センター在庫日数。coldChainHours=停電後の品質保持時間"
+    "source": "農水省食料需給表 + 流通経済研究所在庫データ + 全日本トラック協会燃料統計 + 化学日報(2026-03-19)石化産業減産報道",
+    "updatedAt": "2026-03-23",
+    "note": "factor=依存度(0-1)。高いほど依存=早く崩壊。napthaFactorは石化産業(エチレン・ポリオレフィン・塩ビ等)経由の包装材・容器依存度。化学日報報道でナフサ供給制約により封鎖7日目からエチレン減産開始が確認されており、従来値を上方修正"
   },
   "supplyChain": {
     "truckDiesel_kL_per_day": 100000,
@@ -32,10 +32,10 @@
       "warehouseStockDays": 1,
       "coldChainHours": 24,
       "dieselFactor": 0.9,
-      "napthaFactor": 0.3,
+      "napthaFactor": 0.4,
       "powerFactor": 0.95,
       "collapseReason": "冷蔵チェーン崩壊 → 配送停止 → 店頭在庫消失",
-      "note": "国産率67%だが冷蔵輸送が必須。停電24時間で品質劣化開始"
+      "note": "国産率67%だが冷蔵輸送が必須。紙パック内面PE不足で容器生産停止。停電24時間で品質劣化開始"
     },
     {
       "id": "bread",
@@ -46,10 +46,10 @@
       "warehouseStockDays": 2,
       "coldChainHours": null,
       "dieselFactor": 0.7,
-      "napthaFactor": 0.6,
-      "collapseReason": "小麦輸入途絶 + 包装材不足 → 製造停止",
+      "napthaFactor": 0.7,
+      "collapseReason": "小麦輸入途絶 + PE包装フィルム不足 → 製造停止",
       "powerFactor": 0.5,
-      "note": "小麦自給率15%。輸入小麦の在庫は約2.3ヶ月分"
+      "note": "小麦自給率15%。個包装フィルム(PE)はエチレン由来。輸入小麦の在庫は約2.3ヶ月分"
     },
     {
       "id": "meat",
@@ -60,10 +60,10 @@
       "warehouseStockDays": 3,
       "coldChainHours": 24,
       "dieselFactor": 0.85,
-      "napthaFactor": 0.4,
+      "napthaFactor": 0.6,
       "powerFactor": 0.9,
-      "collapseReason": "飼料輸入停止 → 畜産崩壊 + 冷蔵チェーン断絶",
-      "note": "飼料自給率25%。鶏肉→豚肉→牛肉の順で消失"
+      "collapseReason": "飼料輸入停止 → 畜産崩壊 + 食品トレー(PS)・ラップ(PE/PVC)不足 + 冷蔵チェーン断絶",
+      "note": "飼料自給率25%。食品トレー・ラップフィルムは石化製品(PS・PE・PVC)に完全依存。鶏肉→豚肉→牛肉の順で消失"
     },
     {
       "id": "frozen",
@@ -74,10 +74,10 @@
       "warehouseStockDays": 14,
       "coldChainHours": 72,
       "dieselFactor": 0.5,
-      "napthaFactor": 0.5,
+      "napthaFactor": 0.65,
       "powerFactor": 1.0,
-      "collapseReason": "停電72時間で在庫全損。解凍後は数日で廃棄",
-      "note": "電力依存100%。冷凍倉庫の在庫は停電72時間で全損"
+      "collapseReason": "停電72時間で在庫全損。PP/PE包装不足で新規製造も停止",
+      "note": "電力依存100%。冷凍食品パッケージ(PP/PE)は石化製品に依存。冷凍倉庫の在庫は停電72時間で全損"
     },
     {
       "id": "vegetable",

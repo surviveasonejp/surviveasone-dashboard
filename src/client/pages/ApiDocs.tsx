@@ -30,8 +30,8 @@ const ENDPOINTS: EndpointDoc[] = [
     description: "石油・LNG備蓄データ。国家/民間/産油国共同の内訳、ホルムズ依存率、火力比率を含む",
     example: `// Response (抜粋)
 { "data": {
-    "oil_total_kL": 74460000,
-    "oil_total_days": 254,
+    "oil_total_kL": 71330000,
+    "oil_total_days": 241,
     "oil_hormuz_rate": 0.94,
     "lng_inventory_t": 4500000,
     "lng_hormuz_rate": 0.063,

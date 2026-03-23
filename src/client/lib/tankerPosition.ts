@@ -24,6 +24,7 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Jubail": "hormuz-malacca",
   "Kharg Island": "hormuz-malacca",
   "Basrah": "hormuz-malacca",
+  "Mina Al Ahmadi": "hormuz-malacca",
   "Ras Laffan": "hormuz-malacca",
   "Fujairah": "fujairah-malacca",
   "Gladstone": "australia-east",
@@ -32,6 +33,7 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Bontang": "southeast-asia",
   "Prigorodnoye": "sakhalin",
   "Sabine Pass": "us-pacific",
+  "Cameron": "us-pacific",
 };
 
 /** 航路上のウェイポイント列に沿って t (0〜1) の位置を補間 */
@@ -86,6 +88,50 @@ export function isInBounds(pos: Position): boolean {
     pos.lat >= MAP_BOUNDS.minLat &&
     pos.lat <= MAP_BOUNDS.maxLat
   );
+}
+
+/** 進行方向の角度（度、北=0、時計回り）を返す */
+export function estimateHeading(tanker: TankerInfo): number | null {
+  const dep = PORTS[tanker.departurePort];
+  const dest = PORTS[tanker.destinationPort];
+  if (!dep || !dest) return null;
+
+  const routeId = PORT_ROUTE_MAP[tanker.departurePort];
+  if (!routeId) return null;
+  const route = ROUTES[routeId];
+  if (!route) return null;
+
+  const totalVoyageDays = tanker.distanceToJapan_nm / (tanker.speed_knots * 24);
+  const progress = Math.max(0, Math.min(1, 1 - tanker.eta_days / totalVoyageDays));
+
+  // 少し先の位置との差分から方向を算出
+  const delta = 0.02;
+  const buildPath = (): [number, number][] => {
+    if (route.partialRoute && route.visibleStartProgress != null) {
+      return [...route.waypoints, [dest.lon, dest.lat]];
+    }
+    return [[dep.lon, dep.lat], ...route.waypoints, [dest.lon, dest.lat]];
+  };
+  const path = buildPath();
+
+  const getEffectiveT = (t: number): number => {
+    if (route.partialRoute && route.visibleStartProgress != null) {
+      if (t < route.visibleStartProgress) return 0;
+      return (t - route.visibleStartProgress) / (1 - route.visibleStartProgress);
+    }
+    return t;
+  };
+
+  const p1 = interpolateAlongPath(path, getEffectiveT(Math.max(0, progress - delta)));
+  const p2 = interpolateAlongPath(path, getEffectiveT(Math.min(1, progress + delta)));
+
+  const dLon = p2.lon - p1.lon;
+  const dLat = p2.lat - p1.lat;
+  if (Math.abs(dLon) < 0.001 && Math.abs(dLat) < 0.001) return null;
+
+  // atan2で角度算出（SVG座標系: Y軸反転なので注意）
+  const angleDeg = (Math.atan2(dLon, dLat) * 180) / Math.PI;
+  return angleDeg;
 }
 
 /** タンカーの推定位置を算出 */
