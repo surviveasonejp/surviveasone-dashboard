@@ -7,6 +7,7 @@
  */
 
 import type { ResourceCountdown } from "../../shared/types";
+import type { ScenarioId } from "../../shared/scenarios";
 import staticReserves from "../data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 import { SCENARIOS, DEFAULT_SCENARIO } from "../../shared/scenarios";
@@ -51,3 +52,40 @@ export function getReservesUpdatedAt(): string {
 }
 
 export const FALLBACK_COUNTDOWNS: ResourceCountdown[] = calcFallback();
+
+/** 3シナリオ分の日数レンジ（index 0=石油, 1=LNG, 2=電力） */
+export interface ScenarioRange {
+  optimistic: number;
+  realistic: number;
+  pessimistic: number;
+}
+
+function calcDaysForScenario(scenarioId: ScenarioId): number[] {
+  const s = SCENARIOS[scenarioId];
+  const oilEffective = staticConsumption.oil.dailyConsumption_kL
+    * s.oilBlockadeRate * (1 - s.demandReductionRate);
+  const oilDays = oilEffective > 0
+    ? staticReserves.oil.totalReserve_kL / oilEffective
+    : Infinity;
+  const lngEffective = staticConsumption.lng.dailyConsumption_t
+    * s.lngBlockadeRate * (1 - s.demandReductionRate);
+  const lngDays = lngEffective > 0
+    ? staticReserves.lng.inventory_t / lngEffective
+    : Infinity;
+  const powerDays = lngDays * staticReserves.electricity.thermalShareRate;
+  return [oilDays, lngDays, powerDays];
+}
+
+/** リソース別の3シナリオレンジを算出（静的データベース） */
+export function calcScenarioRanges(): ScenarioRange[] {
+  const opt = calcDaysForScenario("optimistic");
+  const real = calcDaysForScenario("realistic");
+  const pess = calcDaysForScenario("pessimistic");
+  return [0, 1, 2].map((i) => ({
+    optimistic: Math.round((opt[i] ?? 0) * 10) / 10,
+    realistic: Math.round((real[i] ?? 0) * 10) / 10,
+    pessimistic: Math.round((pess[i] ?? 0) * 10) / 10,
+  }));
+}
+
+export const SCENARIO_RANGES: ScenarioRange[] = calcScenarioRanges();

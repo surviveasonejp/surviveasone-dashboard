@@ -7,7 +7,7 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
 import type { ResourceCountdown } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
-import { FALLBACK_COUNTDOWNS } from "../lib/fallbackCountdowns";
+import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DATA_SOURCES } from "../lib/dataSources";
 import { DataFreshness } from "../components/DataFreshness";
 import { useApiData } from "../hooks/useApiData";
@@ -79,11 +79,13 @@ export const SurvivalClock: FC = () => {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {displayCountdowns.map((cd) => (
+        {displayCountdowns.map((cd, i) => (
           <CountdownTimer
             key={cd.label}
             label={cd.label}
             totalSeconds={cd.totalSeconds}
+            range={SCENARIO_RANGES[i]}
+            activeScenario={scenario}
           />
         ))}
       </div>

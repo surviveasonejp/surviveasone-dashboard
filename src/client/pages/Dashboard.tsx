@@ -7,7 +7,7 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import type { ResourceCountdown, RegionCollapse } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
-import { FALLBACK_COUNTDOWNS } from "../lib/fallbackCountdowns";
+import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useApiData } from "../hooks/useApiData";
@@ -56,12 +56,14 @@ export const Dashboard: FC = () => {
 
       {/* 上段: 3つのカウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {countdowns.map((cd) => (
+        {countdowns.map((cd, i) => (
           <CountdownTimer
             key={cd.label}
             label={cd.label}
             totalSeconds={cd.totalSeconds}
             compact
+            range={SCENARIO_RANGES[i]}
+            activeScenario={scenario}
           />
         ))}
       </div>

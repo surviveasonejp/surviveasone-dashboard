@@ -5,7 +5,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { useApiData } from "../hooks/useApiData";
-import { FALLBACK_COUNTDOWNS, getReservesSummaryText } from "../lib/fallbackCountdowns";
+import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
 import type { ResourceCountdown } from "../../shared/types";
 
 interface PanelCardProps {
@@ -81,12 +81,14 @@ export const Landing: FC = () => {
 
       {/* 3本カウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {countdowns.map((cd) => (
+        {countdowns.map((cd, i) => (
           <CountdownTimer
             key={cd.label}
             label={cd.label}
             totalSeconds={cd.totalSeconds}
             compact
+            range={SCENARIO_RANGES[i]}
+            activeScenario={scenario}
           />
         ))}
       </div>
