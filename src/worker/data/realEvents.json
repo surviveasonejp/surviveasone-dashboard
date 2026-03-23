@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "description": "ホルムズ海峡封鎖に関連する実際に発生したイベント。シミュレーションのタイムラインに重ねて表示する。",
+    "updatedAt": "2026-03-24",
+    "note": "dateはISO 8601形式。dayOffsetは封鎖開始日(2026-03-01想定)からの経過日数。"
+  },
+  "blockadeStartDate": "2026-03-01",
+  "events": [
+    {
+      "date": "2026-03-06",
+      "dayOffset": 5,
+      "category": "industry",
+      "label": "三菱ケミカル(鹿島) エチレンプラント稼働低下",
+      "source": "化学日報 2026-03-19",
+      "impact": "ナフサ供給制約によるエチレン減産の開始"
+    },
+    {
+      "date": "2026-03-09",
+      "dayOffset": 8,
+      "category": "industry",
+      "label": "三井化学(市原)・大阪石化(堺) 稼働低下",
+      "source": "化学日報 2026-03-19",
+      "impact": "石化産業の広範な減産拡大"
+    },
+    {
+      "date": "2026-03-11",
+      "dayOffset": 10,
+      "category": "industry",
+      "label": "三菱ケミカル旭化成エチレン(水島) 稼働低下",
+      "source": "化学日報 2026-03-19",
+      "impact": "西日本の石化拠点も減産開始"
+    },
+    {
+      "date": "2026-03-11",
+      "dayOffset": 10,
+      "category": "international",
+      "label": "IEA 過去最大4億バレル協調放出決定",
+      "source": "IEA / NPR 2026-03-11",
+      "impact": "32カ国による史上最大の協調備蓄放出"
+    },
+    {
+      "date": "2026-03-16",
+      "dayOffset": 15,
+      "category": "government",
+      "label": "民間備蓄義務量引下げ → 放出開始",
+      "source": "経産省 2026-03-16",
+      "impact": "石油元売り各社の備蓄義務を引下げる形で民間備蓄放出開始"
+    },
+    {
+      "date": "2026-03-19",
+      "dayOffset": 18,
+      "category": "industry",
+      "label": "ポリオレフィン・塩ビ・PS 出荷調整開始",
+      "source": "化学日報 2026-03-19",
+      "impact": "包装材・容器の供給制約が食品産業に波及"
+    },
+    {
+      "date": "2026-03-20",
+      "dayOffset": 19,
+      "category": "government",
+      "label": "石油備蓄241日分と公表（経産省推計）",
+      "source": "TBS NEWS DIG 2026-03-23",
+      "impact": "国家146日+民間89日+共同6日=241日。「節約をお願いする段階には至っていない」"
+    },
+    {
+      "date": "2026-03-23",
+      "dayOffset": 22,
+      "category": "government",
+      "label": "国家備蓄 約1ヶ月分の放出開始予定",
+      "source": "TBS NEWS DIG 2026-03-23",
+      "impact": "民間放出に続き国家備蓄の放出が3月下旬から開始"
+    }
+  ]
+}

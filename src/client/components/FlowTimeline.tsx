@@ -2,6 +2,7 @@ import { type FC, useMemo } from "react";
 import { type ScenarioId } from "../../shared/scenarios";
 import type { FlowSimulationResult, ThresholdEvent } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
+import realEventsData from "../../worker/data/realEvents.json";
 
 interface FlowTimelineProps {
   scenarioId: ScenarioId;
@@ -130,13 +131,16 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
       {sortedEvents.length > 0 && (
         <div className="space-y-1">
           <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
-            EVENT TIMELINE
+            SIMULATED EVENTS
           </div>
           {sortedEvents.map((ev, i) => (
             <EventItem key={i} event={ev} totalDays={totalDays} />
           ))}
         </div>
       )}
+
+      {/* 現実イベント */}
+      <RealEvents totalDays={totalDays} />
     </div>
   );
 };
@@ -410,6 +414,73 @@ const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
           className="h-full rounded-full"
           style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.6 }}
         />
+      </div>
+    </div>
+  );
+};
+
+// ─── 現実イベント ────────────────────────────────────
+
+const CATEGORY_COLORS: Record<string, string> = {
+  government: "#3b82f6",
+  industry: "#f59e0b",
+  international: "#22c55e",
+};
+
+const CATEGORY_LABELS: Record<string, string> = {
+  government: "政府",
+  industry: "産業",
+  international: "国際",
+};
+
+interface RealEventsProps {
+  totalDays: number;
+}
+
+const RealEvents: FC<RealEventsProps> = ({ totalDays }) => {
+  const events = realEventsData.events;
+  if (events.length === 0) return null;
+
+  return (
+    <div className="space-y-1">
+      <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
+        REAL-WORLD EVENTS
+      </div>
+      {events.map((ev, i) => {
+        const color = CATEGORY_COLORS[ev.category] ?? "#888";
+        const catLabel = CATEGORY_LABELS[ev.category] ?? "";
+        const pct = Math.min((ev.dayOffset / totalDays) * 100, 100);
+        return (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color }}>
+              {ev.dayOffset}<span className="text-[9px] font-normal text-neutral-600">日</span>
+            </div>
+            <div className="relative flex-1 h-6 bg-[#0c1018] rounded overflow-hidden">
+              <div
+                className="absolute inset-y-0 left-0 rounded-l"
+                style={{
+                  width: `${pct}%`,
+                  background: `linear-gradient(90deg, ${color}20, ${color}06)`,
+                }}
+              />
+              <div className="absolute inset-0 flex items-center px-2 gap-1.5">
+                <span className="text-[9px] shrink-0" style={{ color }}>◉</span>
+                <span className="text-[10px] font-mono text-neutral-300 truncate">
+                  {ev.label}
+                </span>
+              </div>
+              <div
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
+                style={{ backgroundColor: `${color}18`, color }}
+              >
+                {catLabel}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <div className="text-[9px] font-mono text-neutral-700 mt-1">
+        出典: 経産省・化学日報・IEA・TBS NEWS DIG | 更新: {realEventsData.meta.updatedAt}
       </div>
     </div>
   );
