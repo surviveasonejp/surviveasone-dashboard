@@ -234,7 +234,7 @@ function parseCSVLine(line: string): string[] {
   return result;
 }
 
-/** consumption テーブルをUPSERT */
+/** consumption テーブルをUPSERT（バリデーション付き） */
 async function upsertConsumption(db: D1Database, data: OwidJapanRecord): Promise<void> {
   const date = `${data.year}-12-31`;
   const oilAnnualTWh = data.oil_consumption;
@@ -242,6 +242,33 @@ async function upsertConsumption(db: D1Database, data: OwidJapanRecord): Promise
   const oilDailyBarrels = Math.round(oilDailyKL * KL_TO_BARRELS);
   const lngAnnualT = Math.round(data.gas_consumption * TWH_TO_TONNE_LNG);
   const lngDailyT = Math.round(lngAnnualT / 365);
+
+  // バリデーション: 絶対範囲チェック
+  if (oilDailyKL < 200000 || oilDailyKL > 800000) {
+    console.error(`Consumption validation failed: oilDailyKL=${oilDailyKL} outside 200K-800K range`);
+    return;
+  }
+  if (lngDailyT < 50000 || lngDailyT > 400000) {
+    console.error(`Consumption validation failed: lngDailyT=${lngDailyT} outside 50K-400K range`);
+    return;
+  }
+
+  // バリデーション: 前回値との乖離チェック（±30%）
+  const prev = await db
+    .prepare("SELECT oil_daily_kL, lng_daily_t FROM consumption ORDER BY date DESC LIMIT 1")
+    .first<{ oil_daily_kL: number; lng_daily_t: number }>();
+  if (prev) {
+    const oilChange = Math.abs(oilDailyKL - prev.oil_daily_kL) / prev.oil_daily_kL;
+    const lngChange = Math.abs(lngDailyT - prev.lng_daily_t) / prev.lng_daily_t;
+    if (oilChange > 0.3) {
+      console.error(`Consumption validation failed: oil change ${(oilChange * 100).toFixed(1)}% exceeds 30% (prev=${prev.oil_daily_kL}, new=${oilDailyKL})`);
+      return;
+    }
+    if (lngChange > 0.3) {
+      console.error(`Consumption validation failed: LNG change ${(lngChange * 100).toFixed(1)}% exceeds 30% (prev=${prev.lng_daily_t}, new=${lngDailyT})`);
+      return;
+    }
+  }
 
   await db
     .prepare(`

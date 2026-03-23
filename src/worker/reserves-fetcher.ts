@@ -100,6 +100,19 @@ export async function fetchReservesUpdate(env: Env): Promise<void> {
 
   console.log(`Reserves extracted: national=${extract.nationalDays}, private=${extract.privateDays}, joint=${extract.jointDays}, total=${extract.totalDays}`);
 
+  // バリデーション: 前回値との乖離チェック
+  const validation = await validateExtract(env.DB, extract);
+  if (!validation.valid) {
+    console.warn(`Reserves update: validation failed — ${validation.reason}`);
+    await env.CACHE.put("reserves_update_needed", JSON.stringify({
+      reason: `Validation failed: ${validation.reason}`,
+      pdfUrl,
+      archivedAs: archiveKey,
+      extracted: extract,
+    }), { expirationTtl: 86400 * 30 });
+    return;
+  }
+
   // D1 更新
   await upsertReserves(env.DB, extract);
 
@@ -248,6 +261,61 @@ function tryExtractFromDayMatches(matches: string[], text: string): ReservesExtr
 /** 全角数字→半角 */
 function toHalfWidth(s: string): string {
   return s.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+}
+
+// ─── バリデーション ──────────────────────────────────
+
+interface ValidationResult {
+  valid: boolean;
+  reason: string;
+}
+
+/**
+ * 抽出値が妥当かを検証する。
+ * - 絶対範囲チェック（100〜300日）
+ * - 前回値との乖離チェック（±50%超で拒否）
+ * - 内訳の整合性チェック
+ */
+async function validateExtract(
+  db: D1Database,
+  extract: ReservesExtract,
+): Promise<ValidationResult> {
+  // 1. 絶対範囲チェック
+  if (extract.totalDays < 100 || extract.totalDays > 300) {
+    return { valid: false, reason: `totalDays=${extract.totalDays} is outside 100-300 range` };
+  }
+  if (extract.nationalDays < 50 || extract.nationalDays > 200) {
+    return { valid: false, reason: `nationalDays=${extract.nationalDays} is outside 50-200 range` };
+  }
+  if (extract.privateDays < 10 || extract.privateDays > 150) {
+    return { valid: false, reason: `privateDays=${extract.privateDays} is outside 10-150 range` };
+  }
+  if (extract.jointDays < 0 || extract.jointDays > 20) {
+    return { valid: false, reason: `jointDays=${extract.jointDays} is outside 0-20 range` };
+  }
+
+  // 2. 内訳の整合性（合計 ≈ 国家+民間+共同 ±5日）
+  const sumDays = extract.nationalDays + extract.privateDays + extract.jointDays;
+  if (Math.abs(sumDays - extract.totalDays) > 5) {
+    return { valid: false, reason: `Sum ${sumDays} differs from total ${extract.totalDays} by more than 5 days` };
+  }
+
+  // 3. 前回値との乖離チェック
+  const prev = await db
+    .prepare("SELECT oil_total_days FROM reserves ORDER BY date DESC LIMIT 1")
+    .first<{ oil_total_days: number }>();
+
+  if (prev && prev.oil_total_days > 0) {
+    const changeRate = Math.abs(extract.totalDays - prev.oil_total_days) / prev.oil_total_days;
+    if (changeRate > 0.5) {
+      return {
+        valid: false,
+        reason: `Change rate ${(changeRate * 100).toFixed(1)}% exceeds 50% threshold (prev=${prev.oil_total_days}, new=${extract.totalDays})`,
+      };
+    }
+  }
+
+  return { valid: true, reason: "OK" };
 }
 
 // ─── D1 更新 ────────────────────────────────────────
