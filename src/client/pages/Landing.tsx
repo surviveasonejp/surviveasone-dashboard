@@ -6,6 +6,7 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { useApiData } from "../hooks/useApiData";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
+import { IeaComparison } from "../components/IeaComparison";
 import type { ResourceCountdown } from "../../shared/types";
 
 interface PanelCardProps {
@@ -107,6 +108,9 @@ export const Landing: FC = () => {
           {getReservesSummaryText()}。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
+
+      {/* IEA加盟国比較 */}
+      <IeaComparison />
 
       {/* メインCTA */}
       <div className="flex justify-center">
