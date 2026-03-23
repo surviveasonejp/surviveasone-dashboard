@@ -375,7 +375,7 @@ async function handleReserves(url: URL, env: Env): Promise<Response> {
   const history = url.searchParams.get("history") === "true";
 
   if (history) {
-    const limit = Math.min(Number(url.searchParams.get("limit") ?? "30"), 365);
+    const limit = Math.min(Number(url.searchParams.get("limit")) || 30, 365);
     const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.RESERVES_HISTORY);
     if (cached) {
       return jsonResponse({ data: cached.data, cache: "hit" });
@@ -426,11 +426,16 @@ async function handleRegions(env: Env): Promise<Response> {
 
 // ─── /api/electricity ─────────────────────────────────
 
+const VALID_AREAS = new Set(["hokkaido", "tohoku", "tokyo", "chubu", "hokuriku", "kansai", "chugoku", "shikoku", "kyushu", "okinawa"]);
+
 async function handleElectricity(url: URL, env: Env): Promise<Response> {
   const areaId = url.searchParams.get("area");
 
   if (areaId) {
-    const limit = Math.min(Number(url.searchParams.get("limit") ?? "30"), 365);
+    if (!VALID_AREAS.has(areaId)) {
+      return jsonResponse({ error: "invalid_area", message: `Valid areas: ${[...VALID_AREAS].join(", ")}` }, 400);
+    }
+    const limit = Math.min(Number(url.searchParams.get("limit")) || 30, 365);
     const data = await getElectricityHistory(env.DB, areaId, limit);
     return jsonResponse({ data });
   }
@@ -507,7 +512,7 @@ async function handleCollapse(url: URL, env: Env): Promise<Response> {
 
 async function handleSimulation(url: URL, env: Env): Promise<Response> {
   const scenario = parseScenario(url);
-  const maxDays = Math.min(Math.max(Number(url.searchParams.get("maxDays") ?? "365"), 1), 730);
+  const maxDays = Math.min(Math.max(Number(url.searchParams.get("maxDays")) || 365, 1), 730);
   const cacheKey = scenarioCacheKey("api:simulation", scenario, String(maxDays));
 
   const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
@@ -525,6 +530,9 @@ async function handleSimulation(url: URL, env: Env): Promise<Response> {
 async function handleFoodCollapse(url: URL, env: Env): Promise<Response> {
   const scenario = parseScenario(url);
   const region = url.searchParams.get("region") ?? "";
+  if (region && !VALID_AREAS.has(region)) {
+    return jsonResponse({ error: "invalid_region", message: `Valid regions: ${[...VALID_AREAS].join(", ")}` }, 400);
+  }
   const cacheKey = scenarioCacheKey("api:food-collapse", scenario, region);
 
   const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
