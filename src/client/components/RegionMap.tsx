@@ -73,7 +73,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         className="cursor-pointer"
         onMouseEnter={() => setHoveredId(regionId)}
         onMouseLeave={() => setHoveredId(null)}
-        onClick={() => onSelectRegion(region)}
+        onClick={() => { if (region) onSelectRegion(region); }}
       >
         {prefs.map((pref) => (
           <path
