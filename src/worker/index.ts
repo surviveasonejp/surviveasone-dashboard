@@ -38,6 +38,7 @@ import {
 import {
   getFromCache,
   setCache,
+  invalidateCache,
   CACHE_KEYS,
   CACHE_TTL,
   scenarioCacheKey,
@@ -62,6 +63,7 @@ interface Env {
   DB: D1Database;
   CACHE: KVNamespace;
   ARCHIVE: R2Bucket;
+  ADMIN_TOKEN?: string;
 }
 
 // ─── セキュリティヘッダー ──────────────────────────────
@@ -311,6 +313,8 @@ async function handleApiRoute(
       return handleFoodCollapse(url, env);
     case "/api/tankers":
       return handleTankers(env);
+    case "/api/tankers/update":
+      return handleTankerUpdate(request, env);
     case "/api/family-survival":
       return handleFamilySurvival(request);
     case "/api/summary":
@@ -548,15 +552,100 @@ async function handleFoodCollapse(url: URL, env: Env): Promise<Response> {
 
 // ─── /api/tankers ────────────────────────────────────
 
+const TANKER_OVERRIDES_KEY = "tanker_overrides";
+
+interface TankerOverride {
+  id: string;
+  eta_days?: number;
+  status?: string;
+  note?: string;
+  updatedAt: string;
+}
+
 async function handleTankers(env: Env): Promise<Response> {
   const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.TANKERS);
   if (cached) {
     return jsonResponse({ data: cached.data, cache: "hit" });
   }
 
-  const data = calcTankerArrivals();
-  await setCache(env.CACHE, CACHE_KEYS.TANKERS, data, CACHE_TTL.SIMULATION);
-  return jsonResponse({ data, cache: "miss" });
+  const baseTankers = calcTankerArrivals();
+
+  // KVからオーバーライド情報を取得してマージ
+  const overrides = await env.CACHE.get<TankerOverride[]>(TANKER_OVERRIDES_KEY, "json");
+  if (overrides && overrides.length > 0) {
+    const overrideMap = new Map<string, TankerOverride>(overrides.map((o: TankerOverride) => [o.id, o]));
+    for (const tanker of baseTankers) {
+      const ov = overrideMap.get(tanker.id);
+      if (ov) {
+        if (ov.eta_days != null) tanker.eta_days = ov.eta_days;
+        if (ov.status) tanker.status = ov.status;
+      }
+    }
+    // ETAで再ソート
+    baseTankers.sort((a, b) => a.eta_days - b.eta_days);
+  }
+
+  await setCache(env.CACHE, CACHE_KEYS.TANKERS, baseTankers, CACHE_TTL.SIMULATION);
+  return jsonResponse({ data: baseTankers, cache: "miss", overrides: overrides?.length ?? 0 });
+}
+
+// ─── /api/tankers/update ─────────────────────────────
+// 管理者トークンで認証されたPOSTリクエストでタンカー情報を更新。
+// KVにオーバーライド情報を保存し、次回のGET /api/tankersで反映される。
+
+async function handleTankerUpdate(request: Request | undefined, env: Env): Promise<Response> {
+  if (!request || request.method !== "POST") {
+    return jsonResponse({ error: "method_not_allowed", message: "POST required" }, 405);
+  }
+
+  // 管理者トークン認証
+  const authHeader = request.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "");
+  if (!env.ADMIN_TOKEN || !token || token !== env.ADMIN_TOKEN) {
+    return jsonResponse({ error: "unauthorized", message: "Valid ADMIN_TOKEN required" }, 401);
+  }
+
+  const body = await request.json() as {
+    id: string;
+    eta_days?: number;
+    status?: string;
+    note?: string;
+  };
+
+  if (!body.id) {
+    return jsonResponse({ error: "invalid_input", message: "id is required" }, 400);
+  }
+
+  // ETAバリデーション
+  if (body.eta_days != null && (body.eta_days < 0 || body.eta_days > 365)) {
+    return jsonResponse({ error: "invalid_input", message: "eta_days must be 0-365" }, 400);
+  }
+
+  // 既存オーバーライドを取得して追加/更新
+  const existing: TankerOverride[] = await env.CACHE.get<TankerOverride[]>(TANKER_OVERRIDES_KEY, "json") ?? [];
+  const idx = existing.findIndex((o: TankerOverride) => o.id === body.id);
+  const override: TankerOverride = {
+    id: body.id,
+    eta_days: body.eta_days,
+    status: body.status,
+    note: body.note,
+    updatedAt: new Date().toISOString().slice(0, 10),
+  };
+
+  if (idx >= 0) {
+    existing[idx] = override;
+  } else {
+    existing.push(override);
+  }
+
+  await env.CACHE.put(TANKER_OVERRIDES_KEY, JSON.stringify(existing), {
+    expirationTtl: 86400 * 30, // 30日保持
+  });
+
+  // タンカーキャッシュを無効化
+  await invalidateCache(env.CACHE, [CACHE_KEYS.TANKERS]);
+
+  return jsonResponse({ success: true, override, totalOverrides: existing.length });
 }
 
 // ─── /api/family-survival ────────────────────────────
