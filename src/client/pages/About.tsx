@@ -35,13 +35,13 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 6",
     label: "データ自動化・信頼性",
     status: "completed" as const,
-    items: ["石油備蓄月次自動", "電力需給日次", "OWID週次", "データバリデーション", "セキュリティ監査", "鮮度インジケータ"],
+    items: ["石油備蓄月次自動", "LNG在庫月次自動", "電力需給日次", "OWID週次", "データバリデーション", "セキュリティ監査", "鮮度インジケータ"],
   },
   {
     phase: "Phase 7",
     label: "社会実装基盤",
     status: "completed" as const,
-    items: ["API 16本", "sitemap", "ai-plugin", "引用フォーマット", "SNS通知Worker"],
+    items: ["API 16本", "sitemap", "ai-plugin", "引用フォーマット", "SNS通知Worker", "RSSニュース監視"],
   },
   {
     phase: "Phase 8",
@@ -115,7 +115,7 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>全ての入力データは<span className="text-neutral-200 font-bold">政府統計・公開データ</span>に基づいています。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
-            <li>・石油備蓄・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
+            <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
             <li>・タンカー15隻（代替ルート3隻含む）のIMO番号は2026年3月時点で公開DBと照合検証済み</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東の3ルート</li>
@@ -264,7 +264,7 @@ export const About: FC = () => {
         </div>
         <div className="text-xs text-neutral-600 font-mono space-y-0.5">
           <p>API: 16エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
-          <p>Cronパイプライン: 3/5枠使用（OWID週次 + 電力日次 + 石油備蓄月次）+ Discord通知Worker</p>
+          <p>Cronパイプライン: 3/5枠使用（OWID週次 + 電力日次 + 石油備蓄/LNG月次）+ Discord通知+RSS監視Worker</p>
           <p>インフラ月額: ~$3（ドメイン2件のみ。Cloudflare全スタック無料枠）</p>
         </div>
       </div>
@@ -273,7 +273,7 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
         <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">SUPPORT THIS PROJECT</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
-          広告なしのオープンソースプロジェクトです。スポンサーシップはリアルタイムタンカー追跡（AIS API）と代替供給ルートモデルの実現に直接使われます。
+          広告なしのオープンソースプロジェクトです。14の計算モデルと自動データパイプラインが完成しています。スポンサーシップはリアルタイムAISタンカー追跡の実現に直接使われます。
         </p>
         <div className="text-xs text-neutral-500 space-y-1 font-mono">
           <p>$0〜$36/月 → チョークポイント監視開始</p>
