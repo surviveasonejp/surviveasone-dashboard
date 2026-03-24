@@ -5,7 +5,8 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
-import type { ResourceCountdown } from "../../shared/types";
+import { EconomicCascade } from "../components/EconomicCascade";
+import type { ResourceCountdown, FlowSimulationResult } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DATA_SOURCES } from "../lib/dataSources";
@@ -27,6 +28,13 @@ export const SurvivalClock: FC = () => {
   );
   const displayCountdowns = countdowns ?? FALLBACK_COUNTDOWNS;
   const worstLevel = displayCountdowns[0]?.alertLevel ?? "safe";
+
+  // フローシミュレーション結果（経済カスケード用）
+  const EMPTY_SIM: FlowSimulationResult = { timeline: [], oilDepletionDay: 365, lngDepletionDay: 365, powerCollapseDay: 365, thresholds: [] };
+  const { data: simResult } = useApiData<FlowSimulationResult>(
+    `/api/simulation?scenario=${scenario}`,
+    EMPTY_SIM,
+  );
 
   // 計算根拠の表示用データ（生データ）
   const { data: apiReserves, isFromApi: reservesFromApi } = useApiData<ReservesRow>(
@@ -94,6 +102,10 @@ export const SurvivalClock: FC = () => {
       <SimulationBanner />
 
       <FlowTimeline scenarioId={scenario} />
+
+      {simResult && simResult.timeline.length > 0 && (
+        <EconomicCascade simulation={simResult} />
+      )}
 
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">
