@@ -65,6 +65,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   onSelect,
 }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [hoveredPortId, setHoveredPortId] = useState<string | null>(null);
 
   // 各タンカーの推定位置・進行方向を算出
   const positions = useMemo(() => {
@@ -188,38 +189,45 @@ export const TankerMap: FC<TankerMapProps> = ({
         {JAPAN_PORTS.filter((p) => isInBounds(p)).map((port) => {
           const [px, py] = project(port.lon, port.lat);
           const isDestination = activeTanker?.destinationPort === port.id;
+          const isPortHovered = hoveredPortId === port.id;
+          const showLabel = isDestination || isPortHovered;
           return (
-            <g key={port.id}>
+            <g
+              key={port.id}
+              className="cursor-pointer"
+              onMouseEnter={() => setHoveredPortId(port.id)}
+              onMouseLeave={() => setHoveredPortId(null)}
+            >
+              {/* ヒットエリア（小さいドットでもホバーしやすく） */}
+              <circle cx={px} cy={py} r={12} fill="transparent" />
               <circle
                 cx={px}
                 cy={py}
-                r={isDestination ? 6 : 3}
-                fill={isDestination ? "#ef4444" : "#94a3b8"}
-                stroke={isDestination ? "#fff" : "#0f1419"}
-                strokeWidth={isDestination ? 1.5 : 0.5}
-                opacity={isDestination ? 1 : 0.5}
+                r={showLabel ? 5 : 3}
+                fill={isDestination ? "#ef4444" : isPortHovered ? "#fff" : "#94a3b8"}
+                stroke={showLabel ? "#fff" : "#0f1419"}
+                strokeWidth={showLabel ? 1.5 : 0.5}
+                opacity={showLabel ? 1 : 0.5}
               />
               {isDestination && (
-                <>
-                  <circle cx={px} cy={py} r={12} fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.4">
-                    <animate attributeName="r" values="8;16" dur="1.5s" repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />
-                  </circle>
-                  <text
-                    x={px}
-                    y={py - 10}
-                    fill="#ef4444"
-                    fontSize="12"
-                    fontFamily="monospace"
-                    textAnchor="middle"
-                    fontWeight="bold"
-                  >
-                    {port.name}
-                  </text>
-                </>
+                <circle cx={px} cy={py} r={12} fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.4">
+                  <animate attributeName="r" values="8;16" dur="1.5s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />
+                </circle>
               )}
-              {/* 常時ホバーで港名表示 */}
-              <title>{port.name}</title>
+              {showLabel && (
+                <text
+                  x={px}
+                  y={py - 10}
+                  fill={isDestination ? "#ef4444" : "#fff"}
+                  fontSize="12"
+                  fontFamily="monospace"
+                  textAnchor="middle"
+                  fontWeight="bold"
+                >
+                  {port.name}
+                </text>
+              )}
             </g>
           );
         })}
