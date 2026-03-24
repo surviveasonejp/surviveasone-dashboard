@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "ホルムズ海峡封鎖に関連する実際に発生したイベント。シミュレーションのタイムラインに重ねて表示する。",
-    "updatedAt": "2026-03-24",
+    "updatedAt": "2026-03-24T12:00:00+09:00",
     "note": "dateはISO 8601形式。dayOffsetは封鎖開始日(2026-03-01想定)からの経過日数。"
   },
   "blockadeStartDate": "2026-03-01",
@@ -69,6 +69,46 @@
       "label": "国家備蓄 約1ヶ月分の放出開始予定",
       "source": "TBS NEWS DIG 2026-03-23",
       "impact": "民間放出に続き国家備蓄の放出が3月下旬から開始"
+    },
+    {
+      "date": "2026-03-24",
+      "dayOffset": 23,
+      "category": "government",
+      "label": "代替ルート第1便 3/28到着予定を発表（フジャイラ経由）",
+      "source": "Bloomberg / 産経 2026-03-24",
+      "impact": "ホルムズ海峡を通らない代替ルートタンカーが初めて日本到着へ。UAE フジャイラ港から出荷"
+    },
+    {
+      "date": "2026-03-24",
+      "dayOffset": 23,
+      "category": "international",
+      "label": "サウジ東西パイプライン 日量400万バレルに拡大（戦前の約3倍）",
+      "source": "Bloomberg 2026-03-24",
+      "impact": "ヤンブー港経由の代替輸出ルート確立。4/5に第2便到着予定"
+    },
+    {
+      "date": "2026-03-28",
+      "dayOffset": 27,
+      "category": "government",
+      "label": "代替ルート第1便 到着予定日",
+      "source": "経産相発表 2026-03-24",
+      "impact": "フジャイラ出発のVLCC。ホルムズ非経由の初の原油到着"
+    },
+    {
+      "date": "2026-04-05",
+      "dayOffset": 35,
+      "category": "government",
+      "label": "代替ルート第2便 到着予定日（ヤンブー経由）",
+      "source": "経産相発表 2026-03-24",
+      "impact": "サウジ東西パイプライン→ヤンブー港から出荷のVLCC到着"
+    },
+    {
+      "date": "2026-04-25",
+      "dayOffset": 55,
+      "category": "government",
+      "label": "非中東調達便 到着予定日",
+      "source": "経産相発表 2026-03-24",
+      "impact": "中東以外の地域から調達した原油の到着"
     }
   ]
 }

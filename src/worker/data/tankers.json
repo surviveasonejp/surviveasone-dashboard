@@ -220,6 +220,57 @@
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.9, "combined": 0.77 },
       "note": "QatarEnergy/NYK/川崎汽船/MISC/中国LNG海運 JV LNG船。IMO 9981491。174,000m3。HD Hyundai HHI蔚山建造(2025年8月引渡)。シンガポール籍。NFE 12隻中3番船。NYKグループが船舶管理を担当(NFEプロジェクトでNYK管理初号船)。X-DF 2.1 iCERエンジン・空気潤滑システム搭載"
+    },
+    {
+      "id": "vlcc-alt-01",
+      "name": "代替ルート第1便",
+      "type": "VLCC",
+      "departure": "フジャイラ（UAE）",
+      "departurePort": "Fujairah",
+      "destination": "日本（港未公表）",
+      "destinationPort": "Chiba",
+      "distanceToJapan_nm": 6300,
+      "speed_knots": 12.5,
+      "eta_days": 4.0,
+      "cargo_t": 300000,
+      "cargoType": "原油（ムルバンブレンド想定）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
+      "note": "経産相発表(2026-03-24): ホルムズ海峡を通らない代替ルート第1便。フジャイラはホルムズ外のためUAEの原油備蓄拠点(7000万バレル貯蔵能力)から出荷。3月28日到着予定。Bloomberg/産経報道"
+    },
+    {
+      "id": "vlcc-alt-02",
+      "name": "代替ルート第2便",
+      "type": "VLCC",
+      "departure": "ヤンブー（サウジ西岸）",
+      "departurePort": "Yanbu",
+      "destination": "日本（港未公表）",
+      "destinationPort": "Yokkaichi",
+      "distanceToJapan_nm": 11500,
+      "speed_knots": 12.0,
+      "eta_days": 12.0,
+      "cargo_t": 300000,
+      "cargoType": "原油（東西パイプライン経由）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.7, "route": 0.85, "military": 0.85, "combined": 0.505 },
+      "note": "経産相発表(2026-03-24): サウジ東西パイプライン(全長1200km)経由でヤンブー港から出荷。戦前日量140万バレル→現在400万バレル(VLCC2隻分/日)に拡大。4月5日到着予定。バベルマンデブ海峡通過リスクあり。Bloomberg報道"
+    },
+    {
+      "id": "vlcc-alt-03",
+      "name": "非中東調達便",
+      "type": "VLCC",
+      "departure": "ダンピア（豪州WA）",
+      "departurePort": "Dampier",
+      "destination": "日本（港未公表）",
+      "destinationPort": "Mizushima",
+      "distanceToJapan_nm": 3600,
+      "speed_knots": 12.0,
+      "eta_days": 32.0,
+      "cargo_t": 300000,
+      "cargoType": "原油（非中東調達）",
+      "status": "調達中",
+      "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.95, "combined": 0.812 },
+      "note": "経産相発表(2026-03-24): 中東以外の地域から調達した原油。4月25日到着予定。具体的な出発港は未公表（豪州想定）。ホルムズ・バベルマンデブ両海峡を回避するため到着確率が高い"
     }
   ]
 }

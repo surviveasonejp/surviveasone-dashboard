@@ -32,6 +32,7 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Bintulu": "southeast-asia",
   "Bontang": "southeast-asia",
   "Prigorodnoye": "sakhalin",
+  "Yanbu": "yanbu-suez",
   "Sabine Pass": "us-pacific",
   "Cameron": "us-pacific",
 };

@@ -304,7 +304,9 @@ function buildArrivalSchedule(
       vessel.departurePort === "Ras Tanura" ||
       vessel.departurePort === "Jubail" ||
       vessel.departurePort === "Kharg Island" ||
-      vessel.departurePort === "Ras Laffan";
+      vessel.departurePort === "Ras Laffan" ||
+      vessel.departurePort === "Mina Al Ahmadi" ||
+      vessel.departurePort === "Basrah";
 
     const arrivalProbability = isHormuzRoute ? Math.max(0, 1 - blockadeRate) : 0.95;
 
