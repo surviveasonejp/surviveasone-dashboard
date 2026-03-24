@@ -1,7 +1,9 @@
-import { type FC, useState, useMemo } from "react";
+import { type FC, useState, useMemo, useEffect } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
+import { LocationBar } from "../components/LocationBar";
+import { useUserRegion } from "../hooks/useUserRegion";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
@@ -80,6 +82,14 @@ export const FoodCollapse: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
   const { regions } = useCollapseOrder(scenario);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const userRegion = useUserRegion();
+
+  // 位置情報が取得できたら初期選択に反映（手動選択がなければ）
+  useEffect(() => {
+    if (userRegion.regionId && !selectedRegionId) {
+      setSelectedRegionId(userRegion.regionId);
+    }
+  }, [userRegion.regionId]);
 
   const selectedRegion: RegionCollapse | null = useMemo(
     () => regions.find((r) => r.id === selectedRegionId) ?? null,
@@ -143,7 +153,7 @@ export const FoodCollapse: FC = () => {
               return (
                 <button
                   key={region.id}
-                  onClick={() => setSelectedRegionId(region.id)}
+                  onClick={() => { setSelectedRegionId(region.id); userRegion.setManualRegion(region.id); }}
                   className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors cursor-pointer ${
                     isActive
                       ? "bg-white/10"
@@ -177,6 +187,12 @@ export const FoodCollapse: FC = () => {
 
       <SimulationBanner />
       <BlockadeContext />
+      <LocationBar
+        regionName={userRegion.regionName}
+        source={userRegion.source}
+        loading={userRegion.loading}
+        onReset={() => { userRegion.setManualRegion(null); setSelectedRegionId(null); }}
+      />
 
       {/* 食品消失タイムライン */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

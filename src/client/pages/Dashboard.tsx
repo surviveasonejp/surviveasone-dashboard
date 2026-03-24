@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC, useState, useEffect } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { RegionMap } from "../components/RegionMap";
 import { RegionDetail } from "../components/RegionDetail";
@@ -10,6 +10,7 @@ import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
+import { useUserRegion } from "../hooks/useUserRegion";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow } from "../hooks/useApiData";
 
@@ -23,6 +24,14 @@ export const Dashboard: FC = () => {
   const { regions } = useCollapseOrder(scenario);
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
   const { isFromApi } = useApiData<ReservesRow>("/api/reserves", null as unknown as ReservesRow);
+  const userRegion = useUserRegion();
+
+  useEffect(() => {
+    if (userRegion.regionId && !selectedRegion && regions.length > 0) {
+      const match = regions.find((r) => r.id === userRegion.regionId);
+      if (match) setSelectedRegion(match);
+    }
+  }, [userRegion.regionId, regions]);
 
   return (
     <div className="space-y-6">

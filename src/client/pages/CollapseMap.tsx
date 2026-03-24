@@ -1,9 +1,11 @@
-import { type FC, useState } from "react";
+import { type FC, useState, useEffect } from "react";
 import { RegionMap } from "../components/RegionMap";
 import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { LocationBar } from "../components/LocationBar";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
+import { useUserRegion } from "../hooks/useUserRegion";
 import type { RegionCollapse } from "../../shared/types";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
@@ -11,6 +13,15 @@ import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 export const CollapseMap: FC = () => {
   const { regions, loading: regionsLoading } = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
+  const userRegion = useUserRegion();
+
+  // 位置情報で初期選択
+  useEffect(() => {
+    if (userRegion.regionId && !selectedRegion && regions.length > 0) {
+      const match = regions.find((r) => r.id === userRegion.regionId);
+      if (match) setSelectedRegion(match);
+    }
+  }, [userRegion.regionId, regions]);
 
   return (
     <div className="space-y-6">
@@ -29,6 +40,12 @@ export const CollapseMap: FC = () => {
       />
 
       <SimulationBanner />
+      <LocationBar
+        regionName={userRegion.regionName}
+        source={userRegion.source}
+        loading={userRegion.loading}
+        onReset={() => { userRegion.setManualRegion(null); setSelectedRegion(null); }}
+      />
 
       {/* 地図 + 詳細 2カラム */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
