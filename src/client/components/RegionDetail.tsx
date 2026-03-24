@@ -86,10 +86,11 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
             <span className="font-mono text-right text-neutral-300">{logistics.deliveryDelayDays}日</span>
             <span className="text-neutral-500">トラック燃料依存</span>
             <span className="font-mono text-right text-neutral-300">{Math.round(logistics.truckFuelDependency * 100)}%</span>
-            <span className="text-neutral-500">油槽所数</span>
-            <span className="font-mono text-right text-neutral-300">{logistics.depotCount}箇所</span>
+            <span className="text-neutral-500">給油所数</span>
+            <span className="font-mono text-right text-neutral-300">{logistics.gasStationCount.toLocaleString()}箇所</span>
           </div>
           <p className="text-[9px] text-neutral-600 leading-relaxed">{logistics.note}</p>
+          <p className="text-[8px] text-neutral-700">給油所数出典: 資源エネルギー庁 2023年度末</p>
         </div>
       )}
 

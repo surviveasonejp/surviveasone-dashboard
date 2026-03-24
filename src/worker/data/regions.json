@@ -27,7 +27,7 @@
     "logistics": {
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
-      "depotCount": 8,
+      "gasStationCount": 1668,
       "note": "苫小牧製油所→道内各地。広大な面積で末端配送距離が長い。冬季は路面凍結リスク"
     }
   },
@@ -60,7 +60,7 @@
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
-      "depotCount": 12,
+      "gasStationCount": 3174,
       "note": "仙台製油所→東北各地。日本海側は冬季に配送遅延リスク"
     }
   },
@@ -100,8 +100,8 @@
     "logistics": {
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.85,
-      "depotCount": 45,
-      "note": "京浜工業地帯に製油所7基集中。油槽所密度が最高。ただし消費量も最大で枯渇は速い"
+      "gasStationCount": 8446,
+      "note": "京浜工業地帯に製油所7基集中。給油所密度が最高。ただし消費量も最大で枯渇は速い"
     }
   },
   {
@@ -135,7 +135,7 @@
     "logistics": {
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.9,
-      "depotCount": 20,
+      "gasStationCount": 2464,
       "note": "四日市コンビナート中心。自動車産業への軽油供給が最優先"
     }
   },
@@ -163,7 +163,7 @@
     "logistics": {
       "deliveryDelayDays": 4,
       "truckFuelDependency": 0.95,
-      "depotCount": 5,
+      "gasStationCount": 921,
       "note": "製油所・LNG基地なし。中部・関西エリアからの陸上輸送に完全依存。配送遅延が最も早く発生"
     }
   },
@@ -198,7 +198,7 @@
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.85,
-      "depotCount": 25,
+      "gasStationCount": 3076,
       "note": "堺コンビナートが拠点。和歌山製油所閉鎖で南部への配送距離が拡大"
     }
   },
@@ -231,7 +231,7 @@
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
-      "depotCount": 15,
+      "gasStationCount": 2072,
       "note": "水島コンビナートが国内最大。日本海側（島根・鳥取）への配送は山越えで遅延リスク"
     }
   },
@@ -263,7 +263,7 @@
     "logistics": {
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
-      "depotCount": 8,
+      "gasStationCount": 1461,
       "note": "今治製油所のみ。本四架橋経由の配送に依存。島嶼部は海上輸送が必要"
     }
   },
@@ -296,7 +296,7 @@
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
-      "depotCount": 18,
+      "gasStationCount": 3815,
       "note": "大分製油所が拠点。離島(長崎・鹿児島)は海上輸送依存で脆弱"
     }
   },
@@ -326,7 +326,7 @@
     "logistics": {
       "deliveryDelayDays": 5,
       "truckFuelDependency": 1.0,
-      "depotCount": 3,
+      "gasStationCount": 317,
       "note": "製油所なし。本土からの海上輸送に100%依存。タンカー途絶で即座に配送停止"
     }
   }
