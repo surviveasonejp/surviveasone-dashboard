@@ -73,7 +73,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         className="cursor-pointer"
         onMouseEnter={() => setHoveredId(regionId)}
         onMouseLeave={() => setHoveredId(null)}
-        onClick={(e) => { e.stopPropagation(); if (region) { console.log('Region clicked:', regionId, region.name); onSelectRegion(region); } else { console.log('Region clicked but no data:', regionId); } }}
+        onClick={(e) => { e.stopPropagation(); if (region) onSelectRegion(region); }}
       >
         {prefs.map((pref) => (
           <path
