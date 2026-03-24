@@ -98,6 +98,80 @@ function getDemandDestructionFactor(stockPercent: number): number {
   return 0.45;                               // 生活必需のみ。55%削減
 }
 
+// ─── #7 代替供給ルートモデル ─────────────────────────
+//
+// ホルムズ封鎖後に確保される代替供給を日次でシミュレート。
+// 根拠:
+// - フジャイラ(UAE): ホルムズ外の貯蔵拠点(7000万バレル)。即座に出荷可能だが容量制限あり
+// - ヤンブー(サウジ西岸): 東西パイプライン経由。日量400万バレル(VLCC2隻分/日)に拡大(Bloomberg 2026-03)
+// - 非中東調達: インド・アフリカ・豪州等。リードタイム長いが到着確率高い
+// - 国際競争: 中国・韓国・欧州がアジア市場で取り合い → 調達成功率が時間とともに低下
+
+interface AlternativeSupplyProfile {
+  /** 代替供給開始日（調達契約→出荷→到着のリードタイム） */
+  startDay: number;
+  /** フジャイラ日量 (kL) */
+  fujairahDailyKL: number;
+  /** ヤンブー日量 (kL) */
+  yanbuDailyKL: number;
+  /** 非中東日量 (kL) */
+  nonMiddleEastDailyKL: number;
+  /** 初期調達成功率 (0-1) */
+  initialSuccessRate: number;
+  /** 成功率の低下速度（日次、国際競争による） */
+  successRateDecayPerDay: number;
+  /** 成功率の下限 */
+  minSuccessRate: number;
+}
+
+const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
+  optimistic: {
+    startDay: 14,                  // 2週間で代替調達開始
+    fujairahDailyKL: 80000,        // フジャイラ8万kL/日（VLCC 0.5隻分相当）
+    yanbuDailyKL: 60000,           // ヤンブー6万kL/日
+    nonMiddleEastDailyKL: 40000,   // 非中東4万kL/日
+    initialSuccessRate: 0.7,       // 初期成功率70%
+    successRateDecayPerDay: 0.001, // 緩やかに低下
+    minSuccessRate: 0.4,           // 最低40%
+  },
+  realistic: {
+    startDay: 28,                  // 1ヶ月で代替調達開始（経産相発表と整合）
+    fujairahDailyKL: 50000,        // フジャイラ5万kL/日
+    yanbuDailyKL: 40000,           // ヤンブー4万kL/日
+    nonMiddleEastDailyKL: 20000,   // 非中東2万kL/日
+    initialSuccessRate: 0.4,       // 初期成功率40%（アジア競争激化）
+    successRateDecayPerDay: 0.002, // 日々低下
+    minSuccessRate: 0.15,          // 最低15%
+  },
+  pessimistic: {
+    startDay: 60,                  // 2ヶ月まで代替確保不能
+    fujairahDailyKL: 20000,        // フジャイラ限定的
+    yanbuDailyKL: 15000,           // ヤンブーもバベルマンデブ封鎖で制限
+    nonMiddleEastDailyKL: 10000,   // 非中東も国際取り合い
+    initialSuccessRate: 0.2,       // 初期成功率20%
+    successRateDecayPerDay: 0.003, // 急速に低下
+    minSuccessRate: 0.05,          // ほぼ調達不能
+  },
+};
+
+/** 指定日の代替供給量 (kL) を返す */
+function getAlternativeSupply(day: number, profile: AlternativeSupplyProfile): number {
+  if (day < profile.startDay) return 0;
+
+  const daysSinceStart = day - profile.startDay;
+  const successRate = Math.max(
+    profile.minSuccessRate,
+    profile.initialSuccessRate - daysSinceStart * profile.successRateDecayPerDay,
+  );
+
+  const totalDailyCapacity =
+    profile.fujairahDailyKL +
+    profile.yanbuDailyKL +
+    profile.nonMiddleEastDailyKL;
+
+  return totalDailyCapacity * successRate;
+}
+
 // ─── #10 歴史データ対比マーカー ──────────────────────
 
 const HISTORICAL_MARKERS: Array<{ day: number; label: string }> = [
@@ -114,6 +188,7 @@ export function runFlowSimulation(
 ): FlowSimulationResult {
   const s = SCENARIOS[scenarioId];
   const blockadeProfile = BLOCKADE_PROFILES[scenarioId];
+  const altSupplyProfile = ALT_SUPPLY_PROFILES[scenarioId];
 
   // #3 SPR: 備蓄を種別ごとに分離管理
   let oilNationalStock = staticReserves.oil.nationalReserve_kL;
@@ -146,6 +221,7 @@ export function runFlowSimulation(
   let oilRationFactor = 1.0;
   let lngRationFactor = 1.0;
   let nationalReleaseStarted = false;
+  let altSupplyStarted = false;
 
   for (let day = 0; day < maxDays; day++) {
     // #4 封鎖解除曲線: 日ごとの遮断率
@@ -156,6 +232,22 @@ export function runFlowSimulation(
     const lngArrival = lngArrivals.get(day - LNG_REGAS_DELAY_DAYS) ?? 0;
     oilStock += oilArrival;
     lngStock += lngArrival;
+
+    // #7 代替供給ルート（封鎖後の新規調達）
+    const altSupply = getAlternativeSupply(day, altSupplyProfile);
+    if (altSupply > 0) {
+      oilStock += altSupply;
+      if (!altSupplyStarted) {
+        altSupplyStarted = true;
+        thresholds.push({
+          day,
+          type: "price_spike",
+          resource: "oil",
+          stockPercent: Math.round((oilStock / initialOil) * 1000) / 10,
+          label: `代替供給 開始（${Math.round(altSupply).toLocaleString()} kL/日）`,
+        });
+      }
+    }
 
     // #3 SPR: 国家備蓄放出（リードタイム後）
     if (day >= SPR_NATIONAL_LEAD_TIME_DAYS && oilNationalStock > 0) {
