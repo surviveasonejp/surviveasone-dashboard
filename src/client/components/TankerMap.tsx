@@ -216,17 +216,29 @@ export const TankerMap: FC<TankerMapProps> = ({
                 </circle>
               )}
               {showLabel && (
-                <text
-                  x={px}
-                  y={py - 10}
-                  fill={isDestination ? "#ef4444" : "#fff"}
-                  fontSize="12"
-                  fontFamily="monospace"
-                  textAnchor="middle"
-                  fontWeight="bold"
-                >
-                  {port.name}
-                </text>
+                <>
+                  {/* テキスト背景（視認性確保） */}
+                  <rect
+                    x={px - port.name.length * 7}
+                    y={py - 21}
+                    width={port.name.length * 14}
+                    height={16}
+                    rx={3}
+                    fill="#0f1419"
+                    opacity={0.85}
+                  />
+                  <text
+                    x={px}
+                    y={py - 9}
+                    fill={isDestination ? "#ef4444" : "#fff"}
+                    fontSize="12"
+                    fontFamily="monospace"
+                    textAnchor="middle"
+                    fontWeight="bold"
+                  >
+                    {port.name}
+                  </text>
+                </>
               )}
             </g>
           );
