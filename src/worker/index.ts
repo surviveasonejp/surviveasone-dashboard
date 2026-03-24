@@ -57,6 +57,7 @@ import {
 } from "./simulation/calculations";
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
+import { getAisPositions, type AisPosition } from "./ais-tracker";
 
 interface Env {
   ASSETS: Fetcher;
@@ -64,6 +65,7 @@ interface Env {
   CACHE: KVNamespace;
   ARCHIVE: R2Bucket;
   ADMIN_TOKEN?: string;
+  AISSTREAM_API_KEY?: string;
 }
 
 // ─── セキュリティヘッダー ──────────────────────────────
@@ -315,6 +317,8 @@ async function handleApiRoute(
       return handleTankers(env);
     case "/api/tankers/update":
       return handleTankerUpdate(request, env);
+    case "/api/ais":
+      return handleAis(env);
     case "/api/family-survival":
       return handleFamilySurvival(request);
     case "/api/summary":
@@ -585,8 +589,17 @@ async function handleTankers(env: Env): Promise<Response> {
     baseTankers.sort((a, b) => a.eta_days - b.eta_days);
   }
 
+  // AIS位置データをマージ
+  const aisPositions = await getAisPositions(env.CACHE);
+  const aisCount = Object.keys(aisPositions).length;
+
   await setCache(env.CACHE, CACHE_KEYS.TANKERS, baseTankers, CACHE_TTL.SIMULATION);
-  return jsonResponse({ data: baseTankers, cache: "miss", overrides: overrides?.length ?? 0 });
+  return jsonResponse({
+    data: baseTankers,
+    cache: "miss",
+    overrides: overrides?.length ?? 0,
+    ais: aisCount > 0 ? { count: aisCount, positions: aisPositions } : undefined,
+  });
 }
 
 // ─── /api/tankers/update ─────────────────────────────
@@ -646,6 +659,20 @@ async function handleTankerUpdate(request: Request | undefined, env: Env): Promi
   await invalidateCache(env.CACHE, [CACHE_KEYS.TANKERS]);
 
   return jsonResponse({ success: true, override, totalOverrides: existing.length });
+}
+
+// ─── /api/ais ────────────────────────────────────────
+
+async function handleAis(env: Env): Promise<Response> {
+  const positions = await getAisPositions(env.CACHE);
+  const count = Object.keys(positions).length;
+  return jsonResponse({
+    data: positions,
+    count,
+    note: count === 0
+      ? "AIS位置データなし。日次Cronで取得後に反映されます。"
+      : `${count}隻のAIS位置データ（日次更新）`,
+  });
 }
 
 // ─── /api/family-survival ────────────────────────────

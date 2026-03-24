@@ -11,11 +11,13 @@ import { invalidateCache, CACHE_KEYS } from "./kv-cache";
 import { fetchElectricityDemand } from "./electricity";
 import { fetchReservesUpdate } from "./reserves-fetcher";
 import { fetchLngUpdate } from "./lng-fetcher";
+import { fetchAisPositions } from "./ais-tracker";
 
 interface Env {
   DB: D1Database;
   CACHE: KVNamespace;
   ARCHIVE: R2Bucket;
+  AISSTREAM_API_KEY?: string;
 }
 
 const OWID_CSV_URL = "https://raw.githubusercontent.com/owid/energy-data/master/owid-energy-data.csv";
@@ -41,6 +43,10 @@ export async function handleScheduled(
 
   if (hour === 18) {
     ctx.waitUntil(fetchElectricityDemand(env.DB));
+    // AISタンカー位置取得（電力需給と並行実行）
+    if (env.AISSTREAM_API_KEY) {
+      ctx.waitUntil(fetchAisPositions(env));
+    }
   }
 
   // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫データ自動更新
