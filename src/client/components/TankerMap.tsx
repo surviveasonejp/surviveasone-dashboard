@@ -10,6 +10,20 @@ import {
 } from "../lib/tankerPosition";
 import { DataBadge } from "./DataBadge";
 import { WORLD_LAND_PATH } from "../data/world-land";
+// ─── 日本の到着港 ────────────────────────────────────
+
+const JAPAN_PORTS: Array<{ id: string; name: string; lat: number; lon: number }> = [
+  { id: "Chiba", name: "千葉", lat: 35.61, lon: 140.10 },
+  { id: "Yokkaichi", name: "四日市", lat: 34.97, lon: 136.62 },
+  { id: "Sakai", name: "堺", lat: 34.57, lon: 135.47 },
+  { id: "Mizushima", name: "水島", lat: 34.52, lon: 133.74 },
+  { id: "Kiire", name: "喜入", lat: 31.39, lon: 130.58 },
+  { id: "Futtsu", name: "富津", lat: 35.30, lon: 139.82 },
+  { id: "Chita", name: "知多", lat: 34.97, lon: 136.87 },
+  { id: "Kitakyushu", name: "北九州", lat: 33.95, lon: 130.82 },
+  { id: "Himeji", name: "姫路", lat: 34.78, lon: 134.67 },
+  { id: "Sodegaura", name: "袖ケ浦", lat: 35.43, lon: 139.95 },
+];
 
 // ─── 定数 ──────────────────────────────────────────
 
@@ -170,6 +184,46 @@ export const TankerMap: FC<TankerMapProps> = ({
           );
         })}
 
+        {/* 日本の到着港マーカー */}
+        {JAPAN_PORTS.filter((p) => isInBounds(p)).map((port) => {
+          const [px, py] = project(port.lon, port.lat);
+          const isDestination = activeTanker?.destinationPort === port.id;
+          return (
+            <g key={port.id}>
+              <circle
+                cx={px}
+                cy={py}
+                r={isDestination ? 6 : 3}
+                fill={isDestination ? "#ef4444" : "#94a3b8"}
+                stroke={isDestination ? "#fff" : "#0f1419"}
+                strokeWidth={isDestination ? 1.5 : 0.5}
+                opacity={isDestination ? 1 : 0.5}
+              />
+              {isDestination && (
+                <>
+                  <circle cx={px} cy={py} r={12} fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.4">
+                    <animate attributeName="r" values="8;16" dur="1.5s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />
+                  </circle>
+                  <text
+                    x={px}
+                    y={py - 10}
+                    fill="#ef4444"
+                    fontSize="12"
+                    fontFamily="monospace"
+                    textAnchor="middle"
+                    fontWeight="bold"
+                  >
+                    {port.name}
+                  </text>
+                </>
+              )}
+              {/* 常時ホバーで港名表示 */}
+              <title>{port.name}</title>
+            </g>
+          );
+        })}
+
         {/* 船舶マーカー */}
         {tankers.map((t) => {
           const p = positions.get(t.id);
@@ -318,6 +372,10 @@ export const TankerMap: FC<TankerMapProps> = ({
             className="inline-block w-1.5 h-1.5 bg-[#ef4444] rotate-45"
           />
           封鎖点
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#94a3b8] opacity-50" />
+          到着港
         </span>
       </div>
       <div className="absolute bottom-2 right-3">
