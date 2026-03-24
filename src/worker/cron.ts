@@ -10,6 +10,7 @@
 import { invalidateCache, CACHE_KEYS } from "./kv-cache";
 import { fetchElectricityDemand } from "./electricity";
 import { fetchReservesUpdate } from "./reserves-fetcher";
+import { fetchLngUpdate } from "./lng-fetcher";
 
 interface Env {
   DB: D1Database;
@@ -42,10 +43,11 @@ export async function handleScheduled(
     ctx.waitUntil(fetchElectricityDemand(env.DB));
   }
 
-  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄データ自動更新
+  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫データ自動更新
   const dayOfMonth = new Date(event.scheduledTime).getUTCDate();
   if (hour === 6 && dayOfMonth === 18) {
     ctx.waitUntil(fetchReservesUpdate(env));
+    ctx.waitUntil(fetchLngUpdate(env));
   }
 }
 
