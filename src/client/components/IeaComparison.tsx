@@ -1,14 +1,13 @@
 /**
- * IEA加盟国 石油備蓄日数比較
+ * 石油備蓄日数 国際比較
  *
- * IEA義務: 90日分（純輸入基準）。日本はIEA基準で上位の備蓄水準。
- * 「日本だけが危ない」という誤読を防ぎ、シミュレーションの文脈を提供する。
+ * IEA加盟国 + 日本に縁の深いアジア諸国の備蓄日数を比較表示。
+ * 「日本だけが危ない」という誤読を防ぎ、地域全体の脆弱性を可視化する。
  *
  * データソース:
  * - IEA Oil Security Policy（各国レポート）
- * - IEA Oil Stocks of IEA Countries（2024-2025年データ）
+ * - Al Jazeera / The Diplomat / ING / Manila Times（2026年3月報道）
  * - 資源エネルギー庁 石油備蓄統計
- * ※ 各国の備蓄日数は公開情報から取得した概数値。IEA基準（純輸入ベース）で統一。
  */
 
 import { type FC } from "react";
@@ -16,89 +15,128 @@ import staticReserves from "../data/reserves.json";
 
 interface CountryStock {
   country: string;
-  flag: string;
   days: number;
   note?: string;
   isJapan?: boolean;
+  group: "iea" | "asia";
 }
 
-// IEA公開データ・各国レポートに基づく主要国の備蓄日数（純輸入ベース概数）
 const COUNTRIES: CountryStock[] = [
-  { country: "日本", flag: "JP", days: 0, isJapan: true }, // reserves.jsonから動的取得
-  { country: "米国", flag: "US", days: 295, note: "SPR 3.9億バレル + 民間" },
-  { country: "韓国", flag: "KR", days: 192, note: "KNOC備蓄 + 民間70日義務" },
-  { country: "ドイツ", flag: "DE", days: 138, note: "EBV管理 + 民間90日義務" },
-  { country: "フランス", flag: "FR", days: 146, note: "SAGESS + CPSSP" },
-  { country: "英国", flag: "GB", days: 96, note: "民間義務のみ（国家備蓄なし）" },
-  { country: "イタリア", flag: "IT", days: 135, note: "OCSIT + 民間" },
-  { country: "豪州", flag: "AU", days: 69, note: "IEA義務未達（純輸出国に近い）" },
+  // IEA加盟国
+  { country: "日本", days: 0, isJapan: true, group: "iea" },
+  { country: "米国", days: 295, note: "SPR 3.9億バレル + 民間", group: "iea" },
+  { country: "韓国", days: 192, note: "KNOC備蓄 + 民間70日義務", group: "iea" },
+  { country: "フランス", days: 146, note: "SAGESS + CPSSP", group: "iea" },
+  { country: "ドイツ", days: 138, note: "EBV管理 + 民間90日義務", group: "iea" },
+  { country: "イタリア", days: 135, note: "OCSIT + 民間", group: "iea" },
+  { country: "英国", days: 96, note: "民間義務のみ（国家備蓄なし）", group: "iea" },
+  { country: "豪州", days: 69, note: "IEA義務未達（純輸出国に近い）", group: "iea" },
+  // アジア諸国（日本に縁が深い国）
+  { country: "台湾", days: 100, note: "政府発表100日超。中東依存70%", group: "asia" },
+  { country: "インド", days: 74, note: "SPR 3拠点 + 民間。中東依存60%", group: "asia" },
+  { country: "タイ", days: 61, note: "EGAT備蓄 + 民間。中東依存60%", group: "asia" },
+  { country: "フィリピン", days: 21, note: "3週間分。輸入100%依存。ロシアに支援要請", group: "asia" },
+  { country: "マレーシア", days: 30, note: "産油国だが精製能力不足", group: "asia" },
+  { country: "インドネシア", days: 22, note: "財政最脆弱。補助金負担大", group: "asia" },
+  { country: "ベトナム", days: 9, note: "国家備蓄9日。日韓に支援要請", group: "asia" },
+  { country: "シンガポール", days: 45, note: "貯蔵ハブだが非公開。推定値", group: "asia" },
 ];
 
-// 日本の日数をreserves.jsonから取得（IEA基準は国内日数より低い）
 function getJapanIeaDays(): number {
-  // IEA基準 = 純輸入ベース。国内基準(241日等)より低い
-  // 概算: 国内基準の約85% (国内消費 vs 純輸入の差)
   return Math.round(staticReserves.oil.totalReserveDays * 0.85);
 }
 
+interface StockBarProps {
+  countries: CountryStock[];
+  maxDays: number;
+  ieaLine?: boolean;
+}
+
+const StockBars: FC<StockBarProps> = ({ countries, maxDays, ieaLine }) => (
+  <div className="space-y-1">
+    {countries.map((c) => {
+      const pct = (c.days / maxDays) * 100;
+      const isJapan = c.isJapan ?? false;
+      const barColor = isJapan ? "#f59e0b"
+        : c.days >= 90 ? "#22c55e"
+        : c.days >= 30 ? "#f59e0b"
+        : "#ef4444";
+
+      return (
+        <div key={c.country} className="flex items-center gap-2" title={c.note}>
+          <span className={`text-[10px] font-mono w-20 text-right shrink-0 ${isJapan ? "text-[#f59e0b] font-bold" : "text-neutral-400"}`}>
+            {c.country}
+          </span>
+          <div className="flex-1 h-3.5 bg-[#0c1018] rounded overflow-hidden relative">
+            <div
+              className="h-full rounded transition-all duration-500"
+              style={{
+                width: `${pct}%`,
+                backgroundColor: barColor,
+                opacity: isJapan ? 0.8 : c.days < 30 ? 0.7 : 0.4,
+              }}
+            />
+            {ieaLine && (
+              <div
+                className="absolute top-0 h-full w-px bg-neutral-500 opacity-40"
+                style={{ left: `${(90 / maxDays) * 100}%` }}
+              />
+            )}
+          </div>
+          <span className={`text-[10px] font-mono w-8 text-right shrink-0 ${
+            isJapan ? "text-[#f59e0b] font-bold"
+            : c.days < 30 ? "text-[#ef4444]"
+            : "text-neutral-500"
+          }`}>
+            {c.days}日
+          </span>
+        </div>
+      );
+    })}
+  </div>
+);
+
 export const IeaComparison: FC = () => {
   const japanDays = getJapanIeaDays();
-  const countries = COUNTRIES.map((c) =>
-    c.isJapan ? { ...c, days: japanDays } : c,
-  ).sort((a, b) => b.days - a.days);
+  const all = COUNTRIES.map((c) => c.isJapan ? { ...c, days: japanDays } : c);
 
-  const maxDays = Math.max(...countries.map((c) => c.days));
+  const ieaCountries = all.filter((c) => c.group === "iea").sort((a, b) => b.days - a.days);
+  const asiaCountries = all.filter((c) => c.group === "asia").sort((a, b) => b.days - a.days);
+  const maxDays = Math.max(...all.map((c) => c.days));
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-5 space-y-3">
+    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-5 space-y-4">
       <div className="font-mono text-xs tracking-widest text-neutral-500 text-center">
-        IEA MEMBER STOCKPILE COMPARISON
+        INTERNATIONAL STOCKPILE COMPARISON
       </div>
-      <p className="text-xs text-neutral-600 text-center">
-        IEA義務: 90日分（純輸入基準）| 日本はIEA加盟国で上位の備蓄水準
-      </p>
 
+      {/* IEA加盟国 */}
       <div className="space-y-1.5">
-        {countries.map((c) => {
-          const pct = (c.days / maxDays) * 100;
-          const isJapan = c.isJapan ?? false;
-          const meetsIea = c.days >= 90;
-          const barColor = isJapan ? "#f59e0b" : meetsIea ? "#22c55e" : "#ef4444";
-
-          return (
-            <div key={c.country} className="flex items-center gap-2">
-              <span className={`text-xs font-mono w-16 text-right shrink-0 ${isJapan ? "text-[#f59e0b] font-bold" : "text-neutral-400"}`}>
-                {c.country}
-              </span>
-              <div className="flex-1 h-4 bg-[#0c1018] rounded overflow-hidden relative">
-                <div
-                  className="h-full rounded transition-all duration-500"
-                  style={{
-                    width: `${pct}%`,
-                    backgroundColor: barColor,
-                    opacity: isJapan ? 0.8 : 0.4,
-                  }}
-                />
-                {/* IEA義務ライン (90日) */}
-                <div
-                  className="absolute top-0 h-full w-px bg-neutral-500 opacity-40"
-                  style={{ left: `${(90 / maxDays) * 100}%` }}
-                />
-              </div>
-              <span className={`text-xs font-mono w-10 text-right shrink-0 ${isJapan ? "text-[#f59e0b] font-bold" : "text-neutral-500"}`}>
-                {c.days}日
-              </span>
-            </div>
-          );
-        })}
+        <div className="text-[10px] font-mono text-neutral-600 tracking-wider">IEA MEMBERS（義務: 90日）</div>
+        <StockBars countries={ieaCountries} maxDays={maxDays} ieaLine />
       </div>
 
-      <div className="flex items-center justify-center gap-4 text-[9px] font-mono text-neutral-600 pt-1">
+      {/* アジア諸国 */}
+      <div className="space-y-1.5">
+        <div className="text-[10px] font-mono text-neutral-600 tracking-wider">ASIA（日本と関係の深い国）</div>
+        <StockBars countries={asiaCountries} maxDays={maxDays} />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-center gap-3 text-[8px] font-mono text-neutral-700 pt-1">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-px h-3 bg-neutral-500 opacity-40" />
-          IEA義務90日
+          <span className="inline-block w-2 h-2 rounded-sm bg-[#22c55e] opacity-40" />
+          90日以上
         </span>
-        <span>出典: IEA Oil Security Policy / 資源エネルギー庁</span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-sm bg-[#f59e0b] opacity-40" />
+          30-90日
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block w-2 h-2 rounded-sm bg-[#ef4444] opacity-70" />
+          30日未満
+        </span>
+        <span>|</span>
+        <span>出典: IEA / Al Jazeera / The Diplomat / 資源エネルギー庁（2026年3月）</span>
       </div>
     </div>
   );
