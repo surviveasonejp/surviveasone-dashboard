@@ -12,7 +12,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Playwright
-        run: npx playwright install chromium --with-deps
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
 
       - name: Take screenshot
         run: |
