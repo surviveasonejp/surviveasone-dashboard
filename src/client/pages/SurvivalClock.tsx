@@ -6,6 +6,7 @@ import { DataBadge } from "../components/DataBadge";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
 import { EconomicCascade } from "../components/EconomicCascade";
+import { BlockadeContext } from "../components/BlockadeContext";
 import type { ResourceCountdown, FlowSimulationResult } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
@@ -100,6 +101,7 @@ export const SurvivalClock: FC = () => {
       </div>
 
       <SimulationBanner />
+      <BlockadeContext />
 
       <FlowTimeline scenarioId={scenario} />
 

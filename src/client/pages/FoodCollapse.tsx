@@ -1,6 +1,7 @@
 import { type FC, useState, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { BlockadeContext } from "../components/BlockadeContext";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
@@ -175,6 +176,7 @@ export const FoodCollapse: FC = () => {
       </div>
 
       <SimulationBanner />
+      <BlockadeContext />
 
       {/* 食品消失タイムライン */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

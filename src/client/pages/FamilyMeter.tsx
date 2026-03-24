@@ -1,6 +1,7 @@
 import { type FC, useState } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
+import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
 import type { FamilyInputs } from "../../shared/types";
 import {
@@ -113,6 +114,7 @@ export const FamilyMeter: FC = () => {
       />
 
       <SimulationBanner />
+      <BlockadeContext />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
