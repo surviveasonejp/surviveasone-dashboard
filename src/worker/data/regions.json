@@ -23,7 +23,13 @@
     "note": "冬季暖房依存極大。北本連系線90万kW(2019年増強済、2028年120万kWへ増強予定)",
     "solarCapacity_MW": 2500,
     "windCapacity_MW": 800,
-    "hydroCapacity_MW": 1200
+    "hydroCapacity_MW": 1200,
+    "logistics": {
+      "deliveryDelayDays": 3,
+      "truckFuelDependency": 0.95,
+      "depotCount": 8,
+      "note": "苫小牧製油所→道内各地。広大な面積で末端配送距離が長い。冬季は路面凍結リスク"
+    }
   },
   {
     "id": "tohoku",
@@ -50,7 +56,13 @@
     "note": "暖房需要高。新潟LNG受入拠点で相対的に有利。東京向け連系線大容量。女川2号(825MW)再稼働(2024年10月)",
     "solarCapacity_MW": 5500,
     "windCapacity_MW": 1200,
-    "hydroCapacity_MW": 3000
+    "hydroCapacity_MW": 3000,
+    "logistics": {
+      "deliveryDelayDays": 2,
+      "truckFuelDependency": 0.9,
+      "depotCount": 12,
+      "note": "仙台製油所→東北各地。日本海側は冬季に配送遅延リスク"
+    }
   },
   {
     "id": "tokyo",
@@ -84,7 +96,13 @@
     "note": "最大需要エリア。製油所7基・LNG基地3基集中。消費速度が最速",
     "solarCapacity_MW": 20000,
     "windCapacity_MW": 300,
-    "hydroCapacity_MW": 2500
+    "hydroCapacity_MW": 2500,
+    "logistics": {
+      "deliveryDelayDays": 1,
+      "truckFuelDependency": 0.85,
+      "depotCount": 45,
+      "note": "京浜工業地帯に製油所7基集中。油槽所密度が最高。ただし消費量も最大で枯渇は速い"
+    }
   },
   {
     "id": "chubu",
@@ -113,7 +131,13 @@
     "note": "自動車産業集積。知多LNG基地は国内最大級。ENEOS知多製油所は停止済み",
     "solarCapacity_MW": 8500,
     "windCapacity_MW": 400,
-    "hydroCapacity_MW": 3800
+    "hydroCapacity_MW": 3800,
+    "logistics": {
+      "deliveryDelayDays": 1,
+      "truckFuelDependency": 0.9,
+      "depotCount": 20,
+      "note": "四日市コンビナート中心。自動車産業への軽油供給が最優先"
+    }
   },
   {
     "id": "hokuriku",
@@ -135,7 +159,13 @@
     "note": "小規模エリア。LNG基地・製油所なく近隣エリアから供給依存。志賀原発停止中",
     "solarCapacity_MW": 800,
     "windCapacity_MW": 200,
-    "hydroCapacity_MW": 2800
+    "hydroCapacity_MW": 2800,
+    "logistics": {
+      "deliveryDelayDays": 4,
+      "truckFuelDependency": 0.95,
+      "depotCount": 5,
+      "note": "製油所・LNG基地なし。中部・関西エリアからの陸上輸送に完全依存。配送遅延が最も早く発生"
+    }
   },
   {
     "id": "kansai",
@@ -164,7 +194,13 @@
     "note": "第2の大需要圏。LNG基地3基。原発7基稼働(大飯3/4:2360MW+高浜1/2/3/4:3392MW+美浜3:826MW)。ENEOS和歌山製油所は2023年10月閉鎖済み",
     "solarCapacity_MW": 5500,
     "windCapacity_MW": 200,
-    "hydroCapacity_MW": 3500
+    "hydroCapacity_MW": 3500,
+    "logistics": {
+      "deliveryDelayDays": 2,
+      "truckFuelDependency": 0.85,
+      "depotCount": 25,
+      "note": "堺コンビナートが拠点。和歌山製油所閉鎖で南部への配送距離が拡大"
+    }
   },
   {
     "id": "chugoku",
@@ -191,7 +227,13 @@
     "note": "瀬戸内工業地帯。水島コンビナート(35万b/d)は国内最大製油所。島根2号(820MW)再稼働(2024年12月)。西部石油山口は2024年3月停止",
     "solarCapacity_MW": 4500,
     "windCapacity_MW": 500,
-    "hydroCapacity_MW": 1000
+    "hydroCapacity_MW": 1000,
+    "logistics": {
+      "deliveryDelayDays": 2,
+      "truckFuelDependency": 0.9,
+      "depotCount": 15,
+      "note": "水島コンビナートが国内最大。日本海側（島根・鳥取）への配送は山越えで遅延リスク"
+    }
   },
   {
     "id": "shikoku",
@@ -217,7 +259,13 @@
     "note": "本四連系線120万kW(1回線)。伊方3号(890MW)稼働中。太陽石油は愛媛県今治市",
     "solarCapacity_MW": 2800,
     "windCapacity_MW": 300,
-    "hydroCapacity_MW": 1200
+    "hydroCapacity_MW": 1200,
+    "logistics": {
+      "deliveryDelayDays": 3,
+      "truckFuelDependency": 0.95,
+      "depotCount": 8,
+      "note": "今治製油所のみ。本四架橋経由の配送に依存。島嶼部は海上輸送が必要"
+    }
   },
   {
     "id": "kyushu",
@@ -244,7 +292,13 @@
     "note": "川内1/2(1780MW)+玄海3/4(2360MW)=4140MW稼働。火力依存低。関門連系線238万kW。太陽光導入も多い",
     "solarCapacity_MW": 12000,
     "windCapacity_MW": 600,
-    "hydroCapacity_MW": 2000
+    "hydroCapacity_MW": 2000,
+    "logistics": {
+      "deliveryDelayDays": 2,
+      "truckFuelDependency": 0.9,
+      "depotCount": 18,
+      "note": "大分製油所が拠点。離島(長崎・鹿児島)は海上輸送依存で脆弱"
+    }
   },
   {
     "id": "okinawa",
@@ -268,6 +322,12 @@
     "note": "完全島嶼。南西石油(西原)は2022年精製機能停止、稼働製油所なし。備蓄日数が生存日数に直結",
     "solarCapacity_MW": 500,
     "windCapacity_MW": 50,
-    "hydroCapacity_MW": 0
+    "hydroCapacity_MW": 0,
+    "logistics": {
+      "deliveryDelayDays": 5,
+      "truckFuelDependency": 1.0,
+      "depotCount": 3,
+      "note": "製油所なし。本土からの海上輸送に100%依存。タンカー途絶で即座に配送停止"
+    }
   }
 ]
