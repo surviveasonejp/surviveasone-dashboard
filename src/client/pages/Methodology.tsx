@@ -1,6 +1,9 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
 import staticReserves from "../data/reserves.json";
+import { SensitivityChart } from "../components/SensitivityChart";
+import { ScenarioSelector } from "../components/ScenarioSelector";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 
 const r = staticReserves.oil;
 const DATA_SOURCES = [
@@ -73,6 +76,7 @@ const MODEL_EQUATIONS = [
 ];
 
 export const Methodology: FC = () => {
+  const [sensitivityScenario, setSensitivityScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
   return (
     <div className="space-y-8 max-w-3xl">
       <div className="space-y-2">
@@ -170,6 +174,15 @@ export const Methodology: FC = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 感度分析 */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-mono text-sm tracking-wider text-neutral-400">感度分析</h2>
+          <ScenarioSelector selected={sensitivityScenario} onChange={setSensitivityScenario} />
+        </div>
+        <SensitivityChart scenarioId={sensitivityScenario} />
       </div>
 
       {/* 制約と不確実性 */}
