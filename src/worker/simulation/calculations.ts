@@ -154,8 +154,18 @@ export function getAllCountdowns(
 // ─── タンカー ──────────────────────────────────────────
 
 export function calcTankerArrivals(): TankerInfo[] {
-  return [...staticTankerData.vessels]
-    .sort((a, b) => a.eta_days - b.eta_days);
+  // meta.updatedAt からの経過日数でETAを自動減算
+  const updatedAt = new Date(staticTankerData.meta.updatedAt + "T00:00:00Z");
+  const now = new Date();
+  const elapsedDays = (now.getTime() - updatedAt.getTime()) / 86_400_000;
+
+  return staticTankerData.vessels.map((v) => {
+    const adjustedEta = Math.max(0, v.eta_days - elapsedDays);
+    const status = adjustedEta <= 0 && v.status !== "入港済" && v.status !== "停泊中" && v.status !== "荷積中" && v.status !== "調達中"
+      ? "入港済（推定）"
+      : v.status;
+    return { ...v, eta_days: Math.round(adjustedEta * 10) / 10, status };
+  }).sort((a, b) => a.eta_days - b.eta_days);
 }
 
 // ─── 食品崩壊 ──────────────────────────────────────────

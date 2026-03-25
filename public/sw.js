@@ -2,7 +2,7 @@
 // 戦略: App Shell キャッシュ + API ネットワーク優先
 // 目的: 電源喪失前にインストール → オフラインで FOOD/FAMILY/PREPARE 等を閲覧可能
 
-const CACHE_NAME = "sao-v1";
+const CACHE_NAME = "sao-v2";
 
 // App Shell: オフラインで必要な静的リソース
 const APP_SHELL = [
@@ -17,11 +17,27 @@ const APP_SHELL = [
   "/about",
 ];
 
-// install: App Shell をプリキャッシュ
+// 重要API: オフラインでも閲覧可能にするためプリキャッシュ
+const CRITICAL_APIS = [
+  "/api/countdowns?scenario=realistic",
+  "/api/collapse?scenario=realistic",
+  "/api/tankers",
+  "/api/simulation?scenario=realistic&days=365",
+];
+
+// install: App Shell + 重要APIをプリキャッシュ
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(APP_SHELL);
+      // App Shellを先にキャッシュ（必須）
+      return cache.addAll(APP_SHELL).then(() => {
+        // APIはベストエフォート（失敗してもinstallは成功させる）
+        return Promise.allSettled(
+          CRITICAL_APIS.map((url) =>
+            fetch(url).then((res) => res.ok ? cache.put(url, res) : undefined)
+          )
+        );
+      });
     })
   );
   self.skipWaiting();

@@ -25,10 +25,10 @@ import staticTankerData from "../data/tankers.json";
 // ─── 閾値定義 ─────────────────────────────────────────
 
 const THRESHOLDS: Array<{ percent: number; type: ThresholdType; label: string }> = [
-  { percent: 50, type: "price_spike", label: "価格暴騰" },
-  { percent: 30, type: "rationing", label: "供給制限" },
-  { percent: 10, type: "distribution", label: "配給制" },
-  { percent: 0, type: "stop", label: "完全停止" },
+  { percent: 50, type: "price_spike", label: "価格暴騰（買い占め・パニック買い発生）" },
+  { percent: 30, type: "rationing", label: "供給制限（給油制限・奇数偶数制の導入）" },
+  { percent: 10, type: "distribution", label: "配給制（政府管理下の燃料・食料分配）" },
+  { percent: 0, type: "stop", label: "完全停止（備蓄ゼロ・自力生存へ）" },
 ];
 
 // ─── 遅延パラメータ ──────────────────────────────────
@@ -206,6 +206,9 @@ export function runFlowSimulation(
   const baseDailyOil = staticConsumption.oil.dailyConsumption_kL * (1 - s.demandReductionRate);
   const baseDailyLng = staticConsumption.lng.dailyConsumption_t * (1 - s.demandReductionRate);
 
+  // LNG: 非ホルムズ供給（封鎖されても継続する輸入分）
+  const lngNonHormuzSupply = staticConsumption.lng.dailyConsumption_t * (1 - staticReserves.lng.hormuzDependencyRate);
+
   const oilArrivals = buildArrivalSchedule("VLCC", blockadeProfile.initialRate);
   const lngArrivals = buildArrivalSchedule("LNG", blockadeProfile.initialRate);
 
@@ -272,13 +275,23 @@ export function runFlowSimulation(
     const oilDemandDestruction = getDemandDestructionFactor(oilPercent);
     const lngDemandDestruction = getDemandDestructionFactor(lngPercent);
 
+    // 石油: 封鎖で輸入が止まり在庫から消費（従来モデル）
     const dailyOil = baseDailyOil * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
-    const dailyLng = baseDailyLng * currentBlockadeRate * lngRationFactor * lngDemandDestruction;
     oilStock = Math.max(0, oilStock - dailyOil);
-    lngStock = Math.max(0, lngStock - dailyLng);
+
+    // LNG: 消費は需要ベース（封鎖率は消費に影響しない）
+    // 非ホルムズ供給（93.7%）は継続、ホルムズ分（6.3%）のみ途絶
+    // → 在庫減少 = 消費量 - 非ホルムズ供給 × 封鎖解除曲線補正
+    const lngConsumption = baseDailyLng * lngRationFactor * lngDemandDestruction;
+    const lngContinuingSupply = lngNonHormuzSupply * (1 - s.demandReductionRate);
+    // 封鎖解除に伴いホルムズ経由LNGも段階的に復帰
+    const lngHormuzRecovery = staticConsumption.lng.dailyConsumption_t
+      * staticReserves.lng.hormuzDependencyRate * (1 - currentBlockadeRate) * (1 - s.demandReductionRate);
+    const lngNetDraw = Math.max(0, lngConsumption - lngContinuingSupply - lngHormuzRecovery);
+    lngStock = Math.max(0, lngStock - lngNetDraw);
 
     const oilSupply = Math.min(dailyOil, oilStock);
-    const lngSupply = Math.min(dailyLng, lngStock);
+    const lngSupply = Math.min(lngConsumption, lngStock + lngContinuingSupply + lngHormuzRecovery);
 
     timeline.push({
       day,

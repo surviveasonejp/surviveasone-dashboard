@@ -13,6 +13,9 @@ import { WORLD_LAND_PATH } from "../data/world-land";
 // ─── 日本の到着港 ────────────────────────────────────
 
 const JAPAN_PORTS: Array<{ id: string; name: string; lat: number; lon: number }> = [
+  { id: "Japan", name: "未公表", lat: 33.95, lon: 133.00 },
+  { id: "Kawasaki", name: "川崎", lat: 35.52, lon: 139.78 },
+  { id: "Hiroshima", name: "広島", lat: 34.35, lon: 132.32 },
   { id: "Chiba", name: "千葉", lat: 35.61, lon: 140.10 },
   { id: "Yokkaichi", name: "四日市", lat: 34.97, lon: 136.62 },
   { id: "Sakai", name: "堺", lat: 34.57, lon: 135.47 },
@@ -39,6 +42,12 @@ function project(lon: number, lat: number): [number, number] {
     ((MAP_BOUNDS.maxLat - lat) / LAT_SPAN) * H,
   ];
 }
+
+/** ホルムズ海峡内側の出発港 — 封鎖時に日本到達不可 */
+const HORMUZ_PORTS = new Set([
+  "Ras Tanura", "Jubail", "Kharg Island",
+  "Ras Laffan", "Mina Al Ahmadi", "Basrah",
+]);
 
 // ─── チョークポイント ──────────────────────────────
 
@@ -140,8 +149,9 @@ export const TankerMap: FC<TankerMapProps> = ({
         <g clipPath="url(#map-clip)">
           {routePaths.map(({ routeId, d, tankerId }) => {
             const t = tankers.find((v) => v.id === tankerId);
+            const blocked = t ? HORMUZ_PORTS.has(t.departurePort) : false;
             const isVLCC = t?.type === "VLCC";
-            const color = isVLCC ? "#f59e0b" : "#22c55e";
+            const color = blocked ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
             const isActive = activeId && (tankerId === activeId || getRouteId(t?.departurePort ?? "") === getRouteId(tankers.find((v) => v.id === activeId)?.departurePort ?? ""));
             return (
               <path
@@ -151,7 +161,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                 stroke={color}
                 strokeWidth={isActive ? 2.5 : 1.5}
                 strokeDasharray={isActive ? "8 4" : "4 5"}
-                opacity={isActive ? 0.6 : 0.3}
+                opacity={blocked ? 0.15 : isActive ? 0.6 : 0.3}
               />
             );
           })}
@@ -248,8 +258,9 @@ export const TankerMap: FC<TankerMapProps> = ({
         {tankers.map((t) => {
           const p = positions.get(t.id);
           if (!p) return null;
+          const blocked = HORMUZ_PORTS.has(t.departurePort);
           const isVLCC = t.type === "VLCC";
-          const color = isVLCC ? "#f59e0b" : "#22c55e";
+          const color = blocked ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
           const isActive = t.id === activeId;
           const isSelected = t.id === selectedId;
 
@@ -298,7 +309,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                   stroke={isActive ? "#fff" : "#0f1419"}
                   strokeWidth={isActive ? 2 : 1}
                   strokeLinejoin="round"
-                  opacity={isActive ? 1 : 0.9}
+                  opacity={blocked ? 0.35 : isActive ? 1 : 0.9}
                 />
               ) : (
                 <circle
@@ -308,7 +319,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                   fill={color}
                   stroke={isActive ? "#fff" : "#0f1419"}
                   strokeWidth={isActive ? 2 : 1}
-                  opacity={isActive ? 1 : 0.9}
+                  opacity={blocked ? 0.35 : isActive ? 1 : 0.9}
                 />
               )}
               {/* 船名ラベル（ホバー/選択時） */}
@@ -362,18 +373,22 @@ export const TankerMap: FC<TankerMapProps> = ({
           <div className="text-neutral-500">
             {activeTanker.departure} → {activeTanker.destination}
           </div>
-          <div className="text-neutral-400">
-            到着まで{" "}
-            <span
-              className="font-bold"
-              style={{
-                color:
-                  activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
-              }}
-            >
-              {activeTanker.eta_days.toFixed(1)}日
-            </span>
-          </div>
+          {HORMUZ_PORTS.has(activeTanker.departurePort) ? (
+            <div className="text-red-400 font-bold">封鎖時到達不可</div>
+          ) : (
+            <div className="text-neutral-400">
+              到着まで{" "}
+              <span
+                className="font-bold"
+                style={{
+                  color:
+                    activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
+                }}
+              >
+                {activeTanker.eta_days.toFixed(1)}日
+              </span>
+            </div>
+          )}
         </div>
       )}
 

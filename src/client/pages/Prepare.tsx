@@ -59,6 +59,58 @@ const PREPARE_LIST: PrepareItem[] = [
   },
 ];
 
+const VULNERABLE_CHECKLIST: Array<{ category: string; items: { name: string; note: string }[] }> = [
+  {
+    category: "乳幼児がいる家庭",
+    items: [
+      { name: "液体ミルク（常温使用可）", note: "停電で煮沸できない場合に必須。7日分以上。アレルギー対応品も確認" },
+      { name: "おむつ・おしりふき", note: "1日8-10枚 × 14日分。断水時はおしりふきが清拭にも使える" },
+      { name: "経口補水液（乳幼児用）", note: "脱水は乳幼児に致命的。OS-1等を最低7日分" },
+      { name: "離乳食・ベビーフード", note: "レトルトパウチ型は常温・開封後すぐ食べられる。7日分以上" },
+      { name: "抱っこひも", note: "避難時に両手を空けるため必須。ベビーカーは瓦礫・停電エレベーターで使えない" },
+    ],
+  },
+  {
+    category: "医療機器を使用している家族",
+    items: [
+      { name: "ポータブル電源（1000Wh以上）", note: "在宅人工呼吸器の内部バッテリーは3-8時間。外部電源が生死を分ける" },
+      { name: "電力会社への事前登録", note: "「命に関わる医療機器使用者」登録で停電時に優先復旧の対象になる場合がある" },
+      { name: "近隣病院の非常用電源の確認", note: "自家発電のある病院を複数把握。燃料は通常3日分しかない点にも注意" },
+      { name: "福祉避難所の場所の確認", note: "自治体の福祉避難所は一般避難所と異なる。事前に場所と受入条件を確認" },
+      { name: "医療機器の消費電力メモ", note: "機器のW数を記録し、ポータブル電源の持続時間を計算しておく" },
+    ],
+  },
+  {
+    category: "透析患者がいる家庭",
+    items: [
+      { name: "透析施設の災害時対応計画", note: "通院先の災害時連絡先・代替施設リストを事前入手。猶予は3-4日" },
+      { name: "低カリウム食品の備蓄", note: "透析不能時にカリウム蓄積が致命的。白米・パン・うどん等を備蓄" },
+      { name: "腹膜透析への切替相談", note: "血液透析が不能になった場合の代替手段を主治医と事前に相談" },
+      { name: "透析手帳・お薬手帳", note: "避難先の施設でも透析を受けるために必須。コピーを防水保管" },
+    ],
+  },
+  {
+    category: "要介護高齢者がいる家庭",
+    items: [
+      { name: "処方薬90日分", note: "慢性疾患の薬は主治医に依頼して多めに確保。薬局の在庫切れに備える" },
+      { name: "介護用品の予備", note: "大人用おむつ・吸引器消耗品・経管栄養剤等。14日分以上" },
+      { name: "地域包括支援センターの連絡先", note: "ケアマネージャーと災害時の対応を事前に協議" },
+      { name: "電動機器のバッテリー対策", note: "電動ベッド・電動車椅子・吸引器の消費Whを把握し電源を確保" },
+      { name: "移動手段の確保", note: "ガソリン車は給油制限に備え常時満タン。車椅子移動のルート確認" },
+    ],
+  },
+  {
+    category: "障害のある家族",
+    items: [
+      { name: "ヘルプマーク・障害者手帳のコピー", note: "避難所で合理的配慮を受けるために必要。防水袋に保管" },
+      { name: "感覚過敏対策グッズ", note: "耳栓・アイマスク・安心できる毛布等。避難所の騒音・光対策" },
+      { name: "コミュニケーションボード", note: "言語障害がある場合、避難所で意思疎通するための絵カード等" },
+      { name: "常用薬・発作時頓服薬", note: "てんかん・精神障害等の薬は中断で重篤化。90日分確保" },
+      { name: "避難所以外の選択肢の把握", note: "福祉避難所・グループホーム・知人宅等、障害特性に合った避難先" },
+    ],
+  },
+];
+
 const PHASE_GUIDE = [
   {
     phase: "封鎖0〜3日",
@@ -70,19 +122,19 @@ const PHASE_GUIDE = [
     phase: "封鎖4〜14日",
     color: "#f59e0b",
     label: "WARNING",
-    actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携"],
+    actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携", "給油制限（奇数偶数制）に備え車両の燃料を満タンに"],
   },
   {
     phase: "封鎖15〜60日",
     color: "#ef4444",
-    label: "CRITICAL",
-    actions: ["燃料使用を暖房・調理のみに限定", "物々交換ネットワーク形成", "農地・食料生産拠点に近づく判断", "医薬品の優先確保"],
+    label: "CRITICAL — 配給制開始",
+    actions: ["政府配給の受取拠点（自治体窓口・給水所）を事前確認", "燃料使用を暖房・調理のみに限定", "配給外の食料確保（家庭菜園・物々交換）", "医薬品の優先確保", "農地・食料生産拠点に近づく判断"],
   },
   {
     phase: "封鎖60日〜",
     color: "#ef4444",
-    label: "COLLAPSE",
-    actions: ["都市部からの退避を検討", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"],
+    label: "COLLAPSE — 配給縮小",
+    actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"],
   },
 ];
 
@@ -157,6 +209,32 @@ export const Prepare: FC = () => {
                     </div>
                     <div>
                       <span className="text-xs text-neutral-500">{item.note}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 要配慮者向け追加備蓄 */}
+      <div className="space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">要配慮者がいる家庭の追加備蓄</h2>
+        <div className="space-y-4">
+          {VULNERABLE_CHECKLIST.map((section) => (
+            <div key={section.category} className="bg-[#151c24] border border-[#ef444440] rounded-lg overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-[#ef444420] bg-[#1a1015]">
+                <h3 className="font-mono text-sm font-bold text-red-300">{section.category}</h3>
+              </div>
+              <div className="divide-y divide-[#162029]">
+                {section.items.map((item) => (
+                  <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
+                    <div className="sm:w-48 shrink-0">
+                      <span className="text-sm font-bold text-neutral-200">{item.name}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-neutral-400">{item.note}</span>
                     </div>
                   </div>
                 ))}

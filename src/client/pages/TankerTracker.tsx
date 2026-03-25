@@ -7,10 +7,17 @@ import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
 
+/** ホルムズ海峡内側の出発港 — 封鎖時に日本到達不可 */
+const HORMUZ_PORTS = new Set([
+  "Ras Tanura", "Jubail", "Kharg Island",
+  "Ras Laffan", "Mina Al Ahmadi", "Basrah",
+]);
+
 export const TankerTracker: FC = () => {
   const tankers = useTankerData();
-  const vlccTankers = tankers.filter((t) => t.type === "VLCC");
-  const lngTankers = tankers.filter((t) => t.type === "LNG");
+  const isBlocked = (t: { departurePort: string }) => HORMUZ_PORTS.has(t.departurePort);
+  const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isBlocked(t));
+  const lngTankers = tankers.filter((t) => t.type === "LNG" && !isBlocked(t));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
 
@@ -81,9 +88,11 @@ export const TankerTracker: FC = () => {
             </thead>
             <tbody>
               {tankers.map((tanker, index) => {
+                const blocked = isBlocked(tanker);
                 const level = getAlertLevel(tanker.eta_days);
-                const color = getAlertColor(level);
+                const color = blocked ? "#525252" : getAlertColor(level);
                 const isSelected = tanker.id === selectedId;
+                const dimClass = blocked ? "opacity-45" : "";
                 return (
                   <tr
                     key={tanker.id}
@@ -92,11 +101,18 @@ export const TankerTracker: FC = () => {
                     }}
                     className={`border-b border-[#162029] cursor-pointer transition-colors ${
                       isSelected ? "bg-white/[0.06]" : "hover:bg-white/[0.02]"
-                    }`}
+                    } ${dimClass}`}
                     onClick={() => setSelectedId(isSelected ? null : tanker.id)}
                   >
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
-                    <td className="px-4 py-2 font-bold text-neutral-200">{tanker.name}</td>
+                    <td className="px-4 py-2 font-bold text-neutral-200">
+                      <span className={blocked ? "line-through" : ""}>{tanker.name}</span>
+                      {blocked && (
+                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-red-900/40 text-red-400">
+                          封鎖時到達不可
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-2">
                       <span
                         className="font-mono text-xs px-1.5 py-0.5 rounded"
@@ -117,8 +133,8 @@ export const TankerTracker: FC = () => {
                       {formatDecimal(tanker.speed_knots)}kn
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
-                      <div>{formatDecimal(tanker.eta_days)}日</div>
-                      <div className="text-xs font-normal text-neutral-400">{formatDepletionDate(tanker.eta_days)}</div>
+                      <div className={blocked ? "line-through" : ""}>{formatDecimal(tanker.eta_days)}日</div>
+                      <div className="text-xs font-normal text-neutral-400">{blocked ? "—" : formatDepletionDate(tanker.eta_days)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       {formatNumber(tanker.cargo_t)}t

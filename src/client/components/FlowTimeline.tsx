@@ -133,9 +133,11 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
           <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
             SIMULATED EVENTS
           </div>
-          {sortedEvents.map((ev, i) => (
-            <EventItem key={i} event={ev} totalDays={totalDays} />
-          ))}
+          <div role="list" aria-label="シミュレーション上のイベント一覧">
+            {sortedEvents.map((ev, i) => (
+              <EventItem key={i} event={ev} totalDays={totalDays} />
+            ))}
+          </div>
         </div>
       )}
 
@@ -359,7 +361,7 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
     event.resource === "water" ? "水道" : "";
 
   return (
-    <div className="flex items-center gap-2 group">
+    <div className="flex items-center gap-2 group" role="listitem" aria-label={`${event.day}日目: ${event.label}（${resourceLabel}）`}>
       {/* 日数 */}
       <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
         {event.day}<span className="text-[9px] font-normal text-neutral-600">日</span>

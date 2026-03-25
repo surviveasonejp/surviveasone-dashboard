@@ -40,7 +40,7 @@ const LABEL_POSITIONS: Record<string, { x: number; y: number }> = {
   chugoku: { x: 148, y: 374 },
   shikoku: { x: 165, y: 406 },
   kyushu: { x: 101, y: 437 },
-  okinawa: { x: 470, y: 530 },
+  okinawa: { x: 462, y: 520 },
 };
 
 function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boolean): string {
@@ -128,17 +128,17 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         .filter(([id]) => id !== "okinawa")
         .map(([regionId, prefs]) => renderRegion(regionId, prefs))}
 
-      {/* 沖縄インセット */}
+      {/* 沖縄インセット（本島〜先島諸島を含む） */}
       <defs>
         <clipPath id="okinawa-clip">
-          <rect x="390" y="460" width="160" height="130" rx="4" />
+          <rect x="370" y="455" width="185" height="125" rx="4" />
         </clipPath>
       </defs>
       <rect
-        x="390"
-        y="460"
-        width="160"
-        height="130"
+        x="370"
+        y="455"
+        width="185"
+        height="125"
         fill="#151c24"
         stroke="#1e2a36"
         strokeWidth="1.5"
@@ -146,7 +146,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
         rx="4"
       />
       <g clipPath="url(#okinawa-clip)">
-        <g transform="translate(-197, -432) scale(2.2)">
+        <g transform="translate(143, -89) scale(1.3)">
           {prefByRegion.has("okinawa") &&
             renderRegion("okinawa", prefByRegion.get("okinawa")!)}
         </g>

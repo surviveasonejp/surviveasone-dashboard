@@ -35,6 +35,12 @@ interface AisMessage {
       Latitude: number;
       Longitude: number;
     };
+    ShipStaticData?: {
+      Destination: string;   // AIS報告の目的港（自由テキスト）
+      Eta: { Month: number; Day: number; Hour: number; Minute: number };
+      ImoNumber: number;
+      Draught: number;       // × 10
+    };
   };
 }
 
@@ -49,29 +55,85 @@ export interface AisPosition {
   heading: number;
   timestamp: string;
   fetchedAt: string;
+  destination?: string;      // AIS報告の目的港
+  japanBound?: boolean;      // 日本向け判定
+  calculatedEtaDays?: number; // AIS位置+SOGから算出したETA
 }
 
 // ─── 船舶MMSI一覧 ────────────────────────────────────
 // IMO→MMSI対応（MarineTraffic/VesselFinder公開データより）
 // AISStream.ioはMMSIフィルタのみ対応
 
-const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string }> = [
+const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string; destPort?: string }> = [
   // VLCC
-  { id: "vlcc-01", mmsi: "636021014", name: "TATESHINA" },          // IMO 9910117
-  { id: "vlcc-02", mmsi: "538003869", name: "KAZUSA" },             // IMO 9513402
-  { id: "vlcc-03", mmsi: "354919000", name: "TAKASAGO" },           // IMO 9770696
+  { id: "vlcc-01", mmsi: "636021014", name: "TATESHINA", destPort: "Chiba" },           // IMO 9910117
+  { id: "vlcc-02", mmsi: "538003869", name: "KAZUSA", destPort: "Kiire" },              // IMO 9513402
+  { id: "vlcc-03", mmsi: "354919000", name: "TAKASAGO", destPort: "Mizushima" },        // IMO 9770696
   // LNG
-  { id: "lng-01", mmsi: "311003300", name: "QUEST KIRISHIMA" },     // IMO 9963853 (estimated)
-  { id: "lng-02", mmsi: "374375000", name: "MARVEL EAGLE" },        // IMO 9759240
-  { id: "lng-03", mmsi: "212883000", name: "GRAND ANIVA" },         // IMO 9338955
-  { id: "lng-04", mmsi: "563098700", name: "SHARQ" },               // IMO 9981506 (estimated)
-  { id: "lng-05", mmsi: "432634000", name: "ENERGY NAVIGATOR" },    // IMO 9355264
-  { id: "lng-06", mmsi: "228099000", name: "ELISA HALCYON" },       // IMO 9980552 (estimated)
-  { id: "lng-07", mmsi: "563098800", name: "AL ZUWAIR" },           // IMO 9981491 (estimated)
+  { id: "lng-01", mmsi: "432807000", name: "ENERGY HORIZON", destPort: "Chiba" },       // IMO 9483877
+  { id: "lng-02", mmsi: "311000261", name: "SEISHU MARU", destPort: "Kawasaki" },       // IMO 9666558
+  { id: "lng-03", mmsi: "212883000", name: "GRAND ANIVA", destPort: "Kitakyushu" },     // IMO 9338955
+  { id: "lng-04", mmsi: "563099000", name: "DIAMOND GAS ORCHID", destPort: "Yokkaichi" }, // IMO 9779226
+  { id: "lng-05", mmsi: "432634000", name: "ENERGY NAVIGATOR", destPort: "Hiroshima" }, // IMO 9355264
 ];
 
 const AIS_POSITIONS_KEY = "ais_positions";
 const AISSTREAM_URL = "wss://stream.aisstream.io/v0/stream";
+
+// ─── 日本向け判定 ─────────────────────────────────────
+
+const JAPAN_PORT_KEYWORDS = [
+  "CHIBA", "YOKKAICHI", "KAWASAKI", "KIIRE", "KITAKYUSHU", "HIROSHIMA",
+  "SODEGAURA", "MIZUSHIMA", "YOKOHAMA", "KOBE", "NAGOYA", "FUTTSU",
+  "SAKAI", "HIMEJI", "CHITA", "OITA", "TOBATA", "SENDAI", "NIIGATA",
+  "HACHINOHE", "KASHIMA", "ANEGASAKI", "NEGISHI", "OGISHIMA",
+];
+
+function isJapanBound(destination: string): boolean {
+  const d = destination.toUpperCase().trim();
+  if (d.startsWith("JP")) return true;
+  if (d.includes("JAPAN")) return true;
+  return JAPAN_PORT_KEYWORDS.some((kw) => d.includes(kw));
+}
+
+// ─── 日本主要港座標（ETA計算用） ──────────────────────
+
+const JAPAN_PORT_COORDS: Record<string, { lat: number; lon: number }> = {
+  Chiba: { lat: 35.61, lon: 140.10 },
+  Yokkaichi: { lat: 34.97, lon: 136.62 },
+  Kawasaki: { lat: 35.52, lon: 139.78 },
+  Kiire: { lat: 31.39, lon: 130.58 },
+  Kitakyushu: { lat: 33.95, lon: 130.82 },
+  Hiroshima: { lat: 34.35, lon: 132.32 },
+  Sodegaura: { lat: 35.43, lon: 139.95 },
+  Mizushima: { lat: 34.52, lon: 133.74 },
+  Futtsu: { lat: 35.30, lon: 139.82 },
+  Himeji: { lat: 34.78, lon: 134.67 },
+  Sakai: { lat: 34.57, lon: 135.47 },
+  Chita: { lat: 34.97, lon: 136.87 },
+  Japan: { lat: 33.95, lon: 133.00 },
+};
+
+/** 大圏距離（海里） */
+function greatCircleNm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const toRad = Math.PI / 180;
+  const dLat = (lat2 - lat1) * toRad;
+  const dLon = (lon2 - lon1) * toRad;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) * Math.sin(dLon / 2) ** 2;
+  return 2 * Math.asin(Math.sqrt(a)) * 3440.065; // 地球半径(nm)
+}
+
+/** AIS位置+SOGから目的港までのETA日数を算出 */
+function calculateEtaDays(
+  lat: number, lon: number, sog: number, destPort: string | undefined,
+): number | undefined {
+  if (!destPort || sog < 0.5) return undefined;
+  const dest = JAPAN_PORT_COORDS[destPort];
+  if (!dest) return undefined;
+  const distNm = greatCircleNm(lat, lon, dest.lat, dest.lon);
+  return Math.round((distNm / (sog * 24)) * 10) / 10;
+}
 
 /**
  * AISStream.ioからリアルタイム位置を取得してKVに保存
@@ -112,7 +174,7 @@ export async function fetchAisPositions(env: Env): Promise<{
           APIKey: env.AISSTREAM_API_KEY,
           BoundingBoxes: [[[-90, -180], [90, 180]]], // 全世界（MMSIフィルタで絞る）
           FiltersShipMMSI: mmsiList,
-          FilterMessageTypes: ["PositionReport"],
+          FilterMessageTypes: ["PositionReport", "ShipStaticData"],
         };
         ws.send(JSON.stringify(subscription));
         console.log(`AIS: WebSocket connected, tracking ${mmsiList.length} vessels`);
@@ -127,21 +189,57 @@ export async function fetchAisPositions(env: Env): Promise<{
           const vesselId = mmsiToId.get(mmsi);
           if (!vesselId) return;
 
-          const pos: AisPosition = {
-            mmsi: msg.MetaData.MMSI,
-            shipName: msg.MetaData.ShipName,
-            lat: msg.Message.PositionReport?.Latitude ?? msg.MetaData.latitude,
-            lon: msg.Message.PositionReport?.Longitude ?? msg.MetaData.longitude,
-            sog: (msg.Message.PositionReport?.Sog ?? 0) / 10,
-            cog: (msg.Message.PositionReport?.Cog ?? 0) / 10,
-            heading: msg.Message.PositionReport?.TrueHeading ?? 0,
-            timestamp: msg.MetaData.time_utc,
-            fetchedAt: new Date().toISOString(),
-          };
+          const vessel = TRACKED_VESSELS.find((v) => v.id === vesselId);
+          const prev = existing[vesselId];
 
-          existing[vesselId] = pos;
-          updated.push(vesselId);
-          console.log(`AIS: ${vesselId} (${pos.shipName}) → ${pos.lat.toFixed(3)},${pos.lon.toFixed(3)} SOG=${pos.sog}kn`);
+          if (msg.Message.PositionReport) {
+            const lat = msg.Message.PositionReport.Latitude ?? msg.MetaData.latitude;
+            const lon = msg.Message.PositionReport.Longitude ?? msg.MetaData.longitude;
+            const sog = (msg.Message.PositionReport.Sog ?? 0) / 10;
+
+            const pos: AisPosition = {
+              mmsi: msg.MetaData.MMSI,
+              shipName: msg.MetaData.ShipName,
+              lat,
+              lon,
+              sog,
+              cog: (msg.Message.PositionReport.Cog ?? 0) / 10,
+              heading: msg.Message.PositionReport.TrueHeading ?? 0,
+              timestamp: msg.MetaData.time_utc,
+              fetchedAt: new Date().toISOString(),
+              destination: prev?.destination,
+              japanBound: prev?.japanBound,
+              calculatedEtaDays: calculateEtaDays(lat, lon, sog, vessel?.destPort),
+            };
+
+            existing[vesselId] = pos;
+            updated.push(vesselId);
+            console.log(`AIS: ${vesselId} (${pos.shipName}) → ${lat.toFixed(3)},${lon.toFixed(3)} SOG=${sog}kn ETA=${pos.calculatedEtaDays ?? "?"}d`);
+          }
+
+          if (msg.Message.ShipStaticData) {
+            const dest = msg.Message.ShipStaticData.Destination?.trim() || undefined;
+            const japanBound = dest ? isJapanBound(dest) : undefined;
+
+            if (prev) {
+              prev.destination = dest;
+              prev.japanBound = japanBound;
+            } else {
+              existing[vesselId] = {
+                mmsi: msg.MetaData.MMSI,
+                shipName: msg.MetaData.ShipName,
+                lat: msg.MetaData.latitude,
+                lon: msg.MetaData.longitude,
+                sog: 0, cog: 0, heading: 0,
+                timestamp: msg.MetaData.time_utc,
+                fetchedAt: new Date().toISOString(),
+                destination: dest,
+                japanBound: japanBound,
+              };
+            }
+            if (!updated.includes(vesselId)) updated.push(vesselId);
+            console.log(`AIS: ${vesselId} destination="${dest}" japanBound=${japanBound}`);
+          }
         } catch {
           // パースエラーは無視
         }

@@ -34,8 +34,10 @@ export async function handleScheduled(
 ): Promise<void> {
   // 毎週月曜 UTC 3:00: OWIDデータ取得 + D1更新
   // 毎日 UTC 18:00: 電力需給データ取得
-  const hour = new Date(event.scheduledTime).getUTCHours();
-  const dayOfWeek = new Date(event.scheduledTime).getUTCDay();
+  const scheduledDate = new Date(event.scheduledTime);
+  const hour = scheduledDate.getUTCHours();
+  const dayOfWeek = scheduledDate.getUTCDay();
+  const dayOfMonth = scheduledDate.getUTCDate();
 
   if (hour === 3 && dayOfWeek === 1) {
     ctx.waitUntil(fetchArchiveAndUpdate(env));
@@ -49,8 +51,14 @@ export async function handleScheduled(
     }
   }
 
+  // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得（取得漏れカバー、月18日は備蓄更新と相乗り）
+  if (hour === 6 && dayOfMonth !== 18) {
+    if (env.AISSTREAM_API_KEY) {
+      ctx.waitUntil(fetchAisPositions(env));
+    }
+  }
+
   // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫データ自動更新
-  const dayOfMonth = new Date(event.scheduledTime).getUTCDate();
   if (hour === 6 && dayOfMonth === 18) {
     ctx.waitUntil(fetchReservesUpdate(env));
     ctx.waitUntil(fetchLngUpdate(env));

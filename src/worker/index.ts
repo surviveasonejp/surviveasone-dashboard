@@ -75,7 +75,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
   "Content-Security-Policy":
     "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
 };
@@ -94,6 +94,19 @@ function addSecurityHeaders(response: Response, isDev: boolean): Response {
     newResponse.headers.set(key, value);
   }
   return newResponse;
+}
+
+/** タイミングセーフな文字列比較（タイミング攻撃防止） */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(a);
+  const bufB = encoder.encode(b);
+  let result = 0;
+  for (let i = 0; i < bufA.length; i++) {
+    result |= bufA[i] ^ bufB[i];
+  }
+  return result === 0;
 }
 
 function jsonResponse(data: unknown, status: number = 200, cors: boolean = false): Response {
@@ -199,6 +212,7 @@ export default {
           Allow: "GET, HEAD, OPTIONS, POST",
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS, POST",
+          // セキュリティ: Authorizationを意図的に除外。/api/tankers/updateへのCSRF防止
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
           "Cache-Control": "max-age=86400",
@@ -611,10 +625,10 @@ async function handleTankerUpdate(request: Request | undefined, env: Env): Promi
     return jsonResponse({ error: "method_not_allowed", message: "POST required" }, 405);
   }
 
-  // 管理者トークン認証
+  // 管理者トークン認証（タイミングセーフ比較）
   const authHeader = request.headers.get("Authorization");
   const token = authHeader?.replace("Bearer ", "");
-  if (!env.ADMIN_TOKEN || !token || token !== env.ADMIN_TOKEN) {
+  if (!env.ADMIN_TOKEN || !token || !timingSafeEqual(token, env.ADMIN_TOKEN)) {
     return jsonResponse({ error: "unauthorized", message: "Valid ADMIN_TOKEN required" }, 401);
   }
 

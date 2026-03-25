@@ -10,7 +10,8 @@ const DATA_SOURCES_LIST = [
   { name: "10電力エリアCSV/JSON", note: "電力需給実測データ(全10エリア)", auto: true },
   { name: "OCCTO 電力広域的運営推進機関", note: "連系線運用容量10本(2025年度)", auto: false },
   { name: "原子力規制委員会", note: "稼働原発14基・設備利用率", auto: false },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー15隻(代替ルート3隻含む)のIMO・航路(2026年3月検証済)", auto: false },
+  { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー13隻(代替3隻含む)のIMO・航路(2026年3月検証済)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
   { name: "Bloomberg / 産経", note: "代替ルートタンカー到着情報(2026年3月24日報道)", auto: false },
@@ -50,10 +51,17 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     items: ["3シナリオレンジ", "IEA国際比較", "現実イベント13件", "感度分析", "経済カスケード", "地域別ロジスティクス"],
   },
   {
+    phase: "Phase 9",
+    label: "当事者リーチ・アクセシビリティ",
+    status: "completed" as const,
+    items: ["要配慮者チェックリスト", "FAQ構造化データ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v2)", "配給制表現"],
+  },
+  {
     phase: "Phase 3",
-    label: "リアルタイム化（計画中）",
-    status: "planned" as const,
-    items: ["AISタンカー追跡", "原油価格自動取得"],
+    label: "リアルタイム化（進行中）",
+    status: "active" as const,
+    items: ["AIS位置+目的港取得", "ETA自動減算", "日本向け判定", "タンカー実データ検証"],
+    remaining: ["原油価格自動取得", "衛星AIS"],
   },
 ];
 
@@ -93,8 +101,12 @@ export const About: FC = () => {
           ホルムズ海峡封鎖時に日本のエネルギー・食料・水道がどう連鎖崩壊するかを可視化し、市民の生存判断を支援する戦術ダッシュボード。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
+          特に、乳幼児・在宅医療機器利用者・透析患者・要介護高齢者・障害のある家族を持つ人々が、
+          危機の進行を正しく理解し、素早く行動するための情報を提供する。
+        </p>
+        <p className="text-neutral-400 text-sm leading-relaxed">
           公開統計データに基づく14の計算モデルと3つのシナリオで分析。
-          代替供給ルート・経済カスケード・地域別ロジスティクスを含む。
+          代替供給ルート・経済カスケード・配給制シミュレーション・地域別ロジスティクスを含む。
           予測ではなくリスクシナリオのシミュレーションとして、不確実性を含めて透明に提示する。
         </p>
       </div>
@@ -117,7 +129,7 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
-            <li>・タンカー15隻（代替ルート3隻含む）のIMO番号は2026年3月時点で公開DBと照合検証済み</li>
+            <li>・タンカー13隻（代替ルート3隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶は除外・差替済み(2026年3月25日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東の3ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
@@ -264,7 +276,7 @@ export const About: FC = () => {
         </div>
         <div className="text-xs text-neutral-600 font-mono space-y-0.5">
           <p>API: 16エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
-          <p>Cronパイプライン: 3/5枠使用（OWID週次 + 電力日次 + 石油備蓄/LNG月次）+ Discord通知+RSS監視Worker</p>
+          <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知+RSS監視Worker</p>
           <p>インフラ月額: ~$3（ドメイン2件のみ。Cloudflare全スタック無料枠）</p>
         </div>
       </div>
@@ -273,7 +285,7 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
         <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">SUPPORT THIS PROJECT</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
-          広告なしのオープンソースプロジェクトです。14の計算モデルと自動データパイプラインが完成しています。スポンサーシップはリアルタイムAISタンカー追跡の実現に直接使われます。
+          広告なし・トラッキングなしのオープンソースプロジェクトです。14の計算モデル、自動データパイプライン、AISタンカー追跡が稼働中。スポンサーシップは衛星AISによる全ルート追跡とデータ精度向上に直接使われます。
         </p>
         <div className="text-xs text-neutral-500 space-y-1 font-mono">
           <p>$0〜$36/月 → チョークポイント監視開始</p>

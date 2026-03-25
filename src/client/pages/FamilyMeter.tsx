@@ -34,6 +34,7 @@ const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onCh
       step={step}
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
+      aria-label={`${label}: ${value}${unit}`}
       className="w-full h-2 rounded-full appearance-none bg-[#1e2a36] cursor-pointer"
     />
     <div className="flex justify-between text-[10px] text-neutral-600 font-mono">
@@ -135,10 +136,13 @@ export const FamilyMeter: FC = () => {
             className="bg-[#151c24] border rounded-lg p-6 text-center space-y-3"
             style={{ borderColor: `${rankColor}40` }}
           >
-            <div className="text-xs font-mono text-neutral-500 tracking-wider">SURVIVAL RANK</div>
+            <div className="text-xs font-mono text-neutral-500 tracking-wider" id="rank-label">SURVIVAL RANK</div>
             <div
               className="font-mono font-bold text-8xl"
               style={{ color: rankColor }}
+              role="status"
+              aria-labelledby="rank-label"
+              aria-label={`生存ランク${score.rank}、${rankLabel}、${formatDecimal(score.totalDays)}日生存可能`}
             >
               {score.rank}
             </div>
@@ -160,6 +164,23 @@ export const FamilyMeter: FC = () => {
             <div className="text-[9px] text-neutral-700 font-mono mt-1">
               surviveasonejp.org/family
             </div>
+            <button
+              className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+              onClick={() => {
+                const text = [
+                  `うちの家庭（${inputs.members}人世帯）の生存ランクは【${score.rank}】— ${formatDecimal(score.totalDays)}日生存可能`,
+                  `ボトルネック: ${score.bottleneck}`,
+                  "",
+                  "あなたの家庭は何日生き延びられる？",
+                  "surviveasonejp.org/family",
+                  "",
+                  "#SurviveAsOne #ホルムズ海峡",
+                ].join("\n");
+                window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+              }}
+            >
+              X(Twitter)でシェア
+            </button>
           </div>
 
           {/* 内訳バー */}
@@ -207,6 +228,33 @@ export const FamilyMeter: FC = () => {
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* 要配慮者向け注意喚起 */}
+      <div className="bg-[#151c24] border border-[#ef4444]/20 rounded-lg p-5 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-red-400">要配慮者がいる家庭へ</h2>
+        <p className="text-xs text-neutral-400">
+          上記の計算は健常な成人を前提としています。以下に該当する家族がいる場合、必要な備蓄量は大幅に増えます。
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {[
+            { label: "乳幼児", note: "液体ミルク・おむつ・経口補水液。脱水は数時間で致命的" },
+            { label: "人工呼吸器等の医療機器", note: "ポータブル電源1000Wh以上が生死を分ける" },
+            { label: "透析患者", note: "透析不能の猶予は3-4日。代替施設の事前把握必須" },
+            { label: "要介護者", note: "処方薬90日分・介護用品14日分・電動機器の電源" },
+          ].map((item) => (
+            <div key={item.label} className="bg-[#0f1419] rounded p-3 space-y-1">
+              <div className="text-xs font-bold text-red-300">{item.label}</div>
+              <div className="text-[10px] text-neutral-500">{item.note}</div>
+            </div>
+          ))}
+        </div>
+        <a
+          href="/prepare"
+          className="block text-center text-xs font-mono text-[#ef4444] hover:text-red-300 transition-colors mt-2"
+        >
+          詳細な要配慮者チェックリスト →
+        </a>
       </div>
 
       {/* 行動エンジン: 不足量+購入リスト */}

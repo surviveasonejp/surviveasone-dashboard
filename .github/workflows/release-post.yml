@@ -155,7 +155,7 @@ jobs:
               'surviveasonejp.org',
               url,
               '',
-              '#SurviveAsOne #エネルギー安全保障 #ホルムズ海峡',
+              '#SurviveAsOne #ホルムズ海峡 #石油危機 #エネルギー',
             ];
             const text = lines.join('\n');
 

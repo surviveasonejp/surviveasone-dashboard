@@ -93,8 +93,8 @@ const PHASE_COLORS = {
 const PHASE_LABELS = {
   normal: "通常",
   spike: "高騰",
-  rationing: "制限",
-  collapse: "崩壊",
+  rationing: "配給前夜",
+  collapse: "配給制",
 };
 
 export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation }) => {
