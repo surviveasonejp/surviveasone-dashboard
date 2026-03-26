@@ -24,7 +24,7 @@ jobs:
         timeout-minutes: 1
         env:
           RELEASE_BODY: ${{ github.event.release.body }}
-        run: node .github/scripts/take-screenshot.js
+        run: node .github/scripts/take-screenshot.cjs
 
       - name: Post to X
         env:
@@ -35,4 +35,4 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           RELEASE_NAME: ${{ github.event.release.name }}
           RELEASE_URL: ${{ github.event.release.html_url }}
-        run: node .github/scripts/post-to-x.js
+        run: node .github/scripts/post-to-x.cjs
