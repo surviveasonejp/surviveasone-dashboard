@@ -23,31 +23,49 @@ jobs:
           node -e "
           const { chromium } = require('playwright');
 
-          // リリースノートのキーワードからスクリーンショット対象ページを判定
+          // リリースノートのキーワードからスクリーンショット対象ページとフォーカス要素を判定
           const body = (process.env.RELEASE_BODY || '').toLowerCase();
-          const keywords = [
-            { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker' },
-            { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域'], page: '/collapse-map' },
-            { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse' },
-            { match: ['family', '家庭', 'サバイバル'], page: '/family' },
-            { match: ['フロー', 'simulation', 'カウントダウン', 'clock'], page: '/countdown' },
+          const targets = [
+            { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: 'svg' },
+            { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地'], page: '/collapse-map', selector: 'svg' },
+            { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: 'h2' },
+            { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: 'form' },
+            { match: ['フロー', 'simulation', 'カウントダウン', 'clock', 'タイムライン'], page: '/countdown', selector: 'svg' },
+            { match: ['iea', '国際', '備蓄比較', '各国'], page: '/', selector: '[class*=\"INTERNATIONAL\"], [class*=\"iea\"]' },
+            { match: ['備蓄', 'prepare', 'ガイド', 'チェックリスト', '行動'], page: '/prepare', selector: 'h2' },
           ];
 
           let targetPage = '/';
-          for (const kw of keywords) {
-            if (kw.match.some(m => body.includes(m))) {
-              targetPage = kw.page;
+          let targetSelector = null;
+          for (const t of targets) {
+            if (t.match.some(m => body.includes(m))) {
+              targetPage = t.page;
+              targetSelector = t.selector;
               break;
             }
           }
 
-          console.log('Screenshot target:', targetPage);
+          console.log('Screenshot target:', targetPage, 'selector:', targetSelector);
 
           (async () => {
             const browser = await chromium.launch();
             const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, colorScheme: 'dark' });
             await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 30000 });
             await page.waitForTimeout(3000);
+
+            // 地図・グラフ・表の位置までスクロールしてからスクショ
+            if (targetSelector) {
+              try {
+                const el = await page.$(targetSelector);
+                if (el) {
+                  await el.scrollIntoViewIfNeeded();
+                  await page.waitForTimeout(500);
+                }
+              } catch (e) {
+                console.log('Selector not found, using default viewport:', e.message);
+              }
+            }
+
             await page.screenshot({ path: 'screenshot.png', type: 'png' });
             await browser.close();
             console.log('Screenshot saved for:', targetPage);
