@@ -27,16 +27,16 @@ console.log('Screenshot target:', targetPage, 'selector:', targetSelector);
 (async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, colorScheme: 'dark' });
-  await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 15000 }).catch(() =>
-    page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'domcontentloaded', timeout: 15000 })
-  );
-  await page.waitForTimeout(2000);
+
+  // ページ読み込み（networkidle で完了を待つ、30秒）
+  await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 30000 });
 
   // 地図・グラフ・表の位置までスクロールしてからスクショ
   if (targetSelector) {
     try {
-      // SPAレンダリング完了を待機（最大10秒）
-      await page.waitForSelector(targetSelector, { timeout: 10000 });
+      // SPAレンダリング完了を待機（DOMに追加されればOK、最大15秒）
+      await page.waitForSelector(targetSelector, { state: 'attached', timeout: 15000 });
+      await page.waitForTimeout(500);
       const el = await page.$(targetSelector);
       if (el) {
         // 要素をビューポート上端に配置
