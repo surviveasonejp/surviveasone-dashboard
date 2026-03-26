@@ -13,11 +13,20 @@ const HORMUZ_PORTS = new Set([
   "Ras Laffan", "Mina Al Ahmadi", "Basrah",
 ]);
 
+/** 日本の到着港 */
+const JAPAN_DEST_PORTS = new Set([
+  "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
+  "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
+  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita",
+]);
+
 export const TankerTracker: FC = () => {
   const tankers = useTankerData();
   const isBlocked = (t: { departurePort: string }) => HORMUZ_PORTS.has(t.departurePort);
-  const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isBlocked(t));
-  const lngTankers = tankers.filter((t) => t.type === "LNG" && !isBlocked(t));
+  const isNotJapanBound = (t: { destinationPort: string }) => !JAPAN_DEST_PORTS.has(t.destinationPort);
+  const isDimmed = (t: { departurePort: string; destinationPort: string }) => isBlocked(t) || isNotJapanBound(t);
+  const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isDimmed(t));
+  const lngTankers = tankers.filter((t) => t.type === "LNG" && !isDimmed(t));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
 
@@ -89,10 +98,12 @@ export const TankerTracker: FC = () => {
             <tbody>
               {tankers.map((tanker, index) => {
                 const blocked = isBlocked(tanker);
+                const notJapan = isNotJapanBound(tanker);
+                const dimmed = blocked || notJapan;
                 const level = getAlertLevel(tanker.eta_days);
-                const color = blocked ? "#525252" : getAlertColor(level);
+                const color = dimmed ? "#525252" : getAlertColor(level);
                 const isSelected = tanker.id === selectedId;
-                const dimClass = blocked ? "opacity-45" : "";
+                const dimClass = dimmed ? "opacity-45" : "";
                 return (
                   <tr
                     key={tanker.id}
@@ -106,10 +117,15 @@ export const TankerTracker: FC = () => {
                   >
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
                     <td className="px-4 py-2 font-bold text-neutral-200">
-                      <span className={blocked ? "line-through" : ""}>{tanker.name}</span>
+                      <span className={dimmed ? "line-through" : ""}>{tanker.name}</span>
                       {blocked && (
                         <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-red-900/40 text-red-400">
                           封鎖時到達不可
+                        </span>
+                      )}
+                      {!blocked && notJapan && (
+                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700">
+                          日本向けでない
                         </span>
                       )}
                     </td>
@@ -133,8 +149,8 @@ export const TankerTracker: FC = () => {
                       {formatDecimal(tanker.speed_knots)}kn
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
-                      <div className={blocked ? "line-through" : ""}>{formatDecimal(tanker.eta_days)}日</div>
-                      <div className="text-xs font-normal text-neutral-400">{blocked ? "—" : formatDepletionDate(tanker.eta_days)}</div>
+                      <div className={dimmed ? "line-through" : ""}>{dimmed && tanker.eta_days === 0 ? "—" : `${formatDecimal(tanker.eta_days)}日`}</div>
+                      <div className="text-xs font-normal text-neutral-400">{dimmed ? "—" : formatDepletionDate(tanker.eta_days)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       {formatNumber(tanker.cargo_t)}t

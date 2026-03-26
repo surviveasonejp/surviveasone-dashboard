@@ -133,7 +133,7 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/tankers",
-    description: "日本向けタンカー12隻の到着予測。実在船舶名・IMO・航路情報",
+    description: "日本向けタンカー13隻の到着予測。実在船舶名・IMO・航路情報",
     example: `// Response (抜粋)
 { "data": [
     { "id": "lng-03", "name": "GRAND ANIVA", "type": "LNG",

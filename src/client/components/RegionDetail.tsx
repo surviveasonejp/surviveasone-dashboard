@@ -30,10 +30,15 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
   const collapseColor = getAlertColor(collapseLevel);
   const rankColor = RANK_COLORS[region.vulnerabilityRank] ?? "#888";
 
-  const logistics = useMemo(() => {
-    const r = staticRegions.find((sr) => sr.id === region.id);
-    return r?.logistics ?? null;
+  const regionData = useMemo(() => {
+    return staticRegions.find((sr) => sr.id === region.id) ?? null;
   }, [region.id]);
+
+  const logistics = regionData?.logistics ?? null;
+  const stockpileBases = regionData?.stockpileBases ?? [];
+  const jointStockpile = "jointStockpile" in (regionData ?? {})
+    ? (regionData as Record<string, unknown>).jointStockpile as { partner: string; location: string; capacity_kL: number; note: string } | undefined
+    : undefined;
 
   // 配送停止予測日 = 石油枯渇日の手前（配送遅延分だけ早く停止）
   const deliveryStopDay = logistics
@@ -75,6 +80,36 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
         {deliveryStopDay != null && (
           <DetailRow label="配送制限" value={`${formatDecimal(deliveryStopDay)}日`} sub={`石油枯渇の${logistics?.deliveryDelayDays}日前`} />
         )}
+      </div>
+
+      {/* 国家石油備蓄基地 */}
+      <div className="bg-[#0f1419] rounded p-3 space-y-1.5">
+        <div className="text-[10px] font-mono text-neutral-600 tracking-wider">国家石油備蓄基地</div>
+        {stockpileBases.length > 0 ? (
+          <div className="space-y-1">
+            {stockpileBases.map((base) => (
+              <div key={base.name} className="flex justify-between items-baseline text-xs">
+                <span className="text-neutral-300">{base.name}</span>
+                <span className="font-mono text-neutral-400">
+                  {(base.capacity_kL / 10000).toLocaleString()}万kL
+                  <span className="text-neutral-600 ml-1.5">{base.type}</span>
+                </span>
+              </div>
+            ))}
+            <div className="text-[9px] text-neutral-500 font-mono pt-0.5">
+              合計: {(stockpileBases.reduce((s, b) => s + b.capacity_kL, 0) / 10000).toLocaleString()}万kL
+            </div>
+          </div>
+        ) : (
+          <p className="text-xs text-neutral-500">国家備蓄基地なし（民間備蓄に依存）</p>
+        )}
+        {jointStockpile && (
+          <div className="text-xs text-neutral-400 border-t border-[#1e2a36] pt-1.5 mt-1.5">
+            <span className="text-neutral-500">産油国共同備蓄: </span>
+            {jointStockpile.partner} / {jointStockpile.location} ({(jointStockpile.capacity_kL / 10000).toLocaleString()}万kL)
+          </div>
+        )}
+        <p className="text-[8px] text-neutral-700">出典: JOGMEC 石油備蓄基地一覧</p>
       </div>
 
       {/* ロジスティクス */}

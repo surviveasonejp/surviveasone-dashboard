@@ -159,7 +159,7 @@ export const Landing: FC = () => {
           to="/last-tanker"
           title="LAST TANKER"
           subtitle="最終タンカー追跡"
-          description="封鎖後、日本に届く最後の積荷はいつか。実在12隻の到着予測"
+          description="封鎖後、日本に届く最後の積荷はいつか。実在13隻の到着予測"
           color="#94a3b8"
         />
         <PanelCard

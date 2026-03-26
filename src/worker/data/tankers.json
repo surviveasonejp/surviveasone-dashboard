@@ -5,7 +5,7 @@
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
     "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-25時点で全船の稼働を確認",
-    "note": "Phase 3初期スコープ: 12隻の指定船舶 + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。距離はマラッカ/ロンボク海峡経由の標準航路"
+    "note": "Phase 3初期スコープ: 13隻の指定船舶（代替ルート3隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。距離はマラッカ/ロンボク海峡経由の標準航路"
   },
   "chokepoints": [
     { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存" },
@@ -55,18 +55,18 @@
       "id": "vlcc-03",
       "name": "TAKASAGO",
       "type": "VLCC",
-      "departure": "ヴァディナール（インド）",
+      "departure": "インド西岸",
       "departurePort": "Vadinar",
-      "destination": "水島",
-      "destinationPort": "Mizushima",
-      "distanceToJapan_nm": 5200,
-      "speed_knots": 12.5,
-      "eta_days": 17.3,
+      "destination": "ウォルビスベイ（ナミビア）",
+      "destinationPort": "Walvis Bay",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 13.1,
+      "eta_days": 0,
       "cargo_t": 314000,
-      "cargoType": "原油（西アフリカ産）",
-      "status": "停泊中",
-      "arrivalProbability": { "insurance": 0.8, "route": 0.95, "military": 0.9, "combined": 0.684 },
-      "note": "日本郵船VLCC。IMO 9770696。313,989DWT。パナマ籍。2017年建造。LOA 335m。2026年3月21日にアンゴラ(CLOV FPSO/キゾンバ油田)からインド(ヴァディナール)に到着。中東・西アフリカ両ルートで稼働。ホルムズ海峡外に位置"
+      "cargoType": "原油",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
+      "note": "日本郵船VLCC。IMO 9770696。313,989DWT。パナマ籍。2017年建造。LOA 335m。2026年3月26日時点でインド西岸からナミビア(ウォルビスベイ)へ航行中(ETA 4/13)。日本向けではない。中東・西アフリカ両ルートで稼働実績あり"
     },
     {
       "id": "vlcc-04",

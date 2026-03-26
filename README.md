@@ -36,7 +36,7 @@
 | **現実**（全面封鎖） | 94% | 6.3% | -5%削減 | 30日全面→120日で段階的解除 |
 | **悲観**（全面+パニック） | 100% | 15% | +10%増加 | 90日全面→365日 |
 
-### 計算モデル（14要素）
+### 計算モデル（16要素）
 
 | モデル要素 | 実装内容 |
 |---|---|
@@ -51,28 +51,32 @@
 | **原子力補正** | 地域別に稼働原発出力を反映。設備利用率80%。最大70%カバー |
 | **再エネバッファ** | 太陽光(CF15%)/風力(CF22%)/水力(CF35%)の地域別設備容量。蓄電池なし上限40% |
 | **水道崩壊カスケード** | 電力停止→同日水圧低下→翌日断水→3日後衛生崩壊 |
+| **廃棄物カスケード** | 石油供給制限+3日→ゴミ収集停止（収集車燃料枯渇）、電力停止→焼却炉停止 |
 | **食料サプライチェーン** | ナフサ→石化製品→包装材の連鎖崩壊。化学日報報道ベース |
 | **地域別ロジスティクス** | 10エリアの配送遅延・トラック燃料依存率・給油所数(27,414箇所) |
+| **国家石油備蓄基地** | JOGMEC管理10基地の地域別配置・容量・貯蔵方式。産油国共同備蓄を含む |
 | **代替供給ルート** | フジャイラ/ヤンブー/非中東の3ルート。調達成功率は国際競争で日次低下 |
 
 ## Features
 
 - **Survival Clock** — 石油/LNG/電力の残存日数カウントダウン（3シナリオ切替）
-- **Collapse Map** — 全国10電力エリアの崩壊順マップ（連系線融通・原子力・再エネ補正込み。沖縄は先島諸島まで表示）
-- **Last Tanker Tracker** — 実在タンカーの推定航跡マップ。ホルムズ未通過船のグレーアウト表示。ETAは経過日数で自動減算
+- **Collapse Map** — 全国10電力エリアの崩壊順マップ（連系線融通・原子力・再エネ補正込み。沖縄は先島諸島まで表示。GPS/localStorage/手動の3段階フォールバックでエリア自動選択）
+- **Last Tanker Tracker** — 実在タンカー13隻の推定航跡マップ。ホルムズ未通過船・日本向けでない船のグレーアウト表示。ETAは経過日数で自動減算
 - **Food Chain Collapse** — 商品カテゴリ別消失予測（サプライチェーン層別在庫日数）
 - **Family Survival Meter** — 家庭の生存可能日数算出 + 要配慮者向け注意喚起 + 不足量/概算コスト + X共有
-- **Survival Guide** — フェーズ別行動指針（配給制対応含む）+ 要配慮者チェックリスト（乳幼児/医療機器/透析/介護/障害）
+- **Survival Guide** — フェーズ別行動指針（配給制対応含む）+ 備蓄チェックリスト + 行動チェックリスト（情報・医療・移動・住宅・コミュニティ）+ 要配慮者チェックリスト（乳幼児/医療機器/透析/介護/障害）
 - **AISタンカー追跡** — AISStream.ioから1日2回、位置・目的港・日本向け判定を自動取得
 - **PWA** — オフラインキャッシュ対応（重要APIデータをプリキャッシュ。停電後も参照可能）
 - **アクセシビリティ** — ARIA属性・スクリーンリーダー対応
 - **FAQ構造化データ** — 「停電 赤ちゃん ミルク」「人工呼吸器 停電 対策」等の検索で強調スニペットを狙うSchema.org FAQPage
+- **API Docs** — 18エンドポイントのインタラクティブドキュメント + OpenAPI 3.0 + AI Plugin
 
 ## タンカー追跡
 
-VLCC 5隻 + LNG 5隻 + 代替ルート3隻を追跡。全船のIMO番号はMaritimeOptima/VesselFinderで検証済み（2026年3月25日）。
+VLCC 5隻 + LNG 5隻 + 代替ルート3隻を追跡（うち1隻は日本向けでない航行を「日本向けでない」バッジ付きで表示）。全船のIMO番号はMaritimeOptima/VesselFinderで検証済み（2026年3月26日）。
 
 - **ホルムズ未通過判定**: ペルシャ湾内出発港（Ras Tanura, Jubail, Kharg Island, Ras Laffan, Mina Al Ahmadi, Basrah）からの船舶はグレーアウト + 「封鎖時到達不可」バッジ
+- **非日本向け判定**: destinationPortが日本港リストにない船舶はグレーアウト + 「日本向けでない」バッジ（例: TAKASAGO → ウォルビスベイ）
 - **ETA自動減算**: `meta.updatedAt`からの経過日数で`eta_days`を自動補正。デプロイ不要で鮮度維持
 - **AIS日本向け判定**: 目的港フィールドから`JP`プレフィクス・日本港名24件辞書で自動判定
 - **AIS ETA再計算**: 現在位置+SOGから目的港までの大圏距離でリアルタイムETA算出
@@ -89,25 +93,33 @@ VLCC 5隻 + LNG 5隻 + 代替ルート3隻を追跡。全船のIMO番号はMarit
 | 連系線容量 | OCCTO 運用容量 | 静的（2025年度） |
 | 原発稼働状況 | 原子力規制委員会 | 静的 |
 | 船舶データ | MaritimeOptima / 公開船舶DB | AIS自動 + 手動検証 |
+| 国家備蓄基地 | JOGMEC 石油備蓄基地一覧 | 静的 |
 | 地図データ | Natural Earth 110m | 静的（Public Domain） |
 
 ## API
 
-全エンドポイントは `surviveasonejp.org/api/` および `surviveasonejp.net/api/` で公開。
+全18エンドポイントは `surviveasonejp.org/api/` および `surviveasonejp.net/api/` で公開。OpenAPI 3.0仕様・AI Plugin対応。
 
 | エンドポイント | 説明 |
 |---|---|
 | `GET /api/health` | ヘルスチェック |
-| `GET /api/reserves` | 石油・LNG備蓄データ |
+| `GET /api/reserves` | 石油・LNG備蓄データ（`?history=true`で履歴） |
 | `GET /api/consumption` | 日次消費量 |
 | `GET /api/regions` | 10エリア別パラメータ |
 | `GET /api/countdowns?scenario={id}` | 残存日数 |
 | `GET /api/collapse?scenario={id}` | 10エリア崩壊順序 |
-| `GET /api/simulation?scenario={id}&days={n}` | フロー型在庫シミュレーション |
+| `GET /api/simulation?scenario={id}&maxDays={n}` | フロー型在庫シミュレーション（365日タイムライン） |
+| `GET /api/simulate?scenario={id}` | シミュレーション要約（枯渇日・主要イベント・備蓄データ） |
 | `GET /api/food-collapse?scenario={id}` | 食品消失予測 |
-| `GET /api/tankers` | タンカー到着予測 + AIS位置 |
+| `GET /api/tankers` | タンカー13隻の到着予測 + AIS位置 |
+| `GET /api/tankers/update` | タンカー情報半自動更新 |
+| `GET /api/ais` | AIS生データ |
 | `GET /api/electricity?area={id}` | 電力需給実測 |
 | `POST /api/family-survival` | 家庭生存日数算出 |
+| `GET /api/summary?scenario={id}` | プレーンテキスト概要（LLM・クローラー向け） |
+| `GET /api/docs` | APIドキュメント（HTML） |
+| `GET /api/data` | 全データソース概要（HTML、研究者向け） |
+| `GET /api/openapi.json` | OpenAPI 3.0仕様 |
 
 **シナリオID:** `optimistic` / `realistic` / `pessimistic`
 
@@ -117,7 +129,7 @@ VLCC 5隻 + LNG 5隻 + 代替ルート3隻を追跡。全船のIMO番号はMarit
 Client (React 19 + Vite 6 + Tailwind CSS 4)
   ├── PWA Service Worker (App Shell + API プリキャッシュ)
   └── fetch /api/*
-Worker (Cloudflare Workers)
+Dashboard Worker (Cloudflare Workers)
   ├── D1 (SQLite) — reserves/consumption/regions/electricity
   ├── KV — API cache + AIS positions + tanker overrides
   ├── R2 — OWID CSV archive
@@ -126,11 +138,28 @@ Worker (Cloudflare Workers)
         ├── 毎日 06:00 UTC — AIS位置+目的港 (2回目)
         ├── 毎日 18:00 UTC — 電力需給 + AIS (1回目)
         └── 毎月18日 06:00 UTC — 石油備蓄 + LNG在庫
+Notify Worker (surviveasone-notify)
+  ├── Workers AI — 日次サマリのLLM要約（Llama 4 Scout / Gemini切替可）
+  ├── KV — 前回シミュレーション状態 + RSS既読管理
+  └── Cron Trigger (1枠)
+        └── 毎日 09:00 UTC — 差分検知 + 日次サマリ + RSS監視 → Discord Webhook
 ```
 
 ## Tech Stack
 
-React 19 + Vite 6 + TypeScript (strict) / Cloudflare Workers + D1 + KV + R2 / AISStream.io
+React 19 + Vite 6 + TypeScript (strict) / Cloudflare Workers + Workers AI + D1 + KV + R2 / AISStream.io
+
+## 開発フェーズ
+
+| Phase | 内容 | 状態 |
+|---|---|---|
+| Phase 1-4 | 基盤 + シミュレーション（全11ページ、D1/KV/R2、フロー型モデル、PWA、AGPL-3.0） | 完了 |
+| Phase 5 | 精度向上 10/10（原子力14基、水道・廃棄物カスケード、SPR放出、封鎖解除曲線、需要破壊、再エネ、食料SC、歴史対比、代替供給、経済カスケード） | 完了 |
+| Phase 6 | データ自動化・信頼性（石油備蓄/LNG/電力/OWID自動、バリデーション、セキュリティ監査） | 完了 |
+| Phase 7 | 社会実装基盤（API 18本、sitemap、ai-plugin、SNS通知Worker、RSSニュース監視、Discord日次サマリ、Workers AI要約） | 完了 |
+| Phase 8 | モデル誠実性・現実連動（3シナリオレンジ、IEA国際比較、現実イベント13件、感度分析、国家石油備蓄基地10基地） | 完了 |
+| Phase 9 | 当事者リーチ・アクセシビリティ（要配慮者チェックリスト、行動チェックリスト5カテゴリ、FAQ構造化データ、Xシェア、ARIA、オフライン強化、配給制表現） | 完了 |
+| Phase 3 | リアルタイム化（AIS位置+目的港取得、ETA自動減算、日本向け判定、タンカー実データ検証。残: 原油価格自動、衛星AIS） | 進行中 |
 
 インフラ月額: ~$3（ドメイン2件のみ。Cloudflare全スタック無料枠）
 

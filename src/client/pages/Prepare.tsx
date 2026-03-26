@@ -111,30 +111,85 @@ const VULNERABLE_CHECKLIST: Array<{ category: string; items: { name: string; not
   },
 ];
 
+const ACTION_LIST: Array<{ category: string; icon: string; items: { name: string; note: string }[] }> = [
+  {
+    category: "情報・連絡体制",
+    icon: "📡",
+    items: [
+      { name: "緊急連絡先リストの紙版作成", note: "かかりつけ医・透析施設・福祉避難所・地域包括支援センター・親族の番号を紙に書いて防水保管" },
+      { name: "災害用伝言ダイヤル(171)の確認", note: "NTTの体験日（毎月1日・15日）に家族で練習。録音・再生の手順を確認" },
+      { name: "近隣の給水拠点・配給拠点の把握", note: "自治体HPで確認し、紙の地図に記入。徒歩・自転車でのルートも確認" },
+      { name: "手回しラジオの動作確認", note: "AM/FMで政府発表・NHKを受信可能か確認。電池切れでも使えるか" },
+    ],
+  },
+  {
+    category: "医療・福祉",
+    icon: "🏥",
+    items: [
+      { name: "電力会社への医療機器使用者登録", note: "「命に関わる医療機器使用者」登録で停電時に優先復旧の対象になり得る" },
+      { name: "処方薬の長期処方を主治医に依頼", note: "慢性疾患の薬を90日分処方。封鎖長期化で薬局の在庫切れに備える" },
+      { name: "透析施設の災害時対応計画の入手", note: "通院先の災害時連絡先・代替施設リストを事前取得。透析の猶予は3-4日" },
+      { name: "お薬手帳・透析手帳のスマホ撮影", note: "紙版に加えスマホ+クラウドにデジタルコピー。避難先の施設で必須" },
+      { name: "福祉避難所の事前確認", note: "自治体に要配慮者の事前登録が可能か確認。一般避難所と場所が異なる" },
+    ],
+  },
+  {
+    category: "移動・交通",
+    icon: "🚲",
+    items: [
+      { name: "自転車の整備・パンクレスタイヤ化", note: "ガソリン制限時の代替移動手段。阪神大震災では自転車が最重要の移動手段だった" },
+      { name: "車両燃料の常時半分以上維持", note: "奇数偶数制の給油制限に備え、常時半タン以上を習慣化" },
+      { name: "医療施設への複数ルート把握", note: "かかりつけ病院・透析施設への自転車・徒歩ルートを事前に確認" },
+      { name: "避難先の複数候補選定", note: "福祉避難所・親族宅・食料自給率の高い地域。60日超で都市退避の判断材料に" },
+    ],
+  },
+  {
+    category: "住宅・エネルギー",
+    icon: "🏠",
+    items: [
+      { name: "太陽光パネルの自立運転モード確認", note: "既設パネルがあれば停電時に自立運転で最大1500W使用可能。切替操作を確認" },
+      { name: "窓の断熱対策", note: "断熱フィルム・厚手カーテンで暖房燃料の高騰・不足に備える。100均の隙間テープも有効" },
+      { name: "医療機器の消費電力リスト作成", note: "全機器のW数を記録し、ポータブル電源の持続時間を計算。FamilyMeterで試算可" },
+      { name: "雨水収集の準備", note: "断水に備え簡易雨水収集（バケツ+漏斗）。生活用水として使用（飲用は煮沸必須）" },
+    ],
+  },
+  {
+    category: "コミュニティ・メンタル",
+    icon: "🤝",
+    items: [
+      { name: "要配慮者の存在を近隣に共有", note: "民生委員・町内会長に医療機器使用者・透析患者・乳幼児の存在を事前に知らせる" },
+      { name: "近隣住民との相互支援の合意", note: "声かけ・買い出し代行・情報共有。物流停止時に共助が命綱になる" },
+      { name: "家族間の役割分担の事前決定", note: "危機時に「誰が何をするか」を決めておくことでパニック防止" },
+      { name: "電力不要な過ごし方の確保", note: "読書・ボードゲーム・散歩等。長期危機では「することがない」が精神を蝕む" },
+      { name: "重要書類の防水コピー保管", note: "保険証・マイナンバー・通帳・権利証を防水袋に。スマホ撮影+クラウドも" },
+    ],
+  },
+];
+
 const PHASE_GUIDE = [
   {
     phase: "封鎖0〜3日",
     color: "#22c55e",
     label: "SAFE",
-    actions: ["備蓄確認・補充", "現金引き出し", "車に満タン給油", "情報収集態勢確立"],
+    actions: ["備蓄確認・補充", "現金引き出し", "車に満タン給油", "情報収集態勢確立", "家族の役割分担を確認", "緊急連絡先リストを紙に書き出す"],
   },
   {
     phase: "封鎖4〜14日",
     color: "#f59e0b",
     label: "WARNING",
-    actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携", "給油制限（奇数偶数制）に備え車両の燃料を満タンに"],
+    actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携・要配慮者の声かけ", "給油制限（奇数偶数制）に備え車両の燃料を満タンに", "自転車の整備・移動手段の確保"],
   },
   {
     phase: "封鎖15〜60日",
     color: "#ef4444",
     label: "CRITICAL — 配給制開始",
-    actions: ["政府配給の受取拠点（自治体窓口・給水所）を事前確認", "燃料使用を暖房・調理のみに限定", "配給外の食料確保（家庭菜園・物々交換）", "医薬品の優先確保", "農地・食料生産拠点に近づく判断"],
+    actions: ["政府配給の受取拠点（自治体窓口・給水所）を事前確認", "燃料使用を暖房・調理のみに限定", "配給外の食料確保（家庭菜園・物々交換）", "医薬品の優先確保・処方薬の残量管理", "ゴミ収集停止に備え生ゴミの減量・密封保管（衛生対策）", "医療施設への自転車・徒歩ルートで通院", "農地・食料生産拠点に近づく判断"],
   },
   {
     phase: "封鎖60日〜",
     color: "#ef4444",
     label: "COLLAPSE — 配給縮小",
-    actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"],
+    actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討（事前選定した避難先へ）", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"],
   },
 ];
 
@@ -218,6 +273,36 @@ export const Prepare: FC = () => {
         </div>
       </div>
 
+      {/* 行動チェックリスト（備蓄以外） */}
+      <div className="space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">今日からできる行動チェックリスト</h2>
+        <p className="text-xs text-neutral-500">物資の備蓄だけでは生き残れない。情報・連絡体制・移動手段・コミュニティが生死を分ける。</p>
+        <div className="space-y-4">
+          {ACTION_LIST.map((section) => (
+            <div key={section.category} className="bg-[#151c24] border border-[#3b82f640] rounded-lg overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-[#3b82f620] bg-[#101820]">
+                <h3 className="font-mono text-sm font-bold text-blue-300">
+                  <span className="mr-1.5">{section.icon}</span>
+                  {section.category}
+                </h3>
+              </div>
+              <div className="divide-y divide-[#162029]">
+                {section.items.map((item) => (
+                  <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
+                    <div className="sm:w-56 shrink-0">
+                      <span className="text-sm font-bold text-neutral-200">{item.name}</span>
+                    </div>
+                    <div>
+                      <span className="text-xs text-neutral-400">{item.note}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* 要配慮者向け追加備蓄 */}
       <div className="space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">要配慮者がいる家庭の追加備蓄</h2>
@@ -245,7 +330,7 @@ export const Prepare: FC = () => {
       </div>
 
       <p className="text-xs text-neutral-600 font-mono text-center">
-        備蓄は「もしも」のためではなく「いつか必ず来る」ための投資です
+        備蓄は「もしも」のためではなく「いつか必ず来る」ための投資です。物資だけでなく、情報・つながり・行動力を備えよ。
       </p>
     </div>
   );

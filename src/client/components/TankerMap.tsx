@@ -49,6 +49,16 @@ const HORMUZ_PORTS = new Set([
   "Ras Laffan", "Mina Al Ahmadi", "Basrah",
 ]);
 
+/** 日本の到着港 */
+const JAPAN_DEST_PORTS = new Set([
+  "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
+  "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
+  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita",
+]);
+
+const isDimmed = (t: { departurePort: string; destinationPort: string }) =>
+  HORMUZ_PORTS.has(t.departurePort) || !JAPAN_DEST_PORTS.has(t.destinationPort);
+
 // ─── チョークポイント ──────────────────────────────
 
 const CHOKEPOINTS = [
@@ -149,9 +159,9 @@ export const TankerMap: FC<TankerMapProps> = ({
         <g clipPath="url(#map-clip)">
           {routePaths.map(({ routeId, d, tankerId }) => {
             const t = tankers.find((v) => v.id === tankerId);
-            const blocked = t ? HORMUZ_PORTS.has(t.departurePort) : false;
+            const dimmed = t ? isDimmed(t) : false;
             const isVLCC = t?.type === "VLCC";
-            const color = blocked ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
+            const color = dimmed ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
             const isActive = activeId && (tankerId === activeId || getRouteId(t?.departurePort ?? "") === getRouteId(tankers.find((v) => v.id === activeId)?.departurePort ?? ""));
             return (
               <path
@@ -161,7 +171,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                 stroke={color}
                 strokeWidth={isActive ? 2.5 : 1.5}
                 strokeDasharray={isActive ? "8 4" : "4 5"}
-                opacity={blocked ? 0.15 : isActive ? 0.6 : 0.3}
+                opacity={dimmed ? 0.15 : isActive ? 0.6 : 0.3}
               />
             );
           })}
@@ -258,9 +268,9 @@ export const TankerMap: FC<TankerMapProps> = ({
         {tankers.map((t) => {
           const p = positions.get(t.id);
           if (!p) return null;
-          const blocked = HORMUZ_PORTS.has(t.departurePort);
+          const dimmed2 = isDimmed(t);
           const isVLCC = t.type === "VLCC";
-          const color = blocked ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
+          const color = dimmed2 ? "#525252" : isVLCC ? "#f59e0b" : "#22c55e";
           const isActive = t.id === activeId;
           const isSelected = t.id === selectedId;
 
@@ -309,7 +319,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                   stroke={isActive ? "#fff" : "#0f1419"}
                   strokeWidth={isActive ? 2 : 1}
                   strokeLinejoin="round"
-                  opacity={blocked ? 0.35 : isActive ? 1 : 0.9}
+                  opacity={dimmed2 ? 0.35 : isActive ? 1 : 0.9}
                 />
               ) : (
                 <circle
@@ -319,7 +329,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                   fill={color}
                   stroke={isActive ? "#fff" : "#0f1419"}
                   strokeWidth={isActive ? 2 : 1}
-                  opacity={blocked ? 0.35 : isActive ? 1 : 0.9}
+                  opacity={dimmed2 ? 0.35 : isActive ? 1 : 0.9}
                 />
               )}
               {/* 船名ラベル（ホバー/選択時） */}
@@ -375,6 +385,8 @@ export const TankerMap: FC<TankerMapProps> = ({
           </div>
           {HORMUZ_PORTS.has(activeTanker.departurePort) ? (
             <div className="text-red-400 font-bold">封鎖時到達不可</div>
+          ) : !JAPAN_DEST_PORTS.has(activeTanker.destinationPort) ? (
+            <div className="text-neutral-400 font-bold">日本向けでない</div>
           ) : (
             <div className="text-neutral-400">
               到着まで{" "}

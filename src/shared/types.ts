@@ -2,7 +2,7 @@
 
 export type AlertLevel = "critical" | "warning" | "caution" | "safe";
 export type SurvivalRank = "S" | "A" | "B" | "C" | "D" | "F";
-export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop" | "water_pressure" | "water_cutoff" | "water_sanitation";
+export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop" | "water_pressure" | "water_cutoff" | "water_sanitation" | "waste_collection" | "waste_incineration";
 
 export interface ResourceCountdown {
   label: string;

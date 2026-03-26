@@ -62,7 +62,7 @@
       }
     },
     "/api/tankers": {
-      "get": { "summary": "タンカー12隻到着予測", "responses": { "200": { "description": "船名・IMO・航路・ETA" } } }
+      "get": { "summary": "タンカー13隻到着予測", "responses": { "200": { "description": "船名・IMO・航路・ETA" } } }
     },
     "/api/family-survival": {
       "post": {

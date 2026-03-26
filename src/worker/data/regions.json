@@ -24,6 +24,9 @@
     "solarCapacity_MW": 2500,
     "windCapacity_MW": 800,
     "hydroCapacity_MW": 1200,
+    "stockpileBases": [
+      { "name": "苫小牧東部", "capacity_kL": 6400000, "type": "地上タンク", "tanks": 57, "note": "JOGMEC管理" }
+    ],
     "logistics": {
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
@@ -57,6 +60,11 @@
     "solarCapacity_MW": 5500,
     "windCapacity_MW": 1200,
     "hydroCapacity_MW": 3000,
+    "stockpileBases": [
+      { "name": "むつ小川原", "capacity_kL": 5700000, "type": "地上タンク", "tanks": 51, "note": "青森県六ヶ所村" },
+      { "name": "久慈", "capacity_kL": 1750000, "type": "地下岩盤タンク", "tanks": 3, "note": "岩手県久慈市" },
+      { "name": "秋田", "capacity_kL": 4500000, "type": "地中式+地上式", "tanks": 16, "note": "秋田県男鹿市(地中12基+地上4基)" }
+    ],
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
@@ -97,6 +105,7 @@
     "solarCapacity_MW": 20000,
     "windCapacity_MW": 300,
     "hydroCapacity_MW": 2500,
+    "stockpileBases": [],
     "logistics": {
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.85,
@@ -132,6 +141,7 @@
     "solarCapacity_MW": 8500,
     "windCapacity_MW": 400,
     "hydroCapacity_MW": 3800,
+    "stockpileBases": [],
     "logistics": {
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.9,
@@ -160,6 +170,9 @@
     "solarCapacity_MW": 800,
     "windCapacity_MW": 200,
     "hydroCapacity_MW": 2800,
+    "stockpileBases": [
+      { "name": "福井", "capacity_kL": 2850000, "type": "地上タンク", "tanks": 27, "note": "福井県福井市" }
+    ],
     "logistics": {
       "deliveryDelayDays": 4,
       "truckFuelDependency": 0.95,
@@ -195,6 +208,7 @@
     "solarCapacity_MW": 5500,
     "windCapacity_MW": 200,
     "hydroCapacity_MW": 3500,
+    "stockpileBases": [],
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.85,
@@ -228,6 +242,7 @@
     "solarCapacity_MW": 4500,
     "windCapacity_MW": 500,
     "hydroCapacity_MW": 1000,
+    "stockpileBases": [],
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
@@ -260,6 +275,9 @@
     "solarCapacity_MW": 2800,
     "windCapacity_MW": 300,
     "hydroCapacity_MW": 1200,
+    "stockpileBases": [
+      { "name": "菊間", "capacity_kL": 1500000, "type": "地下岩盤タンク", "tanks": 8, "note": "愛媛県今治市菊間町" }
+    ],
     "logistics": {
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
@@ -293,6 +311,12 @@
     "solarCapacity_MW": 12000,
     "windCapacity_MW": 600,
     "hydroCapacity_MW": 2000,
+    "stockpileBases": [
+      { "name": "白島", "capacity_kL": 5600000, "type": "洋上浮体式", "tanks": 8, "note": "福岡県北九州市沖。貯蔵船8隻" },
+      { "name": "上五島", "capacity_kL": 4400000, "type": "洋上浮体式", "tanks": 5, "note": "長崎県新上五島町沖。貯蔵船5隻" },
+      { "name": "串木野", "capacity_kL": 1750000, "type": "地下岩盤タンク", "tanks": 0, "note": "鹿児島県いちき串木野市" },
+      { "name": "志布志", "capacity_kL": 5000000, "type": "地上タンク", "tanks": 43, "note": "鹿児島県志布志市" }
+    ],
     "logistics": {
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
@@ -323,6 +347,8 @@
     "solarCapacity_MW": 500,
     "windCapacity_MW": 50,
     "hydroCapacity_MW": 0,
+    "stockpileBases": [],
+    "jointStockpile": { "partner": "サウジアラムコ", "location": "沖縄石油基地", "capacity_kL": 1300000, "note": "産油国共同備蓄(2011年〜)" },
     "logistics": {
       "deliveryDelayDays": 5,
       "truckFuelDependency": 1.0,

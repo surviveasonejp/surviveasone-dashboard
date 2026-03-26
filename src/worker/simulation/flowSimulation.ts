@@ -373,6 +373,27 @@ export function runFlowSimulation(
       stockPercent: 0,
       label: "下水処理停止（衛生崩壊）",
     });
+
+    // 廃棄物カスケード: 焼却炉は電力停止で即時停止
+    thresholds.push({
+      day: powerCollapseDay,
+      type: "waste_incineration",
+      resource: "power",
+      stockPercent: 0,
+      label: "ごみ焼却炉停止（電力喪失）",
+    });
+  }
+
+  // 廃棄物カスケード: ゴミ収集は石油供給制限で停止（収集車燃料2-3日分）
+  const oilRationingEvent = thresholds.find((e) => e.type === "rationing" && e.resource === "oil");
+  if (oilRationingEvent) {
+    thresholds.push({
+      day: Math.min(oilRationingEvent.day + 3, maxDays),
+      type: "waste_collection",
+      resource: "oil",
+      stockPercent: oilRationingEvent.stockPercent,
+      label: "ゴミ収集停止（収集車燃料枯渇）",
+    });
   }
 
   // #10 歴史データ対比マーカー

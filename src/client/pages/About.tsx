@@ -11,8 +11,9 @@ const DATA_SOURCES_LIST = [
   { name: "OCCTO 電力広域的運営推進機関", note: "連系線運用容量10本(2025年度)", auto: false },
   { name: "原子力規制委員会", note: "稼働原発14基・設備利用率", auto: false },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー13隻(代替3隻含む)のIMO・航路(2026年3月検証済)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー13隻(代替3隻含む)のIMO・航路(2026年3月26日検証済。非日本向け船はバッジ表示)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
+  { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
   { name: "Bloomberg / 産経", note: "代替ルートタンカー到着情報(2026年3月24日報道)", auto: false },
   { name: "IEA Oil Security Policy", note: "加盟国別備蓄日数(国際比較用)", auto: false },
@@ -24,7 +25,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 1-4",
     label: "基盤 + シミュレーション",
     status: "completed" as const,
-    items: ["全9ページ", "D1/KV/R2", "フロー型モデル", "到着確率", "連系線融通", "PWA", "AGPL-3.0"],
+    items: ["全11ページ", "D1/KV/R2", "フロー型モデル", "到着確率", "連系線融通", "PWA", "AGPL-3.0"],
   },
   {
     phase: "Phase 5",
@@ -42,19 +43,19 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 7",
     label: "社会実装基盤",
     status: "completed" as const,
-    items: ["API 16本", "sitemap", "ai-plugin", "引用フォーマット", "SNS通知Worker", "RSSニュース監視"],
+    items: ["API 18本", "sitemap", "ai-plugin", "引用フォーマット", "SNS通知Worker", "RSSニュース監視", "Discord日次サマリ", "Workers AI要約"],
   },
   {
     phase: "Phase 8",
     label: "モデル誠実性・現実連動",
     status: "completed" as const,
-    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント13件", "感度分析", "経済カスケード", "地域別ロジスティクス"],
+    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント13件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
   },
   {
     phase: "Phase 9",
     label: "当事者リーチ・アクセシビリティ",
     status: "completed" as const,
-    items: ["要配慮者チェックリスト", "FAQ構造化データ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v2)", "配給制表現"],
+    items: ["要配慮者チェックリスト", "行動チェックリスト(5カテゴリ)", "FAQ構造化データ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v2)", "配給制表現"],
   },
   {
     phase: "Phase 3",
@@ -75,10 +76,12 @@ const SIMULATION_FEATURES = [
   { label: "3シナリオ × レンジ表示", desc: "楽観(遮断50%)・現実(遮断94%)・悲観(遮断100%+パニック買い)。全カウントダウンに3シナリオバーを併記" },
   { label: "原子力の地域別寄与", desc: "稼働14基の出力を地域別に反映。設備利用率80%。関西は原発7基で火力依存が大幅低下" },
   { label: "再エネバッファ", desc: "太陽光CF15%+風力CF22%+水力CF35%。蓄電池なしの限界として最大40%カバーに制限" },
-  { label: "連系線融通", desc: "OCCTO運用容量ベースの10本。非対称容量対応。3回反復で多段融通を安定化" },
+  { label: "連系線融通", desc: "OCCTO運用容量ベースの10本。非対称容量対応。3回反復で多段融通を安定化。GPS/localStorage/手動の3段階フォールバックでエリア自動選択" },
   { label: "水道崩壊カスケード", desc: "電力停止→水圧低下(同日)→広域断水(+1日)→衛生崩壊(+3日)" },
+  { label: "廃棄物カスケード", desc: "石油供給制限+3日→ゴミ収集停止(収集車燃料枯渇)。電力停止→ごみ焼却炉停止。使用済おむつ・医療廃棄物の滞留による衛生リスク" },
   { label: "食料サプライチェーン", desc: "ナフサ→石化製品(PE/PP/PS/PVC)→包装材の連鎖崩壊。化学日報報道に基づくnapthaFactor設定" },
   { label: "地域別ロジスティクス", desc: "10エリアの配送遅延(1-5日)・トラック燃料依存率・給油所数(資源エネルギー庁実データ27,414箇所)" },
+  { label: "国家石油備蓄基地", desc: "JOGMEC管理10基地(苫小牧東部/むつ小川原/久慈/秋田/福井/菊間/白島/上五島/串木野/志布志)の地域別配置・容量・貯蔵方式。産油国共同備蓄(UAE/サウジ/クウェート)を含む" },
   { label: "感度分析", desc: "6パラメータを±20%変動させた場合の影響度をトルネードチャートで可視化。Methodologyに配置" },
 ];
 
@@ -105,7 +108,7 @@ export const About: FC = () => {
           危機の進行を正しく理解し、素早く行動するための情報を提供する。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          公開統計データに基づく14の計算モデルと3つのシナリオで分析。
+          公開統計データに基づく16の計算モデルと3つのシナリオで分析。
           代替供給ルート・経済カスケード・配給制シミュレーション・地域別ロジスティクスを含む。
           予測ではなくリスクシナリオのシミュレーションとして、不確実性を含めて透明に提示する。
         </p>
@@ -129,7 +132,7 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
-            <li>・タンカー13隻（代替ルート3隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶は除外・差替済み(2026年3月25日)</li>
+            <li>・タンカー13隻（代替ルート3隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年3月26日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東の3ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
@@ -141,7 +144,7 @@ export const About: FC = () => {
       {/* シミュレーション仕様 */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-[#1e2a36]">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">シミュレーション仕様（全14モデル）</h2>
+          <h2 className="font-mono text-sm tracking-wider text-neutral-400">シミュレーション仕様（全16モデル）</h2>
         </div>
         <div className="divide-y divide-[#162029]">
           {SIMULATION_FEATURES.map((f) => (
@@ -268,15 +271,15 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">TECH STACK</h2>
         <div className="flex flex-wrap gap-2">
-          {["Cloudflare Workers", "D1", "KV", "R2", "Cron Triggers", "React 19", "TypeScript", "Vite", "Tailwind CSS 4", "PWA"].map((t) => (
+          {["Cloudflare Workers", "Workers AI", "D1", "KV", "R2", "Cron Triggers", "React 19", "TypeScript", "Vite", "Tailwind CSS 4", "PWA"].map((t) => (
             <span key={t} className="text-xs px-2 py-0.5 rounded font-mono bg-[#1e2a36] text-neutral-400 border border-[#1e2a36]">
               {t}
             </span>
           ))}
         </div>
         <div className="text-xs text-neutral-600 font-mono space-y-0.5">
-          <p>API: 16エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
-          <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知+RSS監視Worker</p>
+          <p>API: 18エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
+          <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知(日次サマリ+差分検知+RSS監視)Worker + Workers AI LLM要約</p>
           <p>インフラ月額: ~$3（ドメイン2件のみ。Cloudflare全スタック無料枠）</p>
         </div>
       </div>
@@ -285,7 +288,7 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
         <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">SUPPORT THIS PROJECT</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
-          広告なし・トラッキングなしのオープンソースプロジェクトです。14の計算モデル、自動データパイプライン、AISタンカー追跡が稼働中。スポンサーシップは衛星AISによる全ルート追跡とデータ精度向上に直接使われます。
+          広告なし・トラッキングなしのオープンソースプロジェクトです。16の計算モデル、自動データパイプライン、AISタンカー追跡が稼働中。スポンサーシップは衛星AISによる全ルート追跡とデータ精度向上に直接使われます。
         </p>
         <div className="text-xs text-neutral-500 space-y-1 font-mono">
           <p>$0〜$36/月 → チョークポイント監視開始</p>

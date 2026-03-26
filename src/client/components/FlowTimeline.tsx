@@ -23,6 +23,8 @@ const EVENT_ICON: Record<string, string> = {
   water_pressure: "〜",
   water_cutoff: "✕",
   water_sanitation: "☠",
+  waste_collection: "🗑",
+  waste_incineration: "🔥",
 };
 
 // 崩壊フェーズの背景帯
