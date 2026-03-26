@@ -7,16 +7,21 @@ on:
 jobs:
   post-to-x:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Playwright
+        timeout-minutes: 2
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
           npm install playwright
           npx playwright install chromium --with-deps
 
       - name: Take screenshot
+        timeout-minutes: 1
         env:
           RELEASE_BODY: ${{ github.event.release.body }}
         run: |
@@ -50,8 +55,10 @@ jobs:
           (async () => {
             const browser = await chromium.launch();
             const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, colorScheme: 'dark' });
-            await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 30000 });
-            await page.waitForTimeout(3000);
+            await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 15000 }).catch(() =>
+              page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'domcontentloaded', timeout: 15000 })
+            );
+            await page.waitForTimeout(2000);
 
             // 地図・グラフ・表の位置までスクロールしてからスクショ
             if (targetSelector) {
