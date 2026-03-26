@@ -35,10 +35,16 @@ console.log('Screenshot target:', targetPage, 'selector:', targetSelector);
   // 地図・グラフ・表の位置までスクロールしてからスクショ
   if (targetSelector) {
     try {
+      // SPAレンダリング完了を待機（最大10秒）
+      await page.waitForSelector(targetSelector, { timeout: 10000 });
       const el = await page.$(targetSelector);
       if (el) {
-        await el.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(500);
+        // 要素をビューポート上端に配置
+        await el.evaluate(node => node.scrollIntoView({ block: 'start', behavior: 'instant' }));
+        await page.waitForTimeout(1000);
+        console.log('Scrolled to element:', targetSelector);
+      } else {
+        console.log('Element not found after waitForSelector:', targetSelector);
       }
     } catch (e) {
       console.log('Selector not found, using default viewport:', e.message);
