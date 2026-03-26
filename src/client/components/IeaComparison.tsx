@@ -29,7 +29,7 @@ const COUNTRIES: CountryStock[] = [
   // IEA加盟国（2026年3月IEA協調放出後の推定値）
   { country: "日本", days: 0, isJapan: true, group: "iea" },
   { country: "米国", days: 200, note: "SPR 4.15億バレルから172mb放出。純輸出国で義務免除", group: "iea" },
-  { country: "韓国", days: 208, note: "KNOC 9拠点。22.5mb放出。IEAベース", group: "iea" },
+  { country: "韓国", days: 187, note: "KNOC 9拠点。22.5mb放出後推定。IEAベース", group: "iea" },
   { country: "フランス", days: 118, note: "SAGESS + 事業者。14.6mb放出", group: "iea" },
   { country: "ドイツ", days: 90, note: "EBV管理。19.5mb放出。義務ギリギリ", group: "iea" },
   { country: "スペイン", days: 92, note: "11.6mbを90日かけ放出", group: "iea" },

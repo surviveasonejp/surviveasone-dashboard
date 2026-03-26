@@ -192,6 +192,7 @@ export const FoodCollapse: FC = () => {
         source={userRegion.source}
         loading={userRegion.loading}
         onReset={() => { userRegion.setManualRegion(null); setSelectedRegionId(null); }}
+        onRequestGeolocation={userRegion.requestGeolocation}
       />
 
       {/* 食品消失タイムライン */}

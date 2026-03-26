@@ -75,12 +75,14 @@ export const TankerTracker: FC = () => {
         onSelect={setSelectedId}
       />
 
-      {/* 到着順テーブル */}
+      {/* 到着順ランキング */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-[#1e2a36]">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">到着順ランキング</h2>
         </div>
-        <div className="overflow-x-auto">
+
+        {/* デスクトップ: テーブル */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
@@ -160,6 +162,85 @@ export const TankerTracker: FC = () => {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* モバイル: カードレイアウト */}
+        <div className="md:hidden divide-y divide-[#162029]">
+          {tankers.map((tanker, index) => {
+            const blocked = isBlocked(tanker);
+            const notJapan = isNotJapanBound(tanker);
+            const dimmed = blocked || notJapan;
+            const level = getAlertLevel(tanker.eta_days);
+            const color = dimmed ? "#525252" : getAlertColor(level);
+            const isSelected = tanker.id === selectedId;
+            const typeColor = tanker.type === "VLCC" ? "#f59e0b" : "#22c55e";
+            return (
+              <div
+                key={tanker.id}
+                ref={(el) => {
+                  if (el) rowRefs.current.set(tanker.id, el as unknown as HTMLTableRowElement);
+                }}
+                className={`px-4 py-3 cursor-pointer transition-colors ${
+                  isSelected ? "bg-white/[0.06]" : "active:bg-white/[0.03]"
+                } ${dimmed ? "opacity-45" : ""}`}
+                onClick={() => setSelectedId(isSelected ? null : tanker.id)}
+              >
+                {/* 1行目: 順位 + 船名 + バッジ */}
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
+                  <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
+                  <span
+                    className="font-mono text-[10px] px-1.5 py-0.5 rounded shrink-0"
+                    style={{ backgroundColor: `${typeColor}20`, color: typeColor }}
+                  >
+                    {tanker.type}
+                  </span>
+                  {blocked && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-900/40 text-red-400 shrink-0">
+                      封鎖時到達不可
+                    </span>
+                  )}
+                  {!blocked && notJapan && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 shrink-0">
+                      日本向けでない
+                    </span>
+                  )}
+                </div>
+                {/* 2行目: 航路 + ETA */}
+                <div className="flex items-baseline justify-between mt-1.5 ml-7">
+                  <span className="text-xs text-neutral-500 truncate mr-3">
+                    {tanker.departure} → {tanker.destination}
+                  </span>
+                  <span className="font-mono text-sm font-bold shrink-0" style={{ color }}>
+                    {dimmed && tanker.eta_days === 0 ? "—" : `${formatDecimal(tanker.eta_days)}日`}
+                  </span>
+                </div>
+                {/* 3行目: 詳細（選択時のみ展開） */}
+                {isSelected && (
+                  <div className="mt-2 ml-7 grid grid-cols-3 gap-y-1 text-[10px] font-mono">
+                    <div>
+                      <div className="text-neutral-600">距離</div>
+                      <div className="text-neutral-400">{formatDistance(tanker.distanceToJapan_nm)}</div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-600">速度</div>
+                      <div className="text-neutral-400">{formatDecimal(tanker.speed_knots)}kn</div>
+                    </div>
+                    <div>
+                      <div className="text-neutral-600">積荷</div>
+                      <div className="text-neutral-400">{formatNumber(tanker.cargo_t)}t</div>
+                    </div>
+                    {!dimmed && (
+                      <div className="col-span-3 mt-0.5">
+                        <div className="text-neutral-600">到着予定</div>
+                        <div className="text-neutral-400">{formatDepletionDate(tanker.eta_days)}</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 

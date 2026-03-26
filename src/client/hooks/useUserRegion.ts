@@ -26,14 +26,36 @@ interface UseUserRegionResult {
   loading: boolean;
   /** 手動でエリアを設定（localStorageに保存） */
   setManualRegion: (id: string | null) => void;
-  /** 位置情報を再取得 */
+  /** localStorage再読み込み */
   refresh: () => void;
+  /** GPS位置情報を要求（ユーザーの明示的なアクション用） */
+  requestGeolocation: () => void;
 }
 
 export function useUserRegion(): UseUserRegionResult {
   const [regionId, setRegionId] = useState<string | null>(null);
   const [source, setSource] = useState<"saved" | "geolocation" | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // GPS取得（ユーザーの明示的なアクションでのみ呼ぶ）
+  const requestGeolocation = useCallback(() => {
+    if (!("geolocation" in navigator)) return;
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const id = geoToRegionId(pos.coords.latitude, pos.coords.longitude);
+        setRegionId(id);
+        setSource("geolocation");
+        setLoading(false);
+      },
+      () => {
+        setRegionId(null);
+        setSource(null);
+        setLoading(false);
+      },
+      { timeout: 5000, maximumAge: 300000 },
+    );
+  }, []);
 
   const detectRegion = useCallback(() => {
     setLoading(true);
@@ -51,28 +73,10 @@ export function useUserRegion(): UseUserRegionResult {
       // localStorage不可の環境
     }
 
-    // 2. Geolocation API
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const id = geoToRegionId(pos.coords.latitude, pos.coords.longitude);
-          setRegionId(id);
-          setSource("geolocation");
-          setLoading(false);
-        },
-        () => {
-          // 拒否/タイムアウト → null
-          setRegionId(null);
-          setSource(null);
-          setLoading(false);
-        },
-        { timeout: 5000, maximumAge: 300000 }, // 5秒タイムアウト、5分キャッシュ
-      );
-    } else {
-      setRegionId(null);
-      setSource(null);
-      setLoading(false);
-    }
+    // 2. 保存がない場合はnull（GPSは自動要求しない）
+    setRegionId(null);
+    setSource(null);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -97,5 +101,6 @@ export function useUserRegion(): UseUserRegionResult {
     loading,
     setManualRegion,
     refresh: detectRegion,
+    requestGeolocation,
   };
 }

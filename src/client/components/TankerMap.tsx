@@ -62,12 +62,12 @@ const isDimmed = (t: { departurePort: string; destinationPort: string }) =>
 // ─── チョークポイント ──────────────────────────────
 
 const CHOKEPOINTS = [
-  { id: "hormuz", name: "ホルムズ", lat: 26.567, lon: 56.25, critical: true },
-  { id: "malacca", name: "マラッカ", lat: 2.5, lon: 101.8, critical: false },
-  { id: "lombok", name: "ロンボク", lat: -8.5, lon: 115.7, critical: false },
-  { id: "tsugaru", name: "津軽", lat: 41.65, lon: 140.8, critical: false },
-  { id: "panama", name: "パナマ", lat: 9.08, lon: -79.68, critical: false },
-  { id: "babel", name: "バベルマンデブ", lat: 12.583, lon: 43.333, critical: false },
+  { id: "hormuz", name: "ホルムズ海峡", lat: 26.567, lon: 56.25, critical: true },
+  { id: "malacca", name: "マラッカ海峡", lat: 2.5, lon: 101.8, critical: false },
+  { id: "lombok", name: "ロンボク海峡", lat: -8.5, lon: 115.7, critical: false },
+  { id: "tsugaru", name: "津軽海峡", lat: 41.65, lon: 140.8, critical: false },
+  { id: "panama", name: "パナマ運河", lat: 9.08, lon: -79.68, critical: false },
+  { id: "babel", name: "バベルマンデブ海峡", lat: 12.583, lon: 43.333, critical: false },
 ];
 
 // ─── コンポーネント ─────────────────────────────────

@@ -45,6 +45,7 @@ export const CollapseMap: FC = () => {
         source={userRegion.source}
         loading={userRegion.loading}
         onReset={() => { userRegion.setManualRegion(null); setSelectedRegion(null); }}
+        onRequestGeolocation={userRegion.requestGeolocation}
       />
 
       {/* 地図 + 詳細 2カラム */}
