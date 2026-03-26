@@ -202,7 +202,7 @@ const StockChart: FC<StockChartProps> = ({
   );
 
   return (
-    <svg viewBox={`0 0 ${viewW} ${viewH}`} className="w-full" style={{ height: "clamp(160px, 30vw, 240px)" }}>
+    <svg data-screenshot="flow-timeline" viewBox={`0 0 ${viewW} ${viewH}`} className="w-full" style={{ height: "clamp(160px, 30vw, 240px)" }}>
       {/* 崩壊フェーズ背景帯 */}
       {PHASE_BANDS.map((band) => {
         const y1 = toY(band.maxPct / 100);

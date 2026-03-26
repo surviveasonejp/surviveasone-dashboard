@@ -136,7 +136,7 @@ export const FamilyMeter: FC = () => {
             className="bg-[#151c24] border rounded-lg p-6 text-center space-y-3"
             style={{ borderColor: `${rankColor}40` }}
           >
-            <div className="text-xs font-mono text-neutral-500 tracking-wider" id="rank-label">SURVIVAL RANK</div>
+            <div className="text-xs font-mono text-neutral-500 tracking-wider" id="rank-label" data-screenshot="family-rank">SURVIVAL RANK</div>
             <div
               className="font-mono font-bold text-8xl"
               style={{ color: rankColor }}

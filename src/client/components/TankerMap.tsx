@@ -126,6 +126,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   return (
     <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg overflow-hidden relative">
       <svg
+        data-screenshot="tanker-map"
         viewBox={`0 0 ${W} ${H}`}
         className="w-full h-auto"
         role="img"

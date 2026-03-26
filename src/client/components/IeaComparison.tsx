@@ -111,7 +111,7 @@ export const IeaComparison: FC = () => {
   const maxDays = Math.max(...all.map((c) => c.days));
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-5 space-y-4">
+    <div data-screenshot="iea-comparison" className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-5 space-y-4">
       <div className="font-mono text-xs tracking-widest text-neutral-500 text-center">
         INTERNATIONAL STOCKPILE COMPARISON
       </div>

@@ -211,7 +211,7 @@ export const Prepare: FC = () => {
       />
 
       {/* フェーズ別行動指針 */}
-      <div className="space-y-3">
+      <div data-screenshot="prepare-guide" className="space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">フェーズ別行動指針</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {PHASE_GUIDE.map((phase) => (

@@ -196,7 +196,7 @@ export const FoodCollapse: FC = () => {
       />
 
       {/* 食品消失タイムライン */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div data-screenshot="food-collapse" className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {products.map((product) => {
           const level = getAlertLevel(product.collapseDays);
           const color = getAlertColor(level);

@@ -26,13 +26,13 @@ jobs:
           // リリースノートのキーワードからスクリーンショット対象ページとフォーカス要素を判定
           const body = (process.env.RELEASE_BODY || '').toLowerCase();
           const targets = [
-            { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: 'svg' },
-            { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地'], page: '/collapse-map', selector: 'svg' },
-            { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: 'h2' },
-            { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: 'form' },
-            { match: ['フロー', 'simulation', 'カウントダウン', 'clock', 'タイムライン'], page: '/countdown', selector: 'svg' },
-            { match: ['iea', '国際', '備蓄比較', '各国'], page: '/', selector: '[class*=\"INTERNATIONAL\"], [class*=\"iea\"]' },
-            { match: ['備蓄', 'prepare', 'ガイド', 'チェックリスト', '行動'], page: '/prepare', selector: 'h2' },
+            { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: '[data-screenshot=\"tanker-map\"]' },
+            { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地'], page: '/collapse-map', selector: '[data-screenshot=\"collapse-map\"]' },
+            { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: '[data-screenshot=\"food-collapse\"]' },
+            { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: '[data-screenshot=\"family-rank\"]' },
+            { match: ['フロー', 'simulation', 'カウントダウン', 'clock', 'タイムライン'], page: '/countdown', selector: '[data-screenshot=\"flow-timeline\"]' },
+            { match: ['iea', '国際', '備蓄比較', '各国'], page: '/', selector: '[data-screenshot=\"iea-comparison\"]' },
+            { match: ['備蓄', 'prepare', 'ガイド', 'チェックリスト', '行動'], page: '/prepare', selector: '[data-screenshot=\"prepare-guide\"]' },
           ];
 
           let targetPage = '/';

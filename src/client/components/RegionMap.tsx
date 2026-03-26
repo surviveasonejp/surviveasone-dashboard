@@ -118,6 +118,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
 
   return (
     <svg
+      data-screenshot="collapse-map"
       viewBox="14 0 552 600"
       className="w-full h-full max-h-[600px] mx-auto block"
       role="img"
