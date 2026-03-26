@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 // リリースノートのキーワードからスクリーンショット対象ページとフォーカス要素を判定
 const body = (process.env.RELEASE_BODY || '').toLowerCase();
 const targets = [
-  { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: '[data-screenshot="tanker-map"]' },
+  { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: '[data-screenshot="tanker-map"]', fallback: 'svg[aria-label="タンカー推定航跡マップ"]' },
   { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地'], page: '/collapse-map', selector: '[data-screenshot="collapse-map"]' },
   { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: '[data-screenshot="food-collapse"]' },
   { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: '[data-screenshot="family-rank"]' },
@@ -14,15 +14,30 @@ const targets = [
 
 let targetPage = '/';
 let targetSelector = null;
+let fallbackSelector = null;
 for (const t of targets) {
   if (t.match.some(m => body.includes(m))) {
     targetPage = t.page;
     targetSelector = t.selector;
+    fallbackSelector = t.fallback || null;
     break;
   }
 }
 
-console.log('Screenshot target:', targetPage, 'selector:', targetSelector);
+console.log('Screenshot target:', targetPage, 'selector:', targetSelector, 'fallback:', fallbackSelector);
+
+async function findAndScroll(page, selector, label) {
+  await page.waitForSelector(selector, { state: 'attached', timeout: 10000 });
+  await page.waitForTimeout(500);
+  const el = await page.$(selector);
+  if (el) {
+    await el.evaluate(node => node.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    await page.waitForTimeout(1000);
+    console.log('Scrolled to element (' + label + '):', selector);
+    return true;
+  }
+  return false;
+}
 
 (async () => {
   const browser = await chromium.launch();
@@ -33,21 +48,22 @@ console.log('Screenshot target:', targetPage, 'selector:', targetSelector);
 
   // 地図・グラフ・表の位置までスクロールしてからスクショ
   if (targetSelector) {
+    let found = false;
     try {
-      // SPAレンダリング完了を待機（DOMに追加されればOK、最大15秒）
-      await page.waitForSelector(targetSelector, { state: 'attached', timeout: 15000 });
-      await page.waitForTimeout(500);
-      const el = await page.$(targetSelector);
-      if (el) {
-        // 要素をビューポート上端に配置
-        await el.evaluate(node => node.scrollIntoView({ block: 'start', behavior: 'instant' }));
-        await page.waitForTimeout(1000);
-        console.log('Scrolled to element:', targetSelector);
-      } else {
-        console.log('Element not found after waitForSelector:', targetSelector);
-      }
+      found = await findAndScroll(page, targetSelector, 'primary');
     } catch (e) {
-      console.log('Selector not found, using default viewport:', e.message);
+      console.log('Primary selector not found:', e.message);
+    }
+    // フォールバックセレクタで再試行
+    if (!found && fallbackSelector) {
+      try {
+        found = await findAndScroll(page, fallbackSelector, 'fallback');
+      } catch (e) {
+        console.log('Fallback selector not found:', e.message);
+      }
+    }
+    if (!found) {
+      console.log('No matching element found, using default viewport');
     }
   }
 
