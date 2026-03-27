@@ -12,6 +12,7 @@ import { Prepare } from "./pages/Prepare";
 import { About } from "./pages/About";
 import { Methodology } from "./pages/Methodology";
 import { ApiDocs } from "./pages/ApiDocs";
+import { ForSegment } from "./pages/ForSegment";
 
 export const App: FC = () => {
   return (
@@ -28,6 +29,7 @@ export const App: FC = () => {
         <Route path="/about" element={<About />} />
         <Route path="/methodology" element={<Methodology />} />
         <Route path="/api-docs" element={<ApiDocs />} />
+        <Route path="/for/:segment" element={<ForSegment />} />
       </Route>
     </Routes>
   );

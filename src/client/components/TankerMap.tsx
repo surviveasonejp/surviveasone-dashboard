@@ -387,7 +387,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           {HORMUZ_PORTS.has(activeTanker.departurePort) ? (
             <div className="text-red-400 font-bold">封鎖時到達不可</div>
           ) : !JAPAN_DEST_PORTS.has(activeTanker.destinationPort) ? (
-            <div className="text-neutral-400 font-bold">日本向けでない</div>
+            <div className="text-neutral-400 font-bold badge-not-japan-text">日本向けでない</div>
           ) : (
             <div className="text-neutral-400">
               到着まで{" "}

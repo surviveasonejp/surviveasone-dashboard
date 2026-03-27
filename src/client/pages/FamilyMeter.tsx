@@ -127,6 +127,9 @@ export const FamilyMeter: FC = () => {
           <InputSlider label="カセットボンベ" value={inputs.gasCanisterCount} min={0} max={100} step={1} unit="本" onChange={update("gasCanisterCount")} />
           <InputSlider label="ポータブル電源" value={inputs.batteryWh} min={0} max={5000} step={50} unit="Wh" onChange={update("batteryWh")} />
           <InputSlider label="現金" value={inputs.cashYen} min={0} max={1000000} step={10000} unit="円" onChange={update("cashYen")} />
+          <p className="text-[10px] text-neutral-600 leading-relaxed">
+            入力データはこのブラウザ内でのみ保存・計算されます。サーバーへの送信は行いません。
+          </p>
         </div>
 
         {/* 右: スコアカード */}
@@ -168,13 +171,12 @@ export const FamilyMeter: FC = () => {
               className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
               onClick={() => {
                 const text = [
-                  `うちの家庭（${inputs.members}人世帯）の生存ランクは【${score.rank}】— ${formatDecimal(score.totalDays)}日生存可能`,
-                  `ボトルネック: ${score.bottleneck}`,
+                  `備蓄ランク【${score.rank}】だった。`,
                   "",
-                  "あなたの家庭は何日生き延びられる？",
+                  "買い占めではなく「わが家に足りないもの」の確認を。",
                   "surviveasonejp.org/family",
                   "",
-                  "#SurviveAsOne #ホルムズ海峡",
+                  "#SurviveAsOne #備蓄確認",
                 ].join("\n");
                 window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
               }}

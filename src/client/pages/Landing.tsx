@@ -122,6 +122,36 @@ export const Landing: FC = () => {
         </Link>
       </div>
 
+      {/* リスク層訴求 */}
+      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-5 space-y-4">
+        <div className="text-center space-y-2">
+          <div className="font-mono text-3xl font-bold text-[#ef4444]">5人に1人</div>
+          <p className="text-sm text-neutral-300">
+            乳幼児・透析・在宅医療・介護——インフラ停止時に特別な備えが必要な家庭は日本人口の<span className="text-[#ef4444] font-bold">約20%</span>
+          </p>
+          <p className="text-xs text-neutral-500">
+            必要なのは買い占めではなく「わが家に何が足りないか」の確認。適正量の備蓄が、あなたの家族と周囲の人を守る。
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          {[
+            { to: "/for/parents", label: "子育て家庭", sub: "ミルク3日で枯渇", color: "#ef4444" },
+            { to: "/for/dialysis", label: "透析患者の家族", sub: "猶予3-4日", color: "#ef4444" },
+            { to: "/for/elderly", label: "介護・医療機器", sub: "呼吸器8時間", color: "#f59e0b" },
+          ].map((seg) => (
+            <Link
+              key={seg.to}
+              to={seg.to}
+              className="block px-3 py-2.5 rounded border text-center transition-colors hover:bg-white/5"
+              style={{ borderColor: `${seg.color}40` }}
+            >
+              <div className="text-xs font-bold text-neutral-200">{seg.label}</div>
+              <div className="text-[10px] font-mono mt-0.5" style={{ color: seg.color }}>{seg.sub}</div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* Family Meter CTA — 自分ごと化の核 */}
       <Link
         to="/family"

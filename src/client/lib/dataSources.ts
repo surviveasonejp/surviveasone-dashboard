@@ -28,7 +28,7 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
     label: "LNG在庫",
     confidence: "estimated",
     source: "経産省ガス事業統計+電力調査統計(2025年平均)",
-    note: "季節変動あり(冬季高・夏季低)。ガス事業用+発電用の合算",
+    note: "季節変動あり(冬季高・夏季低)。450万t=ガス事業用+発電用の合算推計。経産省公表の発電用在庫(約230万t)とは集計範囲が異なる",
   },
   lngConsumption: {
     label: "LNG消費量",
@@ -87,6 +87,30 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
     confidence: "estimated",
     source: "製油所処理能力・LNG基地規模・OCCTO需給データから按分推定",
     note: "oilShare/lngShareは製油所・LNG基地の処理能力ベースで推定。winterFactor/isolationRiskは気象・地理条件から設定",
+  },
+  foodSelfSufficiency: {
+    label: "食料自給率",
+    confidence: "verified",
+    source: "農水省 食料需給表(令和5年度確報/令和6年度概算)",
+    note: "カロリーベース総合38%。小麦16%、飼料26%、米97%。北海道218%",
+  },
+  governmentRiceReserve: {
+    label: "政府備蓄米",
+    confidence: "verified",
+    source: "農水省 米穀の需給及び価格の安定に関する基本指針",
+    note: "適正水準91-100万tだが、令和コメ騒動(2024-2025)で大量放出。2025年8月時点で約29.5万t",
+  },
+  simulationCoefficients: {
+    label: "シミュレーション係数",
+    confidence: "estimated",
+    source: "ISEP自然エネルギー白書 + IRENA Statistics + OCCTO需給検証 + IEA Energy Supply Security",
+    note: "太陽光CF15%/風力CF22%/水力CF35%(ISEP実績値)。需要破壊係数は1973年石油危機実績+IEA価格弾力性モデル。連系線稼働率70%はOCCTO緊急時運用規程準拠",
+  },
+  waterSupplyGuideline: {
+    label: "水道・防災基準値",
+    confidence: "verified",
+    source: "内閣府 避難所における良好な生活環境の確保に向けた取組指針(2016年) + 厚労省 水道事業ガイドライン",
+    note: "水3L/人日(飲料+調理)。水道崩壊カスケードは配水池重力式貯留(1-3日分)+非常用発電72時間に基づく",
   },
 };
 

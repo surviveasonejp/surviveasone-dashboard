@@ -2,7 +2,7 @@
 // 戦略: App Shell キャッシュ + API ネットワーク優先
 // 目的: 電源喪失前にインストール → オフラインで FOOD/FAMILY/PREPARE 等を閲覧可能
 
-const CACHE_NAME = "sao-v2";
+const CACHE_NAME = "sao-v3";
 
 // App Shell: オフラインで必要な静的リソース
 const APP_SHELL = [
@@ -15,6 +15,9 @@ const APP_SHELL = [
   "/last-tanker",
   "/dashboard",
   "/about",
+  "/for/parents",
+  "/for/dialysis",
+  "/for/elderly",
 ];
 
 // 重要API: オフラインでも閲覧可能にするためプリキャッシュ

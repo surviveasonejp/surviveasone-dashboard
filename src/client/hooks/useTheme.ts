@@ -3,7 +3,7 @@ import { useSyncExternalStore } from "react";
 type Theme = "dark" | "light";
 
 function getSnapshot(): Theme {
-  return (document.documentElement.getAttribute("data-theme") as Theme) ?? "dark";
+  return (document.documentElement.getAttribute("data-theme") as Theme) ?? "light";
 }
 
 function subscribe(callback: () => void): () => void {
@@ -16,7 +16,7 @@ function subscribe(callback: () => void): () => void {
 }
 
 export function useTheme(): Theme {
-  return useSyncExternalStore(subscribe, getSnapshot, () => "dark");
+  return useSyncExternalStore(subscribe, getSnapshot, () => "light");
 }
 
 /** ライトモードで視認性が悪い色をライト向けに調整 */

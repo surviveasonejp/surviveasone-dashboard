@@ -99,6 +99,22 @@ body {
   color: #94a3b8 !important;
 }
 
+/* 「日本向けでない」バッジ */
+[data-theme="light"] .badge-not-japan {
+  background-color: #e2e8f0 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .badge-not-japan-text {
+  color: #475569 !important;
+}
+
+/* 「封鎖時到達不可」バッジ */
+[data-theme="light"] .bg-red-900\/40 {
+  background-color: rgba(254, 202, 202, 0.5) !important;
+}
+
 /* ヘッダー/フッター背景の透明度 */
 [data-theme="light"] header {
   background-color: rgba(241, 245, 249, 0.95) !important;
@@ -254,6 +270,29 @@ input[type="range"]::-moz-range-track {
 [data-theme="light"] noscript div {
   background-color: #f1f5f9 !important;
   color: #1e293b !important;
+}
+
+/* ─── 印刷用スタイル ──────────────────────────── */
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11pt;
+  }
+  header, footer, .print\:hidden, button, a[href="/family"] {
+    display: none !important;
+  }
+  [class*="bg-[#"] {
+    background: white !important;
+    border-color: #ccc !important;
+  }
+  [class*="text-neutral-"], [class*="text-red-"], [class*="text-[#"] {
+    color: #333 !important;
+  }
+  .font-mono {
+    font-family: monospace;
+  }
 }
 
 /* ─── ハイコントラスト（OS設定検出） ──────────── */

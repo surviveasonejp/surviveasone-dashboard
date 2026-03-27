@@ -135,6 +135,25 @@ export const SurvivalClock: FC = () => {
           <UpdateLog />
         </div>
       </div>
+
+      {/* Xシェア */}
+      <button
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+        onClick={() => {
+          const oil = displayCountdowns.find((c) => c.label === "石油備蓄");
+          const text = [
+            `石油備蓄 残り${oil ? Math.round(oil.totalDays) : "???"}日（経産省推計ベース）`,
+            "",
+            "わが家の備蓄は足りているか確認 →",
+            "surviveasonejp.org/family",
+            "",
+            "#SurviveAsOne #備蓄確認",
+          ].join("\n");
+          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+        }}
+      >
+        X(Twitter)でシェア
+      </button>
     </div>
   );
 };

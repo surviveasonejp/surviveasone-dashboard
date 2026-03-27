@@ -168,6 +168,7 @@ export default {
       const pages = [
         "", "/dashboard", "/countdown", "/collapse-map", "/last-tanker",
         "/food-collapse", "/family", "/prepare", "/about", "/methodology", "/api-docs",
+        "/for/parents", "/for/dialysis", "/for/elderly",
       ];
       const entries = pages.map((p) =>
         `  <url><loc>https://surviveasonejp.org${p}</loc><changefreq>${p === "" ? "daily" : "weekly"}</changefreq><priority>${p === "" ? "1.0" : p === "/dashboard" ? "0.9" : "0.7"}</priority></url>`,
@@ -176,6 +177,11 @@ export default {
         `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>`,
         { headers: { "Content-Type": "application/xml", "Cache-Control": "public, max-age=86400" } },
       );
+    }
+
+    // ── /share/family: Family Meterへのリダイレクト（旧シェアURL互換） ──
+    if (url.pathname === "/share/family") {
+      return Response.redirect("https://surviveasonejp.org/family", 301);
     }
 
     // ── 静的アセット: セキュリティヘッダー付与して返す ──
@@ -981,8 +987,8 @@ th{background:#1a2332;color:#999}.num{text-align:right;font-family:monospace}
 
 <h2>電力構成</h2>
 <table>
-<tr><td>火力発電比率</td><td class="num">${(r.electricity.thermalShareRate * 100).toFixed(0)}%</td><td>LNG29% + 石炭28% + 石油7%</td></tr>
-<tr><td>原子力比率</td><td class="num">${(r.electricity.nuclearShareRate * 100).toFixed(1)}%</td><td>稼働14基</td></tr>
+<tr><td>火力発電比率</td><td class="num">${(r.electricity.thermalShareRate * 100).toFixed(0)}%</td><td>LNG29.1% + 石炭28.2% + 石油1.4% + 他6.3%</td></tr>
+<tr><td>原子力比率</td><td class="num">${(r.electricity.nuclearShareRate * 100).toFixed(1)}%</td><td>稼働15基</td></tr>
 <tr><td>再エネ比率</td><td class="num">${(r.electricity.renewableShareRate * 100).toFixed(1)}%</td><td>太陽光11% + 水力8% + バイオ6% + 風力1%</td></tr>
 </table>
 

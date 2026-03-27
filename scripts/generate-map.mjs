@@ -1,5 +1,5 @@
 /**
- * Natural Earth 110m land boundaries → SVG path 文字列を生成
+ * Natural Earth 50m land boundaries → SVG path 文字列を生成
  * Usage: node scripts/generate-map.mjs
  * Output: src/client/data/world-land.ts
  */
@@ -24,11 +24,26 @@ function projectY(lat) {
 
 // TopoJSON 読み込み
 const topoRaw = readFileSync(
-  new URL("../node_modules/world-atlas/land-110m.json", import.meta.url),
+  new URL("../node_modules/world-atlas/land-50m.json", import.meta.url),
   "utf-8",
 );
 const topo = JSON.parse(topoRaw);
 const geojson = feature(topo, topo.objects.land);
+
+// 50mデータは小島が多い。表示スケールで視認できない微小リングを除去してサイズ削減
+// 閾値: 投影後の面積がMIN_RING_AREA_PX2未満のリングをスキップ
+const MIN_RING_AREA_PX2 = 20; // px^2。ViewBox 1000x700 上で約4.5x4.5px未満の島を除去
+
+function calcRingArea(projected) {
+  // Shoelace formula で符号付き面積を算出
+  let area = 0;
+  for (let i = 0; i < projected.length; i++) {
+    const j = (i + 1) % projected.length;
+    area += projected[i][0] * projected[j][1];
+    area -= projected[j][0] * projected[i][1];
+  }
+  return Math.abs(area) / 2;
+}
 
 // MultiPolygon / Polygon の座標を SVG path に変換
 function ringToPath(ring) {
@@ -42,11 +57,31 @@ function ringToPath(ring) {
   }
   if (filtered.length < 3) return "";
 
-  return filtered
-    .map(([lon, lat], i) => {
-      const x = projectX(lon).toFixed(1);
-      const y = projectY(lat).toFixed(1);
-      return `${i === 0 ? "M" : "L"}${x},${y}`;
+  // 投影後の座標
+  const projected = filtered.map(([lon, lat]) => [projectX(lon), projectY(lat)]);
+
+  // 微小リングの除去（大陸・主要島の海岸線精度は保持）
+  if (calcRingArea(projected) < MIN_RING_AREA_PX2) return "";
+
+  // 頂点間引き: 前の出力頂点から距離が MIN_VERTEX_DIST_PX 未満の頂点をスキップ
+  // 50mデータは頂点が密すぎるため、表示スケールに合わせて削減
+  const MIN_VERTEX_DIST_PX2 = 1.0; // 1px未満の移動は省略
+  const simplified = [projected[0]];
+  for (let i = 1; i < projected.length - 1; i++) {
+    const prev = simplified[simplified.length - 1];
+    const dx = projected[i][0] - prev[0];
+    const dy = projected[i][1] - prev[1];
+    if (dx * dx + dy * dy >= MIN_VERTEX_DIST_PX2) {
+      simplified.push(projected[i]);
+    }
+  }
+  // 最後の頂点は常に保持（閉じたパスのため）
+  simplified.push(projected[projected.length - 1]);
+  if (simplified.length < 3) return "";
+
+  return simplified
+    .map(([x, y], i) => {
+      return `${i === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join("") + "Z";
 }
@@ -78,7 +113,7 @@ for (const feat of geojson.features ?? [geojson]) {
 
 // 出力ファイル生成
 const output = `// ─── 自動生成: node scripts/generate-map.mjs ───
-// Natural Earth 110m land boundaries (Public Domain)
+// Natural Earth 50m land boundaries (Public Domain)
 // 表示範囲: ${MIN_LON}°E〜${MAX_LON}°E, ${MIN_LAT}°S〜${MAX_LAT}°N
 // ViewBox: 0 0 ${W} ${H} (equirectangular projection)
 

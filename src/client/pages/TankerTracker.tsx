@@ -126,7 +126,7 @@ export const TankerTracker: FC = () => {
                         </span>
                       )}
                       {!blocked && notJapan && (
-                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700">
+                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 badge-not-japan">
                           日本向けでない
                         </span>
                       )}
@@ -201,7 +201,7 @@ export const TankerTracker: FC = () => {
                     </span>
                   )}
                   {!blocked && notJapan && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 shrink-0">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 badge-not-japan shrink-0">
                       日本向けでない
                     </span>
                   )}

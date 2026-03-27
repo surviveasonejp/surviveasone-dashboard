@@ -12,9 +12,15 @@ const DATA_SOURCES = [
   { name: "JETRO / 財務省貿易統計", data: "中東石油依存率94%、LNGホルムズ依存率6.3%(カタール5.3%+UAE1.0%)", date: "2025年実績" },
   { name: "経産省ガス事業統計", data: "LNG在庫約450万t(約25日分回転在庫)", date: "2025年平均" },
   { name: "OCCTO", data: "連系線運用容量10本(北本90万kW〜東北東京573万kW)、非対称容量対応", date: "2025年度" },
-  { name: "原子力規制委員会", data: "稼働14基: 関西7基(6,578MW)、九州4基(4,140MW)、四国1基(890MW)、東北1基(825MW)、中国1基(820MW)", date: "2026年3月時点" },
+  { name: "原子力規制委員会", data: "稼働15基: 関西7基(6,578MW)、九州4基(4,140MW)、東京1基(1,356MW 柏崎刈羽6号)、四国1基(890MW)、東北1基(825MW)、中国1基(820MW 島根2号・定検停止中)", date: "2026年3月時点" },
   { name: "OWID energy-data", data: "石油日次消費量、LNG日次消費量のベースライン", date: "Cron自動取得" },
   { name: "各電力会社CSV", data: "電力需給実測データ(4エリア: 東京/関西/中部/北陸)", date: "Cron自動取得" },
+  { name: "農水省 食料需給表", data: "食料自給率(カロリーベース38%、小麦16%、飼料26%、米97%)。政府備蓄米約29.5万t(2025年8月)", date: "令和6年度概算" },
+  { name: "JOGMEC 石油備蓄基地一覧", data: "国家備蓄10基地の所在地・容量・貯蔵方式(苫小牧東部〜志布志)", date: "静的" },
+  { name: "資源エネルギー庁 給油所統計", data: "都道府県別給油所数 27,414箇所。地域別ロジスティクスの根拠", date: "2023年度末" },
+  { name: "ISEP / IRENA", data: "再エネ設備利用率(太陽光CF15%/風力CF22%/水力CF35%)。シミュレーション係数の根拠", date: "2024年" },
+  { name: "IEA Energy Supply Security", data: "需要破壊モデルの価格弾力性係数。SPR協調放出メカニズム。加盟国別備蓄日数", date: "2014/2024年" },
+  { name: "内閣府 避難所運営ガイドライン", data: "水3L/人日、Family Meter基準値。水道崩壊カスケードの根拠", date: "2016年" },
 ];
 
 const MODEL_EQUATIONS = [
@@ -31,7 +37,7 @@ const MODEL_EQUATIONS = [
   {
     title: "SPR放出メカニズム",
     equation: "国家備蓄: delay=14日, max=30万kL/日 / 民間: delay=0日, 実質70%",
-    description: "IEA協調行動→閣議了解のリードタイム14日を反映。民間備蓄は操業用在庫を考慮し実質70%が限度。悲観シナリオでは産油国共同備蓄(7日分)は利用不可。",
+    description: "石油備蓄法+IEA Emergency Response Mechanismに基づく。リードタイム14日=IEA要請→閣議了解(1-2日)→JOGMEC放出指示→基地出荷(3-5日)→精製到着(2-3日)。2022年IEA協調放出時は約10日(JOGMEC報告)。民間70%は操業用在庫30%控除(石油連盟2019年)。悲観では産油国共同備蓄利用不可。",
   },
   {
     title: "封鎖解除曲線",
@@ -41,7 +47,7 @@ const MODEL_EQUATIONS = [
   {
     title: "需要破壊モデル",
     equation: "demand(t) = baseDemand × blockadeRate(t) × rationFactor × destructionFactor(stockPercent)",
-    description: "在庫50%超: 通常 / 30-50%: 産業15%減 / 10-30%: 産業+商業35%減 / 10%未満: 生活必需のみ55%減。石油ショック(1973年)の実績データに基づく近似。",
+    description: "在庫50%超: 通常 / 30-50%: 産業15%減 / 10-30%: 産業+商業35%減 / 10%未満: 生活必需のみ55%減。係数はHamilton(2003)の価格弾力性モデル + 1973年第一次石油危機の実績(経産省2018年エネルギー白書) + IEA Energy Supply Security(2014)に基づく。閾値は石油備蓄法の放出段階に対応。",
   },
   {
     title: "段階的崩壊閾値",
@@ -51,27 +57,27 @@ const MODEL_EQUATIONS = [
   {
     title: "原子力補正",
     equation: "thermalShare_regional = thermalShare_national × (1 - nuclearCoverage - renewableCoverage)",
-    description: "nuclearCoverage = min(原発出力MW × 稼働率80% / 地域需要MW, 0.7)。関西は原発7基で火力依存が約35%に低下。",
+    description: "nuclearCoverage = min(原発出力MW × 稼働率80% / 地域需要MW, 0.7)。稼働率80%は原子力規制委員会実績値(2023-2024年度平均)。上限70%はOCCTO系統運用ルール(周波数調整用火力の最低保持)に基づく。稼働15基(関西7/九州4/東京1/四国1/東北1/中国1)。",
   },
   {
     title: "再エネバッファ",
     equation: "renewableOutput = solar×CF15% + wind×CF22% + hydro×CF35%",
-    description: "CF=設備利用率。蓄電池なしの限界を考慮し最大40%カバーに制限。季節変動は現在未反映。",
+    description: "CF=設備利用率(ISEP自然エネルギー白書+IRENA Statistics 2024の日本実績値)。蓄電池なしの系統安定限界として最大40%カバーに制限(IEA Grid Integration of Variable Renewables)。季節変動は現在未反映。",
   },
   {
     title: "連系線融通",
     equation: "bonusDays = min(daysDiff × coverageRatio, daysDiff × 0.5)",
-    description: "coverageRatio = 連系線容量(方向別) × 稼働率70% × (1-損失率) / 受電側需要。3回反復で多段融通を安定化。OCCTO運用容量ベース。",
+    description: "coverageRatio = 連系線容量(方向別) × 稼働率70% × (1-損失率) / 受電側需要。稼働率70%は通常時80-90%から危機時の保守要員不足・系統不安定を考慮(OCCTO緊急時運用規程準拠)。3回反復で多段融通を安定化。",
   },
   {
     title: "水道崩壊カスケード",
     equation: "電力停止 → +0日:水圧低下 → +1日:断水 → +3日:衛生崩壊",
-    description: "配水池の重力式貯留(1-3日分)と非常用発電機燃料(72時間)に基づく。厚労省水道事業ガイドライン参照。",
+    description: "配水池の重力式貯留(1-3日分)と非常用発電機燃料(72時間)に基づく。出典: 厚労省「水道事業における耐震化の促進」+ 厚労省水道事業ガイドライン。",
   },
   {
     title: "Family Meter",
     equation: "生存日数 = min(水÷3L人日, 食料日数, ガス÷30分人日, 電力÷50Wh人日)",
-    description: "水3L/人日(飲料+調理)、カセットガス30分/人日、電力50Wh/人日(スマホ充電+照明)。ボトルネック方式で最短リソースが生存日数を決定。",
+    description: "水3L/人日=内閣府「避難所における良好な生活環境の確保に向けた取組指針」(2016年)。カセットガス60分/本=岩谷産業公表値、30分/人日=最低調理時間。電力50Wh/人日=スマホ15Wh+LED30Wh+ラジオ5Wh。ボトルネック方式で最短リソースが生存日数を決定。",
   },
 ];
 

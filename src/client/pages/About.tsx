@@ -9,7 +9,7 @@ const DATA_SOURCES_LIST = [
   { name: "OWID energy-data", note: "石油・LNG消費量ベースライン", auto: true },
   { name: "10電力エリアCSV/JSON", note: "電力需給実測データ(全10エリア)", auto: true },
   { name: "OCCTO 電力広域的運営推進機関", note: "連系線運用容量10本(2025年度)", auto: false },
-  { name: "原子力規制委員会", note: "稼働原発14基・設備利用率", auto: false },
+  { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
   { name: "公開船舶DB / 海運各社PR", note: "タンカー13隻(代替3隻含む)のIMO・航路(2026年3月26日検証済。非日本向け船はバッジ表示)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
@@ -17,6 +17,11 @@ const DATA_SOURCES_LIST = [
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
   { name: "Bloomberg / 産経", note: "代替ルートタンカー到着情報(2026年3月24日報道)", auto: false },
   { name: "IEA Oil Security Policy", note: "加盟国別備蓄日数(国際比較用)", auto: false },
+  { name: "農水省 食料需給表", note: "食料自給率(カロリーベース38%、小麦16%、飼料26%、米97%)(令和6年度概算)", auto: false },
+  { name: "農水省 米穀需給基本指針", note: "政府備蓄米在庫(適正100万t→2025年8月時点約29.5万t)", auto: false },
+  { name: "ISEP / IRENA", note: "再エネ設備利用率(太陽光15%/風力22%/水力35%) シミュレーション係数の根拠", auto: false },
+  { name: "内閣府 避難所運営ガイドライン", note: "水3L/人日・Family Meter基準値の根拠(2016年)", auto: false },
+  { name: "OCCTO 電力需給検証報告書", note: "全国ピーク需要(1.6億kW)・連系線緊急時稼働率の根拠", auto: false },
 ];
 
 type PhaseStatus = "completed" | "active" | "planned";
@@ -31,7 +36,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 5",
     label: "精度向上（10/10完了）",
     status: "completed" as const,
-    items: ["原子力(14基)", "水道カスケード", "SPR放出", "封鎖解除曲線", "需要破壊", "再エネ", "食料SC", "歴史対比", "代替供給ルート", "経済カスケード"],
+    items: ["原子力(15基)", "水道カスケード", "SPR放出", "封鎖解除曲線", "需要破壊", "再エネ", "食料SC", "歴史対比", "代替供給ルート", "経済カスケード"],
   },
   {
     phase: "Phase 6",
@@ -74,8 +79,8 @@ const SIMULATION_FEATURES = [
   { label: "需要破壊モデリング", desc: "在庫残量に連動した動的消費削減。50%超: 通常 / 30-50%: 産業15%減 / 10-30%: 35%減 / 10%未満: 55%減" },
   { label: "経済カスケード", desc: "原油価格→ガソリン(弾力性0.7)→物流コスト(0.3)→食品価格(0.15)。IEA価格弾力性+1973年石油ショック実績ベース" },
   { label: "3シナリオ × レンジ表示", desc: "楽観(遮断50%)・現実(遮断94%)・悲観(遮断100%+パニック買い)。全カウントダウンに3シナリオバーを併記" },
-  { label: "原子力の地域別寄与", desc: "稼働14基の出力を地域別に反映。設備利用率80%。関西は原発7基で火力依存が大幅低下" },
-  { label: "再エネバッファ", desc: "太陽光CF15%+風力CF22%+水力CF35%。蓄電池なしの限界として最大40%カバーに制限" },
+  { label: "原子力の地域別寄与", desc: "稼働15基の出力を地域別に反映。設備利用率80%(原子力規制委員会実績値)。関西は原発7基で火力依存が大幅低下。柏崎刈羽6号(東京)は2026年1月再稼働" },
+  { label: "再エネバッファ", desc: "太陽光CF15%+風力CF22%+水力CF35%(ISEP自然エネルギー白書実績値)。蓄電池なしの系統安定限界として最大40%カバーに制限(IEA Grid Integration)" },
   { label: "連系線融通", desc: "OCCTO運用容量ベースの10本。非対称容量対応。3回反復で多段融通を安定化。GPS/localStorage/手動の3段階フォールバックでエリア自動選択" },
   { label: "水道崩壊カスケード", desc: "電力停止→水圧低下(同日)→広域断水(+1日)→衛生崩壊(+3日)" },
   { label: "廃棄物カスケード", desc: "石油供給制限+3日→ゴミ収集停止(収集車燃料枯渇)。電力停止→ごみ焼却炉停止。使用済おむつ・医療廃棄物の滞留による衛生リスク" },
@@ -119,7 +124,7 @@ export const About: FC = () => {
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">なぜホルムズ海峡か</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の原油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。うち<span className="text-[#f59e0b] font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
-          <p>封鎖が長期化すれば、火力発電（LNG29%+石炭28%+石油7%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に崩壊する。</p>
+          <p>封鎖が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に崩壊する。</p>
           <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点推計）。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>

@@ -37,11 +37,19 @@ const REFINING_DELAY_DAYS = 5;
 const LNG_REGAS_DELAY_DAYS = 2;
 
 // ─── #3 SPR放出パラメータ ────────────────────────────
+// 出典: 石油備蓄法(昭和50年法律第96号) + IEA Emergency Response Mechanism
+// リードタイム根拠: IEA協調行動要請(数日)→閣議了解(1-2日)→JOGMEC放出指示→
+//   基地からの出荷開始(タンク搬出・ポンプ稼働に3-5日)→精製工場到着(2-3日) = 計約14日
+// 参考: 2022年IEA協調放出時は閣議了解から実出荷まで約10日(JOGMEC報告)
 
-const SPR_NATIONAL_LEAD_TIME_DAYS = 14; // IEA協調→閣議了解のリードタイム
-const SPR_NATIONAL_DAILY_MAX_KL = 300000; // 日次放出上限（全10基地合計）
-const SPR_PRIVATE_USABLE_RATIO = 0.70; // 民間備蓄の実質利用可能割合
-const SPR_PRIVATE_DAILY_MAX_KL = 200000; // 民間の日次放出上限
+const SPR_NATIONAL_LEAD_TIME_DAYS = 14;
+// 出典: JOGMEC 石油備蓄基地一覧の全10基地出荷能力合算(推定)。
+// 各基地のポンプ・パイプライン能力は非公開だが、全量放出に約5ヶ月(≈日量30万kL)が目安
+const SPR_NATIONAL_DAILY_MAX_KL = 300000;
+// 民間備蓄の30%は製油所・タンカーの運転在庫(ワーキングストック)として常時必要。
+// 出典: 石油連盟「石油備蓄制度のあり方」(2019年) - 実質利用可能率70%の推定根拠
+const SPR_PRIVATE_USABLE_RATIO = 0.70;
+const SPR_PRIVATE_DAILY_MAX_KL = 200000;
 
 // ─── #4 封鎖解除曲線 ────────────────────────────────
 
@@ -90,6 +98,13 @@ function getBlockadeRate(day: number, profile: BlockadeProfile): number {
 /**
  * 在庫残量(%)に応じた需要削減率を返す。
  * 在庫が減る = 価格高騰 → 産業が操業停止 → 需要が自然減少
+ *
+ * 出典:
+ * - Hamilton, J.D. (2003) "What is an Oil Shock?" Journal of Econometrics, 113(2), 363-398
+ * - 1973年第一次石油危機: 消費量前年比7.3%減(60日時点)→最大15%減(90日時点)
+ *   (経産省「石油危機の教訓」2018年エネルギー白書)
+ * - IEA "Energy Supply Security 2014" - 価格弾力性による需要破壊の段階モデル
+ * - 閾値の50%/30%/10%は石油備蓄法の放出段階(注意→警戒→緊急)に概ね対応
  */
 function getDemandDestructionFactor(stockPercent: number): number {
   if (stockPercent > 50) return 1.0;        // 通常
