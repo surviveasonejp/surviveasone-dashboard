@@ -176,7 +176,7 @@ export const FamilyMeter: FC = () => {
                   "買い占めではなく「わが家に足りないもの」の確認を。",
                   "surviveasonejp.org/family",
                   "",
-                  "#SurviveAsOne #備蓄確認",
+                  "#surviveasonejp #備蓄確認",
                 ].join("\n");
                 window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
               }}

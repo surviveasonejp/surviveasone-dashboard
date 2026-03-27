@@ -147,7 +147,7 @@ export const SurvivalClock: FC = () => {
             "わが家の備蓄は足りているか確認 →",
             "surviveasonejp.org/family",
             "",
-            "#SurviveAsOne #備蓄確認",
+            "#surviveasonejp #備蓄確認",
           ].join("\n");
           window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}

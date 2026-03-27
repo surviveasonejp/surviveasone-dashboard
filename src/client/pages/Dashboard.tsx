@@ -104,7 +104,7 @@ export const Dashboard: FC = () => {
             "自分の地域の状況を確認 →",
             "surviveasonejp.org/dashboard",
             "",
-            "#SurviveAsOne #備蓄確認",
+            "#surviveasonejp #備蓄確認",
           ].join("\n");
           window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}
