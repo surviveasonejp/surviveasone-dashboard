@@ -22,7 +22,7 @@ const ENDPOINTS: EndpointDoc[] = [
     path: "/api/health",
     description: "ヘルスチェック。サーバー稼働状況とバージョンを返す",
     example: `// Response
-{ "status": "ok", "timestamp": "2026-03-22T...", "version": "0.2.0", "level": "ok" }`,
+{ "status": "ok", "timestamp": "2026-03-28T...", "version": "0.3.0", "level": "ok" }`,
   },
   {
     method: "GET",
@@ -133,10 +133,11 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/tankers",
-    description: "日本向けタンカー13隻の到着予測。実在船舶名・IMO・航路情報",
+    description: "日本向けタンカー15隻の到着予測。IMO・AIS追跡状態・航路・到着確率を含む",
     example: `// Response (抜粋)
 { "data": [
     { "id": "lng-03", "name": "GRAND ANIVA", "type": "LNG",
+      "imo": "9338955", "aisTracked": true,
       "departure": "プリゴロドノエ（サハリン）", "destination": "北九州",
       "eta_days": 1.2, "cargo_t": 145000 },
     ...
@@ -144,36 +145,46 @@ const ENDPOINTS: EndpointDoc[] = [
 }`,
   },
   {
-    method: "POST",
-    path: "/api/family-survival",
-    description: "家庭の生存日数を算出。備蓄入力 → ランク・ボトルネック・各リソース別日数を返す",
+    method: "GET",
+    path: "/api/electricity",
+    description: "電力需給の実測データ（Cron日次自動取得、全10エリア対応）",
     params: [
-      { name: "members", type: "number", note: "世帯人数（1-50）" },
-      { name: "waterLiters", type: "number", note: "水備蓄（0-10000 L）" },
-      { name: "foodDays", type: "number", note: "食料備蓄（0-365 日分）" },
-      { name: "gasCanisterCount", type: "number", note: "カセットボンベ（0-1000 本）" },
-      { name: "batteryWh", type: "number", note: "ポータブル電源（0-100000 Wh）" },
-      { name: "cashYen", type: "number", note: "現金（0-100000000 円）" },
+      { name: "area", type: "string", note: "エリアID（hokkaido / tohoku / tokyo / chubu / hokuriku / kansai / chugoku / shikoku / kyushu / okinawa）" },
     ],
-    example: `curl -X POST ${API_BASE}/api/family-survival \\
-  -H "Content-Type: application/json" \\
-  -d '{"members":3,"waterLiters":36,"foodDays":7,"gasCanisterCount":6,"batteryWh":500,"cashYen":30000}'
-
-// Response
-{ "data": {
-    "totalDays": 4.0, "rank": "C", "bottleneck": "水",
-    "waterDays": 4.0, "foodDays": 7, "energyDays": 4.0, "powerDays": 3.3
-  }
-}`,
+    example: `curl ${API_BASE}/api/electricity?area=tokyo`,
   },
   {
     method: "GET",
-    path: "/api/electricity",
-    description: "電力需給の実測データ（Cron自動取得、4エリア対応）",
+    path: "/api/summary",
+    description: "プレーンテキスト概要。LLM・クローラー・研究者向け。Content-Type: text/plain",
     params: [
-      { name: "area", type: "string", note: "エリアID（tokyo / kansai / chubu / hokuriku）" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
     ],
-    example: `curl ${API_BASE}/api/electricity?area=tokyo`,
+    example: `curl ${API_BASE}/api/summary?scenario=realistic
+
+// Response (text/plain)
+=== Survive as One Japan — エネルギー備蓄シミュレーション ===
+シナリオ: 現実（全面封鎖）
+--- 備蓄残存日数 ---
+石油備蓄: 168.8日
+LNG在庫: 750.4日
+...`,
+  },
+  {
+    method: "GET",
+    path: "/api/simulate",
+    description: "シミュレーション要約。/api/simulation の軽量版。枯渇日・主要イベント・備蓄データをコンパクトに返す",
+    params: [
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+    ],
+    example: `curl ${API_BASE}/api/simulate?scenario=realistic
+
+// Response (抜粋)
+{ "scenario": { "id": "realistic", "label": "現実", ... },
+  "result": { "oilDepletionDay": 180, "lngDepletionDay": 25, "powerCollapseDay": 16 },
+  "events": [ { "day": 14, "label": "国家備蓄 放出開始" }, ... ],
+  "reserves": { "oil": { "totalDays": 241 }, ... }
+}`,
   },
 ];
 
@@ -194,7 +205,7 @@ export const ApiDocs: FC = () => {
         <p><span className="text-neutral-200 font-bold">形式:</span> JSON</p>
         <p><span className="text-neutral-200 font-bold">認証:</span> 不要</p>
         <p><span className="text-neutral-200 font-bold">CORS:</span> <code className="font-mono">Access-Control-Allow-Origin: *</code>（.netドメイン）</p>
-        <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）</p>
+        <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）。グローバル上限: 100,000 req/日</p>
         <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code> / <code className="font-mono">realistic</code> / <code className="font-mono">pessimistic</code></p>
         <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:underline font-mono">/api/openapi.json</a></p>
         <p><span className="text-neutral-200 font-bold">ライセンス:</span> AGPL-3.0</p>

@@ -2,30 +2,37 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Survive as One API",
-    "description": "ホルムズ海峡経由の供給途絶時、日本のエネルギー崩壊タイムラインをシミュレーションするAPI",
-    "version": "0.2.0",
+    "description": "ホルムズ海峡経由の供給途絶シナリオにおける日本のエネルギー崩壊タイムラインをシミュレーションするAPI。全エンドポイント認証不要・無料。",
+    "version": "0.3.0",
     "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },
     "contact": { "url": "https://github.com/surviveasonejp/surviveasone-dashboard" }
   },
   "servers": [
-    { "url": "https://surviveasonejp.net", "description": "API専用ドメイン" },
+    { "url": "https://surviveasonejp.net", "description": "API専用ドメイン（CORS有効）" },
     { "url": "https://surviveasonejp.org", "description": "メインサイト" }
   ],
   "paths": {
     "/api": {
-      "get": { "summary": "エンドポイント一覧", "responses": { "200": { "description": "JSON" } } }
+      "get": { "summary": "エンドポイント一覧", "responses": { "200": { "description": "バージョン・全エンドポイント・シナリオID" } } }
     },
     "/api/health": {
-      "get": { "summary": "ヘルスチェック", "responses": { "200": { "description": "サーバー稼働状況" } } }
+      "get": { "summary": "ヘルスチェック", "responses": { "200": { "description": "稼働状況・レート制限レベル・バージョン" } } }
     },
     "/api/reserves": {
-      "get": { "summary": "石油・LNG備蓄データ", "responses": { "200": { "description": "備蓄量・依存率・火力比率" } } }
+      "get": {
+        "summary": "石油・LNG備蓄データ",
+        "parameters": [
+          { "name": "history", "in": "query", "schema": { "type": "boolean", "default": false }, "description": "trueで履歴データ取得" },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 365, "minimum": 30, "maximum": 365 }, "description": "履歴件数" }
+        ],
+        "responses": { "200": { "description": "備蓄量・依存率・火力比率" } }
+      }
     },
     "/api/consumption": {
       "get": { "summary": "日次消費量", "responses": { "200": { "description": "石油・LNGの日次消費量" } } }
     },
     "/api/regions": {
-      "get": { "summary": "10エリア別パラメータ", "responses": { "200": { "description": "原子力・再エネ・連系線・製油所能力" } } }
+      "get": { "summary": "10エリア別パラメータ", "responses": { "200": { "description": "原子力・再エネ・連系線・製油所能力・備蓄基地" } } }
     },
     "/api/countdowns": {
       "get": {
@@ -43,12 +50,21 @@
     },
     "/api/simulation": {
       "get": {
-        "summary": "フロー型在庫シミュレーション",
+        "summary": "フロー型在庫シミュレーション（365日タイムライン）",
+        "description": "日次の在庫推移・閾値イベント・SPR放出・代替供給を含む詳細シミュレーション。大量データ。要約版は /api/simulate を使用。",
         "parameters": [
           { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
-          { "name": "maxDays", "in": "query", "schema": { "type": "integer", "default": 365, "maximum": 730 } }
+          { "name": "maxDays", "in": "query", "schema": { "type": "integer", "default": 365, "minimum": 1, "maximum": 730 } }
         ],
-        "responses": { "200": { "description": "日次タイムライン+閾値イベント" } }
+        "responses": { "200": { "description": "日次タイムライン+閾値イベント+枯渇日" } }
+      }
+    },
+    "/api/simulate": {
+      "get": {
+        "summary": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
+        "description": "/api/simulation の軽量版。枯渇日・主要イベント・備蓄データをコンパクトに返す。LLM・ChatGPT Plugin向け。",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
+        "responses": { "200": { "description": "枯渇日・イベント・備蓄概要" } }
       }
     },
     "/api/food-collapse": {
@@ -56,45 +72,41 @@
         "summary": "食品カテゴリ別消失予測",
         "parameters": [
           { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
-          { "name": "region", "in": "query", "schema": { "type": "string" } }
+          { "name": "region", "in": "query", "schema": { "type": "string" }, "description": "エリアID（hokkaido〜okinawa）" }
         ],
         "responses": { "200": { "description": "食品別崩壊日数" } }
       }
     },
     "/api/tankers": {
-      "get": { "summary": "タンカー13隻到着予測", "responses": { "200": { "description": "船名・IMO・航路・ETA" } } }
-    },
-    "/api/family-survival": {
-      "post": {
-        "summary": "家庭生存日数算出",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["members","waterLiters","foodDays","gasCanisterCount","batteryWh","cashYen"],
-                "properties": {
-                  "members": { "type": "integer", "minimum": 1, "maximum": 50 },
-                  "waterLiters": { "type": "number", "minimum": 0, "maximum": 10000 },
-                  "foodDays": { "type": "number", "minimum": 0, "maximum": 365 },
-                  "gasCanisterCount": { "type": "integer", "minimum": 0, "maximum": 1000 },
-                  "batteryWh": { "type": "number", "minimum": 0, "maximum": 100000 },
-                  "cashYen": { "type": "number", "minimum": 0, "maximum": 100000000 }
-                }
-              }
-            }
-          }
-        },
-        "responses": { "200": { "description": "ランク・生存日数・ボトルネック" } }
-      }
+      "get": { "summary": "タンカー15隻の到着予測+AIS位置", "responses": { "200": { "description": "船名・IMO・航路・ETA・AIS追跡状態" } } }
     },
     "/api/electricity": {
       "get": {
-        "summary": "電力需給実測データ",
-        "parameters": [{ "name": "area", "in": "query", "schema": { "type": "string" } }],
+        "summary": "電力需給実測データ（全10エリア対応）",
+        "parameters": [{ "name": "area", "in": "query", "required": true, "schema": { "type": "string", "enum": ["hokkaido","tohoku","tokyo","chubu","hokuriku","kansai","chugoku","shikoku","kyushu","okinawa"] } }],
         "responses": { "200": { "description": "ピーク需要・供給・火力/原子力/再エネ内訳" } }
       }
+    },
+    "/api/summary": {
+      "get": {
+        "summary": "プレーンテキスト概要（LLM・クローラー向け）",
+        "description": "現在の備蓄状況とシミュレーション結果をプレーンテキストで返す。Content-Type: text/plain。",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
+        "responses": { "200": { "description": "テキスト形式の備蓄・シミュレーション概要" } }
+      }
+    },
+    "/api/ais": {
+      "get": {
+        "summary": "AIS位置データ（タンカー自動取得結果）",
+        "description": "AISStream.ioから1日2回自動取得したタンカー位置・目的港・日本向け判定データ。",
+        "responses": { "200": { "description": "AIS位置データ+日本向け判定" } }
+      }
+    },
+    "/api/docs": {
+      "get": { "summary": "APIドキュメント（HTML）", "responses": { "200": { "description": "HTMLフォーマットのAPI仕様書" } } }
+    },
+    "/api/data": {
+      "get": { "summary": "全データソース概要（HTML）", "description": "研究者・クローラー向け。全データソースの一覧と現在値をHTML形式で提供。", "responses": { "200": { "description": "HTMLフォーマットのデータ概要" } } }
     }
   }
 }

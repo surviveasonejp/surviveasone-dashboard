@@ -13,15 +13,17 @@
 // エンドポイント別のキャッシュTTL（秒）
 const CACHE_TTL: Record<string, number> = {
   "/api/health": 30,           // 30秒
-  "/api/reserves": 3600,       // 1時間（備蓄データ、日次更新）
-  "/api/consumption": 3600,    // 1時間
-  "/api/regions": 3600,        // 1時間
-  "/api/electricity": 300,     // 5分（電力需給実測）
-  "/api/countdowns": 300,      // 5分
+  "/api/reserves": 3600,       // 1時間（備蓄データ、月次更新だがD1取得コスト削減）
+  "/api/consumption": 86400,   // 24時間（年次ベースライン、変動少ない）
+  "/api/regions": 86400,       // 24時間（静的に近いデータ）
+  "/api/electricity": 300,     // 5分（電力需給実測、日次自動取得）
+  "/api/countdowns": 300,      // 5分（シナリオ依存、軽量計算）
   "/api/collapse": 3600,       // 1時間（計算コスト高）
   "/api/simulation": 3600,     // 1時間（計算コスト最大）
   "/api/food-collapse": 3600,  // 1時間
   "/api/tankers": 1800,        // 30分
+  "/api/summary": 3600,        // 1時間
+  "/api/simulate": 3600,       // 1時間
   "/api": 86400,               // 24時間（エンドポイント一覧は静的）
 };
 

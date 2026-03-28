@@ -70,6 +70,6 @@ export const CACHE_TTL = {
   RESERVES: 3600,      // 1時間（日次更新データ）
   CONSUMPTION: 86400,  // 24時間（年次ベースライン）
   REGIONS: 86400,      // 24時間（静的に近いデータ）
-  ELECTRICITY: 3600,   // 1時間（日次更新データ）
+  ELECTRICITY: 300,    // 5分（電力需給実測、日次自動取得）
   SIMULATION: 3600,    // 1時間（シミュレーション結果）
 } as const;
