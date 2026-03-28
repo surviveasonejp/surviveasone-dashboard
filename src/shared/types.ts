@@ -42,6 +42,10 @@ export interface TankerInfo {
   cargo_t: number;
   cargoType: string;
   status: string;
+  /** IMO番号（公開情報で確認済みの場合） */
+  imo?: string;
+  /** AISで位置追跡可能か（IMO確認済み＝AIS受信可能） */
+  aisTracked?: boolean;
 }
 
 export interface FoodProduct {

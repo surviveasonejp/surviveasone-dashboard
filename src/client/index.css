@@ -110,6 +110,13 @@ body {
   color: #475569 !important;
 }
 
+/* 「推定」バッジ（AIS未追跡） */
+[data-theme="light"] .bg-neutral-800.text-neutral-500.border-neutral-700 {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  border-color: #cbd5e1 !important;
+}
+
 /* 「封鎖時到達不可」バッジ */
 [data-theme="light"] .bg-red-900\/40 {
   background-color: rgba(254, 202, 202, 0.5) !important;

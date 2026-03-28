@@ -120,13 +120,22 @@ export const TankerTracker: FC = () => {
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
                     <td className="px-4 py-2 font-bold text-neutral-200">
                       <span className={dimmed ? "line-through" : ""}>{tanker.name}</span>
+                      {tanker.aisTracked ? (
+                        <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+                          AIS
+                        </span>
+                      ) : (
+                        <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700">
+                          推定
+                        </span>
+                      )}
                       {blocked && (
-                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-red-900/40 text-red-400">
+                        <span className="ml-1.5 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-red-900/40 text-red-400">
                           封鎖時到達不可
                         </span>
                       )}
                       {!blocked && notJapan && (
-                        <span className="ml-2 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 badge-not-japan">
+                        <span className="ml-1.5 text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700 badge-not-japan">
                           日本向けでない
                         </span>
                       )}
@@ -189,6 +198,15 @@ export const TankerTracker: FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
                   <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
+                  {tanker.aisTracked ? (
+                    <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shrink-0">
+                      AIS
+                    </span>
+                  ) : (
+                    <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700 shrink-0">
+                      推定
+                    </span>
+                  )}
                   <span
                     className="font-mono text-[10px] px-1.5 py-0.5 rounded shrink-0"
                     style={{ backgroundColor: `${typeColor}20`, color: typeColor }}

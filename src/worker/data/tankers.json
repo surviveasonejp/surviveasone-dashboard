@@ -20,6 +20,8 @@
     {
       "id": "vlcc-01",
       "name": "TATESHINA",
+      "imo": "9910117",
+      "aisTracked": true,
       "type": "VLCC",
       "departure": "ラスタヌラ（サウジアラビア）",
       "departurePort": "Ras Tanura",
@@ -37,6 +39,8 @@
     {
       "id": "vlcc-02",
       "name": "KAZUSA",
+      "imo": "9513402",
+      "aisTracked": true,
       "type": "VLCC",
       "departure": "那覇（日本）",
       "departurePort": "Naha",
@@ -54,6 +58,8 @@
     {
       "id": "vlcc-03",
       "name": "TAKASAGO",
+      "imo": "9770696",
+      "aisTracked": true,
       "type": "VLCC",
       "departure": "シンガポール海峡",
       "departurePort": "Singapore Strait",
@@ -71,6 +77,7 @@
     {
       "id": "vlcc-04",
       "name": "NISSHO MARU",
+      "aisTracked": false,
       "type": "VLCC",
       "departure": "ハルグ島（イラン）",
       "departurePort": "Kharg Island",
@@ -88,6 +95,8 @@
     {
       "id": "vlcc-05",
       "name": "ENEOS OCEAN",
+      "imo": "9662875",
+      "aisTracked": true,
       "type": "VLCC",
       "departure": "ミナアルアハマディ（クウェート）",
       "departurePort": "Mina Al Ahmadi",
@@ -105,6 +114,8 @@
     {
       "id": "lng-01",
       "name": "ENERGY HORIZON",
+      "imo": "9483877",
+      "aisTracked": true,
       "type": "LNG",
       "departure": "バローアイランド（豪州WA）",
       "departurePort": "Barrow Island",
@@ -122,6 +133,8 @@
     {
       "id": "lng-02",
       "name": "SEISHU MARU",
+      "imo": "9666558",
+      "aisTracked": true,
       "type": "LNG",
       "departure": "ダンピア（豪州WA）",
       "departurePort": "Dampier",
@@ -139,6 +152,8 @@
     {
       "id": "lng-03",
       "name": "GRAND ANIVA",
+      "imo": "9338955",
+      "aisTracked": true,
       "type": "LNG",
       "departure": "プリゴロドノエ（サハリン）",
       "departurePort": "Prigorodnoye",
@@ -156,6 +171,8 @@
     {
       "id": "lng-04",
       "name": "DIAMOND GAS ORCHID",
+      "imo": "9779226",
+      "aisTracked": true,
       "type": "LNG",
       "departure": "四日市（日本）",
       "departurePort": "Yokkaichi",
@@ -173,6 +190,8 @@
     {
       "id": "lng-05",
       "name": "ENERGY NAVIGATOR",
+      "imo": "9355264",
+      "aisTracked": true,
       "type": "LNG",
       "departure": "広島（日本）",
       "departurePort": "Hiroshima",
@@ -190,6 +209,7 @@
     {
       "id": "vlcc-alt-01",
       "name": "代替ルート第1便",
+      "aisTracked": false,
       "type": "VLCC",
       "departure": "ヤンブー（サウジ西岸）→マレーシア積替",
       "departurePort": "Yanbu",
@@ -207,6 +227,7 @@
     {
       "id": "vlcc-alt-02",
       "name": "代替ルート第2便",
+      "aisTracked": false,
       "type": "VLCC",
       "departure": "フジャイラ（UAE）",
       "departurePort": "Fujairah",
@@ -224,6 +245,7 @@
     {
       "id": "vlcc-alt-03",
       "name": "非中東調達便",
+      "aisTracked": false,
       "type": "VLCC",
       "departure": "非中東（港未公表）",
       "departurePort": "NonMideast",
