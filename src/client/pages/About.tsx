@@ -290,21 +290,21 @@ export const About: FC = () => {
       </div>
 
       {/* 支援 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">SUPPORT THIS PROJECT</h2>
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-4">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">SUPPORT THIS PROJECT</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
-          広告なし・トラッキングなしのオープンソースプロジェクトです。16の計算モデル、自動データパイプライン、AISタンカー追跡が稼働中。スポンサーシップは衛星AISによる全ルート追跡とデータ精度向上に直接使われます。
+          広告なし・トラッキングなし・個人情報収集なしのオープンソースプロジェクトです。
+          全てのデータ・シミュレーション・APIはスポンサーの有無にかかわらず完全に無料で公開されています。
         </p>
-        <div className="text-xs text-neutral-500 space-y-1 font-mono">
-          <p>$0〜$36/月 → チョークポイント監視開始</p>
-          <p>$150/月 → 衛星AIS追加、外洋タンカー追跡</p>
-          <p>$300/月 → 全ルート40〜55隻のリアルタイム追跡</p>
+        <div className="text-xs text-neutral-500 space-y-2 leading-relaxed">
+          <p>現在のインフラコストはドメイン2件のみ（月額約$3）。Cloudflare Workers/D1/KV/R2の無料枠内で全機能が稼働しています。</p>
+          <p>スポンサーシップは、このプロジェクトの継続運営と、より多くの人に情報を届けるために使われます。</p>
         </div>
         <a
           href="https://github.com/sponsors/idx"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block px-6 py-2 bg-[#ef4444] hover:bg-[#ef4444]/80 text-white font-mono text-xs tracking-wider rounded transition-colors"
+          className="inline-block px-6 py-2 border border-neutral-600 text-neutral-300 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
         >
           GitHub Sponsors で支援する &rarr;
         </a>
