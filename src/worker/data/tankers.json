@@ -1,20 +1,62 @@
 {
   "meta": {
-    "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
+    "source": "å¬éè¹è¶ç»é²ã»æµ·éä¼ç¤¾ãã¬ã¹ãªãªã¼ã¹ã»ports.com/SeaRoutesèªè·¯ãã¼ã¿ã«åºã¥ãéçºç¨ãã¼ã¿",
     "updatedAt": "2026-03-28",
-    "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
-    "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-28時点で全船のAIS位置を確認",
-    "note": "15隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。KHURAIS/NCC HUDAは渡邉英徳教授(東大)のOSINT分析+MarineTraffic AISで確認（2026-03-28）"
+    "distanceSource": "ports.com / SeaRoutes.com èªè·¯è¨ç®ãã¼ã¹",
+    "speedSource": "VLCC laden: AISå®éèªãã¼ã¿å¹³å12.0-12.5knãLNG DFDE/ME-GI: 18-19.5knãMOSSå: 17-18kn",
+    "vesselSource": "è¹åã»IMOçªå·ã¯å¬éè¹è¶ãã¼ã¿ãã¼ã¹ï¼Equasis, ClassNK, MarineTraffic, VesselFinder, åç¤¾ãã¬ã¹ãªãªã¼ã¹ï¼ããåå¾ã2026-03-28æç¹ã§å¨è¹ã®AISä½ç½®ãç¢ºèª",
+    "note": "15é»ã®è¿½è·¡è¹è¶ï¼ä»£æ¿ã«ã¼ã5é»å«ãï¼ + 7ãã§ã¼ã¯ãã¤ã³ãç£è¦ãå¨è¹åã»IMOã¯å¬éæå ±ã«åºã¥ãå®å¨è¹è¶ãKHURAIS/NCC HUDAã¯æ¸¡éè±å¾³ææ(æ±å¤§)ã®OSINTåæ+MarineTraffic AISã§ç¢ºèªï¼2026-03-28ï¼"
   },
   "chokepoints": [
-    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。3月26日: イランがタンカー10隻の通航を許可（パキスタン国旗掲揚、限定的緩和）" },
-    { "id": "malacca", "name": "マラッカ海峡", "lat": 2.500, "lon": 101.800, "note": "全長約800km、最狭部2.8km。日量1,600万バレル。VLCCアジア向け主要航路" },
-    { "id": "lombok", "name": "ロンボク海峡", "lat": -8.500, "lon": 115.700, "note": "マラッカ代替航路（深喫水VLCC対応）。バリ-ロンボク間" },
-    { "id": "babel", "name": "バベルマンデブ海峡", "lat": 12.583, "lon": 43.333, "note": "幅26km。紅海入口。日量600万バレル。スエズ経由代替ルート" },
-    { "id": "tsugaru", "name": "津軽海峡", "lat": 41.650, "lon": 140.800, "note": "本州-北海道間。サハリンLNG北九州向け航路。ロシア海軍の通過あり" },
-    { "id": "panama", "name": "パナマ運河", "lat": 9.080, "lon": -79.680, "note": "ネオパナマックス閘門。米国LNG太平洋向け航路。船型制限あり" },
-    { "id": "good-hope", "name": "喜望峰", "lat": -34.357, "lon": 18.474, "note": "スエズ/バベルマンデブ迂回ルート。紅海リスク時の代替（+10-15日）" }
+    {
+      "id": "hormuz",
+      "name": "ãã«ã ãºæµ·å³¡",
+      "lat": 26.567,
+      "lon": 56.25,
+      "note": "å¹55-95kmãæ¥é2,100ä¸ãã¬ã«ééãæ¥æ¬ã®åæ²¹80-90%ãä¾å­ã3æ26æ¥: ã¤ã©ã³ãã¿ã³ã«ã¼10é»ã®éèªãè¨±å¯ï¼ãã­ã¹ã¿ã³å½ææ²æãéå®çç·©åï¼"
+    },
+    {
+      "id": "malacca",
+      "name": "ãã©ãã«æµ·å³¡",
+      "lat": 2.5,
+      "lon": 101.8,
+      "note": "å¨é·ç´800kmãæç­é¨2.8kmãæ¥é1,600ä¸ãã¬ã«ãVLCCã¢ã¸ã¢åãä¸»è¦èªè·¯"
+    },
+    {
+      "id": "lombok",
+      "name": "ã­ã³ãã¯æµ·å³¡",
+      "lat": -8.5,
+      "lon": 115.7,
+      "note": "ãã©ãã«ä»£æ¿èªè·¯ï¼æ·±å«æ°´VLCCå¯¾å¿ï¼ãããª-ã­ã³ãã¯é"
+    },
+    {
+      "id": "babel",
+      "name": "ããã«ãã³ããæµ·å³¡",
+      "lat": 12.583,
+      "lon": 43.333,
+      "note": "å¹26kmãç´æµ·å¥å£ãæ¥é600ä¸ãã¬ã«ãã¹ã¨ãºçµç±ä»£æ¿ã«ã¼ã"
+    },
+    {
+      "id": "tsugaru",
+      "name": "æ´¥è»½æµ·å³¡",
+      "lat": 41.65,
+      "lon": 140.8,
+      "note": "æ¬å·-åæµ·ééããµããªã³LNGåä¹å·åãèªè·¯ãã­ã·ã¢æµ·è»ã®ééãã"
+    },
+    {
+      "id": "panama",
+      "name": "ãããéæ²³",
+      "lat": 9.08,
+      "lon": -79.68,
+      "note": "ããªããããã¯ã¹ééãç±³å½LNGå¤ªå¹³æ´åãèªè·¯ãè¹åå¶éãã"
+    },
+    {
+      "id": "good-hope",
+      "name": "åæå³°",
+      "lat": -34.357,
+      "lon": 18.474,
+      "note": "ã¹ã¨ãº/ããã«ãã³ããè¿åã«ã¼ããç´æµ·ãªã¹ã¯æã®ä»£æ¿ï¼+10-15æ¥ï¼"
+    }
   ],
   "vessels": [
     {
@@ -23,18 +65,23 @@
       "imo": "9910117",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "ラスタヌラ（サウジアラビア）",
+      "departure": "ã©ã¹ã¿ãã©ï¼ãµã¦ã¸ã¢ã©ãã¢ï¼",
       "departurePort": "Ras Tanura",
-      "destination": "千葉",
+      "destination": "åè",
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 6610,
       "speed_knots": 12.2,
-      "eta_days": 10.0,
+      "eta_days": 10,
       "cargo_t": 312000,
-      "cargoType": "原油（アラビアンライト）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "日本郵船VLCC。IMO 9910117。311,979DWT。NACKS建造(2021)。LOA 339.5m。3月28日AIS: インド洋(11.2°N/73.7°E)を航行中。ホルムズ経由のため封鎖時到達不可"
+      "cargoType": "åæ²¹ï¼ã¢ã©ãã¢ã³ã©ã¤ãï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.3,
+        "route": 0.5,
+        "military": 0.4,
+        "combined": 0.06
+      },
+      "note": "æ¥æ¬éµè¹VLCCãIMO 9910117ã311,979DWTãNACKSå»ºé (2021)ãLOA 339.5mã3æ28æ¥AIS: ã¤ã³ãæ´(11.2Â°N/73.7Â°E)ãèªè¡ä¸­ããã«ã ãºçµç±ã®ããå°éæå°éä¸å¯"
     },
     {
       "id": "vlcc-02",
@@ -42,18 +89,23 @@
       "imo": "9513402",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "那覇（日本）",
+      "departure": "é£è¦ï¼æ¥æ¬ï¼",
       "departurePort": "Naha",
-      "destination": "ラスタヌラ（サウジアラビア）",
+      "destination": "ã©ã¹ã¿ãã©ï¼ãµã¦ã¸ã¢ã©ãã¢ï¼",
       "destinationPort": "Ras Tanura",
       "distanceToJapan_nm": 0,
       "speed_knots": 14.1,
       "eta_days": 0,
       "cargo_t": 310000,
-      "cargoType": "バラスト（空荷）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "商船三井VLCC。IMO 9513402。310,406DWT。マーシャル諸島籍。3月28日AIS: 6°N/80°E(インド洋)をラスタヌラ向け14.1knでバラスト航行中。3/27那覇で荷揚げ完了後、次の積荷のため中東へ帰航。日本向けではない"
+      "cargoType": "ãã©ã¹ãï¼ç©ºè·ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0,
+        "route": 0,
+        "military": 0,
+        "combined": 0
+      },
+      "note": "åè¹ä¸äºVLCCãIMO 9513402ã310,406DWTããã¼ã·ã£ã«è«¸å³¶ç±ã3æ28æ¥AIS: 6Â°N/80Â°E(ã¤ã³ãæ´)ãã©ã¹ã¿ãã©åã14.1knã§ãã©ã¹ãèªè¡ä¸­ã3/27é£è¦ã§è·æãå®äºå¾ãæ¬¡ã®ç©è·ã®ããä¸­æ±ã¸å¸°èªãæ¥æ¬åãã§ã¯ãªã"
     },
     {
       "id": "vlcc-03",
@@ -61,36 +113,46 @@
       "imo": "9770696",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "シンガポール海峡",
+      "departure": "ã·ã³ã¬ãã¼ã«æµ·å³¡",
       "departurePort": "Singapore Strait",
-      "destination": "ラスタヌラ（サウジアラビア）",
+      "destination": "ã©ã¹ã¿ãã©ï¼ãµã¦ã¸ã¢ã©ãã¢ï¼",
       "destinationPort": "Ras Tanura",
       "distanceToJapan_nm": 0,
       "speed_knots": 14.9,
       "eta_days": 0,
       "cargo_t": 314000,
-      "cargoType": "バラスト（空荷）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "日本郵船VLCC。IMO 9770696。313,989DWT。パナマ籍。2017年建造。3月27日AIS: シンガポール海峡(1°N/103°E)をラスタヌラ向け14.9knで航行中。前回ウォルビスベイ向けから航路変更。バラスト航海（空荷で積み地へ向かう）。日本向けではない"
+      "cargoType": "ãã©ã¹ãï¼ç©ºè·ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0,
+        "route": 0,
+        "military": 0,
+        "combined": 0
+      },
+      "note": "æ¥æ¬éµè¹VLCCãIMO 9770696ã313,989DWTããããç±ã2017å¹´å»ºé ã3æ27æ¥AIS: ã·ã³ã¬ãã¼ã«æµ·å³¡(1Â°N/103Â°E)ãã©ã¹ã¿ãã©åã14.9knã§èªè¡ä¸­ãååã¦ã©ã«ãã¹ãã¤åãããèªè·¯å¤æ´ããã©ã¹ãèªæµ·ï¼ç©ºè·ã§ç©ã¿å°ã¸åããï¼ãæ¥æ¬åãã§ã¯ãªã"
     },
     {
       "id": "vlcc-04",
       "name": "NISSHO MARU",
       "aisTracked": false,
       "type": "VLCC",
-      "departure": "ハルグ島（イラン）",
+      "departure": "ãã«ã°å³¶ï¼ã¤ã©ã³ï¼",
       "departurePort": "Kharg Island",
-      "destination": "四日市",
+      "destination": "åæ¥å¸",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 6800,
-      "speed_knots": 12.0,
+      "speed_knots": 12,
       "eta_days": 19.5,
       "cargo_t": 300000,
-      "cargoType": "原油（イラニアンヘビー）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.2, "route": 0.3, "military": 0.3, "combined": 0.018 },
-      "note": "出光タンカー系VLCC。「日章丸」は出光興産の歴史的船名(1953年日章丸事件)。AIS: 東アジア海域で確認。ハルグ島はペルシャ湾奥のためホルムズ依存度最大。3月26日イランが10隻通航許可も本船対象かは不明"
+      "cargoType": "åæ²¹ï¼ã¤ã©ãã¢ã³ããã¼ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.2,
+        "route": 0.3,
+        "military": 0.3,
+        "combined": 0.018
+      },
+      "note": "åºåã¿ã³ã«ã¼ç³»VLCCããæ¥ç« ä¸¸ãã¯åºåèç£ã®æ­´å²çè¹å(1953å¹´æ¥ç« ä¸¸äºä»¶)ãAIS: æ±ã¢ã¸ã¢æµ·åã§ç¢ºèªããã«ã°å³¶ã¯ãã«ã·ã£æ¹¾å¥¥ã®ãããã«ã ãºä¾å­åº¦æå¤§ã3æ26æ¥ã¤ã©ã³ã10é»éèªè¨±å¯ãæ¬è¹å¯¾è±¡ãã¯ä¸æ"
     },
     {
       "id": "vlcc-05",
@@ -98,18 +160,23 @@
       "imo": "9662875",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "ミナアルアハマディ（クウェート）",
+      "departure": "ããã¢ã«ã¢ãããã£ï¼ã¯ã¦ã§ã¼ãï¼",
       "departurePort": "Mina Al Ahmadi",
-      "destination": "喜入",
+      "destination": "åå¥",
       "destinationPort": "Kiire",
       "distanceToJapan_nm": 6750,
       "speed_knots": 0,
       "eta_days": 0,
       "cargo_t": 300000,
-      "cargoType": "原油（クウェートエクスポートブレンド）",
-      "status": "入港済",
-      "arrivalProbability": { "insurance": 0.25, "route": 0.45, "military": 0.35, "combined": 0.039 },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。3月28日: 喜入に到着（推定）。封鎖開始前にクウェートを出港した便。喜入はENEOS最大原油備蓄基地(735万kL)"
+      "cargoType": "åæ²¹ï¼ã¯ã¦ã§ã¼ãã¨ã¯ã¹ãã¼ããã¬ã³ãï¼",
+      "status": "å¥æ¸¯æ¸",
+      "arrivalProbability": {
+        "insurance": 0.25,
+        "route": 0.45,
+        "military": 0.35,
+        "combined": 0.039
+      },
+      "note": "JX Ocean(ENEOSã°ã«ã¼ã)VLCCãIMO 9662875ã312,181DWTãæ¥æ¬è¹ç±ã3æ28æ¥: åå¥ã«å°çï¼æ¨å®ï¼ãå°ééå§åã«ã¯ã¦ã§ã¼ããåºæ¸¯ããä¾¿ãåå¥ã¯ENEOSæå¤§åæ²¹åèåºå°(735ä¸kL)"
     },
     {
       "id": "lng-01",
@@ -117,18 +184,23 @@
       "imo": "9483877",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "バローアイランド（豪州WA）",
+      "departure": "ãã­ã¼ã¢ã¤ã©ã³ãï¼è±ªå·WAï¼",
       "departurePort": "Barrow Island",
-      "destination": "千葉",
+      "destination": "åè",
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 3800,
       "speed_knots": 14.3,
-      "eta_days": 3.0,
+      "eta_days": 3,
       "cargo_t": 155000,
       "cargoType": "LNG",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
-      "note": "NYK管理LNG船。IMO 9483877。87,257DWT。日本船籍。2011年建造。LOA 300m。Chevron Gorgon LNGプロジェクト向け。3月28日AIS: バンダ海(18°S/118°E)を千葉向け14.3knで航行中"
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.95,
+        "route": 0.98,
+        "military": 0.95,
+        "combined": 0.884
+      },
+      "note": "NYKç®¡çLNGè¹ãIMO 9483877ã87,257DWTãæ¥æ¬è¹ç±ã2011å¹´å»ºé ãLOA 300mãChevron Gorgon LNGãã­ã¸ã§ã¯ãåãã3æ28æ¥AIS: ãã³ãæµ·(18Â°S/118Â°E)ãåèåã14.3knã§èªè¡ä¸­"
     },
     {
       "id": "lng-02",
@@ -136,18 +208,23 @@
       "imo": "9666558",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "ダンピア（豪州WA）",
+      "departure": "ãã³ãã¢ï¼è±ªå·WAï¼",
       "departurePort": "Dampier",
-      "destination": "川崎",
+      "destination": "å·å´",
       "destinationPort": "Kawasaki",
       "distanceToJapan_nm": 3500,
       "speed_knots": 11.1,
-      "eta_days": 1.0,
+      "eta_days": 1,
       "cargo_t": 155000,
       "cargoType": "LNG",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
-      "note": "NYK管理LNG船。IMO 9666558。86,414DWT。バハマ籍。2014年建造。LOA 288m。3月28日AIS: 日本EEZ内を川崎向け航行中。到着間近。豪州で再積載した日本向け第2便"
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.95,
+        "route": 0.97,
+        "military": 0.95,
+        "combined": 0.876
+      },
+      "note": "NYKç®¡çLNGè¹ãIMO 9666558ã86,414DWTããããç±ã2014å¹´å»ºé ãLOA 288mã3æ28æ¥AIS: æ¥æ¬EEZåãå·å´åãèªè¡ä¸­ãå°çéè¿ãè±ªå·ã§åç©è¼ããæ¥æ¬åãç¬¬2ä¾¿"
     },
     {
       "id": "lng-03",
@@ -155,18 +232,23 @@
       "imo": "9338955",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "プリゴロドノエ（サハリン）",
+      "departure": "ããªã´ã­ããã¨ï¼ãµããªã³ï¼",
       "departurePort": "Prigorodnoye",
-      "destination": "北九州",
+      "destination": "åä¹å·",
       "destinationPort": "Kitakyushu",
       "distanceToJapan_nm": 1050,
-      "speed_knots": 17.0,
-      "eta_days": 4.0,
+      "speed_knots": 17,
+      "eta_days": 4,
       "cargo_t": 147000,
       "cargoType": "LNG",
-      "status": "荷積中",
-      "arrivalProbability": { "insurance": 0.7, "route": 0.9, "military": 0.8, "combined": 0.504 },
-      "note": "サハリンII LNG船。IMO 9338955。147,000m3 Moss型。三菱重工長崎建造(2008)。キプロス籍。Sovkomflot/NYK合弁。1Cアイスクラス。米国制裁の一時免除措置により2026年6月18日まで日本向け輸出が認められている。3月27日AIS: プリゴロドノエ沖(46.4°N/142.7°E)で停泊中(0.2kn)。荷積み中"
+      "status": "è·ç©ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.7,
+        "route": 0.9,
+        "military": 0.8,
+        "combined": 0.504
+      },
+      "note": "ãµããªã³II LNGè¹ãIMO 9338955ã147,000m3 Mossåãä¸è±éå·¥é·å´å»ºé (2008)ãã­ãã­ã¹ç±ãSovkomflot/NYKåå¼ã1Cã¢ã¤ã¹ã¯ã©ã¹ãç±³å½å¶è£ã®ä¸æåé¤æªç½®ã«ãã2026å¹´6æ18æ¥ã¾ã§æ¥æ¬åãè¼¸åºãèªãããã¦ããã3æ27æ¥AIS: ããªã´ã­ããã¨æ²(46.4Â°N/142.7Â°E)ã§åæ³ä¸­(0.2kn)ãè·ç©ã¿ä¸­"
     },
     {
       "id": "lng-04",
@@ -174,18 +256,23 @@
       "imo": "9779226",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "四日市（日本）",
+      "departure": "åæ¥å¸ï¼æ¥æ¬ï¼",
       "departurePort": "Yokkaichi",
-      "destination": "ダーウィン（豪州NT）",
+      "destination": "ãã¼ã¦ã£ã³ï¼è±ªå·NTï¼",
       "destinationPort": "Darwin",
       "distanceToJapan_nm": 0,
       "speed_knots": 13.4,
       "eta_days": 0,
       "cargo_t": 177000,
-      "cargoType": "バラスト（空荷）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "三菱商事/NYK系LNG船。IMO 9779226。シンガポール籍。2018年建造。LOA 294m。3月27日AIS: 豪州海域をダーウィン向け13.4knで航行中。四日市への荷揚げ完了後、次の積荷のため豪州へ帰航中。日本向けではない（次便で再度日本向け予定）"
+      "cargoType": "ãã©ã¹ãï¼ç©ºè·ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0,
+        "route": 0,
+        "military": 0,
+        "combined": 0
+      },
+      "note": "ä¸è±åäº/NYKç³»LNGè¹ãIMO 9779226ãã·ã³ã¬ãã¼ã«ç±ã2018å¹´å»ºé ãLOA 294mã3æ27æ¥AIS: è±ªå·æµ·åããã¼ã¦ã£ã³åã13.4knã§èªè¡ä¸­ãåæ¥å¸ã¸ã®è·æãå®äºå¾ãæ¬¡ã®ç©è·ã®ããè±ªå·ã¸å¸°èªä¸­ãæ¥æ¬åãã§ã¯ãªãï¼æ¬¡ä¾¿ã§ååº¦æ¥æ¬åãäºå®ï¼"
     },
     {
       "id": "lng-05",
@@ -193,72 +280,92 @@
       "imo": "9355264",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "広島（日本）",
+      "departure": "åºå³¶ï¼æ¥æ¬ï¼",
       "departurePort": "Hiroshima",
-      "destination": "プリゴロドノエ（サハリン）",
+      "destination": "ããªã´ã­ããã¨ï¼ãµããªã³ï¼",
       "destinationPort": "Prigorodnoye",
       "distanceToJapan_nm": 0,
       "speed_knots": 8.3,
       "eta_days": 0,
       "cargo_t": 155000,
-      "cargoType": "バラスト（空荷）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "商船三井(30%)/東京LNGタンカー(東京ガス100%子会社、70%)共同保有LNG船。IMO 9355264。155,000m3(MOSS型)。2008年建造。日本船籍。3月27日AIS: 茨城沖(36.5°N/140.6°E)をプリゴロドノエ向け8.3knで航行中。広島での荷揚げ完了後サハリンへ帰航中。日本向けではない（次便で再度日本向け予定）"
+      "cargoType": "ãã©ã¹ãï¼ç©ºè·ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0,
+        "route": 0,
+        "military": 0,
+        "combined": 0
+      },
+      "note": "åè¹ä¸äº(30%)/æ±äº¬LNGã¿ã³ã«ã¼(æ±äº¬ã¬ã¹100%å­ä¼ç¤¾ã70%)å±åä¿æLNGè¹ãIMO 9355264ã155,000m3(MOSSå)ã2008å¹´å»ºé ãæ¥æ¬è¹ç±ã3æ27æ¥AIS: è¨åæ²(36.5Â°N/140.6Â°E)ãããªã´ã­ããã¨åã8.3knã§èªè¡ä¸­ãåºå³¶ã§ã®è·æãå®äºå¾ãµããªã³ã¸å¸°èªä¸­ãæ¥æ¬åãã§ã¯ãªãï¼æ¬¡ä¾¿ã§ååº¦æ¥æ¬åãäºå®ï¼"
     },
     {
       "id": "vlcc-alt-01",
-      "name": "代替ルート第1便",
+      "name": "ä»£æ¿ã«ã¼ãç¬¬1ä¾¿",
       "aisTracked": false,
       "type": "VLCC",
-      "departure": "ヤンブー（サウジ西岸）→マレーシア積替",
+      "departure": "ã¤ã³ãã¼ï¼ãµã¦ã¸è¥¿å²¸ï¼âãã¬ã¼ã·ã¢ç©æ¿",
       "departurePort": "Yanbu",
-      "destination": "愛媛（太陽石油四国事業所）",
+      "destination": "æåªï¼å¤ªé½ç³æ²¹åå½äºæ¥­æï¼",
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.5,
       "eta_days": 0,
       "cargo_t": 300000,
-      "cargoType": "原油（サウジ産・東西パイプライン経由・紅海ルート）",
-      "status": "入港済",
-      "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "太陽石油が3月1日にヤンブー港で原油積載、紅海経由で日本向け。3月28日今治沖に到着確認（テレ朝/ABEMA報道）。サウジ産原油約10万kL。ホルムズ海峡封鎖後初の代替ルート便到着。到着港は太陽石油四国事業所（愛媛県今治市菊間）"
+      "cargoType": "åæ²¹ï¼ãµã¦ã¸ç£ã»æ±è¥¿ãã¤ãã©ã¤ã³çµç±ã»ç´æµ·ã«ã¼ãï¼",
+      "status": "å¥æ¸¯æ¸",
+      "arrivalProbability": {
+        "insurance": 0.85,
+        "route": 0.95,
+        "military": 0.9,
+        "combined": 0.727
+      },
+      "note": "å¤ªé½ç³æ²¹ã3æ1æ¥ã«ã¤ã³ãã¼æ¸¯ã§åæ²¹ç©è¼ãç´æµ·çµç±ã§æ¥æ¬åãã3æ28æ¥ä»æ²»æ²ã«å°çç¢ºèªï¼ãã¬æ/ABEMAå ±éï¼ããµã¦ã¸ç£åæ²¹ç´10ä¸kLããã«ã ãºæµ·å³¡å°éå¾åã®ä»£æ¿ã«ã¼ãä¾¿å°çãå°çæ¸¯ã¯å¤ªé½ç³æ²¹åå½äºæ¥­æï¼æåªçä»æ²»å¸èéï¼"
     },
     {
       "id": "vlcc-alt-02",
-      "name": "代替ルート第2便",
+      "name": "ä»£æ¿ã«ã¼ãç¬¬2ä¾¿",
       "aisTracked": false,
       "type": "VLCC",
-      "departure": "フジャイラ（UAE）",
+      "departure": "ãã¸ã£ã¤ã©ï¼UAEï¼",
       "departurePort": "Fujairah",
-      "destination": "日本（港未公表）",
+      "destination": "æ¥æ¬ï¼æ¸¯æªå¬è¡¨ï¼",
       "destinationPort": "Japan",
       "distanceToJapan_nm": 6300,
-      "speed_knots": 12.0,
-      "eta_days": 8.0,
+      "speed_knots": 12,
+      "eta_days": 8,
       "cargo_t": 300000,
-      "cargoType": "原油（ムルバンブレンド想定）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。4月5日到着予定。Bloomberg/産経報道。赤沢経産相は社名・船名を非公表"
+      "cargoType": "åæ²¹ï¼ã ã«ãã³ãã¬ã³ãæ³å®ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.85,
+        "route": 0.95,
+        "military": 0.9,
+        "combined": 0.727
+      },
+      "note": "ãã¸ã£ã¤ã©ã¯ãã«ã ãºå¤ã®UAEåæ²¹åèæ ç¹(7000ä¸ãã¬ã«è²¯èµè½å)ããåºè·ããã©ãã«æµ·å³¡çµç±ã§æ¥æ¬ã¸ç´è¡ï¼åæå³°è¿åä¸è¦ï¼ã4æ5æ¥å°çäºå®ãBloomberg/ç£çµå ±éãèµ¤æ²¢çµç£ç¸ã¯ç¤¾åã»è¹åãéå¬è¡¨"
     },
     {
       "id": "vlcc-alt-03",
-      "name": "非中東調達便",
+      "name": "éä¸­æ±èª¿éä¾¿",
       "aisTracked": false,
       "type": "VLCC",
-      "departure": "非中東（港未公表）",
+      "departure": "éä¸­æ±ï¼æ¸¯æªå¬è¡¨ï¼",
       "departurePort": "NonMideast",
-      "destination": "日本（港未公表）",
+      "destination": "æ¥æ¬ï¼æ¸¯æªå¬è¡¨ï¼",
       "destinationPort": "Japan",
       "distanceToJapan_nm": 3600,
-      "speed_knots": 12.0,
-      "eta_days": 28.0,
+      "speed_knots": 12,
+      "eta_days": 28,
       "cargo_t": 300000,
-      "cargoType": "原油（非中東調達）",
-      "status": "調達中",
-      "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.95, "combined": 0.812 },
-      "note": "経産相発表(2026-03-24): 中東以外の地域から調達した原油。4月25日到着予定。高市首相は代替調達先として中央アジア・南米・カナダ・シンガポールを列挙（日経報道）。ホルムズ・バベルマンデブ両海峡を回避するため到着確率が高い"
+      "cargoType": "åæ²¹ï¼éä¸­æ±èª¿éï¼",
+      "status": "èª¿éä¸­",
+      "arrivalProbability": {
+        "insurance": 0.9,
+        "route": 0.95,
+        "military": 0.95,
+        "combined": 0.812
+      },
+      "note": "çµç£ç¸çºè¡¨(2026-03-24): ä¸­æ±ä»¥å¤ã®å°åããèª¿éããåæ²¹ã4æ25æ¥å°çäºå®ãé«å¸é¦ç¸ã¯ä»£æ¿èª¿éåã¨ãã¦ä¸­å¤®ã¢ã¸ã¢ã»åç±³ã»ã«ããã»ã·ã³ã¬ãã¼ã«ãåæï¼æ¥çµå ±éï¼ããã«ã ãºã»ããã«ãã³ããä¸¡æµ·å³¡ãåé¿ããããå°çç¢ºçãé«ã"
     },
     {
       "id": "vlcc-alt-04",
@@ -266,18 +373,23 @@
       "imo": "9783679",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "アインスフナ（エジプト・スエズ湾）",
+      "departure": "ã¢ã¤ã³ã¹ããï¼ã¨ã¸ããã»ã¹ã¨ãºæ¹¾ï¼",
       "departurePort": "Ain Sukhna",
-      "destination": "四日市",
+      "destination": "åæ¥å¸",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 8500,
       "speed_knots": 13.3,
-      "eta_days": 18.0,
+      "eta_days": 18,
       "cargo_t": 300000,
-      "cargoType": "原油（サウジ産・紅海/スエズ経由）",
-      "status": "航行中",
-      "arrivalProbability": { "insurance": 0.8, "route": 0.9, "military": 0.85, "combined": 0.612 },
-      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。300,000DWT。2018年建造（現代三湖重工業）。3月28日AIS: アデン湾付近を13.3knで航行中。3/19アインスフナ出港→スエズ運河→紅海→バベルマンデブ通過→四日市。ETA 4/15。渡邉英徳教授(東大)のOSINT分析で確認。サウジ国営による代替供給"
+      "cargoType": "åæ²¹ï¼ãµã¦ã¸ç£ã»ç´æµ·/ã¹ã¨ãºçµç±ï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.8,
+        "route": 0.9,
+        "military": 0.85,
+        "combined": 0.612
+      },
+      "note": "Bahriï¼ãµã¦ã¸å½å¶æµ·éï¼VLCCãIMO 9783679ã300,000DWTã2018å¹´å»ºé ï¼ç¾ä»£ä¸æ¹éå·¥æ¥­ï¼ã3æ28æ¥AIS: ã¢ãã³æ¹¾ä»è¿ã13.3knã§èªè¡ä¸­ã3/19ã¢ã¤ã³ã¹ããåºæ¸¯âã¹ã¨ãºéæ²³âç´æµ·âããã«ãã³ããééâåæ¥å¸ãETA 4/15ãæ¸¡éè±å¾³ææ(æ±å¤§)ã®OSINTåæã§ç¢ºèªããµã¦ã¸å½å¶ã«ããä»£æ¿ä¾çµ¦"
     },
     {
       "id": "tanker-alt-05",
@@ -285,18 +397,47 @@
       "imo": "9399272",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "ヤンブー（サウジ西岸）",
+      "departure": "ã¤ã³ãã¼ï¼ãµã¦ã¸è¥¿å²¸ï¼",
       "departurePort": "Yanbu",
-      "destination": "四日市",
+      "destination": "åæ¥å¸",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 7500,
       "speed_knots": 14.5,
-      "eta_days": 13.0,
+      "eta_days": 13,
       "cargo_t": 45459,
-      "cargoType": "石油/化学品（サウジ産・紅海ルート）",
+      "cargoType": "ç³æ²¹/åå­¦åï¼ãµã¦ã¸ç£ã»ç´æµ·ã«ã¼ãï¼",
+      "status": "èªè¡ä¸­",
+      "arrivalProbability": {
+        "insurance": 0.85,
+        "route": 0.9,
+        "military": 0.85,
+        "combined": 0.65
+      },
+      "note": "National Chemical Carriersï¼Bahriå­ä¼ç¤¾ã»ãµã¦ã¸å½å¶ï¼MRã¿ã³ã«ã¼ãIMO 9399272ã45,459DWTã183mã2011å¹´å»ºé ã3æ28æ¥AIS: ãã³ã¬ã«æ¹¾(27.8Â°N/89.2Â°E)ã14.5knã§åæ¥å¸åãèªè¡ä¸­ã3/18ã¤ã³ãã¼åºæ¸¯ãETA 4/10ãæ¸¡éè±å¾³ææ(æ±å¤§)ã®OSINTåæã§ç¢ºèª"
+    },
+    {
+      "id": "vlcc-alt-05",
+      "name": "NCC HUDA",
+      "imo": 9399272,
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "Yanbu",
+      "departurePort": "Yanbu",
+      "destination": "JP YKK",
+      "destinationPort": "JP YKK",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 14.5,
+      "eta_days": 23,
+      "cargo_t": 45459,
+      "cargoType": "Oil/Chemical",
       "status": "航行中",
-      "arrivalProbability": { "insurance": 0.85, "route": 0.9, "military": 0.85, "combined": 0.650 },
-      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。3月28日AIS: ベンガル湾(27.8°N/89.2°E)を14.5knで四日市向け航行中。3/18ヤンブー出港。ETA 4/10。渡邉英徳教授(東大)のOSINT分析で確認"
+      "arrivalProbability": {
+        "insurance": 0.5,
+        "route": 0.5,
+        "military": 0.5,
+        "combined": 0.125
+      },
+      "note": "https://x.com/hwtnv/status/1905481500138352867 から自動抽出（2026-03-28T11:59:17.089Z）。信頼度: high。要手動検証"
     }
   ]
 }
