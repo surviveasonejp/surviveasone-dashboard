@@ -1,10 +1,10 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-03-27",
+    "updatedAt": "2026-03-28",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-27時点で全船のAIS位置を確認",
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-28時点で全船のAIS位置を確認",
     "note": "Phase 3初期スコープ: 13隻の指定船舶（代替ルート3隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。距離はマラッカ/ロンボク海峡経由の標準航路"
   },
   "chokepoints": [
@@ -27,29 +27,29 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 6610,
       "speed_knots": 12.2,
-      "eta_days": 11.0,
+      "eta_days": 10.0,
       "cargo_t": 312000,
       "cargoType": "原油（アラビアンライト）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "日本郵船VLCC。IMO 9910117。311,979DWT。NACKS建造(2021)。LOA 339.5m。IMO Phase 2 EEDI達成、従来VLCC比23%省エネ。ホルムズ経由のため封鎖時到達不可。3月27日時点でインド洋航行中と推定"
+      "note": "日本郵船VLCC。IMO 9910117。311,979DWT。NACKS建造(2021)。LOA 339.5m。3月28日AIS: インド洋(11.2°N/73.7°E)を航行中。ホルムズ経由のため封鎖時到達不可"
     },
     {
       "id": "vlcc-02",
       "name": "KAZUSA",
       "type": "VLCC",
-      "departure": "ジュアイマ（サウジアラビア）",
-      "departurePort": "Jubail",
-      "destination": "那覇",
-      "destinationPort": "Naha",
-      "distanceToJapan_nm": 6700,
-      "speed_knots": 12.6,
+      "departure": "那覇（日本）",
+      "departurePort": "Naha",
+      "destination": "ラスタヌラ（サウジアラビア）",
+      "destinationPort": "Ras Tanura",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 14.1,
       "eta_days": 0,
       "cargo_t": 310000,
-      "cargoType": "原油（アラビアンミディアム）",
-      "status": "入港済",
-      "arrivalProbability": { "insurance": 0.3, "route": 0.5, "military": 0.4, "combined": 0.06 },
-      "note": "商船三井VLCC。IMO 9513402。310,406DWT。マーシャル諸島籍。3月27日AIS: 那覇に到着（ETA 3/27 03:00）。当初喜入向けから那覇に変更。ホルムズ経由のため封鎖開始前に出港した便"
+      "cargoType": "バラスト（空荷）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
+      "note": "商船三井VLCC。IMO 9513402。310,406DWT。マーシャル諸島籍。3月28日AIS: 6°N/80°E(インド洋)をラスタヌラ向け14.1knでバラスト航行中。3/27那覇で荷揚げ完了後、次の積荷のため中東へ帰航。日本向けではない"
     },
     {
       "id": "vlcc-03",
@@ -94,13 +94,13 @@
       "destination": "喜入",
       "destinationPort": "Kiire",
       "distanceToJapan_nm": 6750,
-      "speed_knots": 15.9,
-      "eta_days": 1.0,
+      "speed_knots": 0,
+      "eta_days": 0,
       "cargo_t": 300000,
       "cargoType": "原油（クウェートエクスポートブレンド）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": { "insurance": 0.25, "route": 0.45, "military": 0.35, "combined": 0.039 },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。3月27日AIS: 沖縄近海(26°N/128°E)を15.9knで航行中。喜入はENEOS最大原油備蓄基地(735万kL)。封鎖前出港便が間もなく到着"
+      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。3月28日: 喜入に到着（推定）。封鎖開始前にクウェートを出港した便。喜入はENEOS最大原油備蓄基地(735万kL)"
     },
     {
       "id": "lng-01",
@@ -108,16 +108,16 @@
       "type": "LNG",
       "departure": "バローアイランド（豪州WA）",
       "departurePort": "Barrow Island",
-      "destination": "横浜",
-      "destinationPort": "Yokohama",
+      "destination": "千葉",
+      "destinationPort": "Chiba",
       "distanceToJapan_nm": 3800,
-      "speed_knots": 14.6,
-      "eta_days": 4.0,
+      "speed_knots": 14.3,
+      "eta_days": 3.0,
       "cargo_t": 155000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
-      "note": "NYK管理LNG船。IMO 9483877。87,257DWT。日本船籍。2011年建造。LOA 300m。Chevron Gorgon LNGプロジェクト向け。3月27日AIS: インドネシア海域を横浜向け14.6knで航行中。目的港が千葉から横浜に変更"
+      "note": "NYK管理LNG船。IMO 9483877。87,257DWT。日本船籍。2011年建造。LOA 300m。Chevron Gorgon LNGプロジェクト向け。3月28日AIS: バンダ海(18°S/118°E)を千葉向け14.3knで航行中"
     },
     {
       "id": "lng-02",
@@ -129,12 +129,12 @@
       "destinationPort": "Kawasaki",
       "distanceToJapan_nm": 3500,
       "speed_knots": 11.1,
-      "eta_days": 7.0,
+      "eta_days": 1.0,
       "cargo_t": 155000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
-      "note": "NYK管理LNG船。IMO 9666558。86,414DWT。バハマ籍。2014年建造。LOA 288m。3月27日AIS: 2°N/127°E(セレベス海)を川崎向け11.1knで航行中。前回川崎入港後に豪州で再積載して日本に再度向かっている"
+      "note": "NYK管理LNG船。IMO 9666558。86,414DWT。バハマ籍。2014年建造。LOA 288m。3月28日AIS: 日本EEZ内を川崎向け航行中。到着間近。豪州で再積載した日本向け第2便"
     },
     {
       "id": "lng-03",
@@ -197,12 +197,12 @@
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.5,
-      "eta_days": 1.0,
+      "eta_days": 0,
       "cargo_t": 300000,
-      "cargoType": "原油（東西パイプライン経由・マレーシア積替）",
-      "status": "航行中",
+      "cargoType": "原油（サウジ産・東西パイプライン経由・紅海ルート）",
+      "status": "入港済",
       "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "太陽石油が3月1日にヤンブー港で原油積載、マレーシアで積替後に日本向け。3月28日愛媛到着予定（経産相3/24発表、Bloomberg/産経報道）。ホルムズ海峡を経由しない初の代替ルート便。到着港は太陽石油四国事業所（愛媛県今治市菊間）"
+      "note": "太陽石油が3月1日にヤンブー港で原油積載、紅海経由で日本向け。3月28日今治沖に到着確認（テレ朝/ABEMA報道）。サウジ産原油約10万kL。ホルムズ海峡封鎖後初の代替ルート便到着。到着港は太陽石油四国事業所（愛媛県今治市菊間）"
     },
     {
       "id": "vlcc-alt-02",
@@ -214,12 +214,12 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.0,
-      "eta_days": 9.0,
+      "eta_days": 8.0,
       "cargo_t": 300000,
       "cargoType": "原油（ムルバンブレンド想定）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。約6,300nm/21日の航路。4月5日到着予定。Bloomberg/産経報道。赤沢経産相は社名・船名を非公表"
+      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。4月5日到着予定。Bloomberg/産経報道。赤沢経産相は社名・船名を非公表"
     },
     {
       "id": "vlcc-alt-03",
@@ -231,7 +231,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 3600,
       "speed_knots": 12.0,
-      "eta_days": 29.0,
+      "eta_days": 28.0,
       "cargo_t": 300000,
       "cargoType": "原油（非中東調達）",
       "status": "調達中",
