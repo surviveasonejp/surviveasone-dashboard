@@ -327,7 +327,7 @@ export const Prepare: FC = () => {
 
       <AlertBanner
         level="warning"
-        message="正常性バイアスを捨てろ — 備えた者だけが選択肢を持つ"
+        message="わが家の備えを確認しよう — 適正な備蓄が家族と周囲の人を守る"
       />
 
       {/* ── パーソナライズフィルタ ── */}

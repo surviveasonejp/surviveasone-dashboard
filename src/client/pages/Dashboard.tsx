@@ -55,8 +55,8 @@ export const Dashboard: FC = () => {
       </div>
 
       <AlertBanner
-        level="critical"
-        message="ホルムズ海峡封鎖 — 全システム監視中"
+        level="warning"
+        message="ホルムズ海峡封鎖シナリオ — 公開データに基づく影響度分析"
       />
 
       <SimulationBanner />

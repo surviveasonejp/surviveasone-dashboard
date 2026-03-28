@@ -27,7 +27,7 @@ const SEGMENTS: Record<string, Segment> = {
     heroUnit: "日",
     heroLabel: "液体ミルクが店頭から消えるまで",
     heroColor: "#ef4444",
-    alertMessage: "日本人の5人に1人が「インフラ停止で生活崩壊する層」に該当します。子育て世帯はその中核です。",
+    alertMessage: "日本人の5人に1人がインフラ停止時に特別な備えが必要な家庭に該当します。子育て世帯はその中核です。",
     risks: [
       { label: "液体ミルク", days: "3日", detail: "冷蔵チェーン崩壊+物流停止で店頭在庫が消失。紙パック内面PE不足で容器生産も停止" },
       { label: "おむつ", days: "7-14日", detail: "石化製品（PE/PP）依存。エチレン減産開始で供給制約" },
@@ -54,7 +54,7 @@ const SEGMENTS: Record<string, Segment> = {
     heroUnit: "日",
     heroLabel: "透析を受けられない場合の猶予",
     heroColor: "#ef4444",
-    alertMessage: "日本の透析患者は約34.7万人。停電+断水で透析施設が稼働停止した場合、猶予は3-4日です。",
+    alertMessage: "日本の透析患者は約34.7万人。停電+断水で透析施設が稼働停止するシナリオでは、猶予は3-4日です。",
     risks: [
       { label: "血液透析", days: "3-4日", detail: "電力と大量の水（1回約120L）が必要。停電で即座に影響" },
       { label: "カリウム蓄積", days: "2-3日", detail: "透析不能でカリウムが蓄積→心停止リスク。低カリウム食品の備蓄が不可欠" },
@@ -81,7 +81,7 @@ const SEGMENTS: Record<string, Segment> = {
     heroUnit: "時間",
     heroLabel: "人工呼吸器の内部バッテリー限界",
     heroColor: "#ef4444",
-    alertMessage: "在宅人工呼吸器の内部バッテリーは3-8時間。ポータブル電源の有無が生死を分けます。",
+    alertMessage: "在宅人工呼吸器の内部バッテリーは3-8時間。停電時にはポータブル電源の備えが重要です。",
     risks: [
       { label: "人工呼吸器", days: "3-8時間", detail: "内部バッテリーのみ。1000Wh以上のポータブル電源が生死を分ける" },
       { label: "電動ベッド・吸引器", days: "停電即時", detail: "体位変換不能→褥瘡悪化。吸引不能→窒息リスク" },
@@ -118,7 +118,7 @@ export const ForSegment: FC = () => {
         <p className="text-neutral-500 text-sm">{seg.subtitle}</p>
       </div>
 
-      <AlertBanner level="critical" message={seg.alertMessage} />
+      <AlertBanner level="warning" message={seg.alertMessage} />
 
       {/* 危機の数字 */}
       <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1">

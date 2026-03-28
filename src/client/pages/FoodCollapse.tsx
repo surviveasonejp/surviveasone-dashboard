@@ -1,4 +1,5 @@
 import { type FC, useState, useMemo, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
@@ -122,11 +123,11 @@ export const FoodCollapse: FC = () => {
       </div>
 
       <AlertBanner
-        level="critical"
+        level="warning"
         message={
           selectedRegion
-            ? `${selectedRegion.name}エリアのエネルギー崩壊を起点とした食料消失予測`
-            : "エネルギー途絶は食料供給を連鎖崩壊させる"
+            ? `${selectedRegion.name}エリアのエネルギー途絶シナリオに基づく食料供給への影響予測`
+            : "エネルギー途絶シナリオにおける食料供給への連鎖的影響を可視化"
         }
       />
 
@@ -311,6 +312,11 @@ export const FoodCollapse: FC = () => {
           </table>
         </div>
       </div>
+
+      <p className="text-xs text-neutral-600 text-center">
+        必要なのは買い占めではなく、わが家に足りないものの確認です。
+        <Link to="/prepare" className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400 ml-1">備蓄ガイドを見る →</Link>
+      </p>
     </div>
   );
 };
