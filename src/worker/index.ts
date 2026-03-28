@@ -56,6 +56,7 @@ import {
 } from "./simulation/calculations";
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
+import staticRealEvents from "./data/realEvents.json";
 import { getAisPositions, type AisPosition } from "./ais-tracker";
 
 interface Env {
@@ -342,6 +343,12 @@ async function handleApiRoute(
       return handleSummary(url, env);
     case "/api/simulate":
       return handleSimulate(url, env);
+    case "/api/methodology":
+      return handleMethodology();
+    case "/api/validation":
+      return handleValidation();
+    case "/api/sources":
+      return handleSources();
     case "/api/docs":
       return handleApiDocsHtml();
     case "/api/data":
@@ -364,10 +371,13 @@ async function handleApiRoute(
           "GET /api/collapse?scenario={id}": "10エリア崩壊順序（連系線融通・原子力補正込み）",
           "GET /api/simulation?scenario={id}&maxDays={n}": "フロー型在庫シミュレーション（365日タイムライン）",
           "GET /api/food-collapse?scenario={id}": "食品カテゴリ別消失予測",
-          "GET /api/tankers": "タンカー13隻の到着予測",
-          "GET /api/electricity?area={id}": "電力需給実測データ",
+          "GET /api/tankers": "タンカー15隻の到着予測",
+          "GET /api/electricity?area={id}": "電力需給実測データ（全10エリア）",
           "GET /api/summary?scenario={id}": "プレーンテキスト概要（LLM・クローラー向け）",
           "GET /api/simulate?scenario={id}": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
+          "GET /api/methodology": "計算モデル・前提条件・係数・出典（構造化JSON）",
+          "GET /api/validation": "シミュレーション予測と実データの比較検証",
+          "GET /api/sources": "全データソースの出典マッピング（数値→出典URLの1対1対応）",
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
         },
@@ -832,6 +842,246 @@ async function handleSimulate(url: URL, env: Env): Promise<Response> {
 }
 
 // ─── /api/docs (HTML) ────────────────────────────────
+// ─── /api/methodology ────────────────────────────────
+// 計算モデル・前提条件・係数・出典を構造化JSONで返す。
+// 専門家・LLMがシミュレーションの根拠を一発で取得可能。
+
+function handleMethodology(): Response {
+  return jsonResponse({
+    version: "0.3.0",
+    models: [
+      {
+        id: "flow-inventory",
+        title: "フロー型在庫モデル",
+        equation: "dStock/dt = Inflow(t) - Consumption(t) + SPR_Release(t) + AlternativeSupply(t)",
+        description: "365日間の日次在庫推移を離散時間ステップで計算",
+        parameters: {
+          oilDailyConsumption_kL: { value: 469000, unit: "kL/日", source: "OWID energy-data 2024" },
+          lngDailyConsumption_t: { value: 178000, unit: "t/日", source: "財務省貿易統計 2025年" },
+        },
+      },
+      {
+        id: "spr-release",
+        title: "SPR放出メカニズム",
+        equation: "国家備蓄: delay=14日, max=300,000kL/日 / 民間: delay=0日, usable=70%",
+        parameters: {
+          nationalLeadTimeDays: { value: 14, source: "石油備蓄法 + IEA Emergency Response Mechanism + JOGMEC 2022年実績" },
+          nationalDailyMax_kL: { value: 300000, source: "JOGMEC全10基地出荷能力推定" },
+          privateUsableRatio: { value: 0.70, source: "石油連盟「石油備蓄制度のあり方」(2019)" },
+        },
+      },
+      {
+        id: "demand-destruction",
+        title: "需要破壊モデル",
+        equation: "demand(t) = baseDemand × blockadeRate(t) × rationFactor × destructionFactor(stockPercent)",
+        parameters: {
+          thresholds: [
+            { stockPercent: ">50%", factor: 1.0, description: "通常" },
+            { stockPercent: "30-50%", factor: 0.85, description: "産業15%削減（価格2倍相当）" },
+            { stockPercent: "10-30%", factor: 0.65, description: "産業+商業35%削減（価格3倍相当）" },
+            { stockPercent: "<10%", factor: 0.45, description: "生活必需のみ55%削減" },
+          ],
+          source: "Hamilton(2003) J.Econometrics + 1973年石油危機実績(経産省2018年エネルギー白書) + IEA Energy Supply Security(2014)",
+        },
+      },
+      {
+        id: "nuclear-correction",
+        title: "原子力補正",
+        equation: "thermalShare_regional = thermalShare_national × (1 - nuclearCoverage - renewableCoverage)",
+        parameters: {
+          nuclearUtilization: { value: 0.80, source: "原子力規制委員会 運転実績(2023-2024年度平均)" },
+          nuclearCoverageMax: { value: 0.70, source: "OCCTO系統運用ルール（周波数調整用火力の最低保持）" },
+          operatingReactors: { value: 15, source: "原子力規制委員会 2026年3月" },
+        },
+      },
+      {
+        id: "renewable-buffer",
+        title: "再エネバッファ",
+        equation: "renewableOutput = solar×CF15% + wind×CF22% + hydro×CF35%",
+        parameters: {
+          solarCF: { value: 0.15, source: "ISEP自然エネルギー白書 + IRENA Statistics 2024（日本実績14-17%）" },
+          windCF: { value: 0.22, source: "ISEP（日本実績20-25%、陸上中心）" },
+          hydroCF: { value: 0.35, source: "電力調査統計（日本実績30-40%、一般水力）" },
+          renewableCoverageMax: { value: 0.40, source: "IEA Grid Integration of Variable Renewables 2023" },
+        },
+      },
+      {
+        id: "interconnection",
+        title: "連系線融通",
+        equation: "bonusDays = min(daysDiff × coverageRatio, daysDiff × 0.5)",
+        parameters: {
+          utilizationRate: { value: 0.70, source: "OCCTO広域機関ルール 緊急時運用規程（通常80-90%、危機時70%）" },
+          lines: { value: 10, source: "OCCTO 2025年度運用容量" },
+          iterations: { value: 3, description: "多段融通安定化のための反復回数" },
+        },
+      },
+      {
+        id: "water-cascade",
+        title: "水道崩壊カスケード",
+        equation: "電力停止 → +0日:水圧低下 → +1日:断水 → +3日:衛生崩壊",
+        source: "厚労省「水道事業における耐震化の促進」+ 厚労省水道事業ガイドライン",
+      },
+      {
+        id: "family-meter",
+        title: "Family Meter",
+        equation: "生存日数 = min(水÷3L人日, 食料日数, ガス÷30分人日, 電力÷50Wh人日)",
+        parameters: {
+          waterPerPersonPerDay_L: { value: 3, source: "内閣府「避難所における良好な生活環境の確保に向けた取組指針」(2016)" },
+          gasCanisterMinutes: { value: 60, source: "岩谷産業公表値" },
+          gasUsageMinutesPerPerson: { value: 30, source: "内閣府防災ガイドライン" },
+          powerWhPerPersonPerDay: { value: 50, description: "スマホ15Wh+LED30Wh+ラジオ5Wh" },
+        },
+        note: "計算はクライアントブラウザ内で完結。サーバーへの送信なし",
+      },
+    ],
+    scenarios: {
+      optimistic: { oilBlockadeRate: 0.50, lngBlockadeRate: 0.03, demandReduction: 0.15, reliefStart: 7, reliefEnd: 30, finalRate: 0.10 },
+      realistic: { oilBlockadeRate: 0.94, lngBlockadeRate: 0.063, demandReduction: 0.05, reliefStart: 30, reliefEnd: 120, finalRate: 0.30 },
+      pessimistic: { oilBlockadeRate: 1.0, lngBlockadeRate: 0.15, demandReduction: -0.10, reliefStart: 90, reliefEnd: 365, finalRate: 0.60 },
+    },
+    limitations: [
+      "石炭火力(28%)はホルムズ非依存。短期的直接影響は限定的だが価格波及は考慮",
+      "再エネの季節変動（太陽光 夏:冬=2:1）は未反映",
+      "蓄電池モデル（揚水発電含む）は未実装",
+      "経済カスケードは価格弾力性の簡易モデル。為替・金利・GDP波及は未反映",
+      "需要破壊モデルは1973年石油危機の近似であり、現代の経済構造との差異がある",
+    ],
+    license: "AGPL-3.0",
+    source: "https://github.com/surviveasonejp/surviveasone-dashboard",
+  }, 200, true);
+}
+
+// ─── /api/validation ─────────────────────────────────
+// シミュレーション予測と実データの比較検証。
+
+function handleValidation(): Response {
+  const realEvents = staticRealEvents.events;
+  const simulation = runFlowSimulation("realistic");
+
+  // 実データとシミュレーションの照合
+  const validations = realEvents
+    .filter((e: { dayOffset: number }) => e.dayOffset <= 30) // 封鎖30日以内の実データ
+    .map((event: { date: string; dayOffset: number; label: string; category: string; source: string; impact: string }) => {
+      const simDay = simulation.timeline[event.dayOffset];
+      const oilPercent = simDay ? (simDay.oilStock_kL / staticReserves.oil.totalReserve_kL) * 100 : null;
+      return {
+        date: event.date,
+        dayOffset: event.dayOffset,
+        realEvent: event.label,
+        category: event.category,
+        source: event.source,
+        simulationState: simDay ? {
+          oilStock_percent: Math.round(oilPercent! * 10) / 10,
+          lngStock_t: simDay.lngStock_t,
+        } : null,
+      };
+    });
+
+  // 主要閾値イベントの予測vs実績
+  const thresholdComparison = simulation.thresholds
+    .filter((t) => t.day <= 60)
+    .map((t) => ({
+      day: t.day,
+      type: t.type,
+      resource: t.resource,
+      predictedLabel: t.label,
+      stockPercent: t.stockPercent,
+    }));
+
+  return jsonResponse({
+    generatedAt: new Date().toISOString(),
+    scenario: "realistic",
+    blockadeStartDate: "2026-03-01",
+    dataAsOf: staticRealEvents.meta.updatedAt,
+    realEventsCount: realEvents.length,
+    validations,
+    thresholdPredictions: thresholdComparison,
+    summary: {
+      oilDepletionDay: simulation.oilDepletionDay,
+      lngDepletionDay: simulation.lngDepletionDay,
+      powerCollapseDay: simulation.powerCollapseDay,
+    },
+    note: "validationsは実データとシミュレーション時点の在庫%を対比。thresholdPredictionsはモデルが予測する閾値イベント。実データの日付とシミュレーション閾値の日付のずれが精度指標となる",
+  }, 200, true);
+}
+
+// ─── /api/sources ────────────────────────────────────
+// 全データソースの出典マッピング（数値→出典URLの1対1対応）
+
+function handleSources(): Response {
+  return jsonResponse({
+    generatedAt: new Date().toISOString(),
+    description: "全入力データの出典マッピング。各数値の根拠となる公開データソースのURL・文書名・基準日を記載",
+    sources: [
+      {
+        category: "石油備蓄",
+        items: [
+          { key: "oil.totalReserve_kL", value: 71330000, unit: "kL", source: "経産省 石油備蓄推計量", url: "https://www.enecho.meti.go.jp/statistics/petroleum_and_lpgas/pl001/results.html", baselineDate: "2026-03-20", confidence: "verified" },
+          { key: "oil.nationalReserve_kL", value: 43220000, unit: "kL", source: "経産省 石油備蓄推計量", baselineDate: "2026-03-20", confidence: "verified" },
+          { key: "oil.privateReserve_kL", value: 26330000, unit: "kL", source: "経産省 石油備蓄推計量", baselineDate: "2026-03-20", confidence: "verified" },
+          { key: "oil.hormuzDependencyRate", value: 0.94, source: "JETRO / 財務省貿易統計 2025年実績", url: "https://www.jetro.go.jp/", confidence: "verified" },
+        ],
+      },
+      {
+        category: "LNG",
+        items: [
+          { key: "lng.inventory_t", value: 4500000, unit: "t", source: "経産省ガス事業統計+電力調査統計(2025年平均)", note: "ガス事業用+発電用の合算推計。経産省公表の発電用のみ(約230万t)とは集計範囲が異なる", confidence: "estimated" },
+          { key: "lng.hormuzDependencyRate", value: 0.063, source: "JETRO 2025年実績 カタール5.3%+UAE1.0%", confidence: "verified" },
+          { key: "lng.dailyConsumption_t", value: 178000, unit: "t/日", source: "財務省貿易統計 2025年 LNG輸入量6,498万t÷365", confidence: "verified" },
+        ],
+      },
+      {
+        category: "電力構成",
+        items: [
+          { key: "electricity.thermalShareRate", value: 0.65, source: "ISEP 2024年暦年速報(電力調査統計ベース)", url: "https://www.isep.or.jp/archives/library/15158", note: "LNG29.1%+石炭28.2%+石油1.4%+他6.3%", confidence: "verified" },
+          { key: "electricity.nuclearShareRate", value: 0.082, source: "ISEP 2024年暦年速報", confidence: "verified" },
+          { key: "electricity.renewableShareRate", value: 0.267, source: "ISEP 2024年暦年速報", confidence: "verified" },
+        ],
+      },
+      {
+        category: "消費量",
+        items: [
+          { key: "oil.dailyConsumption_kL", value: 469000, unit: "kL/日", source: "OWID energy-data 2024", url: "https://github.com/owid/energy-data", confidence: "verified" },
+        ],
+      },
+      {
+        category: "連系線",
+        items: [
+          { key: "interconnections", value: "10本", source: "OCCTO 電力広域的運営推進機関 2025年度運用容量", url: "https://www.occto.or.jp/", confidence: "verified" },
+        ],
+      },
+      {
+        category: "原子力",
+        items: [
+          { key: "nuclearReactors", value: 15, unit: "基", source: "原子力規制委員会", url: "https://www.nra.go.jp/jimusho/unten_jokyo.html", note: "関西7+九州4+東京1(柏崎刈羽6号)+四国1+東北1+中国1(島根2号定検停止中)", confidence: "verified" },
+        ],
+      },
+      {
+        category: "食料",
+        items: [
+          { key: "foodSelfSufficiency", value: 0.38, source: "農水省 食料需給表 令和6年度概算", url: "https://www.maff.go.jp/j/zyukyu/zikyu_ritu/012.html", note: "カロリーベース総合38%", confidence: "verified" },
+          { key: "governmentRiceReserve_t", value: 295000, unit: "t", source: "農水省 米穀需給基本指針 2025年8月時点", note: "適正水準100万tだが令和コメ騒動で大量放出", confidence: "verified" },
+        ],
+      },
+      {
+        category: "シミュレーション係数",
+        items: [
+          { key: "solarCF", value: 0.15, source: "ISEP自然エネルギー白書 + IRENA Statistics 2024", confidence: "estimated" },
+          { key: "windCF", value: 0.22, source: "ISEP（日本実績20-25%）", confidence: "estimated" },
+          { key: "hydroCF", value: 0.35, source: "電力調査統計（日本実績30-40%）", confidence: "estimated" },
+          { key: "demandDestructionCoefficients", value: "0.85/0.65/0.45", source: "Hamilton(2003) + 1973年石油危機実績 + IEA Energy Supply Security(2014)", confidence: "estimated" },
+          { key: "interconnectionUtilization", value: 0.70, source: "OCCTO緊急時運用規程", confidence: "estimated" },
+        ],
+      },
+    ],
+    confidenceLevels: {
+      verified: "政府統計・公式発表に基づく実績値",
+      estimated: "統計と推定の混合。出典を元に設定した推定値",
+    },
+    license: "AGPL-3.0",
+  }, 200, true);
+}
+
 // クローラー・LLMが読めるプレーンHTMLのAPIドキュメント。
 
 function handleApiDocsHtml(): Response {

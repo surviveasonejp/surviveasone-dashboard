@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software or its data, please cite it as below."
+title: "Survive as One Japan: Hormuz Strait Blockade Energy Simulation"
+type: software
+authors:
+  - alias: idx
+    orcid: ""
+url: "https://surviveasonejp.org"
+repository-code: "https://github.com/surviveasonejp/surviveasone-dashboard"
+license: AGPL-3.0
+version: "0.9.0"
+date-released: "2026-03-28"
+abstract: >-
+  Open-source simulation tool that visualizes the cascading impact on Japan's
+  energy, food, and water supply under a Hormuz Strait blockade scenario.
+  Features 16 calculation models, 3 scenarios (optimistic/realistic/pessimistic),
+  15 tanker AIS tracking, and personalized survival guides for vulnerable families
+  including infants, dialysis patients, and elderly care recipients.
+keywords:
+  - energy-security
+  - simulation
+  - japan
+  - hormuz-strait
+  - oil-reserves
+  - lng
+  - disaster-preparedness
+  - open-data
+preferred-citation:
+  type: software
+  title: "Survive as One Japan: Hormuz Strait Blockade Energy Simulation"
+  authors:
+    - alias: idx
+  url: "https://surviveasonejp.org"
+  year: 2026
+  license: AGPL-3.0
