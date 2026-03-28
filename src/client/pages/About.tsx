@@ -348,9 +348,9 @@ export const About: FC = () => {
           ))}
         </div>
         <div className="text-xs text-neutral-600 font-mono space-y-0.5">
-          <p>API: 18エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
+          <p>API: 21エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
           <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知(日次サマリ+差分検知+RSS監視)Worker + Workers AI LLM要約</p>
-          <p>インフラ月額: ~$3（ドメイン2件のみ。Cloudflare全スタック無料枠）</p>
+          <p>コスト: インフラ ~$3/月（ドメイン2件。Cloudflare無料枠）+ 開発ツール（AI支援）~$100-200/月</p>
         </div>
       </div>
 
@@ -362,8 +362,8 @@ export const About: FC = () => {
           全てのデータ・シミュレーション・APIはスポンサーの有無にかかわらず完全に無料で公開されています。
         </p>
         <div className="text-xs text-neutral-500 space-y-2 leading-relaxed">
-          <p>現在のインフラコストはドメイン2件のみ（月額約$3）。Cloudflare Workers/D1/KV/R2の無料枠内で全機能が稼働しています。</p>
-          <p>スポンサーシップは、このプロジェクトの継続運営と、より多くの人に情報を届けるために使われます。</p>
+          <p>インフラ: ドメイン2件（月額約$3）。Cloudflare Workers/D1/KV/R2は全て無料枠内。開発にはAI支援ツールを使用しており（月額$100-200）、これが実質的な最大の支出です。</p>
+          <p>スポンサーシップは、このプロジェクトの継続的な開発と運営に使われます。</p>
         </div>
         <a
           href="https://github.com/sponsors/idx"
