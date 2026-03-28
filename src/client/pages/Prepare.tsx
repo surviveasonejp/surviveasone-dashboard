@@ -64,13 +64,28 @@ const PREPARE_LIST: PrepareItem[] = [
 const VULNERABLE_CHECKLIST: Array<{ id: string; category: string; items: { name: string; note: string }[] }> = [
   {
     id: "infant",
-    category: "乳幼児がいる家庭",
+    category: "乳幼児がいる家庭（0-2歳）",
     items: [
       { name: "液体ミルク（常温使用可）", note: "停電で煮沸できない場合に必須。7日分以上。アレルギー対応品も確認" },
       { name: "おむつ・おしりふき", note: "1日8-10枚 × 14日分。断水時はおしりふきが清拭にも使える" },
       { name: "経口補水液（乳幼児用）", note: "脱水は乳幼児に致命的。OS-1等を最低7日分" },
       { name: "離乳食・ベビーフード", note: "レトルトパウチ型は常温・開封後すぐ食べられる。7日分以上" },
       { name: "抱っこひも", note: "避難時に両手を空けるため必須。ベビーカーは瓦礫・停電エレベーターで使えない" },
+    ],
+  },
+  {
+    id: "children",
+    category: "子ども・青少年のいる家庭（未就学〜高校生）",
+    items: [
+      { name: "経口補水液・飲料水の増量", note: "子どもは体重あたりの必要水分量が大人より多い。成長期の高校生も同様。1人あたり飲料水+1L/日を目安に" },
+      { name: "常温保存おやつ・栄養補助食品", note: "偏食の子が多い。食べ慣れたもの（ビスケット・ゼリー飲料・シリアルバー等）を7日分以上。アレルギー対応品も確認" },
+      { name: "アレルギー対応食の備蓄", note: "食物アレルギーがある場合、配給・炊き出しで対応食が出ない可能性大。最低14日分を別途確保" },
+      { name: "学校の災害時引き渡し・連絡手順の確認", note: "学校待機か自宅待機か、引き渡し方法を事前に確認。高校生は下校判断を自分でする場合がある。連絡手段が使えない前提で家族の合流方法を決めておく" },
+      { name: "通学路の安全確認・代替ルート", note: "停電で信号停止、ガソリン不足で交通量変化。徒歩・自転車での安全なルートを子どもと一緒に確認" },
+      { name: "停電時の過ごし方の準備", note: "本・ボードゲーム・お絵かき・トランプ等。長期停電で「退屈」は子どもの精神を蝕む。高校生もスマホが使えないストレスは深刻" },
+      { name: "年齢に応じた状況説明の準備", note: "小さな子には「怖い」を否定せず安心材料を。中高生にはSNSのデマや不確かな情報への対処法を。家族で状況を共有し「自分も役に立てる」感覚を持たせる" },
+      { name: "かかりつけ医の災害時連絡先", note: "小児科（中学生まで）または内科（高校生）の災害時連絡先を紙に。夜間救急の場所も確認。お薬手帳・母子手帳のコピーを防水保管" },
+      { name: "受験・進路への影響への備え", note: "高校生は受験期と重なる可能性。参考書・問題集の紙版を確保。オンライン学習が使えない前提で計画を立てる" },
     ],
   },
   {
@@ -230,7 +245,7 @@ const PHASE_GUIDE = [
 // ─── フィルタの型定義 ─────────────────────────────
 
 type HousingType = "mansion" | "studio" | "apartment" | "house" | "";
-type FamilyTag = "infant" | "medical" | "dialysis" | "elderly" | "disability";
+type FamilyTag = "infant" | "children" | "medical" | "dialysis" | "elderly" | "disability";
 
 // ─── 折りたたみセクションコンポーネント ──────────
 
@@ -375,7 +390,8 @@ export const Prepare: FC = () => {
           <div className="text-xs text-neutral-400 font-mono">該当する家族（複数選択可）</div>
           <div className="flex flex-wrap gap-2">
             {([
-              { value: "infant" as FamilyTag, label: "乳幼児" },
+              { value: "infant" as FamilyTag, label: "乳幼児(0-2歳)" },
+              { value: "children" as FamilyTag, label: "子ども・青少年(〜高校生)" },
               { value: "medical" as FamilyTag, label: "医療機器" },
               { value: "dialysis" as FamilyTag, label: "透析" },
               { value: "elderly" as FamilyTag, label: "要介護" },
