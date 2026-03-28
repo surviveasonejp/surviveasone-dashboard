@@ -105,7 +105,7 @@ export const Landing: FC = () => {
           <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          {getReservesSummaryText()}。火力内訳: LNG29%+石炭28%+石油7%(ISEP 2024年)。LNG在庫25日分(経産省ガス事業統計)
+          {getReservesSummaryText()}。火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
 
@@ -162,7 +162,7 @@ export const Landing: FC = () => {
             <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
             <p className="text-lg font-bold">あなたの家庭は、何日生き延びられるか？</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              水・食料・カセットガス・モバイルバッテリー・現金の備蓄量を入力 → 生存可能日数とランクを即時判定
+              備蓄量を入力 → 生存日数とランクを即時判定。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
           <span className="text-[#f59e0b] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -175,36 +175,43 @@ export const Landing: FC = () => {
           to="/countdown"
           title="SURVIVAL CLOCK"
           subtitle="崩壊カウントダウン"
-          description="石油・LNG・電力の残存日数をリアルタイム表示。枯渇日を秒単位で刻む"
+          description="石油・LNG・電力の残存日数。365日フロータイムライン+代替供給ルート+経済カスケード"
           color="#ef4444"
         />
         <PanelCard
           to="/collapse-map"
           title="COLLAPSE MAP"
           subtitle="全国10エリア崩壊順"
-          description="沖縄→北海道→四国…どの順で電力が止まるか。あなたの地域は何日目か"
+          description="原子力15基・再エネ・連系線融通を反映。GPS自動検出であなたの地域をハイライト"
           color="#f59e0b"
         />
         <PanelCard
           to="/last-tanker"
           title="LAST TANKER"
-          subtitle="最終タンカー追跡"
-          description="封鎖後、日本に届く最後の積荷はいつか。実在13隻の到着予測"
+          subtitle="タンカー追跡"
+          description="実在13隻のAIS追跡。代替ルート3隻（ヤンブー・フジャイラ・非中東）の到着予測"
           color="#94a3b8"
         />
         <PanelCard
           to="/food-collapse"
           title="FOOD COLLAPSE"
           subtitle="食料消滅タイムライン"
-          description="スーパーの棚が空になるまで何日。物流停止→食料連鎖崩壊をシミュレーション"
+          description="ナフサ→石化→包装材の連鎖崩壊。牛乳3日・冷凍食品即日・米90日の消失順"
           color="#ef4444"
         />
         <PanelCard
           to="/prepare"
           title="PREPARE"
           subtitle="備蓄ガイド"
-          description="水・食料・エネルギー・現金。今日からできる備えを6カテゴリで整理"
+          description="住居形態・家族構成で絞り込み。マンション高層/ワンルーム/車なし世帯にも対応"
           color="#22c55e"
+        />
+        <PanelCard
+          to="/methodology"
+          title="METHODOLOGY"
+          subtitle="計算モデル・前提条件"
+          description="16の計算式・18データソース・感度分析。全ての前提を公開し検証可能に"
+          color="#f59e0b"
         />
       </div>
 
