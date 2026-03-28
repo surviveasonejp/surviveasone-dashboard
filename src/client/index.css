@@ -282,24 +282,92 @@ input[type="range"]::-moz-range-track {
 /* ─── 印刷用スタイル ──────────────────────────── */
 
 @media print {
+  /* ── 基本 ── */
   body {
     background: white !important;
-    color: black !important;
-    font-size: 11pt;
+    color: #1a1a1a !important;
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
-  header, footer, .print\:hidden, button, a[href="/family"] {
+
+  /* ── 非表示要素 ── */
+  header, footer, nav,
+  .print\:hidden,
+  button,
+  a[href="/family"],
+  a[href*="github.com/sponsors"],
+  [class*="hover\:"] {
     display: none !important;
   }
-  [class*="bg-[#"] {
+
+  /* ── 背景・ボーダーのリセット ── */
+  *, *::before, *::after {
     background: white !important;
-    border-color: #ccc !important;
+    box-shadow: none !important;
   }
-  [class*="text-neutral-"], [class*="text-red-"], [class*="text-[#"] {
-    color: #333 !important;
+  [class*="border"] {
+    border-color: #ddd !important;
   }
-  .font-mono {
-    font-family: monospace;
+
+  /* ── テキスト色の統一 ── */
+  * {
+    color: #1a1a1a !important;
   }
+  [class*="text-[#ef4444]"], [class*="text-red-"] {
+    color: #c00 !important;
+    font-weight: bold !important;
+  }
+  [class*="text-[#f59e0b]"] {
+    color: #b45309 !important;
+    font-weight: bold !important;
+  }
+  [class*="text-[#22c55e]"] {
+    color: #15803d !important;
+    font-weight: bold !important;
+  }
+
+  /* ── 余白の圧縮 ── */
+  .space-y-8 > * + * { margin-top: 0.5rem !important; }
+  .space-y-6 > * + * { margin-top: 0.4rem !important; }
+  .space-y-4 > * + * { margin-top: 0.3rem !important; }
+  .space-y-3 > * + * { margin-top: 0.2rem !important; }
+  .space-y-2 > * + * { margin-top: 0.15rem !important; }
+  [class*="p-6"], [class*="p-5"] { padding: 0.4rem !important; }
+  [class*="p-4"] { padding: 0.3rem !important; }
+  [class*="px-4"] { padding-left: 0.3rem !important; padding-right: 0.3rem !important; }
+  [class*="py-3"], [class*="py-2"] { padding-top: 0.15rem !important; padding-bottom: 0.15rem !important; }
+  [class*="gap-4"], [class*="gap-3"] { gap: 0.3rem !important; }
+  [class*="rounded-lg"] { border-radius: 2px !important; }
+
+  /* ── ページ区切り制御 ── */
+  h1, h2, h3 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  [class*="rounded-lg"] {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ── フォント ── */
+  .font-mono { font-family: monospace !important; font-size: 8pt !important; }
+
+  /* ── アコーディオン: 全展開+ヘッダーボタン非表示 ── */
+  .print\:\!block { display: block !important; }
+  .print\:\!max-h-none { max-height: none !important; }
+  .print\:\!opacity-100 { opacity: 1 !important; }
+
+  /* ── 印刷ヘッダー ── */
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+
+  /* ── リンクのURL表示を抑制（紙面節約） ── */
+  a[href]::after { content: none !important; }
+  a { text-decoration: none !important; }
 }
 
 /* ─── ハイコントラスト（OS設定検出） ──────────── */
