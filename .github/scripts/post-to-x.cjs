@@ -87,7 +87,7 @@ async function postTweet(mediaId) {
     'surviveasonejp.org',
     url,
     '',
-    '#SurviveAsOne #ホルムズ海峡 #石油危機 #エネルギー',
+    '#surviveasonejp #備蓄確認 #エネルギー安全保障 #オープンデータ',
   ];
   const text = lines.join('\n');
 
