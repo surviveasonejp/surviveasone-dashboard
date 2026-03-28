@@ -72,6 +72,8 @@ export interface FamilyInputs {
   foodDays: number;
   gasCanisterCount: number;
   batteryWh: number;
+  solarWatts: number;
+  hasMedicalDevice: boolean;
   cashYen: number;
 }
 

@@ -61,6 +61,8 @@ const DEFAULT_INPUTS: FamilyInputs = {
   foodDays: 7,
   gasCanisterCount: 6,
   batteryWh: 500,
+  solarWatts: 0,
+  hasMedicalDevice: false,
   cashYen: 30000,
 };
 
@@ -126,7 +128,29 @@ export const FamilyMeter: FC = () => {
           <InputSlider label="食料備蓄" value={inputs.foodDays} min={0} max={90} step={1} unit="日分" onChange={update("foodDays")} />
           <InputSlider label="カセットボンベ" value={inputs.gasCanisterCount} min={0} max={100} step={1} unit="本" onChange={update("gasCanisterCount")} />
           <InputSlider label="ポータブル電源" value={inputs.batteryWh} min={0} max={5000} step={50} unit="Wh" onChange={update("batteryWh")} />
+          <InputSlider label="ソーラーパネル" value={inputs.solarWatts} min={0} max={500} step={10} unit="W" onChange={update("solarWatts")} />
+          <div className="flex items-center gap-3">
+            <button
+              className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${
+                inputs.hasMedicalDevice
+                  ? "bg-[#ef4444] border-[#ef4444]"
+                  : "border-[#1e2a36] hover:border-neutral-500"
+              }`}
+              onClick={() => {
+                const next = { ...inputs, hasMedicalDevice: !inputs.hasMedicalDevice };
+                setInputs(next);
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+              }}
+            >
+              {inputs.hasMedicalDevice && <span className="text-white text-xs font-bold">✓</span>}
+            </button>
+            <div>
+              <span className="text-sm text-neutral-300">在宅医療機器を使用</span>
+              <span className="text-[10px] text-neutral-500 ml-2">（人工呼吸器・吸引器等 → 電力消費10倍で計算）</span>
+            </div>
+          </div>
           <InputSlider label="現金" value={inputs.cashYen} min={0} max={1000000} step={10000} unit="円" onChange={update("cashYen")} />
+          <p className="text-[10px] text-neutral-500">※ 現金は参考情報です。生存日数の計算には含まれません（配給制移行時の購買力指標）</p>
           <p className="text-[10px] text-neutral-600 leading-relaxed">
             入力データはこのブラウザ内でのみ保存・計算されます。サーバーへの送信は行いません。
           </p>

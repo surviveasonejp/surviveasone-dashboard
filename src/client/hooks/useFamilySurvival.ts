@@ -14,7 +14,13 @@ import type { FamilyInputs, FamilySurvivalScore } from "../../shared/types";
 const WATER_PER_PERSON_PER_DAY = 3; // L
 const GAS_CANISTER_MINUTES = 60;
 const GAS_USAGE_MINUTES_PER_PERSON = 30;
-const POWER_WH_PER_PERSON_PER_DAY = 50;
+const POWER_WH_PER_PERSON_PER_DAY = 50; // 通常世帯: スマホ15Wh+LED30Wh+ラジオ5Wh
+const POWER_WH_PER_PERSON_PER_DAY_MEDICAL = 500; // 医療機器世帯: 人工呼吸器300-400Wh+吸引器50Wh+照明等
+
+// ソーラーパネルの日次発電量推定
+// 出典: ISEP自然エネルギー白書 日本平均CF15% × 日照時間5時間/日（悲観的見積もり）
+const SOLAR_HOURS_PER_DAY = 5; // 有効日照時間
+const SOLAR_EFFICIENCY = 0.15; // 天候・角度・変換効率を考慮した総合効率
 
 function getSurvivalRank(days: number): "S" | "A" | "B" | "C" | "D" | "F" {
   if (days >= 60) return "S";
@@ -31,7 +37,29 @@ export function useFamilySurvival(inputs: FamilyInputs): FamilySurvivalScore {
     const waterDays = inputs.waterLiters / (m * WATER_PER_PERSON_PER_DAY);
     const foodDays = inputs.foodDays;
     const energyDays = (inputs.gasCanisterCount * GAS_CANISTER_MINUTES) / (m * GAS_USAGE_MINUTES_PER_PERSON);
-    const powerDays = inputs.batteryWh / (m * POWER_WH_PER_PERSON_PER_DAY);
+
+    // 電力: 医療機器の有無で消費量が大きく変わる
+    const powerPerPersonPerDay = inputs.hasMedicalDevice
+      ? POWER_WH_PER_PERSON_PER_DAY_MEDICAL
+      : POWER_WH_PER_PERSON_PER_DAY;
+    const dailyPowerNeed = m * powerPerPersonPerDay;
+
+    // ソーラーパネルによる日次充電量
+    const dailySolarWh = inputs.solarWatts * SOLAR_HOURS_PER_DAY * SOLAR_EFFICIENCY;
+
+    let powerDays: number;
+    if (dailySolarWh >= dailyPowerNeed) {
+      // ソーラーで日次需要を賄える → バッテリーは予備。実質90日上限（季節変動・故障リスク）
+      powerDays = Math.min(90, inputs.batteryWh / dailyPowerNeed + 90);
+    } else if (dailySolarWh > 0) {
+      // ソーラーで一部賄える → バッテリーの消費速度が遅くなる
+      const netDailyDrain = dailyPowerNeed - dailySolarWh;
+      powerDays = inputs.batteryWh / netDailyDrain;
+    } else {
+      // ソーラーなし → バッテリーのみ
+      powerDays = inputs.batteryWh / dailyPowerNeed;
+    }
+
     const totalDays = Math.min(waterDays, foodDays, energyDays, powerDays);
     const bottleneck = [
       { days: waterDays, label: "水" },
@@ -49,5 +77,5 @@ export function useFamilySurvival(inputs: FamilyInputs): FamilySurvivalScore {
       powerDays,
       bottleneck,
     };
-  }, [inputs.members, inputs.waterLiters, inputs.foodDays, inputs.gasCanisterCount, inputs.batteryWh]);
+  }, [inputs.members, inputs.waterLiters, inputs.foodDays, inputs.gasCanisterCount, inputs.batteryWh, inputs.solarWatts, inputs.hasMedicalDevice]);
 }
