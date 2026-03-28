@@ -112,6 +112,30 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
     source: "内閣府 避難所における良好な生活環境の確保に向けた取組指針(2016年) + 厚労省 水道事業ガイドライン",
     note: "水3L/人日(飲料+調理)。水道崩壊カスケードは配水池重力式貯留(1-3日分)+非常用発電72時間に基づく",
   },
+  petrochemicalProduction: {
+    label: "石油化学製品 生産・在庫統計",
+    confidence: "verified",
+    source: "石油化学工業協会(JPCA) 月次生産実績",
+    note: "エチレン・4樹脂(PE/PP/PS/PVC)の月次生産・出荷・在庫。ナフサ在庫約20日分の根拠。包装材消失タイムラインの精度に直結",
+  },
+  truckFuelConsumption: {
+    label: "物流用燃料消費量",
+    confidence: "verified",
+    source: "国交省 自動車燃料消費量調査(月報) + e-Stat API",
+    note: "営業用トラックの軽油消費量(kL)。foodSupply.jsonの「物流用軽油日量約10万kL」の公的裏付け",
+  },
+  coldStorageInventory: {
+    label: "冷蔵倉庫在庫統計",
+    confidence: "verified",
+    source: "日本冷蔵倉庫協会 月次統計 + 農水省 冷蔵水産物在庫量調査",
+    note: "主要12都市の品目別入庫・出庫・在庫。冷凍食品在庫10日分の根拠検証に使用",
+  },
+  lifelineRestoration: {
+    label: "ライフライン復旧想定",
+    confidence: "verified",
+    source: "内閣府 首都直下地震被害想定 + 東日本大震災ライフライン復旧統計",
+    note: "復旧目標: 電気6日/上水30日/ガス55日。東日本大震災実績: 停電850万世帯/断水230万世帯。水道崩壊カスケードの検証データ",
+  },
 };
 
 export function getConfidenceLabel(confidence: DataConfidence): string {

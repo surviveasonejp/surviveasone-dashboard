@@ -1073,6 +1073,24 @@ function handleSources(): Response {
           { key: "interconnectionUtilization", value: 0.70, source: "OCCTO緊急時運用規程", confidence: "estimated" },
         ],
       },
+      {
+        category: "サプライチェーン（物流・石化・冷蔵）",
+        items: [
+          { key: "truckDiesel_kL_per_day", value: 100000, unit: "kL/日", source: "国交省 自動車燃料消費量調査(月報)", url: "https://www.mlit.go.jp/k-toukei/nenryousyouhiryou.html", note: "営業用トラックの軽油消費量。e-Stat APIで月次取得可能", confidence: "verified" },
+          { key: "napthaInventoryDays", value: 20, unit: "日", source: "石油化学工業協会(JPCA) 月次生産実績 + Bloomberg報道", url: "https://www.jpca.or.jp/statistics/monthly/mainpd.html", note: "石油化学用原料ナフサ在庫。中東依存45%。封鎖20日でエチレンセンター限界", confidence: "verified" },
+          { key: "ethyleneProduction", source: "JPCA 主要石油化学製品生産実績(月次)", url: "https://www.jpca.or.jp/statistics/monthly/mainpd.html", note: "エチレン・4樹脂(PE/PP/PS/PVC)の生産・出荷・在庫。包装材消失日の根拠", confidence: "verified" },
+          { key: "frozenFoodInventoryDays", value: 10, unit: "日", source: "日本冷蔵倉庫協会 月次統計", url: "https://www.jarw.or.jp/know/statistics", note: "主要12都市の品目別入庫・出庫・在庫数量。停電72hで在庫全損", confidence: "verified" },
+          { key: "coldStorageFishInventory", source: "農水省 冷蔵水産物在庫量調査", url: "https://www.maff.go.jp/j/tokei/kouhyou/suisan_ryutu/reizou_zaikoryou/", note: "水産物の冷蔵在庫量(月次)", confidence: "verified" },
+        ],
+      },
+      {
+        category: "ライフライン復旧想定",
+        items: [
+          { key: "powerRestorationDays", value: 6, unit: "日", source: "内閣府 首都直下地震被害想定", note: "電力復旧目標。東日本大震災実績: 1週間で95%解消", confidence: "verified" },
+          { key: "waterRestorationDays", value: 30, unit: "日", source: "内閣府 首都直下地震被害想定", note: "上水道復旧目標。東日本大震災: 187市町村220万戸断水", confidence: "verified" },
+          { key: "gasRestorationDays", value: 55, unit: "日", source: "内閣府 首都直下地震被害想定", note: "都市ガス復旧目標。東日本大震災: 48万戸供給停止→5/3復旧", confidence: "verified" },
+        ],
+      },
     ],
     confidenceLevels: {
       verified: "政府統計・公式発表に基づく実績値",
