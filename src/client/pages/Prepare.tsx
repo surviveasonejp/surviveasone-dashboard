@@ -327,7 +327,7 @@ export const Prepare: FC = () => {
 
       <AlertBanner
         level="warning"
-        message="わが家の備えを確認しよう — 適正な備蓄が家族と周囲の人を守る"
+        message="備蓄は配給や相互支援が届くまでの時間を稼ぐ手段 — わが家に足りないものを確認しよう"
       />
 
       {/* ── パーソナライズフィルタ ── */}
@@ -545,7 +545,7 @@ export const Prepare: FC = () => {
       </Accordion>
 
       <p className="text-xs text-neutral-600 font-mono text-center">
-        備蓄は「もしも」のためではなく「いつか必ず来る」ための投資です。物資だけでなく、情報・つながり・行動力を備えよ。
+        備蓄は自給自足のためではなく、配給や相互支援が届くまでの橋渡し。物資だけでなく、情報・つながり・行動力を備えよう。
       </p>
     </div>
   );

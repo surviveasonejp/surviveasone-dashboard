@@ -107,7 +107,7 @@ export const FamilyMeter: FC = () => {
           <span className="text-[#f59e0b]">FAMILY SURVIVAL</span> METER
         </h1>
         <p className="text-neutral-500 text-sm">
-          あなたの家庭はどれだけ持ちこたえられるか — 備蓄を入力してランクを確認
+          配給や相互支援が届くまで、あなたの家庭はどれだけ持ちこたえられるか
         </p>
       </div>
 

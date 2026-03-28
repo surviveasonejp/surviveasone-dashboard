@@ -130,7 +130,7 @@ export const Landing: FC = () => {
             乳幼児・透析・在宅医療・介護——インフラ停止時に特別な備えが必要な家庭は日本人口の<span className="text-[#ef4444] font-bold">約20%</span>
           </p>
           <p className="text-xs text-neutral-500">
-            必要なのは買い占めではなく「わが家に何が足りないか」の確認。適正量の備蓄が、あなたの家族と周囲の人を守る。
+            備蓄は国からの配給や地域の相互支援が届くまでの時間を稼ぐ手段。買い占めではなく「わが家に何が足りないか」の確認を。
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
