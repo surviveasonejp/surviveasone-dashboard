@@ -185,6 +185,71 @@ export const About: FC = () => {
         </div>
       </div>
 
+      {/* 精度検証レポート */}
+      <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-6 space-y-4">
+        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">精度検証レポート（2026年3月28日時点）</h2>
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          封鎖開始（3月1日）から28日間の実データとシミュレーション予測の照合。
+          詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-[#22c55e] underline underline-offset-2">/api/validation</a>で取得可能。
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-neutral-500 font-mono border-b border-[#1e2a36]">
+                <th className="px-3 py-2 text-left">カテゴリ</th>
+                <th className="px-3 py-2 text-left">シミュレーション予測</th>
+                <th className="px-3 py-2 text-left">実際に起きたこと</th>
+                <th className="px-3 py-2 text-left">評価</th>
+              </tr>
+            </thead>
+            <tbody className="text-neutral-400">
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">ナフサ枯渇</td>
+                <td className="px-3 py-2">napthaFactorベースで包装材消失を予測</td>
+                <td className="px-3 py-2">ナフサ在庫20日分（3月下旬限界）。12拠点中半数減産。出光停止通知済み。石化協「4月維持、5月以降焦点」</td>
+                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">ガソリン価格</td>
+                <td className="px-3 py-2">50%閾値で価格暴騰を予測</td>
+                <td className="px-3 py-2">店頭最高値190.8円。政府が補助金48.1円/L（過去最高）で170円台に抑制。在庫50%未達のためモデル閾値未到達</td>
+                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">買い占め</td>
+                <td className="px-3 py-2">在庫50%以下でパニック買い発生と予測</td>
+                <td className="px-3 py-2">全国的なパニック買いは未発生。韓国ではごみ袋買い占め。日本では一部GSが自主数量制限</td>
+                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">代替供給</td>
+                <td className="px-3 py-2">28日目で代替ルート到着を予測</td>
+                <td className="px-3 py-2">3月28日に代替第1便が今治沖に到着確認（太陽石油・サウジ産原油10万kL）</td>
+                <td className="px-3 py-2 text-[#22c55e]">一致</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">SPR放出</td>
+                <td className="px-3 py-2">14日目に国家備蓄放出開始</td>
+                <td className="px-3 py-2">3月16日（15日目）に民間備蓄放出開始、3月26日（25日目）に国家備蓄放出開始</td>
+                <td className="px-3 py-2 text-[#f59e0b]">やや遅延</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2 font-mono text-neutral-300">建材・樹脂</td>
+                <td className="px-3 py-2">食品中心。建材への波及は未モデル化</td>
+                <td className="px-3 py-2">フクビ化学が4月1日から全製品供給制限を発表。モデルの範囲外で影響発生</td>
+                <td className="px-3 py-2 text-[#f59e0b]">モデル外</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[10px] text-neutral-600">
+          評価基準: 「一致」=日数・事象が正確に一致。「整合」=方向性と規模感が合致。「やや遅延」=発生したが予測日と数日のずれ。「モデル外」=現在のモデルがカバーしていない領域。
+          検証用API: <a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-neutral-500 underline underline-offset-2">/api/validation</a> |
+          出典マッピング: <a href="https://surviveasonejp.net/api/sources" target="_blank" rel="noopener noreferrer" className="text-neutral-500 underline underline-offset-2">/api/sources</a> |
+          計算モデル: <a href="https://surviveasonejp.net/api/methodology" target="_blank" rel="noopener noreferrer" className="text-neutral-500 underline underline-offset-2">/api/methodology</a>
+        </p>
+      </div>
+
       {/* データソース */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-[#1e2a36]">
