@@ -5,7 +5,7 @@
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
     "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-28時点で全船のAIS位置を確認",
-    "note": "Phase 3初期スコープ: 13隻の指定船舶（代替ルート3隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。距離はマラッカ/ロンボク海峡経由の標準航路"
+    "note": "15隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。KHURAIS/NCC HUDAは渡邉英徳教授(東大)のOSINT分析+MarineTraffic AISで確認（2026-03-28）"
   },
   "chokepoints": [
     { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。3月26日: イランがタンカー10隻の通航を許可（パキスタン国旗掲揚、限定的緩和）" },
@@ -259,6 +259,44 @@
       "status": "調達中",
       "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.95, "combined": 0.812 },
       "note": "経産相発表(2026-03-24): 中東以外の地域から調達した原油。4月25日到着予定。高市首相は代替調達先として中央アジア・南米・カナダ・シンガポールを列挙（日経報道）。ホルムズ・バベルマンデブ両海峡を回避するため到着確率が高い"
+    },
+    {
+      "id": "vlcc-alt-04",
+      "name": "KHURAIS",
+      "imo": "9783679",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "アインスフナ（エジプト・スエズ湾）",
+      "departurePort": "Ain Sukhna",
+      "destination": "四日市",
+      "destinationPort": "Yokkaichi",
+      "distanceToJapan_nm": 8500,
+      "speed_knots": 13.3,
+      "eta_days": 18.0,
+      "cargo_t": 300000,
+      "cargoType": "原油（サウジ産・紅海/スエズ経由）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.8, "route": 0.9, "military": 0.85, "combined": 0.612 },
+      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。300,000DWT。2018年建造（現代三湖重工業）。3月28日AIS: アデン湾付近を13.3knで航行中。3/19アインスフナ出港→スエズ運河→紅海→バベルマンデブ通過→四日市。ETA 4/15。渡邉英徳教授(東大)のOSINT分析で確認。サウジ国営による代替供給"
+    },
+    {
+      "id": "tanker-alt-05",
+      "name": "NCC HUDA",
+      "imo": "9399272",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "ヤンブー（サウジ西岸）",
+      "departurePort": "Yanbu",
+      "destination": "四日市",
+      "destinationPort": "Yokkaichi",
+      "distanceToJapan_nm": 7500,
+      "speed_knots": 14.5,
+      "eta_days": 13.0,
+      "cargo_t": 45459,
+      "cargoType": "石油/化学品（サウジ産・紅海ルート）",
+      "status": "航行中",
+      "arrivalProbability": { "insurance": 0.85, "route": 0.9, "military": 0.85, "combined": 0.650 },
+      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。3月28日AIS: ベンガル湾(27.8°N/89.2°E)を14.5knで四日市向け航行中。3/18ヤンブー出港。ETA 4/10。渡邉英徳教授(東大)のOSINT分析で確認"
     }
   ]
 }

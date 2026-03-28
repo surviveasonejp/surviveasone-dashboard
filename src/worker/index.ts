@@ -50,7 +50,6 @@ import {
   getAllCountdowns,
   calcTankerArrivals,
   calcFoodDepletion,
-  calcFamilySurvival,
   calcRegionCollapse,
   mapReservesRow,
   mapConsumptionRow,
@@ -339,8 +338,6 @@ async function handleApiRoute(
       return handleTankerUpdate(request, env);
     case "/api/ais":
       return handleAis(env);
-    case "/api/family-survival":
-      return handleFamilySurvival(request);
     case "/api/summary":
       return handleSummary(url, env);
     case "/api/simulate":
@@ -355,7 +352,7 @@ async function handleApiRoute(
     case "/api":
       return jsonResponse({
         name: "Survive as One API",
-        version: "0.2.0",
+        version: "0.3.0",
         docs: "https://surviveasonejp.org/api-docs",
         openapi: "https://surviveasonejp.net/api/openapi.json",
         endpoints: {
@@ -368,7 +365,6 @@ async function handleApiRoute(
           "GET /api/simulation?scenario={id}&maxDays={n}": "フロー型在庫シミュレーション（365日タイムライン）",
           "GET /api/food-collapse?scenario={id}": "食品カテゴリ別消失予測",
           "GET /api/tankers": "タンカー13隻の到着予測",
-          "POST /api/family-survival": "家庭生存日数算出（body: {members,waterLiters,foodDays,gasCanisterCount,batteryWh,cashYen}）",
           "GET /api/electricity?area={id}": "電力需給実測データ",
           "GET /api/summary?scenario={id}": "プレーンテキスト概要（LLM・クローラー向け）",
           "GET /api/simulate?scenario={id}": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
@@ -695,39 +691,6 @@ async function handleAis(env: Env): Promise<Response> {
   });
 }
 
-// ─── /api/family-survival ────────────────────────────
-
-async function handleFamilySurvival(request?: Request): Promise<Response> {
-  if (!request || request.method !== "POST") {
-    return jsonResponse({ error: "method_not_allowed", message: "POST only" }, 405);
-  }
-
-  let inputs: FamilyInputs;
-  try {
-    inputs = await request.json() as FamilyInputs;
-  } catch {
-    return jsonResponse({ error: "invalid_body", message: "JSON body required" }, 400);
-  }
-
-  // バリデーション: 全フィールドの型・範囲チェック
-  const v = [
-    { key: "members", val: inputs.members, min: 1, max: 50 },
-    { key: "waterLiters", val: inputs.waterLiters, min: 0, max: 10000 },
-    { key: "foodDays", val: inputs.foodDays, min: 0, max: 365 },
-    { key: "gasCanisterCount", val: inputs.gasCanisterCount, min: 0, max: 1000 },
-    { key: "batteryWh", val: inputs.batteryWh, min: 0, max: 100000 },
-    { key: "cashYen", val: inputs.cashYen, min: 0, max: 100000000 },
-  ];
-  for (const { key, val, min, max } of v) {
-    if (typeof val !== "number" || !Number.isFinite(val) || val < min || val > max) {
-      return jsonResponse({ error: "invalid_input", message: `${key} must be a number between ${min} and ${max}` }, 400);
-    }
-  }
-
-  const data = calcFamilySurvival(inputs);
-  return jsonResponse({ data });
-}
-
 // ─── /api/summary ────────────────────────────────────
 // プレーンテキストで現在の備蓄状況とシミュレーション結果を返す。
 // LLM・クローラー・研究者が直接引用可能な形式。
@@ -883,7 +846,6 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/tankers", desc: "タンカー13隻の到着予測", params: "" },
     { method: "GET", path: "/api/regions", desc: "10電力エリア別パラメータ", params: "" },
     { method: "GET", path: "/api/electricity", desc: "電力需給実測データ", params: "?area=tokyo" },
-    { method: "POST", path: "/api/family-survival", desc: "家庭生存日数算出", params: "body: {members, waterLiters, foodDays, gasCanisterCount, batteryWh, cashYen}" },
     { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要", params: "?scenario=realistic" },
     { method: "GET", path: "/api/data", desc: "全データ概要（HTML）", params: "" },
     { method: "GET", path: "/api/health", desc: "ヘルスチェック", params: "" },
