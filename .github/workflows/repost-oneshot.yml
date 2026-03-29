@@ -1,0 +1,61 @@
+name: Repost Oneshot (delete after use)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/repost-oneshot.yml'
+
+jobs:
+  repost:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Delete old tweet
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          TWEET_ID: '2038266200103563367'
+        run: node .github/scripts/delete-tweet.cjs
+
+      - name: Install Playwright
+        timeout-minutes: 2
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Take screenshot
+        timeout-minutes: 1
+        env:
+          RELEASE_BODY: '<!-- screenshot: /collapse-map -->'
+        run: node .github/scripts/take-screenshot.cjs
+
+      - name: Post to X
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          RELEASE_TAG: ''
+          RELEASE_NAME: ''
+          RELEASE_URL: ''
+          RELEASE_BODY: |
+            <!-- tweet: 【技術解説】物流崩壊シミュレーションを実装
+
+            石油在庫に連動した物流稼働率モデル:
+            ・在庫50%→稼働100%
+            ・在庫30%→70%（長距離停止）
+            ・在庫10%→30%（近距離のみ）
+            ・在庫0%→完全停止
+
+            CollapseMapで地域間の石油供給フロー（タンカー・ローリー・鉄道）を可視化 →
+            surviveasonejp.org/collapse-map
+
+            #surviveasonejp #シミュレーション -->
+        run: node .github/scripts/post-to-x.cjs
