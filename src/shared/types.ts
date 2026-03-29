@@ -2,7 +2,7 @@
 
 export type AlertLevel = "critical" | "warning" | "caution" | "safe";
 export type SurvivalRank = "S" | "A" | "B" | "C" | "D" | "F";
-export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop" | "water_pressure" | "water_cutoff" | "water_sanitation" | "waste_collection" | "waste_incineration";
+export type ThresholdType = "price_spike" | "rationing" | "distribution" | "stop" | "water_pressure" | "water_cutoff" | "water_sanitation" | "waste_collection" | "waste_incineration" | "logistics_limit" | "logistics_stop";
 
 export interface ResourceCountdown {
   label: string;
@@ -26,6 +26,8 @@ export interface RegionCollapse {
   hasLiveData: boolean;
   /** 連系線融通による延命日数（正=受電側で延命, 0=影響なし） */
   interconnectionBonusDays: number;
+  /** 物流崩壊日数（トラック燃料枯渇による配送停止までの日数） */
+  logisticsCollapseDays: number;
 }
 
 export interface TankerInfo {
@@ -95,12 +97,14 @@ export interface FlowState {
   lngStock_t: number;
   oilSupply_kL: number;
   lngSupply_t: number;
+  /** 物流稼働率 0-100%（石油在庫に連動した全国トラック物流の残存能力） */
+  logisticsCapacity_pct: number;
 }
 
 export interface ThresholdEvent {
   day: number;
   type: ThresholdType;
-  resource: "oil" | "lng" | "power" | "water";
+  resource: "oil" | "lng" | "power" | "water" | "logistics";
   stockPercent: number;
   label: string;
 }

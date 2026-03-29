@@ -13,6 +13,7 @@ import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 export const CollapseMap: FC = () => {
   const { regions, loading: regionsLoading } = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
+  const [showLogistics, setShowLogistics] = useState(false);
   const userRegion = useUserRegion();
 
   // 位置情報で初期選択
@@ -51,11 +52,24 @@ export const CollapseMap: FC = () => {
       {/* 地図 + 詳細 2カラム */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={() => setShowLogistics(!showLogistics)}
+              className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${
+                showLogistics
+                  ? "border-[#8b5cf6] text-[#8b5cf6] bg-[#8b5cf6]/10"
+                  : "border-[#1e2a36] text-neutral-500 hover:text-neutral-400"
+              }`}
+            >
+              🚚 物流フロー {showLogistics ? "ON" : "OFF"}
+            </button>
+          </div>
           <RegionMap
             regions={regions}
             onSelectRegion={setSelectedRegion}
             selectedId={selectedRegion?.id ?? null}
             loading={regionsLoading}
+            showLogisticsFlow={showLogistics}
           />
         </div>
         <div>
@@ -79,6 +93,7 @@ export const CollapseMap: FC = () => {
                 <th className="px-4 py-2 text-right">石油枯渇</th>
                 <th className="px-4 py-2 text-right">LNG枯渇</th>
                 <th className="px-4 py-2 text-right">電力崩壊</th>
+                <th className="px-4 py-2 text-right">物流崩壊</th>
               </tr>
             </thead>
             <tbody>
@@ -122,6 +137,10 @@ export const CollapseMap: FC = () => {
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       <div>{formatDecimal(region.powerCollapseDays)}日</div>
                       <div className="text-xs text-neutral-400">{formatDepletionDate(region.powerCollapseDays)}</div>
+                    </td>
+                    <td className="px-4 py-2 text-right font-mono text-[#8b5cf6]">
+                      <div>{formatDecimal(region.logisticsCollapseDays)}日</div>
+                      <div className="text-xs text-neutral-400">{formatDepletionDate(region.logisticsCollapseDays)}</div>
                     </td>
                   </tr>
                 );

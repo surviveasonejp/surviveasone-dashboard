@@ -23,7 +23,7 @@ const EMPTY_SIM: FlowSimulationResult = {
 };
 
 /** フローシミュレーションの閾値イベントから動的にサプライチェーン崩壊ステップを生成 */
-function buildChainSteps(sim: FlowSimulationResult): Array<{ label: string; color: string; days: number }> {
+function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollapse | null): Array<{ label: string; color: string; days: number }> {
   const findOilThresholdDay = (type: string): number | null => {
     const ev = sim.thresholds.find((t) => t.resource === "oil" && t.type === type);
     return ev ? ev.day : null;
@@ -55,8 +55,13 @@ function buildChainSteps(sim: FlowSimulationResult): Array<{ label: string; colo
     ? oilDistributionDay
     : Math.round(sim.oilDepletionDay * 0.7);
 
-  // 物流停止: 供給制限発令時点
-  const logisticsDay = oilRationingDay ?? Math.round(sim.oilDepletionDay * 0.5);
+  // 物流停止: 地域選択時はlogisticsCollapseDaysを使用、未選択時はフォールバック
+  const logisticsLimitDay = selectedRegion
+    ? Math.round(selectedRegion.logisticsCollapseDays * 0.7)
+    : (oilRationingDay ?? Math.round(sim.oilDepletionDay * 0.5));
+  const logisticsStopDay = selectedRegion
+    ? selectedRegion.logisticsCollapseDays
+    : sim.oilDepletionDay;
 
   const steps: Array<{ label: string; color: string; days: number }> = [
     { label: "ホルムズ海峡封鎖", color: "#ef4444", days: 0 },
@@ -68,11 +73,11 @@ function buildChainSteps(sim: FlowSimulationResult): Array<{ label: string; colo
 
   steps.push(
     { label: "ナフサ供給制約 → エチレン減産開始", color: "#f59e0b", days: naphthaConstraintDay },
-    { label: "軽油不足 → 物流制限", color: "#ef4444", days: logisticsDay },
+    { label: `物流制限 — 長距離輸送停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "#8b5cf6", days: logisticsLimitDay },
     { label: "包装材・容器・食品トレーの品薄", color: "#f59e0b", days: packagingShortageDay },
     { label: "石化製品の供給停止（塩ビ・PE・PP）", color: "#ef4444", days: petrochemStopDay },
     { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
-    { label: "石油枯渇 → 物流停止による店頭補充停止", color: "#ef4444", days: sim.oilDepletionDay },
+    { label: `物流停止 — 店頭補充停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "#8b5cf6", days: logisticsStopDay },
   );
 
   steps.sort((a, b) => a.days - b.days);
@@ -103,7 +108,7 @@ export const FoodCollapse: FC = () => {
     EMPTY_SIM,
   );
   const sim = simResult ?? EMPTY_SIM;
-  const chainSteps = useMemo(() => buildChainSteps(sim), [sim]);
+  const chainSteps = useMemo(() => buildChainSteps(sim, selectedRegion), [sim, selectedRegion]);
 
   const oilDays = selectedRegion?.oilDepletionDays ?? sim.oilDepletionDay;
   const powerDays = selectedRegion?.powerCollapseDays ?? sim.powerCollapseDay;

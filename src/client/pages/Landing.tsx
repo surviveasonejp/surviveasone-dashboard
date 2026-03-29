@@ -182,7 +182,7 @@ export const Landing: FC = () => {
           to="/collapse-map"
           title="COLLAPSE MAP"
           subtitle="全国10エリア崩壊順"
-          description="原子力15基・再エネ・連系線融通を反映。GPS自動検出であなたの地域をハイライト"
+          description="原子力15基・再エネ・連系線融通・物流フロー可視化。GPS自動検出であなたの地域をハイライト"
           color="#f59e0b"
         />
         <PanelCard
@@ -210,7 +210,7 @@ export const Landing: FC = () => {
           to="/methodology"
           title="METHODOLOGY"
           subtitle="計算モデル・前提条件"
-          description="16の計算式・18データソース・感度分析。全ての前提を公開し検証可能に"
+          description="17の計算式・20データソース・感度分析。全ての前提を公開し検証可能に"
           color="#f59e0b"
         />
       </div>

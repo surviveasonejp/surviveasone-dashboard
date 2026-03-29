@@ -77,9 +77,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
         <DetailRow label="石油枯渇" value={`${formatDecimal(region.oilDepletionDays)}日`} sub={formatDepletionDate(region.oilDepletionDays)} />
         <DetailRow label="LNG枯渇" value={`${formatDecimal(region.lngDepletionDays)}日`} sub={formatDepletionDate(region.lngDepletionDays)} />
         <DetailRow label="電力崩壊" value={`${formatDecimal(region.powerCollapseDays)}日`} sub={formatDepletionDate(region.powerCollapseDays)} />
-        {deliveryStopDay != null && (
-          <DetailRow label="配送制限" value={`${formatDecimal(deliveryStopDay)}日`} sub={`石油枯渇の${logistics?.deliveryDelayDays}日前`} />
-        )}
+        <DetailRow label="物流崩壊" value={`${formatDecimal(region.logisticsCollapseDays)}日`} sub={formatDepletionDate(region.logisticsCollapseDays)} />
       </div>
 
       {/* 国家石油備蓄基地 */}
@@ -123,7 +121,30 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
             <span className="font-mono text-right text-neutral-300">{Math.round(logistics.truckFuelDependency * 100)}%</span>
             <span className="text-neutral-500">給油所数</span>
             <span className="font-mono text-right text-neutral-300">{logistics.gasStationCount.toLocaleString()}箇所</span>
+            {"fuelConsumption_kL_per_day" in logistics && (
+              <>
+                <span className="text-neutral-500">物流用軽油</span>
+                <span className="font-mono text-right text-neutral-300">{(logistics.fuelConsumption_kL_per_day as number).toLocaleString()} kL/日</span>
+              </>
+            )}
+            {"truckFleetCount" in logistics && (
+              <>
+                <span className="text-neutral-500">営業トラック</span>
+                <span className="font-mono text-right text-neutral-300">{(logistics.truckFleetCount as number).toLocaleString()}台</span>
+              </>
+            )}
           </div>
+          {"interRegionSupply" in logistics && (
+            <div className="text-[9px] text-neutral-500 space-y-0.5 border-t border-[#1e2a36] pt-1.5 mt-1">
+              <div className="text-neutral-600 tracking-wider">供給元</div>
+              {(logistics.interRegionSupply as Array<{ from: string; mode: string; capacity_kL_per_day: number; note: string }>).map((route, i) => (
+                <div key={i} className="flex justify-between">
+                  <span className="text-neutral-400">{route.note}</span>
+                  <span className="font-mono text-neutral-500">{route.capacity_kL_per_day.toLocaleString()} kL/日</span>
+                </div>
+              ))}
+            </div>
+          )}
           <p className="text-[9px] text-neutral-600 leading-relaxed">{logistics.note}</p>
           <p className="text-[8px] text-neutral-700">給油所数出典: 資源エネルギー庁 2023年度末</p>
         </div>

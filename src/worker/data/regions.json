@@ -31,6 +31,11 @@
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
       "gasStationCount": 1668,
+      "fuelConsumption_kL_per_day": 2800,
+      "truckFleetCount": 48000,
+      "interRegionSupply": [
+        { "from": "tohoku", "mode": "tanker", "capacity_kL_per_day": 5000, "note": "仙台→苫小牧 内航タンカー" }
+      ],
       "note": "苫小牧製油所→道内各地。広大な面積で末端配送距離が長い。冬季は路面凍結リスク"
     }
   },
@@ -69,6 +74,11 @@
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
       "gasStationCount": 3174,
+      "fuelConsumption_kL_per_day": 4500,
+      "truckFleetCount": 72000,
+      "interRegionSupply": [
+        { "from": "tokyo", "mode": "tanker", "capacity_kL_per_day": 8000, "note": "京浜→仙台港 内航タンカー+鉄道" }
+      ],
       "note": "仙台製油所→東北各地。日本海側は冬季に配送遅延リスク"
     }
   },
@@ -110,6 +120,12 @@
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.85,
       "gasStationCount": 8446,
+      "fuelConsumption_kL_per_day": 19000,
+      "truckFleetCount": 430000,
+      "interRegionSupply": [
+        { "from": "tohoku", "mode": "tanker", "capacity_kL_per_day": 8000, "note": "仙台→京浜 内航タンカー" },
+        { "from": "chubu", "mode": "lorry", "capacity_kL_per_day": 5000, "note": "四日市→関東 タンクローリー+鉄道" }
+      ],
       "note": "京浜工業地帯に製油所7基集中。給油所密度が最高。ただし消費量も最大で枯渇は速い"
     }
   },
@@ -146,6 +162,12 @@
       "deliveryDelayDays": 1,
       "truckFuelDependency": 0.9,
       "gasStationCount": 2464,
+      "fuelConsumption_kL_per_day": 7500,
+      "truckFleetCount": 145000,
+      "interRegionSupply": [
+        { "from": "tokyo", "mode": "lorry", "capacity_kL_per_day": 5000, "note": "京浜→中部 タンクローリー+鉄道" },
+        { "from": "kansai", "mode": "lorry", "capacity_kL_per_day": 4000, "note": "堺→中部 タンクローリー" }
+      ],
       "note": "四日市コンビナート中心。自動車産業への軽油供給が最優先"
     }
   },
@@ -177,6 +199,12 @@
       "deliveryDelayDays": 4,
       "truckFuelDependency": 0.95,
       "gasStationCount": 921,
+      "fuelConsumption_kL_per_day": 1500,
+      "truckFleetCount": 25000,
+      "interRegionSupply": [
+        { "from": "chubu", "mode": "lorry", "capacity_kL_per_day": 3000, "note": "四日市→北陸 タンクローリー+鉄道(日本海縦貫)" },
+        { "from": "kansai", "mode": "lorry", "capacity_kL_per_day": 2000, "note": "堺→北陸 タンクローリー" }
+      ],
       "note": "製油所・LNG基地なし。中部・関西エリアからの陸上輸送に完全依存。配送遅延が最も早く発生"
     }
   },
@@ -213,6 +241,12 @@
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.85,
       "gasStationCount": 3076,
+      "fuelConsumption_kL_per_day": 9500,
+      "truckFleetCount": 200000,
+      "interRegionSupply": [
+        { "from": "chubu", "mode": "lorry", "capacity_kL_per_day": 4000, "note": "四日市→関西 タンクローリー" },
+        { "from": "chugoku", "mode": "tanker", "capacity_kL_per_day": 5000, "note": "水島→堺 内航タンカー" }
+      ],
       "note": "堺コンビナートが拠点。和歌山製油所閉鎖で南部への配送距離が拡大"
     }
   },
@@ -247,6 +281,12 @@
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
       "gasStationCount": 2072,
+      "fuelConsumption_kL_per_day": 3500,
+      "truckFleetCount": 62000,
+      "interRegionSupply": [
+        { "from": "kansai", "mode": "tanker", "capacity_kL_per_day": 5000, "note": "堺→水島 内航タンカー" },
+        { "from": "kyushu", "mode": "tanker", "capacity_kL_per_day": 3000, "note": "大分→下関 内航タンカー" }
+      ],
       "note": "水島コンビナートが国内最大。日本海側（島根・鳥取）への配送は山越えで遅延リスク"
     }
   },
@@ -282,6 +322,12 @@
       "deliveryDelayDays": 3,
       "truckFuelDependency": 0.95,
       "gasStationCount": 1461,
+      "fuelConsumption_kL_per_day": 2200,
+      "truckFleetCount": 38000,
+      "interRegionSupply": [
+        { "from": "chugoku", "mode": "tanker", "capacity_kL_per_day": 4000, "note": "水島→松山/高松 内航タンカー+本四架橋タンクローリー" },
+        { "from": "kansai", "mode": "tanker", "capacity_kL_per_day": 2000, "note": "堺→高松 内航タンカー" }
+      ],
       "note": "今治製油所のみ。本四架橋経由の配送に依存。島嶼部は海上輸送が必要"
     }
   },
@@ -321,6 +367,11 @@
       "deliveryDelayDays": 2,
       "truckFuelDependency": 0.9,
       "gasStationCount": 3815,
+      "fuelConsumption_kL_per_day": 6000,
+      "truckFleetCount": 105000,
+      "interRegionSupply": [
+        { "from": "chugoku", "mode": "tanker", "capacity_kL_per_day": 3000, "note": "水島→北九州/大分 内航タンカー(関門海峡)" }
+      ],
       "note": "大分製油所が拠点。離島(長崎・鹿児島)は海上輸送依存で脆弱"
     }
   },
@@ -353,6 +404,11 @@
       "deliveryDelayDays": 5,
       "truckFuelDependency": 1.0,
       "gasStationCount": 317,
+      "fuelConsumption_kL_per_day": 800,
+      "truckFleetCount": 12000,
+      "interRegionSupply": [
+        { "from": "kyushu", "mode": "tanker", "capacity_kL_per_day": 2500, "note": "鹿児島→那覇 内航タンカー(約48時間)" }
+      ],
       "note": "製油所なし。本土からの海上輸送に100%依存。タンカー途絶で即座に配送停止"
     }
   }

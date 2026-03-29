@@ -29,6 +29,8 @@ const THRESHOLDS: Array<{ percent: number; type: ThresholdType; label: string }>
   { percent: 30, type: "rationing", label: "供給制限（給油制限・奇数偶数制の導入）" },
   { percent: 10, type: "distribution", label: "配給制（政府管理下の燃料・食料分配）" },
   { percent: 0, type: "stop", label: "完全停止（備蓄ゼロ・自力生存へ）" },
+  { percent: 30, type: "logistics_limit", label: "物流制限（トラック配車50%制限・長距離輸送停止）" },
+  { percent: 5, type: "logistics_stop", label: "物流停止（トラック燃料枯渇・配送完全停止）" },
 ];
 
 // ─── 遅延パラメータ ──────────────────────────────────
@@ -308,12 +310,21 @@ export function runFlowSimulation(
     const oilSupply = Math.min(dailyOil, oilStock);
     const lngSupply = Math.min(lngConsumption, lngStock + lngContinuingSupply + lngHormuzRecovery);
 
+    // 物流稼働率: 石油在庫%に連動
+    const oilPctForLogistics = (oilStock / initialOil) * 100;
+    const logisticsCapacity_pct = oilPctForLogistics > 50 ? 100
+      : oilPctForLogistics > 30 ? 70
+      : oilPctForLogistics > 10 ? 30
+      : oilPctForLogistics > 0 ? 10
+      : 0;
+
     timeline.push({
       day,
       oilStock_kL: Math.round(oilStock),
       lngStock_t: Math.round(lngStock),
       oilSupply_kL: Math.round(oilSupply),
       lngSupply_t: Math.round(lngSupply),
+      logisticsCapacity_pct,
     });
 
     // 閾値判定
@@ -323,12 +334,13 @@ export function runFlowSimulation(
     for (const th of THRESHOLDS) {
       if (oilPercentNow <= th.percent && !oilThresholdHit.has(th.percent)) {
         oilThresholdHit.add(th.percent);
+        const isLogistics = th.type === "logistics_limit" || th.type === "logistics_stop";
         thresholds.push({
           day,
           type: th.type,
-          resource: "oil",
+          resource: isLogistics ? "logistics" : "oil",
           stockPercent: Math.round(oilPercentNow * 10) / 10,
-          label: `石油 ${th.label}`,
+          label: isLogistics ? th.label : `石油 ${th.label}`,
         });
         if (th.type === "rationing") oilRationFactor = 0.7;
         if (th.type === "distribution") oilRationFactor = 0.4;

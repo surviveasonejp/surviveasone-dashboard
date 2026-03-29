@@ -2,12 +2,15 @@ import { type FC, useState, useMemo } from "react";
 import type { RegionCollapse } from "../../shared/types";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import prefectureData from "../data/japan-prefectures.json";
+import staticRegions from "../../worker/data/regions.json";
 
 interface RegionMapProps {
   regions: RegionCollapse[];
   onSelectRegion: (region: RegionCollapse) => void;
   selectedId: string | null;
   loading?: boolean;
+  /** 物流フロー矢印を表示 */
+  showLogisticsFlow?: boolean;
 }
 
 interface PrefectureEntry {
@@ -51,7 +54,26 @@ function getRegionFill(collapseDays: number, isSelected: boolean, isHovered: boo
   return `${base}88`;
 }
 
-export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selectedId, loading = false }) => {
+/** 物流フロールートを構築（regions.jsonのinterRegionSupplyから） */
+function buildLogisticsRoutes(): Array<{ from: string; to: string; capacity: number; mode: string }> {
+  const routes: Array<{ from: string; to: string; capacity: number; mode: string }> = [];
+  for (const region of staticRegions) {
+    const supply = region.logistics?.interRegionSupply;
+    if (!supply) continue;
+    for (const route of supply as Array<{ from: string; mode: string; capacity_kL_per_day: number }>) {
+      routes.push({ from: route.from, to: region.id, capacity: route.capacity_kL_per_day, mode: route.mode });
+    }
+  }
+  return routes;
+}
+
+const MODE_DASH: Record<string, string> = {
+  tanker: "6 3",   // 内航タンカー: 破線
+  lorry: "",        // タンクローリー: 実線
+  rail: "3 3",      // 鉄道: 細かい破線
+};
+
+export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selectedId, loading = false, showLogisticsFlow = false }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const regionMap = useMemo(() => new Map(regions.map((r) => [r.id, r])), [regions]);
   const prefByRegion = useMemo(() => groupByRegion(), []);
@@ -160,6 +182,48 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
 
       {/* 沖縄ラベル（インセット内） */}
       {renderLabel("okinawa")}
+
+      {/* 物流フロー矢印 */}
+      {showLogisticsFlow && (() => {
+        const routes = buildLogisticsRoutes();
+        const maxCap = Math.max(...routes.map((r) => r.capacity), 1);
+        return (
+          <>
+            <defs>
+              <marker id="logistics-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#8b5cf6" opacity="0.7" />
+              </marker>
+            </defs>
+            {routes.map((route, i) => {
+              const fromPos = LABEL_POSITIONS[route.from];
+              const toPos = LABEL_POSITIONS[route.to];
+              if (!fromPos || !toPos) return null;
+              const strokeWidth = 1 + (route.capacity / maxCap) * 3;
+              const dash = MODE_DASH[route.mode] ?? "";
+              // 矢印がラベルに重ならないよう、15px手前で止める
+              const dx = toPos.x - fromPos.x;
+              const dy = toPos.y - fromPos.y;
+              const len = Math.sqrt(dx * dx + dy * dy);
+              const offset = 15;
+              const x1 = fromPos.x + (dx / len) * offset;
+              const y1 = fromPos.y + (dy / len) * offset;
+              const x2 = toPos.x - (dx / len) * offset;
+              const y2 = toPos.y - (dy / len) * offset;
+              return (
+                <line
+                  key={i}
+                  x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke="#8b5cf6"
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={dash}
+                  opacity={0.5}
+                  markerEnd="url(#logistics-arrow)"
+                />
+              );
+            })}
+          </>
+        );
+      })()}
     </svg>
   );
 };

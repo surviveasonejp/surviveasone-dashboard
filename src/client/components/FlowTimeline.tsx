@@ -13,6 +13,7 @@ const RESOURCE_COLORS = {
   lng: "#94a3b8",
   power: "#ef4444",
   water: "#3b82f6",
+  logistics: "#8b5cf6",
 };
 
 const EVENT_ICON: Record<string, string> = {
@@ -25,6 +26,8 @@ const EVENT_ICON: Record<string, string> = {
   water_sanitation: "☠",
   waste_collection: "🗑",
   waste_incineration: "🔥",
+  logistics_limit: "🚚",
+  logistics_stop: "⛔",
 };
 
 // 崩壊フェーズの背景帯
@@ -360,7 +363,8 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
     event.resource === "oil" ? "石油" :
     event.resource === "lng" ? "LNG" :
     event.resource === "power" ? "電力" :
-    event.resource === "water" ? "水道" : "";
+    event.resource === "water" ? "水道" :
+    event.resource === "logistics" ? "物流" : "";
 
   return (
     <div className="flex items-center gap-2 group" role="listitem" aria-label={`${event.day}日目: ${event.label}（${resourceLabel}）`}>

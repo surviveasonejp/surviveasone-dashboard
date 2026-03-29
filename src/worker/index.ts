@@ -575,7 +575,7 @@ async function handleFoodCollapse(url: URL, env: Env): Promise<Response> {
   }
 
   const { reservesData, consumptionData } = await getReservesAndConsumption(env);
-  const data = calcFoodDepletion(reservesData, consumptionData, null, scenario);
+  const data = calcFoodDepletion(reservesData, consumptionData, null, scenario, region || undefined);
   await setCache(env.CACHE, cacheKey, data, CACHE_TTL.SIMULATION);
   return jsonResponse({ data, cache: "miss" });
 }

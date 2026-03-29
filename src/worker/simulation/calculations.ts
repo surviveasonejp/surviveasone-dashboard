@@ -175,6 +175,7 @@ export function calcFoodDepletion(
   consumptionData: ConsumptionData | null,
   params: FoodDepletionParams | null,
   scenarioId: ScenarioId = "realistic",
+  regionId?: string,
 ): FoodProduct[] {
   const r = reservesData ?? getStaticReserves();
   const c = consumptionData ?? getStaticConsumption();
@@ -182,9 +183,18 @@ export function calcFoodDepletion(
   const oilDays = params?.oilDays ?? calcOilDays(r, c, scenarioId);
   const powerDays = params?.powerDays ?? calcPowerDays(r, c, scenarioId);
 
+  // 地域別の物流補正: 配送遅延と燃料依存度で商品到達が早く/遅く停止する
+  const regionData = regionId
+    ? staticRegionsData.find((sr) => sr.id === regionId)
+    : null;
+  const deliveryDelay = regionData?.logistics.deliveryDelayDays ?? 0;
+  const truckDependency = regionData?.logistics.truckFuelDependency ?? 0.9;
+
   return staticFoodData.products.map((product) => {
-    const dieselCollapse = product.dieselFactor > 0
-      ? oilDays * (1 - product.dieselFactor)
+    // dieselFactor に地域のトラック燃料依存率を乗算して地域補正
+    const regionalDieselFactor = product.dieselFactor * truckDependency;
+    const dieselCollapse = regionalDieselFactor > 0
+      ? oilDays * (1 - regionalDieselFactor) - deliveryDelay
       : Infinity;
     const napthaCollapse = product.napthaFactor > 0
       ? oilDays * (1 - product.napthaFactor)
@@ -193,7 +203,7 @@ export function calcFoodDepletion(
       ? powerDays * (1 - product.powerFactor)
       : Infinity;
 
-    const supplyChainCollapse = Math.min(dieselCollapse, napthaCollapse, powerCollapse);
+    const supplyChainCollapse = Math.max(0, Math.min(dieselCollapse, napthaCollapse, powerCollapse));
     const collapseDays = supplyChainCollapse + product.shelfLifeDays;
 
     return {
@@ -311,7 +321,13 @@ export function calcRegionCollapse(
         thermalShare = thermalShare * (1 - nuclearCoverage);
 
         const powerCollapse = lngDepletion * thermalShare;
-        const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
+
+        // 物流崩壊: 石油枯渇×トラック燃料依存率−配送遅延バッファ
+        const staticRegion = staticRegionsData.find((sr) => sr.id === region.id);
+        const logisticsCollapseDays = staticRegion
+          ? oilDepletion * staticRegion.logistics.truckFuelDependency - staticRegion.logistics.deliveryDelayDays
+          : oilDepletion;
+        const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse, logisticsCollapseDays);
 
         return {
           id: region.id,
@@ -326,6 +342,7 @@ export function calcRegionCollapse(
           note: region.note,
           hasLiveData: electricityMap.has(region.id),
           interconnectionBonusDays: 0,
+          logisticsCollapseDays,
         };
       });
     return applyInterconnectionBonus(results);
@@ -386,7 +403,10 @@ export function calcRegionCollapse(
       const regionalThermalShare = r.thermalShareRate * (1 - nuclearCoverageRate - renewableCoverageRate);
 
       const powerCollapse = lngDepletion * Math.max(0, regionalThermalShare);
-      const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse);
+
+      // 物流崩壊: 石油枯渇×トラック燃料依存率−配送遅延バッファ
+      const logisticsCollapseDays = oilDepletion * region.logistics.truckFuelDependency - region.logistics.deliveryDelayDays;
+      const collapseDays = Math.min(oilDepletion, lngDepletion, powerCollapse, logisticsCollapseDays);
 
       return {
         id: region.id,
@@ -401,6 +421,7 @@ export function calcRegionCollapse(
         note: region.note,
         hasLiveData: false,
         interconnectionBonusDays: 0,
+        logisticsCollapseDays,
       };
     });
   return applyInterconnectionBonus(results);
@@ -490,6 +511,7 @@ function applyInterconnectionBonus(regions: RegionCollapse[]): RegionCollapse[] 
         region.oilDepletionDays,
         region.lngDepletionDays,
         region.powerCollapseDays,
+        region.logisticsCollapseDays,
       );
     }
   }
