@@ -9,6 +9,7 @@ const accessTokenSecret = process.env.X_ACCESS_TOKEN_SECRET;
 const tag = process.env.RELEASE_TAG;
 const name = process.env.RELEASE_NAME;
 const url = process.env.RELEASE_URL;
+const releaseBody = process.env.RELEASE_BODY || '';
 
 // OAuth 1.0a signature
 function oauthSign(method, baseUrl, params, consumerSecret, tokenSecret) {
@@ -80,16 +81,28 @@ async function uploadMedia() {
   return JSON.parse(res.body).media_id_string;
 }
 
+// リリースbodyから <!-- tweet: ... --> ブロックを抽出
+// リリース作成時にX投稿の文面を制御できる
+// 例: <!-- tweet: 【データ更新】タンカー追跡を17隻に拡大\n... -->
+function extractTweetFromBody(body) {
+  const match = body.match(/<!--\s*tweet:\s*([\s\S]*?)-->/);
+  if (!match) return null;
+  const text = match[1].trim();
+  if (text.length === 0 || text.length > 280) return null;
+  return text;
+}
+
 async function postTweet(mediaId) {
-  const lines = [
-    '【' + tag + ' リリース】' + name,
+  // 優先順: 1) リリースbody内の <!-- tweet: --> 2) デフォルトテンプレート
+  const customTweet = extractTweetFromBody(releaseBody);
+  const text = customTweet || [
+    '【データ更新 ' + tag + '】' + name,
     '',
+    'シミュレーションを更新しました →',
     'surviveasonejp.org',
-    url,
     '',
-    '#surviveasonejp #備蓄確認 #エネルギー安全保障 #オープンデータ',
-  ];
-  const text = lines.join('\n');
+    '#surviveasonejp #備蓄確認',
+  ].join('\n');
 
   const tweetBody = JSON.stringify({
     text: text,
