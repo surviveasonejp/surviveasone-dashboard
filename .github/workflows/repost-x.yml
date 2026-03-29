@@ -1,0 +1,60 @@
+name: Repost to X
+
+on:
+  workflow_dispatch:
+    inputs:
+      delete_tweet_id:
+        description: '削除するツイートID（空欄なら削除しない）'
+        required: false
+        default: ''
+      screenshot_path:
+        description: 'スクリーンショット対象パス（例: /collapse-map）'
+        required: true
+        default: '/collapse-map'
+      tweet_text:
+        description: '投稿テキスト（280文字以内）'
+        required: true
+
+jobs:
+  repost:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Delete old tweet
+        if: inputs.delete_tweet_id != ''
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          TWEET_ID: ${{ inputs.delete_tweet_id }}
+        run: node .github/scripts/delete-tweet.cjs
+
+      - name: Install Playwright
+        timeout-minutes: 2
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          npm install playwright
+          npx playwright install chromium --with-deps
+
+      - name: Take screenshot
+        timeout-minutes: 1
+        env:
+          RELEASE_BODY: ${{ format('<!-- screenshot: {0} -->', inputs.screenshot_path) }}
+        run: node .github/scripts/take-screenshot.cjs
+
+      - name: Post to X
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          RELEASE_TAG: ''
+          RELEASE_NAME: ''
+          RELEASE_URL: ''
+          RELEASE_BODY: ${{ format('<!-- tweet: {0} -->', inputs.tweet_text) }}
+        run: node .github/scripts/post-to-x.cjs
