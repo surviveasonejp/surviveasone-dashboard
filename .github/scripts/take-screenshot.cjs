@@ -1,10 +1,19 @@
 const { chromium } = require('playwright');
 
-// リリースノートのキーワードからスクリーンショット対象ページとフォーカス要素を判定
-const body = (process.env.RELEASE_BODY || '').toLowerCase();
+// スクリーンショット対象の決定:
+// 1. リリースbody内の <!-- screenshot: /path --> 指定を最優先
+// 2. フォールバック: <!-- tweet: --> ブロックを除いたbodyのキーワードマッチ
+const rawBody = process.env.RELEASE_BODY || '';
+
+// <!-- screenshot: /collapse-map --> 形式の明示指定
+const screenshotMatch = rawBody.match(/<!--\s*screenshot:\s*(\/[^\s]*)\s*-->/);
+
+// キーワードマッチ用: <!-- tweet: --> ブロックを除外してからマッチ
+const bodyForKeywords = rawBody.replace(/<!--\s*tweet:[\s\S]*?-->/g, '').toLowerCase();
+
 const targets = [
   { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: '[data-screenshot="tanker-map"]', fallback: 'svg[aria-label="タンカー推定航跡マップ"]' },
-  { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地'], page: '/collapse-map', selector: '[data-screenshot="collapse-map"]' },
+  { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地', '物流'], page: '/collapse-map', selector: '[data-screenshot="collapse-map"]' },
   { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: '[data-screenshot="food-collapse"]' },
   { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: '[data-screenshot="family-rank"]' },
   { match: ['フロー', 'simulation', 'カウントダウン', 'clock', 'タイムライン'], page: '/countdown', selector: '[data-screenshot="flow-timeline"]' },
@@ -15,12 +24,25 @@ const targets = [
 let targetPage = '/';
 let targetSelector = null;
 let fallbackSelector = null;
-for (const t of targets) {
-  if (t.match.some(m => body.includes(m))) {
-    targetPage = t.page;
-    targetSelector = t.selector;
-    fallbackSelector = t.fallback || null;
-    break;
+
+if (screenshotMatch) {
+  // 明示指定: パスから対応するselectorを探す
+  targetPage = screenshotMatch[1];
+  const matched = targets.find(t => t.page === targetPage);
+  if (matched) {
+    targetSelector = matched.selector;
+    fallbackSelector = matched.fallback || null;
+  }
+  console.log('Screenshot explicitly specified:', targetPage);
+} else {
+  // キーワードマッチ（tweetブロック除外済みのbodyで判定）
+  for (const t of targets) {
+    if (t.match.some(m => bodyForKeywords.includes(m))) {
+      targetPage = t.page;
+      targetSelector = t.selector;
+      fallbackSelector = t.fallback || null;
+      break;
+    }
   }
 }
 
