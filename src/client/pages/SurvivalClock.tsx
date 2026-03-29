@@ -142,9 +142,9 @@ export const SurvivalClock: FC = () => {
         onClick={() => {
           const oil = displayCountdowns.find((c) => c.label === "石油備蓄");
           const text = [
-            `石油備蓄 残り${oil ? Math.round(oil.totalDays) : "???"}日（経産省推計ベース）`,
+            `石油備蓄は現実シナリオで${oil ? Math.round(oil.totalDays) : "???"}日分（経産省推計・3シナリオ中）。`,
             "",
-            "わが家の備蓄は足りているか確認 →",
+            "買い占めではなく、わが家に足りないものの確認を →",
             "surviveasonejp.org/family",
             "",
             "#surviveasonejp #備蓄確認",

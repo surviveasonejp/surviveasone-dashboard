@@ -40,7 +40,10 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   if (compact) {
     return (
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
-        <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1">{label}</div>
+        <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1">
+          {label}
+          <span className="ml-1.5 text-neutral-600">({SCENARIO_LABELS[activeScenario]}シナリオ)</span>
+        </div>
         <div className="flex items-baseline gap-2">
           <span
             className={`font-mono font-bold text-2xl ${isCritical ? "animate-pulse-danger" : ""}`}
@@ -64,7 +67,10 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
 
   return (
     <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 text-center">
-      <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">{label}</div>
+      <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">
+        {label}
+        <span className="ml-1.5 text-neutral-600">({SCENARIO_LABELS[activeScenario]}シナリオ)</span>
+      </div>
       <div
         className={`font-mono font-bold text-6xl md:text-7xl mb-2 ${isCritical ? "animate-pulse-danger" : ""}`}
         style={{ color }}

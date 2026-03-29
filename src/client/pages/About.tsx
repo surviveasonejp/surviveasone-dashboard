@@ -11,7 +11,7 @@ const DATA_SOURCES_LIST = [
   { name: "OCCTO 電力広域的運営推進機関", note: "連系線運用容量10本(2025年度)", auto: false },
   { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー13隻(代替3隻含む)のIMO・航路(2026年3月26日検証済。非日本向け船はバッジ表示)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー17隻(代替5隻含む)のIMO・航路(2026年3月29日検証済。非日本向け船はバッジ表示)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
@@ -54,13 +54,19 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 8",
     label: "モデル誠実性・現実連動",
     status: "completed" as const,
-    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント13件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
+    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント27件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
   },
   {
     phase: "Phase 9",
     label: "当事者リーチ・アクセシビリティ",
     status: "completed" as const,
     items: ["要配慮者チェックリスト(6カテゴリ)", "行動チェックリスト(5カテゴリ)", "住居形態別ガイド", "FAQ構造化データ(9問)", "パーソナライズフィルタ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v3)"],
+  },
+  {
+    phase: "Phase 10",
+    label: "パニック買い抑止・責任ある情報発信",
+    status: "completed" as const,
+    items: ["恐怖フレーム→確認フレーム転換", "SNSシェアテキスト設計", "OGP/FAQシナリオ条件明示", "買い占め抑止メッセージ統合", "CountdownTimerシナリオ表示"],
   },
   {
     phase: "Phase 3",
@@ -137,8 +143,8 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
-            <li>・タンカー13隻（代替ルート3隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年3月26日)</li>
-            <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東の3ルート</li>
+            <li>・タンカー17隻（代替ルート5隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年3月29日)</li>
+            <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
             <li>・セキュリティ監査実施済み（CRITICAL 0/HIGH 0/MEDIUM 0）</li>
@@ -206,7 +212,7 @@ export const About: FC = () => {
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">ナフサ枯渇</td>
                 <td className="px-3 py-2">napthaFactorベースで包装材消失を予測</td>
-                <td className="px-3 py-2">ナフサ在庫20日分（3月下旬限界）。12拠点中半数減産。出光停止通知済み。石化協「4月維持、5月以降焦点」</td>
+                <td className="px-3 py-2">ナフサ在庫20日分（3月下旬が目安）。12拠点中半数減産。出光が減産方針を公表。石化協「4月維持、5月以降焦点」</td>
                 <td className="px-3 py-2 text-[#22c55e]">整合</td>
               </tr>
               <tr className="border-b border-[#162029]">
@@ -218,8 +224,14 @@ export const About: FC = () => {
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">買い占め</td>
                 <td className="px-3 py-2">在庫50%以下でパニック買い発生と予測</td>
-                <td className="px-3 py-2">全国的なパニック買いは未発生。韓国ではごみ袋買い占め。日本では一部GSが自主数量制限</td>
-                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+                <td className="px-3 py-2">石油在庫50%未達だが、医療消耗品で先行発生。ニトリル手袋は封鎖10日目に歯科卸が出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく将来の供給不安による買い溜めが主因。韓国ではごみ袋買い占め</td>
+                <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-3 py-2 font-mono text-neutral-300">医療消耗品</td>
+                <td className="px-3 py-2">ナフサ→石化製品→包装材の連鎖モデル</td>
+                <td className="px-3 py-2">封鎖10日目に歯科卸がニトリルグローブ出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく供給不安による買い溜めが主因</td>
+                <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
               </tr>
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">代替供給</td>

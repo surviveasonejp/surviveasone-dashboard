@@ -25,26 +25,26 @@ const SEGMENTS: Record<string, Segment> = {
     subtitle: "乳幼児・子ども・高校生までのお子さんがいるご家庭",
     heroStat: "3",
     heroUnit: "日",
-    heroLabel: "液体ミルクが店頭から消えるまで",
+    heroLabel: "液体ミルクの店頭在庫（現実シナリオ）",
     heroColor: "#ef4444",
     alertMessage: "日本人の5人に1人がインフラ停止時に特別な備えが必要な家庭に該当します。子育て世帯はその中核です。",
     risks: [
-      { label: "液体ミルク", days: "3日", detail: "冷蔵チェーン崩壊+物流停止で店頭在庫が消失。紙パック内面PE不足で容器生産も停止" },
+      { label: "液体ミルク", days: "3日", detail: "冷蔵チェーン停止+物流制限により店頭への補充が停止する見込み（シナリオに基づく推定）" },
       { label: "おむつ", days: "7-14日", detail: "石化製品（PE/PP）依存。エチレン減産開始で供給制約" },
       { label: "離乳食", days: "3-5日", detail: "レトルトパウチ型は常温で使用可能だが、物流停止で補充不可" },
       { label: "経口補水液", days: "5-7日", detail: "乳幼児の脱水は急速に致命的。体重あたりの必要水分量が大人より多い" },
       { label: "水道", days: "停電+1日", detail: "配水池の重力式貯留(1-3日分)枯渇後、広域断水" },
     ],
     actions: [
-      "【乳幼児】液体ミルク7日分+おむつ14日分+経口補水液7日分を今すぐ確保",
-      "【全年齢】経口補水液・飲料水を大人より多めに備蓄（成長期は必要水分量が多い）",
-      "【全年齢】アレルギー対応食・食べ慣れたおやつを14日分確保（配給では対応されない可能性）",
+      "【乳幼児】液体ミルク7日分+おむつ14日分+経口補水液7日分が足りているか確認",
+      "【全年齢】経口補水液・飲料水を大人より多めに確認（成長期は必要水分量が多い）",
+      "【全年齢】アレルギー対応食・食べ慣れたおやつ14日分の過不足を確認（配給では対応されない可能性）",
       "学校の災害時引き渡し手順と家族の合流方法を確認。高校生は自己判断の場面も想定",
       "かかりつけ医の災害時連絡先を紙に。SNSデマへの対処法を中高生と共有",
     ],
     familyMeterPrompt: "あなたの家庭は何日持ちこたえられる？ 備蓄量を入力して生存ランクを確認",
     prepareAnchor: "sec-infant",
-    metaDescription: "停電でミルクは3日で消える。子育て家庭がホルムズ海峡封鎖で受ける影響と、今日からできる備蓄・行動チェックリスト。",
+    metaDescription: "封鎖シナリオで液体ミルクの店頭在庫は約3日分。子育て家庭がホルムズ海峡封鎖で受ける影響と、わが家に足りないものの確認チェックリスト。",
   },
   dialysis: {
     id: "dialysis",
@@ -63,7 +63,7 @@ const SEGMENTS: Record<string, Segment> = {
       { label: "移動手段", days: "給油制限開始", detail: "ガソリン奇数偶数制で通院困難に。自転車ルートの確認を" },
     ],
     actions: [
-      "透析施設の災害時対応計画を今すぐ入手（代替施設リスト・連絡先）",
+      "透析施設の災害時対応計画を確認（代替施設リスト・連絡先）",
       "低カリウム食品を14日分備蓄（白米・パン・うどん）",
       "腹膜透析への一時切替が可能か主治医と相談",
       "透析手帳・お薬手帳のコピーを防水保管+スマホ撮影",
@@ -71,7 +71,7 @@ const SEGMENTS: Record<string, Segment> = {
     ],
     familyMeterPrompt: "ポータブル電源・水の備蓄量を入力して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-dialysis",
-    metaDescription: "透析患者の猶予は3-4日。ホルムズ海峡封鎖で停電・断水が起きた場合の影響と、家族が今すぐ取るべき行動。",
+    metaDescription: "封鎖シナリオで透析の猶予は3-4日。停電・断水時の影響と、家族が確認すべき備えのチェックリスト。",
   },
   elderly: {
     id: "elderly",
@@ -98,7 +98,7 @@ const SEGMENTS: Record<string, Segment> = {
     ],
     familyMeterPrompt: "医療機器の電力消費を考慮して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-medical",
-    metaDescription: "人工呼吸器は停電8時間が限界。在宅医療・介護・障害のある家族を守るための備蓄と行動チェックリスト。",
+    metaDescription: "封鎖シナリオで人工呼吸器は停電8時間が限界。在宅医療・介護・障害のある家族を守るための備えの確認チェックリスト。",
   },
 };
 
@@ -126,6 +126,7 @@ export const ForSegment: FC = () => {
           {seg.heroStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
         </div>
         <div className="text-sm text-neutral-400">{seg.heroLabel}</div>
+        <div className="text-[10px] text-neutral-600">シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します</div>
       </div>
 
       {/* 崩壊タイムライン */}
@@ -146,7 +147,7 @@ export const ForSegment: FC = () => {
 
       {/* 今すぐやるべきこと */}
       <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-5 space-y-3">
-        <h2 className="font-mono text-xs tracking-wider text-[#22c55e]">今すぐやるべき5つのこと</h2>
+        <h2 className="font-mono text-xs tracking-wider text-[#22c55e]">優先して確認すべき5つのこと</h2>
         <ol className="space-y-2">
           {seg.actions.map((action, i) => (
             <li key={i} className="flex gap-3 text-sm text-neutral-300">

@@ -135,9 +135,9 @@ export const Landing: FC = () => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {[
-            { to: "/for/parents", label: "子育て家庭", sub: "ミルク3日で枯渇", color: "#ef4444" },
-            { to: "/for/dialysis", label: "透析患者の家族", sub: "猶予3-4日", color: "#ef4444" },
-            { to: "/for/elderly", label: "介護・医療機器", sub: "呼吸器8時間", color: "#f59e0b" },
+            { to: "/for/parents", label: "子育て家庭", sub: "備えの確認を", color: "#ef4444" },
+            { to: "/for/dialysis", label: "透析患者の家族", sub: "備えの確認を", color: "#ef4444" },
+            { to: "/for/elderly", label: "介護・医療機器", sub: "備えの確認を", color: "#f59e0b" },
           ].map((seg) => (
             <Link
               key={seg.to}
@@ -160,7 +160,7 @@ export const Landing: FC = () => {
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
-            <p className="text-lg font-bold">あなたの家庭は、何日生き延びられるか？</p>
+            <p className="text-lg font-bold">あなたの家庭の備えは足りていますか？</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
               備蓄量を入力 → 生存日数とランクを即時判定。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
@@ -189,14 +189,14 @@ export const Landing: FC = () => {
           to="/last-tanker"
           title="LAST TANKER"
           subtitle="タンカー追跡"
-          description="実在13隻のAIS追跡。代替ルート3隻（ヤンブー・フジャイラ・非中東）の到着予測"
+          description="実在17隻のAIS追跡。代替ルート5隻（ヤンブー・フジャイラ・非中東・紅海経由2隻）の到着予測"
           color="#94a3b8"
         />
         <PanelCard
           to="/food-collapse"
           title="FOOD COLLAPSE"
-          subtitle="食料消滅タイムライン"
-          description="ナフサ→石化→包装材の連鎖崩壊。牛乳3日・冷凍食品即日・米90日の消失順"
+          subtitle="備蓄の優先順位"
+          description="ナフサ→石化→包装材の連鎖影響。商品カテゴリ別の店頭在庫日数から備蓄の優先順位を確認"
           color="#ef4444"
         />
         <PanelCard

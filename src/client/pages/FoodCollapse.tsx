@@ -12,7 +12,7 @@ import { useApiData } from "../hooks/useApiData";
 import type { RegionCollapse, FlowSimulationResult } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
-import { formatDecimal, formatDepletionDate, formatNumber } from "../lib/formatters";
+import { formatDecimal, formatNumber } from "../lib/formatters";
 
 const EMPTY_SIM: FlowSimulationResult = {
   timeline: [],
@@ -72,7 +72,7 @@ function buildChainSteps(sim: FlowSimulationResult): Array<{ label: string; colo
     { label: "包装材・容器・食品トレーの品薄", color: "#f59e0b", days: packagingShortageDay },
     { label: "石化製品の供給停止（塩ビ・PE・PP）", color: "#ef4444", days: petrochemStopDay },
     { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
-    { label: "石油枯渇 → スーパー棚が空に", color: "#ef4444", days: sim.oilDepletionDay },
+    { label: "石油枯渇 → 物流停止による店頭補充停止", color: "#ef4444", days: sim.oilDepletionDay },
   );
 
   steps.sort((a, b) => a.days - b.days);
@@ -118,7 +118,7 @@ export const FoodCollapse: FC = () => {
           <ScenarioSelector selected={scenario} onChange={setScenario} />
         </div>
         <p className="text-neutral-500 text-sm">
-          商品カテゴリ別の消失予測 — スーパーの棚はいつ空になるか
+          何から備えるべきか — 商品カテゴリ別の店頭在庫リスク
         </p>
       </div>
 
@@ -196,7 +196,7 @@ export const FoodCollapse: FC = () => {
         onRequestGeolocation={userRegion.requestGeolocation}
       />
 
-      {/* 食品消失タイムライン */}
+      {/* 商品別在庫リスク */}
       <div data-screenshot="food-collapse" className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {products.map((product) => {
           const level = getAlertLevel(product.collapseDays);
@@ -215,7 +215,7 @@ export const FoodCollapse: FC = () => {
                 {formatDecimal(product.collapseDays)}
               </div>
               <div className="text-neutral-400 font-mono text-xs">
-                日で消失 — {formatDepletionDate(product.collapseDays)}
+                日分の店頭在庫（{scenario === "optimistic" ? "楽観" : scenario === "pessimistic" ? "悲観" : "現実"}シナリオ）
               </div>
               <p className="text-[10px] text-neutral-600 leading-relaxed">
                 {product.collapseReason}
