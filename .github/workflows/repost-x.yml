@@ -1,4 +1,5 @@
 name: Repost to X
+run-name: "Repost: ${{ inputs.screenshot_path }}"
 
 on:
   workflow_dispatch:
