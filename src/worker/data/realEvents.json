@@ -143,6 +143,14 @@
       "impact": "170円抑制策。補助金予算2,800億円は約1ヶ月で枯渇見込み。IEA協調放出4億バレルと同日"
     },
     {
+      "date": "2026-03-12",
+      "dayOffset": 11,
+      "category": "international",
+      "label": "IEA 3月市場報告: 世界石油需要を3-4月に約100万バレル/日下方修正",
+      "source": "IEA Oil Market Report 2026-03-12",
+      "impact": "航空便欠航・LPG/ナフサ供給途絶・経済悪化が主因。需要破壊がシミュレーションの石油枯渇日数を延ばすバッファとして機能"
+    },
+    {
       "date": "2026-03-17",
       "dayOffset": 16,
       "category": "industry",

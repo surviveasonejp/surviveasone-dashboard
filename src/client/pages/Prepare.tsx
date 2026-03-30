@@ -544,6 +544,101 @@ export const Prepare: FC = () => {
         </div>
       </Accordion>
 
+      {/* ── 備蓄残量別 フェーズ対応ガイド ── */}
+      <Accordion title="備蓄残量別 フェーズ対応ガイド（シミュレーション連動）">
+        <p className="text-xs text-neutral-500 mb-3">
+          シミュレーションの閾値（備蓄50%・30%・10%）に連動した行動指針です。今の状況に合わせて確認してください。
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[
+            {
+              label: "今すぐ（平常時）",
+              pct: "備蓄 > 50%",
+              color: "#22c55e",
+              items: [
+                "水を1人7日分（21L）確認・補充する",
+                "食料は2週間分をローリングストックで管理する",
+                "非常用電源（モバイルバッテリー）を充電しておく",
+                "避難場所・避難ルートを家族で確認する",
+                "かかりつけ医・透析施設・学校の緊急連絡先を紙に書き出す",
+              ],
+            },
+            {
+              label: "価格暴騰フェーズ",
+              pct: "備蓄 50% 割れ",
+              color: "#f59e0b",
+              items: [
+                "燃料を緊急用に分けて保管する（ガソリン携行缶は法令規格を守る）",
+                "処方薬を2ヶ月分まとめて調剤する相談を主治医にする",
+                "現金を一定額（5万円以上）手元に置く（ATM混雑に備え）",
+                "不要な長距離外出・ドライブを控える",
+              ],
+            },
+            {
+              label: "給油制限フェーズ",
+              pct: "備蓄 30% 割れ",
+              color: "#ef4444",
+              items: [
+                "車移動を極力控え、公共交通・自転車ルートを確保する",
+                "市区町村の緊急情報ページ・自治体SNSをブックマークする",
+                "要配慮者（乳幼児・透析・医療機器）の緊急計画を家族で共有する",
+                "近隣と互助グループを組む（特に高齢者・単身世帯）",
+              ],
+            },
+            {
+              label: "配給制フェーズ",
+              pct: "備蓄 10% 割れ",
+              color: "#ef4444",
+              items: [
+                "地域の配給受付に必要な書類（マイナンバーカード等）を準備する",
+                "徒歩・自転車圏内の生活に切り替える",
+                "隣近所と物資の分かち合い・役割分担を話し合う",
+                "農地・食料生産拠点に近い避難先への移動を検討する",
+              ],
+            },
+          ].map((guide) => (
+            <div key={guide.label} className="bg-[#151c24] border rounded-lg p-4 space-y-2" style={{ borderColor: `${guide.color}40` }}>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded" style={{ color: guide.color, backgroundColor: `${guide.color}15`, border: `1px solid ${guide.color}40` }}>
+                  {guide.pct}
+                </span>
+                <span className="font-mono text-xs font-bold" style={{ color: guide.color }}>{guide.label}</span>
+              </div>
+              <ul className="space-y-1">
+                {guide.items.map((item) => (
+                  <li key={item} className="text-xs text-neutral-400 flex gap-2 leading-relaxed">
+                    <span style={{ color: guide.color }} className="shrink-0">▸</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Accordion>
+
+      {/* ── 公式防災ガイドライン ── */}
+      <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-neutral-500">公式防災ガイドライン</h2>
+        <ul className="space-y-1.5">
+          {[
+            { label: "内閣府｜災害の備え（家庭における食料・水の備蓄）", href: "https://www.bousai.go.jp/kohou/kouhoubousai/h22/09/special_01.html" },
+            { label: "農林水産省｜災害時に備えた食品ストックガイド", href: "https://www.maff.go.jp/j/zyukyu/foodstock/guidebook.html" },
+            { label: "国土交通省｜要配慮者利用施設の避難確保計画 作成の手引き（PDF）", href: "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jieisuibou/pdf/tebiki.pdf" },
+          ].map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#3b82f6] hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+              >
+                {link.label} &rarr;
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       <p className="text-xs text-neutral-600 font-mono text-center">
         備蓄は自給自足のためではなく、配給や相互支援が届くまでの橋渡し。物資だけでなく、情報・つながり・行動力を備えよう。
       </p>

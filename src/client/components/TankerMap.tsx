@@ -59,6 +59,22 @@ const JAPAN_DEST_PORTS = new Set([
 const isDimmed = (t: { departurePort: string; destinationPort: string }) =>
   HORMUZ_PORTS.has(t.departurePort) || !JAPAN_DEST_PORTS.has(t.destinationPort);
 
+/** cargo_t 最大値（TAKASAGO 313,989t）— マーカーサイズ正規化の基準 */
+const MAX_CARGO_T = 314000;
+
+/** cargo_t → マーカースケール（0.55〜1.40）*/
+function getMarkerScale(cargo_t: number): number {
+  const t = Math.min(Math.max(cargo_t, 0), MAX_CARGO_T) / MAX_CARGO_T;
+  return 0.55 + t * 0.85;
+}
+
+/** cargo_t → サイズ分類ラベル */
+function getSizeLabel(cargo_t: number): string {
+  if (cargo_t >= 200000) return "超大型";
+  if (cargo_t >= 80000) return "大型";
+  return "中型";
+}
+
 // ─── チョークポイント ──────────────────────────────
 
 const CHOKEPOINTS = [
@@ -275,6 +291,9 @@ export const TankerMap: FC<TankerMapProps> = ({
           const isActive = t.id === activeId;
           const isSelected = t.id === selectedId;
 
+          const scale = getMarkerScale(t.cargo_t);
+          const tw = (w: number) => +(w * scale).toFixed(1);
+
           return (
             <g
               key={t.id}
@@ -286,7 +305,7 @@ export const TankerMap: FC<TankerMapProps> = ({
               onMouseEnter={() => setHoveredId(t.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              {/* パルスリング */}
+              {/* パルスリング（サイズ比例） */}
               {isActive && (
                 <circle
                   cx={p.x}
@@ -299,7 +318,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                 >
                   <animate
                     attributeName="r"
-                    values="10;22"
+                    values={`${tw(10)};${tw(22)}`}
                     dur="1.5s"
                     repeatCount="indefinite"
                   />
@@ -311,10 +330,14 @@ export const TankerMap: FC<TankerMapProps> = ({
                   />
                 </circle>
               )}
-              {/* 本体（進行方向付き三角形） */}
+              {/* 本体（積載量比例サイズ + 進行方向付き三角形） */}
               {p.heading != null ? (
                 <polygon
-                  points={isActive ? "-7,8 7,8 0,-10" : "-5,6 5,6 0,-8"}
+                  points={
+                    isActive
+                      ? `${-tw(7)},${tw(8)} ${tw(7)},${tw(8)} 0,${-tw(10)}`
+                      : `${-tw(5)},${tw(6)} ${tw(5)},${tw(6)} 0,${-tw(8)}`
+                  }
                   transform={`translate(${p.x},${p.y}) rotate(${p.heading})`}
                   fill={color}
                   stroke={isActive ? "#fff" : "#0f1419"}
@@ -326,7 +349,7 @@ export const TankerMap: FC<TankerMapProps> = ({
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={isActive ? 8 : 6}
+                  r={isActive ? tw(8) : tw(6)}
                   fill={color}
                   stroke={isActive ? "#fff" : "#0f1419"}
                   strokeWidth={isActive ? 2 : 1}
@@ -384,6 +407,15 @@ export const TankerMap: FC<TankerMapProps> = ({
           <div className="text-neutral-500">
             {activeTanker.departure} → {activeTanker.destination}
           </div>
+          <div className="text-neutral-500">
+            積載量{" "}
+            <span className="text-neutral-300">
+              {new Intl.NumberFormat("ja-JP").format(activeTanker.cargo_t)}t
+            </span>
+            <span className="ml-1.5 text-neutral-600">
+              ({getSizeLabel(activeTanker.cargo_t)})
+            </span>
+          </div>
           {HORMUZ_PORTS.has(activeTanker.departurePort) ? (
             <div className="text-red-400 font-bold">封鎖時到達不可</div>
           ) : !JAPAN_DEST_PORTS.has(activeTanker.destinationPort) ? (
@@ -425,6 +457,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#94a3b8] opacity-50" />
           到着港
         </span>
+        <span className="text-neutral-700">▲サイズ∝積載量</span>
       </div>
       <div className="absolute bottom-2 right-3">
         <DataBadge confidence="estimated" />

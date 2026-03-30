@@ -1,14 +1,14 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-03-29",
+    "updatedAt": "2026-03-30",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-28時点で全船のAIS位置を確認",
-    "note": "17隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。KHURAIS/NCC HUDAは渡邉英徳教授(東大)のOSINT分析+MarineTraffic AISで確認。ENERGY ADVANCE/LNG MARSを3月29日追加（2026-03-29更新）"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-03-30時点でAIS位置を最新化",
+    "note": "17隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。全船名・IMOは公開情報に基づく実在船舶。KHURAIS/NCC HUDAは渡邉英徳教授(東大)のOSINT分析+MarineTraffic AISで確認。ENERGY ADVANCE/LNG MARSを3月29日追加。2026-03-30更新: VesselFinder AISデータにより速度・ETA・状態を最新化。SEISHU MARUは川崎荷揚げ後PNG回航、DIAMOND GAS ORCHIDは四日市入港確認"
   },
   "chokepoints": [
-    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。3月26日: イランがタンカー10隻の通航を許可（パキスタン国旗掲揚、限定的緩和）" },
+    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。3月27日: IRGCが「通行料制度」を正式化（中国元決済、3/13以降26隻が通過）。日本船舶は3/21イランが通過許可を表明。中国・インド・パキスタン・ロシア・イラクは許可済み。米国・英国・EU等は封鎖継続" },
     { "id": "malacca", "name": "マラッカ海峡", "lat": 2.500, "lon": 101.800, "note": "全長約800km、最狭部2.8km。日量1,600万バレル。VLCCアジア向け主要航路" },
     { "id": "lombok", "name": "ロンボク海峡", "lat": -8.500, "lon": 115.700, "note": "マラッカ代替航路（深喫水VLCC対応）。バリ-ロンボク間" },
     { "id": "babel", "name": "バベルマンデブ海峡", "lat": 12.583, "lon": 43.333, "note": "幅26km。紅海入口。日量600万バレル。スエズ経由代替ルート" },
@@ -51,9 +51,9 @@
       "eta_days": 0,
       "cargo_t": 310000,
       "cargoType": "バラスト（空荷）",
-      "status": "回航中",
+      "status": "入港済",
       "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "商船三井VLCC。IMO 9513402。310,406DWT。マーシャル諸島籍。3月29日AIS: 日本近海で2.2knで航行中。3/23仙台出港→観音浜へ空荷回航中。喫水10.4m（バラスト）。日本国内での空荷移動"
+      "note": "商船三井VLCC。IMO 9513402。310,406DWT。マーシャル諸島籍。3月30日AIS: 東アジア、停泊中(Moored)。3/23仙台出港→観音浜（JP KNN）着、ETA 3/27到着済み。喫水10.4m（バラスト）。日本国内での空荷移動"
     },
     {
       "id": "vlcc-03",
@@ -85,7 +85,7 @@
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 6800,
       "speed_knots": 12.0,
-      "eta_days": 19.5,
+      "eta_days": 18.5,
       "cargo_t": 300000,
       "cargoType": "原油（イラニアンヘビー）",
       "status": "航行中",
@@ -104,7 +104,7 @@
       "destinationPort": "Kiire",
       "distanceToJapan_nm": 6750,
       "speed_knots": 11.7,
-      "eta_days": 2.0,
+      "eta_days": 1.0,
       "cargo_t": 300000,
       "cargoType": "バラスト（空荷）",
       "status": "回航中",
@@ -122,13 +122,13 @@
       "destination": "千葉",
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 3800,
-      "speed_knots": 14.3,
-      "eta_days": 3.0,
+      "speed_knots": 15.2,
+      "eta_days": 6.0,
       "cargo_t": 155000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.95, "route": 0.98, "military": 0.95, "combined": 0.884 },
-      "note": "NYK管理LNG船。IMO 9483877。87,257DWT。日本船籍。2011年建造。LOA 300m。Chevron Gorgon LNGプロジェクト向け。3月28日AIS: バンダ海(18°S/118°E)を千葉向け14.3knで航行中"
+      "note": "NYK管理LNG船。IMO 9483877。87,257DWT。日本船籍。2011年建造。LOA 300m。Chevron Gorgon LNGプロジェクト向け。3月30日AIS: インドネシア海域を15.2knで日本（>JP NEG）向け航行中。3/25バローアイランド出港。ETA 4/5。喫水11.4m"
     },
     {
       "id": "lng-02",
@@ -136,18 +136,18 @@
       "imo": "9666558",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "ダンピア（豪州WA）",
-      "departurePort": "Dampier",
-      "destination": "川崎",
-      "destinationPort": "Kawasaki",
-      "distanceToJapan_nm": 3500,
-      "speed_knots": 11.1,
+      "departure": "川崎（日本）",
+      "departurePort": "Kawasaki",
+      "destination": "ポートモレスビー（PNG）",
+      "destinationPort": "Port Moresby",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 9.3,
       "eta_days": 0,
       "cargo_t": 155000,
-      "cargoType": "LNG",
-      "status": "入港済",
-      "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
-      "note": "NYK管理LNG船。IMO 9666558。86,414DWT。バハマ籍。2014年建造。LOA 288m。3月29日01:03 UTC川崎に到着・係留完了。3/15ダーウィン出港から14日間の航海。喫水11.5m"
+      "cargoType": "バラスト（空荷）",
+      "status": "回航中",
+      "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
+      "note": "NYK管理LNG船。IMO 9666558。86,414DWT。バハマ籍。2014年建造。LOA 288m。3月30日AIS: 東アジア海域9.3knで航行中。3/30 01:06 UTC川崎荷揚げ完了後出港→ポートモレスビー（PNG）向け回航。ETA 4/12。喫水9.7m（バラスト）。次の積み荷に向け回航中。日本向けでない"
     },
     {
       "id": "lng-03",
@@ -179,13 +179,13 @@
       "destination": "四日市",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 3500,
-      "speed_knots": 17.9,
+      "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 177000,
       "cargoType": "LNG",
       "status": "入港済",
       "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
-      "note": "三菱商事/NYK系LNG船。IMO 9779226。シンガポール籍。2018年建造。LOA 294m。3月29日AIS: 四日市東向け17.9knで航行中→本日到着予定。3/20 Ashburton出港。喫水11.4m。当初ダーウィン向けから日本向けに変更。豪州LNG再積載の日本向け便"
+      "note": "三菱商事/NYK系LNG船。IMO 9779226。シンガポール籍。2018年建造。LOA 294m。3月30日AIS: 四日市入港済（3/30 01:29 UTC係留確認）。3/20 Ashburton出港。喫水不明。豪州LNG再積載の日本向け便、荷揚げ完了"
     },
     {
       "id": "lng-05",
@@ -235,7 +235,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.0,
-      "eta_days": 8.0,
+      "eta_days": 6.0,
       "cargo_t": 300000,
       "cargoType": "原油（ムルバンブレンド想定）",
       "status": "航行中",
@@ -253,7 +253,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 3600,
       "speed_knots": 12.0,
-      "eta_days": 28.0,
+      "eta_days": 26.0,
       "cargo_t": 300000,
       "cargoType": "原油（非中東調達）",
       "status": "調達中",
@@ -271,13 +271,13 @@
       "destination": "四日市",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 8500,
-      "speed_knots": 10.7,
-      "eta_days": 18.0,
+      "speed_knots": 12.8,
+      "eta_days": 17.0,
       "cargo_t": 300000,
       "cargoType": "原油（サウジ産・紅海/スエズ経由）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.8, "route": 0.9, "military": 0.85, "combined": 0.612 },
-      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。300,000DWT。2018年建造（現代三湖重工業）。3月29日AIS: 紅海を10.7knで航行中。喫水20.1m（満載）。3/19アインスフナ出港→スエズ運河→紅海→バベルマンデブ→四日市。ETA 4/16。渡邉英徳教授(東大)のOSINT分析で確認。サウジ国営による代替供給"
+      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。298,706DWT。2018年建造（現代三湖重工業）。3月30日AIS: インド沿岸を12.8knで航行中（18分前更新）。喫水20.1m（満載）。3/20アインスフナ出港→スエズ運河→紅海→バベルマンデブ→四日市。ETA 4/16。渡邉英徳教授(東大)のOSINT分析で確認。サウジ国営による代替供給"
     },
     {
       "id": "tanker-alt-05",
@@ -291,12 +291,12 @@
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 7500,
       "speed_knots": 13.0,
-      "eta_days": 13.0,
+      "eta_days": 12.0,
       "cargo_t": 45459,
       "cargoType": "石油/化学品（サウジ産・紅海ルート）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.85, "route": 0.9, "military": 0.85, "combined": 0.650 },
-      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。3月29日AIS: インド沿岸を13.0knで航行中。3/18ヤンブー出港。シンガポール経由で四日市へ（AIS目的地SG、最終目的地四日市ETA 4/11）。喫水10.6m。渡邉英徳教授(東大)のOSINT分析で確認"
+      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。3月30日AIS: インド沿岸を13.0knで航行中（41時間前更新）。3/18ヤンブー出港。AIS目的地シンガポール（SG）ETA 4/2、最終目的地四日市ETA 4/11。喫水10.6m。渡邉英徳教授(東大)のOSINT分析で確認"
     },
     {
       "id": "lng-06",
@@ -310,12 +310,12 @@
       "destinationPort": "Hitachi",
       "distanceToJapan_nm": 1050,
       "speed_knots": 12.3,
-      "eta_days": 2.0,
+      "eta_days": 1.0,
       "cargo_t": 135000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.7, "route": 0.9, "military": 0.8, "combined": 0.504 },
-      "note": "商船三井(MOL)LNG船。IMO 9269180。日本船籍。3月29日AIS: 東アジア海域を日立向け12.3knで航行中。3/27プリゴロドノエ（サハリン2）出港。ETA 3/31"
+      "note": "商船三井(MOL)LNG船。IMO 9269180。日本船籍。2005年建造。3月30日AIS: 東アジア海域を日立向け12.3knで航行中（30時間前更新）。3/27プリゴロドノエ（サハリン2）出港。喫水11.6m。ETA 4/1"
     },
     {
       "id": "lng-07",
@@ -329,12 +329,12 @@
       "destinationPort": "Sakai",
       "distanceToJapan_nm": 3500,
       "speed_knots": 11.4,
-      "eta_days": 10.0,
+      "eta_days": 9.0,
       "cargo_t": 155000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
-      "note": "日本船籍LNG船。IMO 9645748。3月29日AIS: 西オーストラリア海域を堺/泉北向け11.4knで航行中。3/28ダーウィン出港。Santos Barossa LNGプロジェクト。ETA 4/8"
+      "note": "日本船籍LNG船。IMO 9645748。2016年建造。3月30日AIS: 西オーストラリア海域を堺/泉北（JP SBK）向け11.4knで航行中（2日前更新）。3/28ダーウィン出港。喫水11.6m。Santos Barossa LNGプロジェクト。ETA 4/8"
     }
   ]
 }

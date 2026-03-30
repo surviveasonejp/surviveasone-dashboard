@@ -182,6 +182,54 @@ export const Methodology: FC = () => {
         </div>
       </div>
 
+      {/* このシミュレーションが外れる主な条件 */}
+      <div className="space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">このシミュレーションが外れる主な条件</h2>
+        <p className="text-xs text-neutral-600">以下のいずれかが発動した場合、崩壊タイムラインは大幅に変わります。楽観シナリオはこれらの一部を織り込んでいます。</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {[
+            {
+              icon: "①",
+              title: "IEA協調緊急備蓄放出",
+              effect: "石油枯渇日数 +14〜30日",
+              color: "#3b82f6",
+              desc: "IEA加盟国が協調して戦略備蓄を放出した場合。実績: 2022年3月（6,000万バレル放出）では日本向けに約+14日相当（JOGMEC試算）。",
+            },
+            {
+              icon: "②",
+              title: "G7・外交による封鎖解除",
+              effect: "全シナリオのタイムライン無効化",
+              color: "#22c55e",
+              desc: "外交交渉や停戦合意により封鎖が早期解除された場合。楽観シナリオは7日で介入・30日で解除開始としてこの可能性を部分的に反映済み。",
+            },
+            {
+              icon: "③",
+              title: "非中東代替供給の急拡大",
+              effect: "LNG・石油 +10〜20%供給余力",
+              color: "#94a3b8",
+              desc: "米国・カナダ・インドネシアからのスポット調達が成立した場合。現モデルは代替3ルート・調達成功率70%で試算済み。これを上回る場合に改善。",
+            },
+            {
+              icon: "④",
+              title: "国内需要破壊（節電・節油）",
+              effect: "電力崩壊日数 +20〜40日",
+              color: "#f59e0b",
+              desc: "政府の節電要請（目標20%削減）や燃料消費削減が達成された場合。実績: 東日本大震災後のピーク需要15%削減（2011年夏）。現モデルのdemandReductionRateを超える削減があれば改善。",
+            },
+          ].map((item) => (
+            <div key={item.icon} className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-neutral-200">{item.icon} {item.title}</h3>
+              </div>
+              <div className="text-xs font-mono px-2 py-1 rounded" style={{ backgroundColor: `${item.color}15`, color: item.color }}>
+                {item.effect}
+              </div>
+              <p className="text-xs text-neutral-500 leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* 感度分析 */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">

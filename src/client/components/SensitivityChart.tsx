@@ -138,20 +138,27 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
   return (
     <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
       <div className="text-xs font-mono text-neutral-500 tracking-wider">
-        SENSITIVITY ANALYSIS — パラメータ±20%変動の影響度
+        SENSITIVITY ANALYSIS — 各仮定が実際の値と20%ずれた場合の枯渇日数の変動幅
       </div>
+      <p className="text-[10px] font-mono text-neutral-600 leading-relaxed">
+        上位3つのパラメータがシミュレーション結果の大半を左右します。これらの仮定に不確実性が高い場合、実際の枯渇日数は大きく変動します。
+      </p>
 
       <div className="space-y-2">
-        {results.map((r) => {
+        {results.map((r, idx) => {
           const leftPct = Math.min(r.lowDays, r.highDays);
           const rightPct = Math.max(r.lowDays, r.highDays);
           const basePct = r.baseDays;
           // バーの範囲をmaxImpact基準で正規化
           const barLeft = ((basePct - leftPct) / maxImpact) * 50;
           const barRight = ((rightPct - basePct) / maxImpact) * 50;
+          const isTopFactor = idx < 3;
 
           return (
-            <div key={r.param} className="flex items-center gap-2">
+            <div
+              key={r.param}
+              className={`flex items-center gap-2 rounded${isTopFactor ? " border-l-2 border-[#f59e0b] pl-1.5" : ""}`}
+            >
               <div className="w-20 text-right text-[10px] font-mono text-neutral-400 shrink-0">
                 {r.label}
               </div>
@@ -190,7 +197,7 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
         <span>日数延長（改善）→</span>
       </div>
       <p className="text-[9px] font-mono text-neutral-700">
-        各パラメータを±20%変動させた場合の枯渇/崩壊日数への影響。影響度順にソート。
+        各仮定を±20%変動させた場合の枯渇/崩壊日数への影響。影響度順にソート。強調表示（左黄線）は上位3因子。
       </p>
     </div>
   );

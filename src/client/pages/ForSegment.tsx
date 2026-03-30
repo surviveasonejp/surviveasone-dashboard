@@ -2,6 +2,11 @@ import { type FC } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
 
+interface ExternalLink {
+  label: string;
+  href: string;
+}
+
 interface Segment {
   id: string;
   title: string;
@@ -13,6 +18,7 @@ interface Segment {
   alertMessage: string;
   risks: { label: string; days: string; detail: string }[];
   actions: string[];
+  officialLinks: ExternalLink[];
   familyMeterPrompt: string;
   prepareAnchor: string;
   metaDescription: string;
@@ -42,6 +48,10 @@ const SEGMENTS: Record<string, Segment> = {
       "学校の災害時引き渡し手順と家族の合流方法を確認。高校生は自己判断の場面も想定",
       "かかりつけ医の災害時連絡先を紙に。SNSデマへの対処法を中高生と共有",
     ],
+    officialLinks: [
+      { label: "農林水産省｜災害時に備えた食品ストックガイド", href: "https://www.maff.go.jp/j/zyukyu/foodstock/guidebook.html" },
+      { label: "厚労省｜妊産婦・乳幼児向け避難所支援マニュアル", href: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000122611.html" },
+    ],
     familyMeterPrompt: "あなたの家庭は何日持ちこたえられる？ 備蓄量を入力して生存ランクを確認",
     prepareAnchor: "sec-infant",
     metaDescription: "封鎖シナリオで液体ミルクの店頭在庫は約3日分。子育て家庭がホルムズ海峡封鎖で受ける影響と、わが家に足りないものの確認チェックリスト。",
@@ -69,6 +79,10 @@ const SEGMENTS: Record<string, Segment> = {
       "透析手帳・お薬手帳のコピーを防水保管+スマホ撮影",
       "透析施設への自転車ルートを確認（ガソリン制限に備え）",
     ],
+    officialLinks: [
+      { label: "日本透析医学会｜災害に対する備え（患者向け資料）", href: "https://www.jsdt.or.jp/public/2120.html" },
+      { label: "全国腎臓病協議会｜災害対策マニュアル", href: "https://www.zjk.or.jp/kidney-disease/disaster/" },
+    ],
     familyMeterPrompt: "ポータブル電源・水の備蓄量を入力して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-dialysis",
     metaDescription: "封鎖シナリオで透析の猶予は3-4日。停電・断水時の影響と、家族が確認すべき備えのチェックリスト。",
@@ -95,6 +109,10 @@ const SEGMENTS: Record<string, Segment> = {
       "全医療機器の消費電力(W数)を記録→ポータブル電源の持続時間を計算",
       "処方薬90日分を主治医に依頼",
       "福祉避難所の場所・受入条件を自治体に事前確認",
+    ],
+    officialLinks: [
+      { label: "厚労省｜在宅医療の推進（災害時対応含む）", href: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000061944.html" },
+      { label: "国土交通省｜要配慮者利用施設の避難確保計画 作成の手引き（PDF）", href: "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jieisuibou/pdf/tebiki.pdf" },
     ],
     familyMeterPrompt: "医療機器の電力消費を考慮して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-medical",
@@ -156,6 +174,25 @@ export const ForSegment: FC = () => {
             </li>
           ))}
         </ol>
+      </div>
+
+      {/* 公的支援・情報源 */}
+      <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-neutral-500">公的支援・情報源</h2>
+        <ul className="space-y-1.5">
+          {seg.officialLinks.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#3b82f6] hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+              >
+                {link.label} &rarr;
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* CTA: Family Meter */}

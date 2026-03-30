@@ -20,6 +20,16 @@ const JAPAN_DEST_PORTS = new Set([
   "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita",
 ]);
 
+/** データセット内の最大積載量（TAKASAGO 313,989t） */
+const MAX_CARGO_T = 314000;
+
+/** cargo_t → サイズ分類 */
+function getSizeClass(cargo_t: number): { label: string; color: string } {
+  if (cargo_t >= 200000) return { label: "超大型", color: "#78716c" };
+  if (cargo_t >= 80000) return { label: "大型", color: "#94a3b8" };
+  return { label: "中型", color: "#60a5fa" };
+}
+
 export const TankerTracker: FC = () => {
   const tankers = useTankerData();
   const isBlocked = (t: { departurePort: string }) => HORMUZ_PORTS.has(t.departurePort);
@@ -141,15 +151,23 @@ export const TankerTracker: FC = () => {
                       )}
                     </td>
                     <td className="px-4 py-2">
-                      <span
-                        className="font-mono text-xs px-1.5 py-0.5 rounded"
-                        style={{
-                          backgroundColor: tanker.type === "VLCC" ? "#f59e0b20" : "#22c55e20",
-                          color: tanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
-                        }}
-                      >
-                        {tanker.type}
-                      </span>
+                      <div className="flex flex-col gap-0.5 items-start">
+                        <span
+                          className="font-mono text-xs px-1.5 py-0.5 rounded"
+                          style={{
+                            backgroundColor: tanker.type === "VLCC" ? "#f59e0b20" : "#22c55e20",
+                            color: tanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
+                          }}
+                        >
+                          {tanker.type}
+                        </span>
+                        <span
+                          className="font-mono text-[9px]"
+                          style={{ color: getSizeClass(tanker.cargo_t).color }}
+                        >
+                          {getSizeClass(tanker.cargo_t).label}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-4 py-2 text-neutral-400">{tanker.departure}</td>
                     <td className="px-4 py-2 text-neutral-400">{tanker.destination}</td>
@@ -164,7 +182,17 @@ export const TankerTracker: FC = () => {
                       <div className="text-xs font-normal text-neutral-400">{dimmed ? "—" : formatDepletionDate(tanker.eta_days)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
-                      {formatNumber(tanker.cargo_t)}t
+                      <div>{formatNumber(tanker.cargo_t)}t</div>
+                      <div className="mt-0.5 flex justify-end">
+                        <div
+                          className="h-1 rounded-full"
+                          style={{
+                            width: `${Math.max((tanker.cargo_t / MAX_CARGO_T) * 40, 2)}px`,
+                            backgroundColor: tanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
+                            opacity: dimmed ? 0.25 : 0.65,
+                          }}
+                        />
+                      </div>
                     </td>
                   </tr>
                 );
@@ -213,6 +241,12 @@ export const TankerTracker: FC = () => {
                   >
                     {tanker.type}
                   </span>
+                  <span
+                    className="font-mono text-[9px] shrink-0"
+                    style={{ color: getSizeClass(tanker.cargo_t).color }}
+                  >
+                    {getSizeClass(tanker.cargo_t).label}
+                  </span>
                   {blocked && (
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-red-900/40 text-red-400 shrink-0">
                       封鎖時到達不可
@@ -247,6 +281,16 @@ export const TankerTracker: FC = () => {
                     <div>
                       <div className="text-neutral-600">積荷</div>
                       <div className="text-neutral-400">{formatNumber(tanker.cargo_t)}t</div>
+                      <div className="mt-0.5">
+                        <div
+                          className="h-1 rounded-full"
+                          style={{
+                            width: `${Math.max((tanker.cargo_t / MAX_CARGO_T) * 36, 2)}px`,
+                            backgroundColor: tanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
+                            opacity: 0.65,
+                          }}
+                        />
+                      </div>
                     </div>
                     {!dimmed && (
                       <div className="col-span-3 mt-0.5">

@@ -1,4 +1,4 @@
-import { type FC, useMemo } from "react";
+import { type FC, useMemo, useState } from "react";
 import { type ScenarioId } from "../../shared/scenarios";
 import type { FlowSimulationResult, ThresholdEvent } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
@@ -28,6 +28,105 @@ const EVENT_ICON: Record<string, string> = {
   waste_incineration: "🔥",
   logistics_limit: "🚚",
   logistics_stop: "⛔",
+};
+
+// 閾値イベント別 推奨アクション
+const ACTION_BY_TYPE: Partial<Record<string, string[]>> = {
+  price_spike: [
+    "生活用・通勤用燃料の備蓄を現在の2週間分に確認・補充する",
+    "ガソリン単価・灯油単価の記録を開始する（値上がり追跡）",
+    "不要なドライブ・長距離外出を控える",
+    "処方薬を2ヶ月分まとめて調剤する相談を主治医にする",
+  ],
+  rationing: [
+    "公共交通・自転車・徒歩ルートを今すぐ確認する",
+    "職場・学校への緊急連絡手段を再確認する",
+    "車での長距離移動は極力控え、用件をまとめる",
+    "現金を5万円以上手元に置く（ATM混雑・カード決済停止に備え）",
+  ],
+  distribution: [
+    "地域の配給センター・受付窓口（市区町村窓口・給水所）を確認する",
+    "現金・証明書類（マイナンバーカード等）を手元に準備する",
+    "近隣と互助グループを形成する（特に要配慮者がいる場合）",
+    "食料消費量を記録し、残量管理を始める",
+  ],
+  stop: [
+    "徒歩・自転車圏内での生活に切り替える",
+    "水・食料の厳格な管理・記録を開始する（1日分ずつ把握）",
+    "地域コミュニティに参加し情報・物資を共有する",
+    "食料自給率の高い地域への移動を検討する",
+  ],
+  water_pressure: [
+    "浴槽・容器に今すぐ水を確保する（1人3L/日 × 最低7日分）",
+    "近隣の給水所・給水車の場所を事前確認する",
+    "飲料水以外の用途（トイレ・清拭）に生活用水を分けて管理する",
+  ],
+  water_cutoff: [
+    "浴槽・ポリタンクに確保した水を節約して使う",
+    "携帯浄水フィルター・浄水タブレットを準備する",
+    "簡易トイレ（凝固剤+ビニール袋）を使用開始する",
+    "給水所への往復ルートを家族で確認する",
+  ],
+  logistics_limit: [
+    "食料・日用品の2〜4週間備蓄量を今すぐ確認する",
+    "地元スーパー・農家からの直接調達ルートを調べる",
+    "処方薬を1〜2ヶ月分まとめて調剤してもらう相談をする",
+  ],
+  logistics_stop: [
+    "残存備蓄量を把握し、1日の消費量を厳格に管理する",
+    "地域の食料配給・物資支援の情報を自治体から入手する",
+    "近隣住民と物資を分かち合い、役割分担を話し合う",
+  ],
+};
+
+// 政策発動シナリオ
+const POLICY_EVENTS: Array<{
+  dayOffset: number;
+  category: "spr_release" | "demand_cut" | "lng_spot";
+  label: string;
+  effect: string;
+  note: string;
+}> = [
+  {
+    dayOffset: 3,
+    category: "demand_cut",
+    label: "緊急節電要請（-15%目標）",
+    effect: "電力崩壊日数 +20〜35日",
+    note: "東日本大震災実績（15%削減達成）に基づく試算",
+  },
+  {
+    dayOffset: 7,
+    category: "demand_cut",
+    label: "燃料消費制限（-10%）",
+    effect: "石油枯渇日数 +10〜18日",
+    note: "給油制限・奇数偶数制が全国展開された場合",
+  },
+  {
+    dayOffset: 14,
+    category: "spr_release",
+    label: "国家備蓄放出開始（IEA協調）",
+    effect: "石油枯渇日数 +14〜30日",
+    note: "14日リードタイム後、30万kL/日放出開始（石油備蓄法+JOGMEC）",
+  },
+  {
+    dayOffset: 21,
+    category: "lng_spot",
+    label: "LNGスポット緊急調達（非ホルムズ）",
+    effect: "LNG在庫 +5〜10日相当",
+    note: "米国・豪州からのスポット契約成立率70%の試算",
+  },
+];
+
+const POLICY_COLORS: Record<string, string> = {
+  spr_release: "#3b82f6",
+  demand_cut: "#22c55e",
+  lng_spot: "#94a3b8",
+};
+
+const POLICY_LABELS: Record<string, string> = {
+  spr_release: "備蓄放出",
+  demand_cut: "需要削減",
+  lng_spot: "LNG調達",
 };
 
 // 崩壊フェーズの背景帯
@@ -148,6 +247,9 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
 
       {/* 現実イベント */}
       <RealEvents totalDays={totalDays} />
+
+      {/* 政策発動シナリオ */}
+      <PolicyEvents />
     </div>
   );
 };
@@ -355,9 +457,11 @@ interface EventItemProps {
 }
 
 const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
+  const [expanded, setExpanded] = useState(false);
   const resourceColor = RESOURCE_COLORS[event.resource as keyof typeof RESOURCE_COLORS] ?? "#888";
   const icon = EVENT_ICON[event.type] ?? "●";
   const pct = Math.min((event.day / totalDays) * 100, 100);
+  const actions = ACTION_BY_TYPE[event.type];
 
   const resourceLabel =
     event.resource === "oil" ? "石油" :
@@ -367,34 +471,59 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
     event.resource === "logistics" ? "物流" : "";
 
   return (
-    <div className="flex items-center gap-2 group" role="listitem" aria-label={`${event.day}日目: ${event.label}（${resourceLabel}）`}>
-      {/* 日数 */}
-      <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
-        {event.day}<span className="text-[9px] font-normal text-neutral-600">日</span>
-      </div>
-      {/* アイコン + バー */}
-      <div className="relative flex-1 h-6 bg-[#0c1018] rounded overflow-hidden">
-        <div
-          className="absolute inset-y-0 left-0 rounded-l"
-          style={{
-            width: `${pct}%`,
-            background: `linear-gradient(90deg, ${resourceColor}25, ${resourceColor}08)`,
-          }}
-        />
-        <div className="absolute inset-0 flex items-center px-2 gap-1.5">
-          <span className="text-[9px] shrink-0" style={{ color: resourceColor }}>{icon}</span>
-          <span className="text-[10px] font-mono text-neutral-300 truncate">
-            {event.label}
-          </span>
+    <div role="listitem" aria-label={`${event.day}日目: ${event.label}（${resourceLabel}）`}>
+      <div
+        className={`flex items-center gap-2 ${actions ? "cursor-pointer" : ""}`}
+        onClick={() => actions && setExpanded(!expanded)}
+      >
+        {/* 日数 */}
+        <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
+          {event.day}<span className="text-[9px] font-normal text-neutral-600">日</span>
         </div>
-        {/* リソースタグ */}
-        <div
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
-          style={{ backgroundColor: `${resourceColor}18`, color: resourceColor }}
-        >
-          {resourceLabel}
+        {/* アイコン + バー */}
+        <div className="relative flex-1 h-6 bg-[#0c1018] rounded overflow-hidden">
+          <div
+            className="absolute inset-y-0 left-0 rounded-l"
+            style={{
+              width: `${pct}%`,
+              background: `linear-gradient(90deg, ${resourceColor}25, ${resourceColor}08)`,
+            }}
+          />
+          <div className="absolute inset-0 flex items-center px-2 gap-1.5">
+            <span className="text-[9px] shrink-0" style={{ color: resourceColor }}>{icon}</span>
+            <span className="text-[10px] font-mono text-neutral-300 truncate">
+              {event.label}
+            </span>
+          </div>
+          {/* リソースタグ */}
+          <div
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
+            style={{ backgroundColor: `${resourceColor}18`, color: resourceColor }}
+          >
+            {resourceLabel}
+          </div>
         </div>
+        {/* 展開トグル */}
+        {actions && (
+          <div className="shrink-0 text-[9px] font-mono text-neutral-600 w-4 text-center">
+            {expanded ? "▼" : "▶"}
+          </div>
+        )}
       </div>
+      {/* アクションパネル */}
+      {expanded && actions && (
+        <div className="ml-12 mt-1 mb-1 bg-[#0c1018] border border-[#1e2a36] rounded p-2.5 space-y-1">
+          <div className="text-[9px] font-mono tracking-wider mb-1.5" style={{ color: resourceColor }}>
+            このフェーズで確認すること
+          </div>
+          {actions.map((action) => (
+            <div key={action} className="flex gap-1.5 text-[10px] text-neutral-400 leading-relaxed">
+              <span style={{ color: resourceColor }} className="shrink-0">▸</span>
+              <span>{action}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -423,6 +552,42 @@ const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
           style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.6 }}
         />
       </div>
+    </div>
+  );
+};
+
+// ─── 政策発動シナリオ ────────────────────────────────
+
+const PolicyEvents: FC = () => {
+  return (
+    <div className="space-y-1">
+      <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
+        POLICY RESPONSE — 政策発動時のシナリオ改善効果
+      </div>
+      <p className="text-[9px] font-mono text-neutral-700 mb-2">
+        以下の政策が発動した場合、崩壊タイムラインは改善します。実際の効果は発動タイミングと達成率により変動します。
+      </p>
+      {POLICY_EVENTS.map((ev) => {
+        const color = POLICY_COLORS[ev.category] ?? "#888";
+        const catLabel = POLICY_LABELS[ev.category] ?? "";
+        return (
+          <div key={ev.label} className="flex items-start gap-2">
+            <div className="w-10 text-right font-mono text-xs font-bold shrink-0 pt-0.5" style={{ color }}>
+              +{ev.dayOffset}<span className="text-[9px] font-normal text-neutral-600">日</span>
+            </div>
+            <div className="flex-1 bg-[#0c1018] border rounded p-2 space-y-0.5" style={{ borderColor: `${color}30` }}>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-mono text-neutral-300">{ev.label}</span>
+                <span className="text-[8px] font-mono px-1 py-0.5 rounded shrink-0" style={{ backgroundColor: `${color}18`, color }}>
+                  {catLabel}
+                </span>
+              </div>
+              <div className="text-[9px] font-mono" style={{ color }}>{ev.effect}</div>
+              <div className="text-[9px] text-neutral-600">{ev.note}</div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
