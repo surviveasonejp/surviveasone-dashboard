@@ -196,7 +196,7 @@ export const Landing: FC = () => {
           to="/food-collapse"
           title="FOOD COLLAPSE"
           subtitle="備蓄の優先順位"
-          description="ナフサ→石化→包装材の連鎖影響。商品カテゴリ別の店頭在庫日数から備蓄の優先順位を確認"
+          description="衛生・包装の崩壊が食料より先に来る。ナフサ→石化→包装材の連鎖崩壊。商品カテゴリ別の店頭在庫日数から優先順位を確認"
           color="#ef4444"
         />
         <PanelCard
