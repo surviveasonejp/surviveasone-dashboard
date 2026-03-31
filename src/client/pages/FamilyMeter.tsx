@@ -49,8 +49,8 @@ const RANK_ADVICE: Record<string, string[]> = {
   A: ["良好な備蓄状況です。水の補充サイクルを維持してください"],
   B: ["最低限の備えはありますが、2週間以上の危機には不十分。カセットボンベと水を増やしましょう"],
   C: ["1週間程度で限界に達する見込みです。水と食料の過不足を優先的に確認してください"],
-  D: ["備蓄が不足しています。まず水と食料3日分の過不足を確認しましょう"],
-  F: ["備蓄がほぼありません。まず飲料水の状況を確認してください"],
+  D: ["備蓄が不足しています。一度に全部揃える必要はありません。まず「水だけ」を確認するところから始めましょう"],
+  F: ["備蓄がほぼありません。今日できることはひとつだけ：飲料水の状況を確認してください"],
 };
 
 const STORAGE_KEY = "familyMeterInputs";
@@ -327,6 +327,12 @@ export const FamilyMeter: FC = () => {
                 ¥{totalCost.toLocaleString()}
               </span>
             </div>
+            {totalCost > 10000 && (
+              <p className="text-xs text-neutral-500 bg-[#0f1419] rounded p-3 leading-relaxed">
+                一度に全部揃える必要はありません。<br />
+                優先順位：<span className="text-neutral-300">水 → 食料 → ガス → 電源</span>。まず水だけでも確認してください。
+              </p>
+            )}
             <p className="text-[10px] text-neutral-600">
               ※ 価格は参考値です。実際の価格は販売店・時期により変動します
             </p>

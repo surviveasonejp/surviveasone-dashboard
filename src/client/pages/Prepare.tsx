@@ -24,6 +24,8 @@ const PREPARE_LIST: PrepareItem[] = [
       { name: "乾麺・インスタント", amount: "7日分", note: "調理に水が少ないものを優先" },
       { name: "塩・砂糖・調味料", amount: "各1kg以上", note: "エネルギー確保と保存食の味付け" },
       { name: "栄養補助食品", amount: "14日分", note: "ビタミン剤、プロテインバー等。偏食対策" },
+      { name: "食品用ラップ（大容量）", amount: "3ロール以上", note: "PE製（ナフサ由来）。食品保存・開封後の密封に必須。封鎖後2〜3週間で品薄化。蜜蝋ラップ・シリコン蓋・ガラス容器が代替になるが入手困難になる前に確保" },
+      { name: "ガラス・ステンレス保存容器", amount: "大小各5個以上", note: "食品包装（PE/PP）はナフサ由来。包装材が機能しなくなった際の保存用。米・豆・乾物をそのまま長期保存できる。封鎖後に入手困難になる前に確保" },
     ],
   },
   {
@@ -49,6 +51,9 @@ const PREPARE_LIST: PrepareItem[] = [
       { name: "常備薬・処方薬", amount: "90日分", note: "慢性疾患の薬は必ず多めに確保" },
       { name: "救急セット", amount: "1セット", note: "包帯・消毒・体温計・血圧計" },
       { name: "衛生用品", amount: "3ヶ月分", note: "トイレットペーパー、マスク、消毒液" },
+      { name: "ニトリル手袋", amount: "100枚以上", note: "ナフサ由来（ブタジエンゴム）。封鎖10日目に出荷制限が実際に発生済み（2026-03-11実績）。医療処置・調理・感染防護に必須。天然ゴム製でも可" },
+      { name: "固形石鹸", amount: "6ヶ月分", note: "液体洗剤の界面活性剤はナフサ由来。固形石鹸は脂肪酸ベースで代替可能。長期備蓄向きで入手難になる前に確保" },
+      { name: "ゴミ袋（45L・20L）", amount: "各50枚以上", note: "PE製（ナフサ由来）。封鎖後2週間で品薄化リスク。ゴミ収集停止（封鎖15日目以降）時の生ゴミ密封・衛生維持に必須。食料より先に手に入らなくなる品目" },
       { name: "簡易トイレ", amount: "50回分以上", note: "断水・下水停止時に必須。保管場所が少ない場合は凝固剤+ビニール袋のコンパクトタイプを選ぶ" },
     ],
   },
@@ -437,6 +442,37 @@ export const Prepare: FC = () => {
       >
         このページを印刷する（紙で配布用）
       </button>
+
+      {/* ── 初動72時間：行政支援空白期間 ── */}
+      <div className="bg-[#151c24] border border-[#ef4444]/40 rounded-lg p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-[#ef4444] bg-[#ef4444]/15 border border-[#ef4444]/40">
+            最優先
+          </span>
+          <h2 className="font-mono text-sm font-bold text-[#ef4444]">初動72時間：行政支援が届かない「空白期間」</h2>
+        </div>
+        <p className="text-xs text-neutral-400 leading-relaxed">
+          封鎖直後〜72時間は、自治体・配給・救援のいずれも機能しません。この期間を乗り越えるのは、今手元にあるものだけです。
+        </p>
+        <div className="space-y-2">
+          {[
+            { label: "飲料水", detail: "1人3L/日 × 家族人数 × 3日分（例：4人家族=36L）" },
+            { label: "食料", detail: "加熱不要で食べられるもの × 3日分（缶詰・レトルト・栄養補助食品）" },
+            { label: "現金", detail: "ATM停止・カード決済停止に備え5万円以上（小銭含む）" },
+          ].map((item) => (
+            <div key={item.label} className="flex gap-3 items-start">
+              <span className="text-[#ef4444] font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
+              <div>
+                <span className="text-sm text-neutral-300 font-bold">{item.label}</span>
+                <span className="text-xs text-neutral-500 ml-2">{item.detail}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-neutral-600">
+          ※ 72時間後から徐々に自治体の支援が立ち上がります。フェーズ別行動指針（下記）はその後の計画です。
+        </p>
+      </div>
 
       {/* ── フェーズ別行動指針（常に表示） ── */}
       <Accordion title="フェーズ別行動指針" forceOpen>

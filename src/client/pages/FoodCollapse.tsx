@@ -230,6 +230,32 @@ export const FoodCollapse: FC = () => {
         })}
       </div>
 
+      {/* ナフサ連鎖説明 */}
+      <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-[#f59e0b]">なぜ食品包装が消えるのか</h2>
+        <div className="flex flex-wrap items-center gap-1 text-xs font-mono">
+          {[
+            { label: "原油", color: "#ef4444" },
+            { label: "ナフサ", color: "#f59e0b" },
+            { label: "エチレン/PP", color: "#f59e0b" },
+            { label: "食品トレー・袋・ラップ", color: "#94a3b8" },
+            { label: "食品流通停止", color: "#ef4444" },
+          ].map((item, i, arr) => (
+            <span key={item.label} className="flex items-center gap-1">
+              <span style={{ color: item.color }}>{item.label}</span>
+              {i < arr.length - 1 && <span className="text-neutral-600">→</span>}
+            </span>
+          ))}
+        </div>
+        <p className="text-[10px] text-neutral-500 leading-relaxed">
+          ナフサ在庫は約20日分（2026-03時点）。封鎖後5月以降に本格減産→包装材品薄へ。
+          対策：ガラス・ステンレス容器への移行と食品バルク購入（包装なしで保存できる状態に）。
+        </p>
+        <p className="text-[10px] text-[#f59e0b]/70 leading-relaxed">
+          ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで枯渇する。「食料不足」ではなく「衛生・包装の崩壊」が先に来る。
+        </p>
+      </div>
+
       {/* サプライチェーン連鎖図 */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">サプライチェーン崩壊フロー</h2>

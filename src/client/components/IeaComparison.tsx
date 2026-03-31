@@ -29,7 +29,7 @@ const COUNTRIES: CountryStock[] = [
   // IEA加盟国（2026年3月IEA協調放出後の推定値）
   { country: "日本", days: 0, isJapan: true, group: "iea" },
   { country: "米国", days: 200, note: "SPR 4.15億バレルから172mb放出。純輸出国で義務免除", group: "iea" },
-  { country: "韓国", days: 187, note: "KNOC 9拠点。22.5mb放出後推定。IEAベース", group: "iea" },
+  { country: "韓国", days: 187, note: "KNOC 9拠点。22.5mb放出後推定。IEAベース公式208日だが輸出精製分除外の実質余力は68日（S&P Global 2026-03-11）", group: "iea" },
   { country: "フランス", days: 118, note: "SAGESS + 事業者。14.6mb放出", group: "iea" },
   { country: "ドイツ", days: 90, note: "EBV管理。19.5mb放出。義務ギリギリ", group: "iea" },
   { country: "スペイン", days: 92, note: "11.6mbを90日かけ放出", group: "iea" },
@@ -40,7 +40,7 @@ const COUNTRIES: CountryStock[] = [
   { country: "中国", days: 120, note: "政府+商業推定。データ非公開。ロシアからパイプライン増量", group: "asia" },
   { country: "台湾", days: 100, note: "政府発表100日超。法定90日義務（政府30+民間60）", group: "asia" },
   { country: "タイ", days: 60, note: "EGAT備蓄+民間。政府がディーゼル価格凍結", group: "asia" },
-  { country: "インド", days: 55, note: "SPR充填率64%（9.5日分のみ）。ロシア原油緊急調達中", group: "asia" },
+  { country: "インド", days: 74, note: "国家SPR 9.5日分（充填率64%）＋商業在庫64.5日＝総合74日（BusinessToday / Business Standard 2026-03-24）。ロシア原油依存35.8%", group: "asia" },
   { country: "シンガポール", days: 45, note: "貯蔵ハブ。多くは外国企業の通過在庫。非公開", group: "asia" },
   { country: "マレーシア", days: 30, note: "産油国だが精製能力不足。燃料補助金維持", group: "asia" },
   { country: "インドネシア", days: 22, note: "財政最脆弱。B35/B40パーム油混合で代替推進", group: "asia" },
