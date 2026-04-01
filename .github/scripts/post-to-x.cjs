@@ -101,7 +101,9 @@ async function postTweet(mediaId) {
     'シミュレーションを更新しました →',
     'surviveasonejp.org',
     '',
-    '#surviveasonejp #備蓄確認',
+    '棚を空にする前に、わが家に何が足りないかを確認 → surviveasonejp.org/family',
+    '',
+    '#surviveasonejp #ホルムズ海峡 #備蓄確認',
   ].join('\n');
 
   const tweetBody = JSON.stringify({

@@ -11,7 +11,7 @@ on:
       screenshot_path:
         description: 'スクリーンショット対象パス（例: /collapse-map）'
         required: true
-        default: '/collapse-map'
+        default: '/'
       tweet_text:
         description: '投稿テキスト（280文字以内）'
         required: true
