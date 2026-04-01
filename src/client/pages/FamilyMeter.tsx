@@ -194,13 +194,15 @@ export const FamilyMeter: FC = () => {
             <button
               className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
               onClick={() => {
+                const days = Math.round(score.totalDays);
                 const text = [
-                  `備蓄ランク【${score.rank}】だった。`,
+                  `ホルムズ封鎖シナリオ、わが家の備蓄を診断した。`,
+                  `ランク【${score.rank}】推定${days}日（ボトルネック: ${score.bottleneck}）`,
+                  `${inputs.members}人世帯・水${inputs.waterLiters}L・食料${inputs.foodDays}日・ガス${inputs.gasCanisterCount}本で試算。`,
                   "",
-                  "買い占めではなく「わが家に足りないもの」の確認を。",
-                  "surviveasonejp.org/family",
+                  "足りないものを確認 → surviveasonejp.org/family",
                   "",
-                  "#surviveasonejp #備蓄確認",
+                  "#ホルムズ海峡 #備蓄確認",
                 ].join("\n");
                 window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
               }}

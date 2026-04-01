@@ -37,15 +37,24 @@ export const Layout: FC = () => {
         </div>
       </footer>
       {/* モバイルページインジケーター */}
-      <div className="md:hidden fixed bottom-4 left-0 right-0 flex justify-center gap-1.5 pointer-events-none">
+      <div className="md:hidden fixed bottom-4 left-0 right-0 flex items-center justify-center gap-1.5 pointer-events-none">
+        {currentIndex > 0 && (
+          <span className="text-neutral-500 text-sm animate-pulse leading-none">‹</span>
+        )}
         {Array.from({ length: totalPages }).map((_, i) => (
           <div
             key={i}
-            className={`w-1.5 h-1.5 rounded-full transition-colors ${
-              i === currentIndex ? "bg-[#ef4444]" : "bg-neutral-700"
-            }`}
+            className="rounded-full transition-all duration-200"
+            style={{
+              width: i === currentIndex ? "20px" : "6px",
+              height: "6px",
+              background: i === currentIndex ? "#ef4444" : "#404040",
+            }}
           />
         ))}
+        {currentIndex < totalPages - 1 && (
+          <span className="text-neutral-500 text-sm animate-pulse leading-none">›</span>
+        )}
       </div>
     </div>
   );

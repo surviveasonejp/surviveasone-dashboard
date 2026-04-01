@@ -140,14 +140,24 @@ export const SurvivalClock: FC = () => {
       <button
         className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
         onClick={() => {
+          const blockadeStart = new Date("2026-03-01");
+          const dayOffset = Math.floor((Date.now() - blockadeStart.getTime()) / 86400000);
           const oil = displayCountdowns.find((c) => c.label === "石油備蓄");
+          const lng = displayCountdowns.find((c) => c.label === "LNG在庫");
+          const power = displayCountdowns.find((c) => c.label === "電力供給");
+          const oilRange = SCENARIO_RANGES[0];
+          const powerRange = SCENARIO_RANGES[2];
           const text = [
-            `石油備蓄は現実シナリオで${oil ? Math.round(oil.totalDays) : "???"}日分（経産省推計・3シナリオ中）。`,
+            `封鎖${dayOffset}日目のシミュレーション。`,
             "",
-            "買い占めではなく、わが家に足りないものの確認を →",
-            "surviveasonejp.org/family",
+            `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日（現実シナリオ・備蓄放出込み）`,
+            `3シナリオ: 石油 Day ${oilRange?.optimistic ?? "?"}〜${oilRange?.pessimistic ?? "?"}、電力 Day ${powerRange?.optimistic ?? "?"}〜${powerRange?.pessimistic ?? "?"}`,
             "",
-            "#surviveasonejp #備蓄確認",
+            "シミュレーション詳細 → surviveasonejp.org/countdown",
+            "",
+            "備蓄は、助けが届くまでの時間を稼ぐ手段。わが家に足りないものを確認 → surviveasonejp.org/family",
+            "",
+            "#ホルムズ海峡 #エネルギー安全保障",
           ].join("\n");
           window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}

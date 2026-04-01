@@ -248,7 +248,7 @@ export const FoodCollapse: FC = () => {
           ))}
         </div>
         <p className="text-[10px] text-neutral-500 leading-relaxed">
-          ナフサ在庫は約20日分（2026-03時点）。封鎖後5月以降に本格減産→包装材品薄へ。
+          ナフサ在庫は約14日分（2026-01経産省統計）。封鎖後5月以降に本格減産→包装材品薄へ。
           対策：ガラス・ステンレス容器への移行と食品バルク購入（包装なしで保存できる状態に）。
         </p>
         <p className="text-[10px] text-[#f59e0b]/70 leading-relaxed">

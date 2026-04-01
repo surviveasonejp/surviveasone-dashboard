@@ -72,7 +72,7 @@ export const Landing: FC = () => {
           HORMUZ STRAIT BLOCKADE SCENARIO
         </span>
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-          日本の<span className="text-[#ef4444]">エネルギー</span>が<br className="md:hidden" />尽きるまで
+          日本の<span className="text-[#ef4444]">エネルギー</span>は、<br className="md:hidden" />何日もつのか
         </h1>
         <p className="text-neutral-400 text-sm leading-relaxed max-w-lg mx-auto">
           石油の94%は中東から届く。その全量がホルムズ海峡を通る。<br />
@@ -127,7 +127,7 @@ export const Landing: FC = () => {
         <div className="text-center space-y-2">
           <div className="font-mono text-3xl font-bold text-[#ef4444]">5人に1人</div>
           <p className="text-sm text-neutral-300">
-            乳幼児・透析・在宅医療・介護——インフラ停止時に特別な備えが必要な家庭は日本人口の<span className="text-[#ef4444] font-bold">約20%</span>
+            乳幼児・子育て家庭・透析・在宅医療・介護——インフラ停止時に特別な備えが必要な家庭は日本人口の<span className="text-[#ef4444] font-bold">約20%</span>
           </p>
           <p className="text-xs text-neutral-500">
             備蓄は国からの配給や地域の相互支援が届くまでの時間を稼ぐ手段。買い占めではなく「わが家に何が足りないか」の確認を。
@@ -189,7 +189,7 @@ export const Landing: FC = () => {
           to="/last-tanker"
           title="LAST TANKER"
           subtitle="タンカー追跡"
-          description="実在17隻のAIS追跡。代替ルート5隻（ヤンブー・フジャイラ・非中東・紅海経由2隻）の到着予測"
+          description="実在18隻のAIS追跡。代替ルート5隻（ヤンブー・フジャイラ・非中東・紅海経由2隻）+ 豪州LNG便ASIA VENTURE追加"
           color="#94a3b8"
         />
         <PanelCard

@@ -228,12 +228,14 @@ export const ForSegment: FC = () => {
         className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
         onClick={() => {
           const text = [
-            "ホルムズ海峡封鎖シナリオ — 家庭の備蓄は足りているか確認を。",
+            `【${seg.title}】ホルムズ封鎖シナリオ`,
+            `${seg.heroLabel}: ${seg.heroStat}${seg.heroUnit}（現実シナリオ推定）`,
             "",
-            "買い占めではなく、わが家に必要な備えの確認を。",
-            "surviveasonejp.org/family",
+            seg.actions[0] ?? "今のうちに備えを確認してください。",
             "",
-            "#surviveasonejp #備蓄確認",
+            `surviveasonejp.org/for/${seg.id}`,
+            "",
+            "#ホルムズ海峡 #備蓄確認",
           ].join("\n");
           window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}

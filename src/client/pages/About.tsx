@@ -11,7 +11,7 @@ const DATA_SOURCES_LIST = [
   { name: "OCCTO 電力広域的運営推進機関", note: "連系線運用容量10本(2025年度)", auto: false },
   { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー17隻(代替5隻含む)のIMO・航路(2026年4月1日検証済。非日本向け船はバッジ表示)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー18隻(代替5隻+ASIA VENTURE含む)のIMO・航路(2026年4月1日検証済。非日本向け船はバッジ表示)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
@@ -56,7 +56,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 8",
     label: "モデル誠実性・現実連動",
     status: "completed" as const,
-    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント34件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
+    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント37件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
   },
   {
     phase: "Phase 9",
@@ -146,7 +146,7 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
-            <li>・タンカー17隻（代替ルート5隻含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年4月1日)</li>
+            <li>・タンカー18隻（代替ルート5隻+ASIA VENTURE含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年4月1日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
@@ -215,7 +215,7 @@ export const About: FC = () => {
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">ナフサ枯渇</td>
                 <td className="px-3 py-2">napthaFactorベースで包装材消失を予測</td>
-                <td className="px-3 py-2">ナフサ在庫20日分（3月下旬が目安）。12拠点中半数減産。出光が減産方針を公表。石化協「4月維持、5月以降焦点」</td>
+                <td className="px-3 py-2">ナフサ在庫14日分（経産省令和8年1月統計）。12拠点中半数減産。出光が減産方針を公表。石化協「4月維持、5月以降焦点」</td>
                 <td className="px-3 py-2 text-[#22c55e]">整合</td>
               </tr>
               <tr className="border-b border-[#162029]">
