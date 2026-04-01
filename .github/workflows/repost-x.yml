@@ -45,7 +45,7 @@ jobs:
       - name: Take screenshot
         timeout-minutes: 1
         env:
-          RELEASE_BODY: ${{ format('<!-- screenshot: {0} -->', inputs.screenshot_path) }}
+          RELEASE_BODY: "${{ format('<!-- screenshot: {0} -->', inputs.screenshot_path) }}"
         run: node .github/scripts/take-screenshot.cjs
 
       - name: Post to X
@@ -57,5 +57,5 @@ jobs:
           RELEASE_TAG: ''
           RELEASE_NAME: ''
           RELEASE_URL: ''
-          RELEASE_BODY: ${{ format('<!-- tweet: {0} -->', inputs.tweet_text) }}
+          RELEASE_BODY: "${{ format('<!-- tweet: {0} -->', inputs.tweet_text) }}"
         run: node .github/scripts/post-to-x.cjs
