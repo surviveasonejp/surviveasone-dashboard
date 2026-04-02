@@ -133,17 +133,17 @@ async function fetchHokuriku(targetDate: string): Promise<FetchResult> {
 
 // ─── Tier 2/3: 残り6エリア ───────────────────────────
 
-/** 北海道電力: 年別需要CSV */
+/** 北海道電力: 日別需要CSV（juyo_01_YYYYMMDD.csv） */
 async function fetchHokkaido(targetDate: string): Promise<FetchResult> {
   const area_id = "hokkaido";
-  const year = targetDate.slice(0, 4);
+  const dateStr = targetDate.replace(/-/g, "");
   try {
     const res = await fetch(
-      `https://denkiyoho.hepco.co.jp/area/data/juyo_01_${year}.csv`,
+      `https://denkiyoho.hepco.co.jp/area/data/juyo_01_${dateStr}.csv`,
     );
     if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
     const text = await res.text();
-    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    const record = parseComplexCsv(text, area_id, targetDate, false);
     return { area_id, record, error: record ? null : "no matching date" };
   } catch (e) {
     return { area_id, record: null, error: String(e) };
@@ -167,17 +167,17 @@ async function fetchTohoku(targetDate: string): Promise<FetchResult> {
   }
 }
 
-/** 中国電力: 年別需要CSV */
+/** 中国電力: 月次需給CSV（eria_jukyu_YYYYMM_07.csv、MW単位） */
 async function fetchChugoku(targetDate: string): Promise<FetchResult> {
   const area_id = "chugoku";
-  const year = targetDate.slice(0, 4);
+  const ym = targetDate.slice(0, 7).replace(/-/g, "");
   try {
     const res = await fetch(
-      `https://www.energia.co.jp/nw/jukyuu/sys/juyo_07_${year}.csv`,
+      `https://www.energia.co.jp/nw/jukyuu/sys/eria_jukyu_${ym}_07.csv`,
     );
     if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
     const text = await res.text();
-    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    const record = parseComplexCsv(text, area_id, targetDate, true);
     return { area_id, record, error: record ? null : "no matching date" };
   } catch (e) {
     return { area_id, record: null, error: String(e) };
@@ -201,38 +201,47 @@ async function fetchShikoku(targetDate: string): Promise<FetchResult> {
   }
 }
 
-/** 九州電力: 日別需要CSV */
+/** 九州電力: 年次需要CSV（juyo-YYYY.csv、万kW単位） */
 async function fetchKyushu(targetDate: string): Promise<FetchResult> {
   const area_id = "kyushu";
-  const dateStr = targetDate.replace(/-/g, "");
+  const year = targetDate.slice(0, 4);
   try {
     const res = await fetch(
-      `https://www.kyuden.co.jp/td_power_usages/csv/juyo-hourly-${dateStr}.csv`,
+      `https://www.kyuden.co.jp/td_power_usages/csv/juyo-${year}.csv`,
     );
     if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
     const text = await res.text();
-    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    const record = parseComplexCsv(text, area_id, targetDate, false);
     return { area_id, record, error: record ? null : "no matching date" };
   } catch (e) {
     return { area_id, record: null, error: String(e) };
   }
 }
 
-/** 沖縄電力: 年別需要CSV */
+/** 沖縄電力: 月次需給CSV（eria_jukyu_YYYYMM_10.csv、MW単位） */
 async function fetchOkinawa(targetDate: string): Promise<FetchResult> {
   const area_id = "okinawa";
-  const year = targetDate.slice(0, 4);
+  const ym = targetDate.slice(0, 7).replace(/-/g, "");
   try {
     const res = await fetch(
-      `https://www.okiden.co.jp/business-support/service/supply-and-demand/csv/juyo_10_${year}.csv`,
+      `https://www.okiden.co.jp/business-support/service/supply-and-demand/csv/eria_jukyu_${ym}_10.csv`,
     );
     if (!res.ok) return { area_id, record: null, error: `HTTP ${res.status}` };
     const text = await res.text();
-    const record = parseSimpleDemandCsv(text, area_id, targetDate);
+    const record = parseComplexCsv(text, area_id, targetDate, true);
     return { area_id, record, error: record ? null : "no matching date" };
   } catch (e) {
     return { area_id, record: null, error: String(e) };
   }
+}
+
+/** 日付文字列の正規化: 2026/4/1 → 2026/04/01 */
+function normalizeDateStr(dateStr: string): string {
+  const m = dateStr.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (m?.[1] && m[2] && m[3]) {
+    return `${m[1]}/${m[2].padStart(2, "0")}/${m[3].padStart(2, "0")}`;
+  }
+  return dateStr;
 }
 
 /**
@@ -252,17 +261,20 @@ function parseSimpleDemandCsv(
   let maxSupplyManKw = 0;
   let count = 0;
 
-  const targetYmd = targetDate.replace(/-/g, "/");
+  const targetYmd = normalizeDateStr(targetDate.replace(/-/g, "/"));
 
   for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(",");
+    const line = lines[i];
+    if (!line) continue;
+    const cols = line.split(",");
     if (cols.length < 3) continue;
 
-    const dateCol = cols[0].trim();
-    if (dateCol !== targetYmd && dateCol !== targetDate) continue;
+    const col0 = cols[0] ?? "";
+    const dateNorm = normalizeDateStr(col0.trim());
+    if (dateNorm !== targetYmd && col0.trim() !== targetDate) continue;
 
-    const demand = parseFloat(cols[2]) || 0;
-    const supply = cols.length >= 4 ? parseFloat(cols[3]) || 0 : 0;
+    const demand = parseFloat(cols[2] ?? "") || 0;
+    const supply = cols.length >= 4 ? parseFloat(cols[3] ?? "") || 0 : 0;
 
     if (demand > maxDemandManKw) maxDemandManKw = demand;
     if (supply > maxSupplyManKw) maxSupplyManKw = supply;
@@ -281,6 +293,68 @@ function parseSimpleDemandCsv(
     peak_demand_mw: peakDemand,
     peak_supply_mw: peakSupply,
     usage_rate: peakSupply ? Math.round((peakDemand / peakSupply) * 1000) / 1000 : null,
+    solar_mw: null,
+    wind_mw: null,
+    thermal_mw: null,
+    nuclear_mw: null,
+    source: getSourceName(area_id),
+  };
+}
+
+/**
+ * 複合形式CSVパーサー（北海道日別・中国月次・九州年次・沖縄月次）
+ * ヘッダー部分（ピーク集計等）をスキップし、DATE,TIME 行以降の時系列データを処理。
+ * unitIsMw: true=MW直接、false=万kW×10
+ */
+function parseComplexCsv(
+  text: string,
+  area_id: string,
+  targetDate: string,
+  unitIsMw: boolean,
+): AreaDemandRecord | null {
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+
+  // DATE,TIME 行を探す
+  let dataStartIdx = -1;
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line) continue;
+    const cols = line.split(",");
+    if ((cols[0] ?? "").trim() === "DATE" && (cols[1] ?? "").trim() === "TIME") {
+      dataStartIdx = i + 1;
+      break;
+    }
+  }
+  if (dataStartIdx < 0) return null;
+
+  const targetYmd = normalizeDateStr(targetDate.replace(/-/g, "/"));
+  let maxVal = 0;
+  let count = 0;
+
+  for (let i = dataStartIdx; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line) continue;
+    const cols = line.split(",");
+    if (cols.length < 3) continue;
+
+    const dateNorm = normalizeDateStr((cols[0] ?? "").trim());
+    if (dateNorm !== targetYmd) continue;
+
+    const val = parseFloat(cols[2] ?? "") || 0;
+    if (val > maxVal) maxVal = val;
+    count++;
+  }
+
+  if (count === 0) return null;
+
+  const peakMw = unitIsMw ? Math.round(maxVal) : Math.round(maxVal * 10);
+
+  return {
+    date: targetDate,
+    area_id,
+    peak_demand_mw: peakMw,
+    peak_supply_mw: null,
+    usage_rate: null,
     solar_mw: null,
     wind_mw: null,
     thermal_mw: null,
@@ -312,18 +386,19 @@ function parseTepcoAreaCsv(
   let count = 0;
 
   const targetYmd = targetDate.replace(/-/g, "/");
+  const targetYmdCompact = targetDate.replace(/-/g, ""); // YYYYMMDD形式（TEPCO等）
 
   for (const line of dataLines) {
     const cols = line.split(",");
     if (cols.length < 5) continue;
 
-    // 日付フィルタ（YYYY/MM/DD形式）
-    const dateCol = cols[0].trim();
-    if (dateCol !== targetYmd && dateCol !== targetDate) continue;
+    // 日付フィルタ（YYYY/MM/DD または YYYYMMDD 形式）
+    const dateCol = (cols[0] ?? "").trim();
+    if (dateCol !== targetYmd && dateCol !== targetDate && dateCol !== targetYmdCompact) continue;
 
-    const demand = parseFloat(cols[4]) || 0;
-    const supply = parseFloat(cols[5]) || 0;
-    const solarWind = parseFloat(cols[6]) || 0;
+    const demand = parseFloat(cols[4] ?? "") || 0;
+    const supply = parseFloat(cols[5] ?? "") || 0;
+    const solarWind = parseFloat(cols[6] ?? "") || 0;
 
     if (demand > maxDemandKwh) maxDemandKwh = demand;
     if (supply > maxSupplyKwh) maxSupplyKwh = supply;
