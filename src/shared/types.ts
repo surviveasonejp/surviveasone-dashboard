@@ -109,10 +109,32 @@ export interface ThresholdEvent {
   label: string;
 }
 
+export interface PolicyImpact {
+  /** 枯渇/崩壊日数の延長（正=改善） */
+  oilDaysGain: number;
+  lngDaysGain: number;
+  powerDaysGain: number;
+}
+
+export interface PolicyEffects {
+  /** 政策ゼロ時（SPR無し・代替供給無し）のベースライン */
+  baseline: { oilDay: number; lngDay: number; powerDay: number };
+  /** SPR放出（国家備蓄14日後放出 + 代替供給）の効果 */
+  sprRelease: PolicyImpact;
+  /** 燃料消費制限-10% の効果 */
+  demandCut10pct: PolicyImpact;
+  /** 緊急節電-15% の効果 */
+  emergencyPower15pct: PolicyImpact;
+  /** LNGスポット緊急調達（非ホルムズ）の効果 */
+  lngSpot: PolicyImpact;
+}
+
 export interface FlowSimulationResult {
   timeline: FlowState[];
   oilDepletionDay: number;
   lngDepletionDay: number;
   powerCollapseDay: number;
   thresholds: ThresholdEvent[];
+  /** 政策発動時の改善効果（動的計算値） */
+  policyEffects?: PolicyEffects;
 }

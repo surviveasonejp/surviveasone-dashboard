@@ -1,6 +1,6 @@
 import { type FC, useMemo, useState } from "react";
 import { type ScenarioId } from "../../shared/scenarios";
-import type { FlowSimulationResult, ThresholdEvent } from "../../shared/types";
+import type { FlowSimulationResult, PolicyEffects, ThresholdEvent } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 import realEventsData from "../../worker/data/realEvents.json";
 
@@ -267,7 +267,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
       <RealEvents totalDays={totalDays} />
 
       {/* 政策発動シナリオ */}
-      <PolicyEvents />
+      <PolicyEvents policyEffects={result.policyEffects} />
     </div>
   );
 };
@@ -574,9 +574,39 @@ const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
   );
 };
 
+// ─── 政策効果テキスト生成 ────────────────────────────
+
+function getEffectText(
+  category: string,
+  dayOffset: number,
+  pe: PolicyEffects | undefined,
+  fallback: string,
+): string {
+  if (!pe) return fallback;
+  if (category === "demand_cut" && dayOffset === 3) {
+    return `電力崩壊 +${pe.emergencyPower15pct.powerDaysGain}日延長`;
+  }
+  if (category === "demand_cut" && dayOffset === 7) {
+    return `石油枯渇 +${pe.demandCut10pct.oilDaysGain}日延長`;
+  }
+  if (category === "spr_release") {
+    return `石油枯渇 +${pe.sprRelease.oilDaysGain}日延長（対政策ゼロ）`;
+  }
+  if (category === "lng_spot") {
+    const lngGain = pe.lngSpot.lngDaysGain;
+    const powerGain = pe.lngSpot.powerDaysGain;
+    return `LNG枯渇 +${lngGain}日 / 電力崩壊 +${powerGain}日延長`;
+  }
+  return fallback;
+}
+
 // ─── 政策発動シナリオ ────────────────────────────────
 
-const PolicyEvents: FC = () => {
+interface PolicyEventsProps {
+  policyEffects?: PolicyEffects;
+}
+
+const PolicyEvents: FC<PolicyEventsProps> = ({ policyEffects }) => {
   return (
     <div className="space-y-1">
       <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
@@ -588,6 +618,7 @@ const PolicyEvents: FC = () => {
       {POLICY_EVENTS.map((ev) => {
         const color = POLICY_COLORS[ev.category] ?? "#888";
         const catLabel = POLICY_LABELS[ev.category] ?? "";
+        const effectText = getEffectText(ev.category, ev.dayOffset, policyEffects, ev.effect);
         return (
           <div key={ev.label} className="flex items-start gap-2">
             <div className="w-10 text-right font-mono text-xs font-bold shrink-0 pt-0.5" style={{ color }}>
@@ -600,7 +631,7 @@ const PolicyEvents: FC = () => {
                   {catLabel}
                 </span>
               </div>
-              <div className="text-[9px] font-mono" style={{ color }}>{ev.effect}</div>
+              <div className="text-[9px] font-mono" style={{ color }}>{effectText}</div>
               <div className="text-[9px] text-neutral-600">{ev.note}</div>
             </div>
           </div>

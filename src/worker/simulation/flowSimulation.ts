@@ -16,6 +16,7 @@ import type {
   ThresholdType,
   ThresholdEvent,
   FlowSimulationResult,
+  PolicyEffects,
 } from "../../shared/types";
 import { type ScenarioId, SCENARIOS } from "../../shared/scenarios";
 import staticReserves from "../data/reserves.json";
@@ -438,7 +439,164 @@ export function runFlowSimulation(
 
   thresholds.sort((a, b) => a.day - b.day);
 
-  return { timeline, oilDepletionDay, lngDepletionDay, powerCollapseDay, thresholds };
+  const policyEffects = calcPolicyEffects(scenarioId, maxDays, { oilDepletionDay, lngDepletionDay, powerCollapseDay });
+  return { timeline, oilDepletionDay, lngDepletionDay, powerCollapseDay, thresholds, policyEffects };
+}
+
+// ─── 政策効果計算（枯渇日数のみ、タイムライン不要） ────
+
+interface PolicySimOptions {
+  withSpr: boolean;
+  withAltSupply: boolean;
+  oilDemandMultiplier: number;
+  lngDemandMultiplier: number;
+  extraLngStock_t: number;
+}
+
+function calcDepletionDaysOnly(
+  scenarioId: ScenarioId,
+  maxDays: number,
+  opts: PolicySimOptions,
+): { oilDepletionDay: number; lngDepletionDay: number; powerCollapseDay: number } {
+  const s = SCENARIOS[scenarioId];
+  const blockadeProfile = BLOCKADE_PROFILES[scenarioId];
+  const altSupplyProfile = ALT_SUPPLY_PROFILES[scenarioId];
+
+  let oilNationalStock = opts.withSpr ? staticReserves.oil.nationalReserve_kL : 0;
+  const oilPrivateStock = staticReserves.oil.privateReserve_kL * SPR_PRIVATE_USABLE_RATIO;
+  const oilJointStock = (opts.withSpr && scenarioId !== "pessimistic") ? staticReserves.oil.jointReserve_kL : 0;
+  const oilCommercialStock = staticReserves.oil.privateReserve_kL * (1 - SPR_PRIVATE_USABLE_RATIO);
+
+  let oilStock = oilPrivateStock + oilJointStock + oilCommercialStock;
+  let lngStock = staticReserves.lng.inventory_t + opts.extraLngStock_t;
+
+  const initialOil = staticReserves.oil.totalReserve_kL;
+  const initialLng = staticReserves.lng.inventory_t + opts.extraLngStock_t;
+
+  const baseDailyOil = staticConsumption.oil.dailyConsumption_kL * (1 - s.demandReductionRate) * opts.oilDemandMultiplier;
+  const baseDailyLng = staticConsumption.lng.dailyConsumption_t * (1 - s.demandReductionRate) * opts.lngDemandMultiplier;
+  const lngNonHormuzSupply = staticConsumption.lng.dailyConsumption_t * opts.lngDemandMultiplier * (1 - staticReserves.lng.hormuzDependencyRate);
+
+  const oilArrivals = buildArrivalSchedule("VLCC", blockadeProfile.initialRate);
+  const lngArrivals = buildArrivalSchedule("LNG", blockadeProfile.initialRate);
+
+  let oilDepletionDay = maxDays;
+  let lngDepletionDay = maxDays;
+  let oilRationFactor = 1.0;
+  let lngRationFactor = 1.0;
+  const oilThresholdHit = new Set<number>();
+  const lngThresholdHit = new Set<number>();
+
+  for (let day = 0; day < maxDays; day++) {
+    const currentBlockadeRate = getBlockadeRate(day, blockadeProfile);
+
+    oilStock += oilArrivals.get(day - REFINING_DELAY_DAYS) ?? 0;
+    lngStock += lngArrivals.get(day - LNG_REGAS_DELAY_DAYS) ?? 0;
+
+    if (opts.withAltSupply) {
+      oilStock += getAlternativeSupply(day, altSupplyProfile);
+    }
+
+    if (opts.withSpr && day >= SPR_NATIONAL_LEAD_TIME_DAYS && oilNationalStock > 0) {
+      const release = Math.min(SPR_NATIONAL_DAILY_MAX_KL, oilNationalStock);
+      oilNationalStock -= release;
+      oilStock += release;
+    }
+
+    const oilPercent = (oilStock / initialOil) * 100;
+    const lngPercent = (lngStock / initialLng) * 100;
+    const oilDemandDestruction = getDemandDestructionFactor(oilPercent);
+    const lngDemandDestruction = getDemandDestructionFactor(lngPercent);
+
+    const dailyOil = baseDailyOil * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
+    oilStock = Math.max(0, oilStock - dailyOil);
+
+    const lngConsumption = baseDailyLng * lngRationFactor * lngDemandDestruction;
+    const lngContinuingSupply = lngNonHormuzSupply * (1 - s.demandReductionRate);
+    const lngHormuzRecovery = staticConsumption.lng.dailyConsumption_t
+      * opts.lngDemandMultiplier
+      * staticReserves.lng.hormuzDependencyRate * (1 - currentBlockadeRate) * (1 - s.demandReductionRate);
+    const lngNetDraw = Math.max(0, lngConsumption - lngContinuingSupply - lngHormuzRecovery);
+    lngStock = Math.max(0, lngStock - lngNetDraw);
+
+    const oilPercentNow = (oilStock / initialOil) * 100;
+    const lngPercentNow = (lngStock / initialLng) * 100;
+    for (const th of THRESHOLDS) {
+      if (oilPercentNow <= th.percent && !oilThresholdHit.has(th.percent)) {
+        oilThresholdHit.add(th.percent);
+        if (th.type === "rationing") oilRationFactor = 0.7;
+        if (th.type === "distribution") oilRationFactor = 0.4;
+      }
+      if (lngPercentNow <= th.percent && !lngThresholdHit.has(th.percent)) {
+        lngThresholdHit.add(th.percent);
+        if (th.type === "rationing") lngRationFactor = 0.7;
+        if (th.type === "distribution") lngRationFactor = 0.4;
+      }
+    }
+
+    if (oilStock <= 0 && oilDepletionDay === maxDays) oilDepletionDay = day;
+    if (lngStock <= 0 && lngDepletionDay === maxDays) lngDepletionDay = day;
+  }
+
+  const powerCollapseDay = Math.round(lngDepletionDay * staticReserves.electricity.thermalShareRate);
+  return { oilDepletionDay, lngDepletionDay, powerCollapseDay };
+}
+
+function calcPolicyEffects(
+  scenarioId: ScenarioId,
+  maxDays: number,
+  current: { oilDepletionDay: number; lngDepletionDay: number; powerCollapseDay: number },
+): PolicyEffects {
+  const clamp = (v: number) => Math.max(0, Math.min(v, maxDays));
+
+  // ベースライン: SPR無し・代替供給無し
+  const baseline = calcDepletionDaysOnly(scenarioId, maxDays, {
+    withSpr: false, withAltSupply: false,
+    oilDemandMultiplier: 1.0, lngDemandMultiplier: 1.0, extraLngStock_t: 0,
+  });
+
+  // 燃料消費制限-10%（現行シミュレーションに追加）
+  const demandCut = calcDepletionDaysOnly(scenarioId, maxDays, {
+    withSpr: true, withAltSupply: true,
+    oilDemandMultiplier: 0.90, lngDemandMultiplier: 1.0, extraLngStock_t: 0,
+  });
+
+  // 緊急節電-15%（LNG消費を15%削減）
+  const emergencyPower = calcDepletionDaysOnly(scenarioId, maxDays, {
+    withSpr: true, withAltSupply: true,
+    oilDemandMultiplier: 1.0, lngDemandMultiplier: 0.85, extraLngStock_t: 0,
+  });
+
+  // LNGスポット調達: 7日分相当の追加在庫
+  const lngSpotAddition = Math.round(staticConsumption.lng.dailyConsumption_t * 7);
+  const lngSpot = calcDepletionDaysOnly(scenarioId, maxDays, {
+    withSpr: true, withAltSupply: true,
+    oilDemandMultiplier: 1.0, lngDemandMultiplier: 1.0, extraLngStock_t: lngSpotAddition,
+  });
+
+  return {
+    baseline: { oilDay: baseline.oilDepletionDay, lngDay: baseline.lngDepletionDay, powerDay: baseline.powerCollapseDay },
+    sprRelease: {
+      oilDaysGain: clamp(current.oilDepletionDay - baseline.oilDepletionDay),
+      lngDaysGain: clamp(current.lngDepletionDay - baseline.lngDepletionDay),
+      powerDaysGain: clamp(current.powerCollapseDay - baseline.powerCollapseDay),
+    },
+    demandCut10pct: {
+      oilDaysGain: clamp(demandCut.oilDepletionDay - current.oilDepletionDay),
+      lngDaysGain: clamp(demandCut.lngDepletionDay - current.lngDepletionDay),
+      powerDaysGain: clamp(demandCut.powerCollapseDay - current.powerCollapseDay),
+    },
+    emergencyPower15pct: {
+      oilDaysGain: clamp(emergencyPower.oilDepletionDay - current.oilDepletionDay),
+      lngDaysGain: clamp(emergencyPower.lngDepletionDay - current.lngDepletionDay),
+      powerDaysGain: clamp(emergencyPower.powerCollapseDay - current.powerCollapseDay),
+    },
+    lngSpot: {
+      oilDaysGain: 0,
+      lngDaysGain: clamp(lngSpot.lngDepletionDay - current.lngDepletionDay),
+      powerDaysGain: clamp(lngSpot.powerCollapseDay - current.powerCollapseDay),
+    },
+  };
 }
 
 // ─── タンカー到着スケジュール ─────────────────────────
