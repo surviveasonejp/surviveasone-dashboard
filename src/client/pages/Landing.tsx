@@ -189,7 +189,7 @@ export const Landing: FC = () => {
           to="/last-tanker"
           title="LAST TANKER"
           subtitle="タンカー追跡"
-          description="実在18隻のAIS追跡。代替ルート5隻（ヤンブー・フジャイラ・非中東・紅海経由2隻）+ 豪州LNG便ASIA VENTURE追加"
+          description="実在18隻のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。米国産原油タンカー（喜望峰回り）も可視化"
           color="#94a3b8"
         />
         <PanelCard

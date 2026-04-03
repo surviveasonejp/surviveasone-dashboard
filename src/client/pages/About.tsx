@@ -18,7 +18,8 @@ const DATA_SOURCES_LIST = [
   { name: "Bloomberg / 産経", note: "代替ルートタンカー到着情報(2026年3月24日報道)", auto: false },
   { name: "ロイター / Bloomberg JP", note: "日本・インド LPG/原油ナフサ バーター交渉開始(2026年3月27日) / 韓国 原油スワップ正式発動(2026年3月31日報道)", auto: false },
   { name: "BusinessToday / Business Standard", note: "インド石油備蓄 国家SPR9.5日分(充填率64%)+商業在庫64.5日=総合74日(2026年3月24日報道)", auto: false },
-  { name: "IEA Oil Security Policy", note: "加盟国別備蓄日数(国際比較用)", auto: false },
+  { name: "IEA Oil Security Policy / DropThe", note: "加盟国別備蓄日数。3/11協調放出後の放出後推定値（DropThe「32 Nations Just Emptied Their Oil Reserves」2026年3月）", auto: false },
+  { name: "Forbes Japan / 時事通信", note: "アジア各国備蓄日数比較・東南ア燃料消費規制状況（2026年3月〜4月）", auto: false },
   { name: "農水省 食料需給表", note: "食料自給率(カロリーベース38%、小麦16%、飼料26%、米97%)(令和6年度概算)", auto: false },
   { name: "農水省 米穀需給基本指針", note: "政府備蓄米在庫(適正100万t→2025年8月時点約29.5万t)", auto: false },
   { name: "ISEP / IRENA", note: "再エネ設備利用率(太陽光15%/風力22%/水力35%) シミュレーション係数の根拠", auto: false },
@@ -74,7 +75,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 3",
     label: "リアルタイム化（進行中）",
     status: "active" as const,
-    items: ["AIS位置+目的港取得", "ETA自動減算", "日本向け判定", "タンカー実データ検証"],
+    items: ["AIS位置+目的港取得", "ETA自動減算", "日本向け判定", "タンカー実データ検証", "供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）", "米国産原油タンカー（喜望峰回り）可視化"],
     remaining: ["原油価格自動取得", "衛星AIS"],
   },
 ];
@@ -146,7 +147,7 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
-            <li>・タンカー18隻（代替ルート5隻+ASIA VENTURE含む）のIMO・現在位置をMaritimeOptima/AISで検証。日本向けでない船舶はグレーアウト+バッジ表示(2026年4月1日)</li>
+            <li>・タンカー18隻（代替ルート5隻+ASIA VENTURE含む）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。米国産原油タンカーTATESHINA（喜望峰回り37日）を可視化(2026年4月3日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
@@ -196,9 +197,9 @@ export const About: FC = () => {
 
       {/* 精度検証レポート */}
       <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-6 space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">精度検証レポート（2026年4月1日時点）</h2>
+        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">精度検証レポート（2026年4月3日時点）</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          封鎖開始（3月1日）から31日間の実データとシミュレーション予測の照合。
+          封鎖開始（3月1日）から33日間の実データとシミュレーション予測の照合。
           詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-[#22c55e] underline underline-offset-2">/api/validation</a>で取得可能。
         </p>
         <div className="overflow-x-auto">
