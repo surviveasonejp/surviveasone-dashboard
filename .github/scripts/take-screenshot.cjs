@@ -12,7 +12,7 @@ const screenshotMatch = rawBody.match(/<!--\s*screenshot:\s*(\/[^\s]*)\s*-->/);
 const bodyForKeywords = rawBody.replace(/<!--\s*tweet:[\s\S]*?-->/g, '').toLowerCase();
 
 const targets = [
-  { match: ['タンカー', 'tanker', 'ais', '航跡', '港'], page: '/last-tanker', selector: '[data-screenshot="tanker-map"]', fallback: 'svg[aria-label="タンカー推定航跡マップ"]' },
+  { match: ['タンカー', 'tanker', 'ais', '航跡', '港', '到着タイムライン', '船団'], page: '/last-tanker', selector: '[data-screenshot="arrival-timeline"]', fallback: '[data-screenshot="tanker-map"]' },
   { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地', '物流'], page: '/collapse-map', selector: '[data-screenshot="collapse-map"]' },
   { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: '[data-screenshot="food-collapse"]' },
   { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: '[data-screenshot="family-rank"]' },

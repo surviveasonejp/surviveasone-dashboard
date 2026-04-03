@@ -218,7 +218,7 @@ export const ArrivalTimeline: FC<Props> = ({ tankers, selectedId, onSelect }) =>
   };
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg">
+    <div data-screenshot="arrival-timeline" className="bg-[#151c24] border border-[#1e2a36] rounded-lg">
       {/* ヘッダー */}
       <div className="px-4 py-3 border-b border-[#1e2a36]">
         <div className="flex items-center justify-between">
