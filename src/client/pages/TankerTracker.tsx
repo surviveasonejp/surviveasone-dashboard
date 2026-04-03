@@ -3,6 +3,7 @@ import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { TankerMap } from "../components/TankerMap";
+import { ArrivalTimeline } from "../components/ArrivalTimeline";
 import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
@@ -17,7 +18,7 @@ const HORMUZ_PORTS = new Set([
 const JAPAN_DEST_PORTS = new Set([
   "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
   "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
-  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita",
+  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
 ]);
 
 /** データセット内の最大積載量（TAKASAGO 313,989t） */
@@ -61,7 +62,7 @@ export const TankerTracker: FC = () => {
 
       <AlertBanner
         level="warning"
-        message="ホルムズ海峡封鎖時、通過前に出港済みの船舶のみが日本に到達可能"
+        message="4/2 オマーン籍VLCC2隻・LNG1隻がオマーン沿岸ルートで通過の可能性（衛星確認）。通航の可否は軍事・外交情勢に依存 — シミュレーションは封鎖完全閉鎖の最悪ケース"
       />
 
       <SimulationBanner />
@@ -77,6 +78,13 @@ export const TankerTracker: FC = () => {
           totalSeconds={(lngTankers[lngTankers.length - 1]?.eta_days ?? 0) * 86400}
         />
       </div>
+
+      {/* 到着タイムライン */}
+      <ArrivalTimeline
+        tankers={tankers}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+      />
 
       {/* 推定航跡マップ */}
       <TankerMap
@@ -312,7 +320,7 @@ export const TankerTracker: FC = () => {
         <p>到着予測日数 = 航路距離(海里) ÷ (速度(knots) × 24時間)</p>
         <p>推定位置 = 航路ウェイポイント上をETA進捗率で線形補間</p>
         <p>VLCC標準速度: 12〜12.5knots / LNG船標準速度: 17〜19.5knots</p>
-        <p className="text-neutral-600">※ 封鎖時は海峡通過前に出港済みの船舶のみ。封鎖後の新規出港は不可</p>
+        <p className="text-neutral-600">※ シミュレーションは封鎖完全閉鎖を前提とした最悪ケース。4/2 オマーン籍船3隻が南側ルートで通過の可能性あり（出典: Bloomberg）。通航可否は軍事・外交情勢に依存</p>
         <p className="text-neutral-600">※ 地図上の位置はETA逆算による推定値です。AIS未接続のため実際の位置とは異なります</p>
       </div>
     </div>

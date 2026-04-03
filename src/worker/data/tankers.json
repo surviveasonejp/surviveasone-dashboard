@@ -18,23 +18,23 @@
   ],
   "vessels": [
     {
-      "id": "vlcc-01",
+      "id": "vlcc-alt-06",
       "name": "TATESHINA",
       "imo": "9910117",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "ラスタヌラ（サウジアラビア）",
-      "departurePort": "Ras Tanura",
+      "departure": "Ingleside（テキサス・米国）",
+      "departurePort": "Ingleside",
       "destination": "菊間（愛媛）",
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 6610,
       "speed_knots": 13.5,
       "eta_days": 37.0,
       "cargo_t": 312000,
-      "cargoType": "原油（米国産）",
+      "cargoType": "原油（米国産WTI系・喜望峰回り）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.9, "route": 0.95, "military": 0.95, "combined": 0.812 },
-      "note": "日本郵船VLCC。IMO 9910117。311,979DWT。NACKS建造(2021)。LOA 339.5m。4/3時点: 南米東岸を菊間向け13.2knで航行中。3/16米テキサス州Ingleside出港。米国産原油積載→ホルムズ回避の代替ルート。ETA 5/10。喫水19.3m（満載）"
+      "note": "日本郵船VLCC。IMO 9910117。311,979DWT。NACKS建造(2021)。LOA 339.5m。4/3時点: 南米東岸を菊間向け13.2knで航行中。3/16米テキサス州Ingleside出港→大西洋→喜望峰→インド洋経由（ホルムズ・バベルマンデブ両海峡回避）。往復+荷役で約100日サイクル（中東ルートの約2.5倍）。ETA 5/10。喫水19.3m（満載）"
     },
     {
       "id": "vlcc-02",

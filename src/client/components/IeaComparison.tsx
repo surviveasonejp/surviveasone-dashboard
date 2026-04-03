@@ -4,14 +4,18 @@
  * IEA加盟国 + 日本に縁の深いアジア諸国の備蓄日数を比較表示。
  * 「日本だけが危ない」という誤読を防ぎ、地域全体の脆弱性を可視化する。
  *
- * 2026年3月11日 IEA史上最大の協調放出（4.26億バレル）を反映。
- * 各国の放出量を差し引いた放出後の推定値を使用。
+ * 2026年4月3日更新。3/11 IEA史上最大の協調放出（4億バレル）後の推定値を反映。
+ * 欧州各国は放出完了後に90日義務を下回る状況（英国39日・イタリア54日）。
+ * アジア各国はForbes Japan/Bloomberg/時事（2026年3月）の最新報道値。
  *
  * データソース:
- * - IEA Oil Security Policy / 協調放出プレスリリース（2026年3月11日・19日）
- * - Al Jazeera / The Diplomat / S&P Global / BusinessToday（2026年3月報道）
+ * - IEA Oil Security Policy / 協調放出プレスリリース（2026年3月11日）
+ * - DropThe "32 Nations Just Emptied Their Oil Reserves"（2026年3月）
+ * - Al Jazeera "Which countries have strategic oil reserves"（2026年3月23日）
+ * - S&P Global / Bloomberg（2026年3月〜4月報道）
+ * - Forbes Japan「石油枯渇の危険性が最も高い国々」（2026年3月）
+ * - 時事通信「東南ア各国が燃料消費の抑制に動く」（2026年3月〜4月）
  * - 資源エネルギー庁 石油備蓄統計（2026年3月23日）
- * - Asia Media Centre "The Hormuz Buffer"（2026年3月）
  */
 
 import { type FC } from "react";
@@ -26,26 +30,26 @@ interface CountryStock {
 }
 
 const COUNTRIES: CountryStock[] = [
-  // IEA加盟国（2026年3月IEA協調放出後の推定値）
+  // IEA加盟国（3/11協調放出完了後の推定値・2026年4月3日時点）
   { country: "日本", days: 0, isJapan: true, group: "iea" },
-  { country: "米国", days: 200, note: "SPR 4.15億バレルから172mb放出。純輸出国で義務免除", group: "iea" },
-  { country: "韓国", days: 187, note: "KNOC 9拠点。22.5mb放出後推定。IEAベース公式208日だが輸出精製分除外の実質余力は68日（S&P Global 2026-03-11）", group: "iea" },
-  { country: "フランス", days: 118, note: "SAGESS + 事業者。14.6mb放出", group: "iea" },
-  { country: "ドイツ", days: 90, note: "EBV管理。19.5mb放出。義務ギリギリ", group: "iea" },
-  { country: "スペイン", days: 92, note: "11.6mbを90日かけ放出", group: "iea" },
-  { country: "イタリア", days: 90, note: "OCSIT管理。10mb放出。義務ギリギリ", group: "iea" },
-  { country: "英国", days: 90, note: "国家備蓄なし・民間義務のみ。14mb放出", group: "iea" },
-  { country: "豪州", days: 49, note: "IEA唯一の義務未達国。2012年以降ずっと未達", group: "iea" },
+  { country: "米国", days: 200, note: "SPR 4.15億バレルから172mb放出後も約243mb残存。純輸出国でIEA義務免除。輸入量ベース換算約150日（放出後）", group: "iea" },
+  { country: "韓国", days: 187, note: "KNOC 9拠点。22.5mb放出後IEA公式187日。ただし輸出精製分除外の実質余力は68日（S&P Global 2026-03-11）", group: "iea" },
+  { country: "フランス", days: 70, note: "SAGESS + 事業者。14.6mb放出後70日推定（DropThe 2026-03）。協調放出で90日義務を下回る", group: "iea" },
+  { country: "ドイツ", days: 76, note: "EBV管理。19.5mb放出後76日推定（DropThe 2026-03）。90日義務をわずかに上回る", group: "iea" },
+  { country: "スペイン", days: 80, note: "11.6mb放出後80日推定。90日義務を下回る", group: "iea" },
+  { country: "イタリア", days: 54, note: "OCSIT管理。10mb放出後54日推定（DropThe 2026-03）。90日義務を大幅に下回る", group: "iea" },
+  { country: "英国", days: 39, note: "国家備蓄なし・民間義務のみ。14mb放出後39日（DropThe 2026-03）。欧州最脆弱", group: "iea" },
+  { country: "豪州", days: 49, note: "IEA唯一の義務未達国。2012年以降ずっと未達。中東依存低くLNG自給", group: "iea" },
   // アジア諸国（日本と関係の深い国）
-  { country: "中国", days: 120, note: "政府+商業推定。データ非公開。ロシアからパイプライン増量", group: "asia" },
-  { country: "台湾", days: 100, note: "政府発表100日超。法定90日義務（政府30+民間60）", group: "asia" },
-  { country: "タイ", days: 60, note: "EGAT備蓄+民間。政府がディーゼル価格凍結", group: "asia" },
-  { country: "インド", days: 74, note: "国家SPR 9.5日分（充填率64%）＋商業在庫64.5日＝総合74日（BusinessToday / Business Standard 2026-03-24）。ロシア原油依存35.8%", group: "asia" },
-  { country: "シンガポール", days: 45, note: "貯蔵ハブ。多くは外国企業の通過在庫。非公開", group: "asia" },
-  { country: "マレーシア", days: 30, note: "産油国だが精製能力不足。燃料補助金維持", group: "asia" },
-  { country: "インドネシア", days: 22, note: "財政最脆弱。B35/B40パーム油混合で代替推進", group: "asia" },
-  { country: "フィリピン", days: 21, note: "国家非常事態宣言。戦略備蓄21日。ロシアに支援要請", group: "asia" },
-  { country: "ベトナム", days: 9, note: "アジア最脆弱。精製システムも構造的脆弱。日韓に支援要請", group: "asia" },
+  { country: "中国", days: 90, note: "推計約9億バレル（ロイター2026-03）。輸入量ベース78日分＋商業在庫合計で約90日。データ非公開。ロシアからパイプライン増量で備蓄加速", group: "asia" },
+  { country: "台湾", days: 100, note: "政府発表100日超。法定90日義務（政府30+民間60）。Al Jazeera 2026-03-23確認", group: "asia" },
+  { country: "インド", days: 74, note: "国家SPR 9.5日分（充填率64%）＋商業在庫64.5日＝総合74日（BusinessToday 2026-03-24）。ロシア原油依存35.8%。石化・ガス供給義務免除宣言", group: "asia" },
+  { country: "タイ", days: 61, note: "総在庫61日分（時事 2026-03）。燃料全品目値上げ・バイオ燃料混合比率引き上げ・燃料輸出停止を実施", group: "asia" },
+  { country: "シンガポール", days: 40, note: "貯蔵ハブ。多くは外国企業の通過在庫。実質国内カバーは40日分（Forbes Japan 2026-03）", group: "asia" },
+  { country: "マレーシア", days: 30, note: "産油国だが精製能力不足。燃料補助金維持。ホルムズ依存低い", group: "asia" },
+  { country: "インドネシア", days: 20, note: "財政最脆弱。20日分（時事 2026-03）。B35/B40パーム油混合で代替推進。予算見直し検討", group: "asia" },
+  { country: "フィリピン", days: 60, note: "商業在庫含む総在庫60日分（時事 2026-03）。国家エネルギー非常事態宣言・週4日出勤導入。政府備蓄は約45日分", group: "asia" },
+  { country: "ベトナム", days: 15, note: "アジア最脆弱クラス。15日分（Forbes Japan / 時事 2026-03）。精製システムも構造的脆弱。石化・ガス供給義務免除宣言。日韓に支援要請", group: "asia" },
 ];
 
 function getJapanIeaDays(): number {
@@ -142,7 +146,7 @@ export const IeaComparison: FC = () => {
           30日未満
         </span>
         <span>|</span>
-        <span>出典: IEA協調放出(3/11) / Al Jazeera / S&P Global / Asia Media Centre / 資源エネルギー庁（2026年3月）</span>
+        <span>出典: IEA協調放出(3/11) / DropThe / Al Jazeera(3/23) / S&P Global / Forbes Japan / 時事通信 / 資源エネルギー庁（2026年4月3日更新）</span>
       </div>
     </div>
   );

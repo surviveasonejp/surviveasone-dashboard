@@ -66,7 +66,7 @@ export interface AisPosition {
 
 const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string; destPort?: string }> = [
   // VLCC
-  { id: "vlcc-01", mmsi: "636021014", name: "TATESHINA", destPort: "Chiba" },           // IMO 9910117
+  { id: "vlcc-alt-06", mmsi: "636021014", name: "TATESHINA", destPort: "Ehime" },       // IMO 9910117 米国ガルフ代替ルート便
   { id: "vlcc-02", mmsi: "538003869", name: "KAZUSA", destPort: "Kiire" },              // IMO 9513402
   { id: "vlcc-03", mmsi: "354919000", name: "TAKASAGO", destPort: "Mizushima" },        // IMO 9770696
   // LNG
