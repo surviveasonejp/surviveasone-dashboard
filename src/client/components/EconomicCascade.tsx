@@ -16,6 +16,8 @@ import type { FlowSimulationResult } from "../../shared/types";
 
 interface EconomicCascadeProps {
   simulation: FlowSimulationResult;
+  /** WTI原油スポット価格（$/バレル）。未取得時は静的基準値を使用 */
+  wtiPriceUsd?: number;
 }
 
 /** 在庫%から原油価格倍率を算出（1973年石油ショック + IEAモデルに基づく近似） */
@@ -37,12 +39,13 @@ interface CascadeSnapshot {
   phase: "normal" | "spike" | "rationing" | "collapse";
 }
 
-const BASE_GASOLINE_YEN = 170; // 基準ガソリン価格（円/L）
+const BASE_GASOLINE_YEN = 170;    // 静的基準ガソリン価格（円/L）。WTI未取得時のフォールバック
+const WTI_REFERENCE_USD = 75;     // 170円/Lに対応するWTI基準価格（$/バレル）
 const GASOLINE_ELASTICITY = 0.7;
 const LOGISTICS_ELASTICITY = 0.3;
 const FOOD_ELASTICITY = 0.15;
 
-function calcCascade(sim: FlowSimulationResult): CascadeSnapshot[] {
+function calcCascade(sim: FlowSimulationResult, baseGasolineYen: number): CascadeSnapshot[] {
   if (sim.timeline.length === 0) return [];
 
   const initialOil = sim.timeline[0]?.oilStock_kL ?? 1;
@@ -64,7 +67,7 @@ function calcCascade(sim: FlowSimulationResult): CascadeSnapshot[] {
 
     // ガソリン価格: 原油倍率 × 弾力性 + ベース
     const gasolineMult = 1 + (oilPrice - 1) * GASOLINE_ELASTICITY;
-    const gasolinePrice = Math.round(BASE_GASOLINE_YEN * gasolineMult);
+    const gasolinePrice = Math.round(baseGasolineYen * gasolineMult);
 
     // 物流コスト: ガソリン倍率 × 弾力性
     const logisticsCost = 1 + (gasolineMult - 1) * LOGISTICS_ELASTICITY;
@@ -97,8 +100,14 @@ const PHASE_LABELS = {
   collapse: "配給制",
 };
 
-export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation }) => {
-  const snapshots = useMemo(() => calcCascade(simulation), [simulation]);
+export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPriceUsd }) => {
+  const baseGasolineYen = wtiPriceUsd != null
+    ? Math.round(BASE_GASOLINE_YEN * (wtiPriceUsd / WTI_REFERENCE_USD))
+    : BASE_GASOLINE_YEN;
+  const snapshots = useMemo(
+    () => calcCascade(simulation, baseGasolineYen),
+    [simulation, baseGasolineYen],
+  );
 
   if (snapshots.length === 0) return null;
 
@@ -151,7 +160,13 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation }) => {
       {/* 凡例 */}
       <div className="text-[9px] font-mono text-neutral-600 space-y-0.5">
         <p>原油価格: IEA価格弾力性モデル + 1973年石油ショック実績に基づく近似</p>
-        <p>ガソリン: 基準¥{BASE_GASOLINE_YEN}/L × 原油弾力性{GASOLINE_ELASTICITY} | 物流: 燃料費比率{LOGISTICS_ELASTICITY} | 食品: 物流費比率{FOOD_ELASTICITY}</p>
+        <p>
+          ガソリン基準:
+          {wtiPriceUsd != null
+            ? ` ¥${baseGasolineYen}/L（WTI $${wtiPriceUsd.toFixed(1)}/バレル実測値より算出）`
+            : ` ¥${BASE_GASOLINE_YEN}/L（静的基準値）`}
+          {" "}| 物流: 燃料費比率{LOGISTICS_ELASTICITY} | 食品: 物流費比率{FOOD_ELASTICITY}
+        </p>
       </div>
     </div>
   );

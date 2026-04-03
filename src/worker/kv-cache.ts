@@ -58,6 +58,7 @@ export const CACHE_KEYS = {
   REGIONS_ALL: "api:regions:all",
   ELECTRICITY_LATEST: "api:electricity:latest",
   TANKERS: "api:tankers",
+  OIL_PRICE: "oil:wti:latest",
 } as const;
 
 /** シナリオ別キャッシュキー生成 */
@@ -72,4 +73,5 @@ export const CACHE_TTL = {
   REGIONS: 86400,      // 24時間（静的に近いデータ）
   ELECTRICITY: 300,    // 5分（電力需給実測、日次自動取得）
   SIMULATION: 3600,    // 1時間（シミュレーション結果）
+  OIL_PRICE: 86400,    // 24時間（WTI原油価格、日次自動取得）
 } as const;

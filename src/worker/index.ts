@@ -34,6 +34,7 @@ import {
   getAllRegions,
   getLatestElectricityDemand,
   getElectricityHistory,
+  getLatestOilPrice,
 } from "./db";
 import {
   getFromCache,
@@ -66,6 +67,7 @@ interface Env {
   ARCHIVE: R2Bucket;
   ADMIN_TOKEN?: string;
   AISSTREAM_API_KEY?: string;
+  EIA_API_KEY?: string;
 }
 
 // ─── セキュリティヘッダー ──────────────────────────────
@@ -325,6 +327,8 @@ async function handleApiRoute(
       return handleRegions(env);
     case "/api/electricity":
       return handleElectricity(url, env);
+    case "/api/oil-price":
+      return handleOilPrice(env);
     case "/api/countdowns":
       return handleCountdowns(url, env);
     case "/api/collapse":
@@ -373,6 +377,7 @@ async function handleApiRoute(
           "GET /api/food-collapse?scenario={id}": "食品カテゴリ別消失予測",
           "GET /api/tankers": "タンカー15隻の到着予測",
           "GET /api/electricity?area={id}": "電力需給実測データ（全10エリア）",
+          "GET /api/oil-price": "WTI原油スポット価格（出典: EIA）",
           "GET /api/summary?scenario={id}": "プレーンテキスト概要（LLM・クローラー向け）",
           "GET /api/simulate?scenario={id}": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
           "GET /api/methodology": "計算モデル・前提条件・係数・出典（構造化JSON）",
@@ -456,6 +461,45 @@ async function handleRegions(env: Env): Promise<Response> {
   const data = await getAllRegions(env.DB);
   await setCache(env.CACHE, CACHE_KEYS.REGIONS_ALL, data, CACHE_TTL.REGIONS);
   return jsonResponse({ data, cache: "miss" });
+}
+
+// ─── /api/oil-price ───────────────────────────────────
+
+/** WTI原油スポット価格（EIA日次取得）を返す */
+async function handleOilPrice(env: Env): Promise<Response> {
+  // KVキャッシュ確認
+  const cached = await env.CACHE.get(CACHE_KEYS.OIL_PRICE, "text");
+  if (cached) {
+    const data = JSON.parse(cached) as { wti_usd: number; date: string; updatedAt: string };
+    return jsonResponse({
+      wti_usd: data.wti_usd,
+      date: data.date,
+      updatedAt: data.updatedAt,
+      source: "EIA RWTC WTI Spot Price",
+      cache: "hit",
+    });
+  }
+
+  // D1フォールバック
+  const row = await getLatestOilPrice(env.DB);
+  if (!row) {
+    return jsonResponse({ error: "not_found", message: "Oil price data not yet available" }, 404);
+  }
+
+  const payload = {
+    wti_usd: row.wti_usd,
+    date: row.date,
+    updatedAt: row.updated_at,
+    source: row.source,
+    cache: "miss",
+  };
+  // KVに再キャッシュ
+  await env.CACHE.put(
+    CACHE_KEYS.OIL_PRICE,
+    JSON.stringify({ wti_usd: row.wti_usd, date: row.date, updatedAt: row.updated_at }),
+    { expirationTtl: CACHE_TTL.OIL_PRICE },
+  );
+  return jsonResponse(payload);
 }
 
 // ─── /api/electricity ─────────────────────────────────

@@ -37,6 +37,12 @@ export const SurvivalClock: FC = () => {
     EMPTY_SIM,
   );
 
+  // WTI原油価格（EIA日次取得）
+  const { data: oilPriceData } = useApiData<{ wti_usd: number; date: string }>(
+    "/api/oil-price",
+    null as unknown as { wti_usd: number; date: string },
+  );
+
   // 計算根拠の表示用データ（生データ）
   const { data: apiReserves, isFromApi: reservesFromApi } = useApiData<ReservesRow>(
     "/api/reserves",
@@ -106,7 +112,7 @@ export const SurvivalClock: FC = () => {
       <FlowTimeline scenarioId={scenario} />
 
       {simResult && simResult.timeline.length > 0 && (
-        <EconomicCascade simulation={simResult} />
+        <EconomicCascade simulation={simResult} wtiPriceUsd={oilPriceData?.wti_usd} />
       )}
 
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">

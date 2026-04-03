@@ -60,7 +60,15 @@ CREATE TABLE IF NOT EXISTS electricity_demand (
   PRIMARY KEY (date, area_id)
 );
 
+CREATE TABLE IF NOT EXISTS oil_prices (
+  date TEXT PRIMARY KEY,
+  wti_usd REAL NOT NULL,
+  source TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 -- インデックス
 CREATE INDEX IF NOT EXISTS idx_reserves_date ON reserves(date DESC);
 CREATE INDEX IF NOT EXISTS idx_consumption_date ON consumption(date DESC);
 CREATE INDEX IF NOT EXISTS idx_electricity_date ON electricity_demand(date DESC, area_id);
+CREATE INDEX IF NOT EXISTS idx_oil_prices_date ON oil_prices(date DESC);

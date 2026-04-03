@@ -76,6 +76,21 @@ export async function getAllRegions(db: D1Database): Promise<RegionRow[]> {
   return result.results;
 }
 
+// ─── 原油価格 ────────────────────────────────────────
+
+export interface OilPriceRow {
+  date: string;
+  wti_usd: number;
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestOilPrice(db: D1Database): Promise<OilPriceRow | null> {
+  return db
+    .prepare("SELECT * FROM oil_prices ORDER BY date DESC LIMIT 1")
+    .first<OilPriceRow>();
+}
+
 // ─── 電力需給 ────────────────────────────────────────
 
 export interface ElectricityDemandRow {
