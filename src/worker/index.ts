@@ -644,12 +644,12 @@ async function handleTankerUpdate(request: Request | undefined, env: Env): Promi
     return jsonResponse({ error: "unauthorized", message: "Valid ADMIN_TOKEN required" }, 401);
   }
 
-  const body = await request.json() as {
-    id: string;
-    eta_days?: number;
-    status?: string;
-    note?: string;
-  };
+  let body: { id: string; eta_days?: number; status?: string; note?: string };
+  try {
+    body = await request.json() as typeof body;
+  } catch {
+    return jsonResponse({ error: "invalid_json", message: "Request body must be valid JSON" }, 400);
+  }
 
   if (!body.id) {
     return jsonResponse({ error: "invalid_input", message: "id is required" }, 400);
