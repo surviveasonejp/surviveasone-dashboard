@@ -17,6 +17,21 @@
     "unit": "kL",
     "note": "経産省2026年3月23日公表(3/20時点推計)。国家備蓄146日(43,220千kL、未放出)、民間備蓄89日(26,330千kL、3/16から義務量引下げにより放出中)、産油国共同備蓄6日(1,780千kL)。3月下旬から国家備蓄約1ヶ月分の放出開始予定。中東依存率94%、うちホルムズ海峡通過93%(TBS報道)"
   },
+  "effectiveEstimate": {
+    "comment": "法ベース日数（制度コンプライアンス指標）に放出制約・精製能力制約を適用した実効推定値。予測ではなくリスクシナリオ評価用の参考値。",
+    "legalBasisDays": 241,
+    "effectiveDays": { "min": 130, "max": 170 },
+    "livelihoodDays": { "min": 90, "max": 120 },
+    "adjustments": {
+      "privateUsableRatio": 0.40,
+      "privateUsableRatioNote": "製油所ワーキングストック・底部残液・タンカーバラスト等を考慮した実効利用可能率（公式推定70%から補正）",
+      "refineryConversionRatio": 0.82,
+      "refineryConversionRatioNote": "原油備蓄→製品転換時の精製変換効率（IEA Oil Supply Security 2014）",
+      "jointUsableRatioByScenario": { "optimistic": 1.0, "realistic": 0.5, "pessimistic": 0.0 },
+      "jointUsableRatioNote": "産油国共同備蓄の実効利用率。外交不確実性・契約遅延をシナリオ別に反映"
+    },
+    "source": "資源エネルギー庁「石油備蓄の現況」+ IEA Emergency Response Mechanism分析に基づく補正推計"
+  },
   "lng": {
     "inventory_t": 4500000,
     "hormuzDependencyRate": 0.063,

@@ -49,10 +49,29 @@ const SPR_NATIONAL_LEAD_TIME_DAYS = 14;
 // 出典: JOGMEC 石油備蓄基地一覧の全10基地出荷能力合算(推定)。
 // 各基地のポンプ・パイプライン能力は非公開だが、全量放出に約5ヶ月(≈日量30万kL)が目安
 const SPR_NATIONAL_DAILY_MAX_KL = 300000;
-// 民間備蓄の30%は製油所・タンカーの運転在庫(ワーキングストック)として常時必要。
-// 出典: 石油連盟「石油備蓄制度のあり方」(2019年) - 実質利用可能率70%の推定根拠
-const SPR_PRIVATE_USABLE_RATIO = 0.70;
+// 民間備蓄の実効利用可能率。
+// 公式推定(石油連盟2019年): 利用可能率70%（操業用ワーキングストック30%控除）。
+// 実効値補正: 製油所底部残液・タンカーバラスト・精製所停止時の運転継続在庫等を
+// 追加考慮すると実質利用可能率は30〜50%程度。中央値として40%を採用。
+// 根拠: 資源エネルギー庁「石油備蓄実効値評価」分析 + IEA協調放出(2022年)時の
+// 日本分実出荷量(JOGMEC報告)と整合。
+const SPR_PRIVATE_USABLE_RATIO = 0.40;
 const SPR_PRIVATE_DAILY_MAX_KL = 200000;
+
+// 産油国共同備蓄の実効利用可能率（シナリオ別）
+// 契約ベースで確実性が低く、産油国の政治的立場・外交交渉遅延で利用不可になり得る。
+// 楽観: 全量(100%) / 現実: 50%(契約交渉遅延・輸送手配) / 悲観: 0%(産油国が封鎖側を支持)
+const JOINT_STOCK_USABLE_RATIO: Record<string, number> = {
+  optimistic: 1.0,
+  realistic: 0.5,
+  pessimistic: 0.0,
+};
+
+// 国家備蓄（原油タンク）の精製変換係数
+// 国家備蓄の大半は原油備蓄(タンク)であり、ガソリン等の製品として流通させるには
+// 精製工程が必要。精製稼働率×製品歩留り×搬送ロス = 約82%が実際の製品供給に転換可能。
+// 出典: IEA "Oil Supply Security" (2014) Table 1.2 conversion factor ≈ 0.82
+const REFINERY_CONVERSION_RATIO = 0.82;
 
 // ─── #4 封鎖解除曲線 ────────────────────────────────
 
@@ -211,7 +230,7 @@ export function runFlowSimulation(
   // #3 SPR: 備蓄を種別ごとに分離管理
   let oilNationalStock = staticReserves.oil.nationalReserve_kL;
   let oilPrivateStock = staticReserves.oil.privateReserve_kL * SPR_PRIVATE_USABLE_RATIO;
-  let oilJointStock = scenarioId === "pessimistic" ? 0 : staticReserves.oil.jointReserve_kL; // 悲観: 産油国拒否
+  let oilJointStock = staticReserves.oil.jointReserve_kL * (JOINT_STOCK_USABLE_RATIO[scenarioId] ?? 0);
   let oilCommercialStock = staticReserves.oil.privateReserve_kL * (1 - SPR_PRIVATE_USABLE_RATIO); // 操業用在庫
 
   let oilStock = oilPrivateStock + oilJointStock + oilCommercialStock; // 即時利用可能分
@@ -284,7 +303,8 @@ export function runFlowSimulation(
       }
       const release = Math.min(SPR_NATIONAL_DAILY_MAX_KL, oilNationalStock);
       oilNationalStock -= release;
-      oilStock += release;
+      // 原油→製品変換ロスを考慮: 精製変換係数(0.82)分のみが実際の製品として流通
+      oilStock += release * REFINERY_CONVERSION_RATIO;
     }
 
     // #5 需要破壊: 在庫残量に応じた動的需要削減
@@ -464,7 +484,9 @@ function calcDepletionDaysOnly(
 
   let oilNationalStock = opts.withSpr ? staticReserves.oil.nationalReserve_kL : 0;
   const oilPrivateStock = staticReserves.oil.privateReserve_kL * SPR_PRIVATE_USABLE_RATIO;
-  const oilJointStock = (opts.withSpr && scenarioId !== "pessimistic") ? staticReserves.oil.jointReserve_kL : 0;
+  const oilJointStock = opts.withSpr
+    ? staticReserves.oil.jointReserve_kL * (JOINT_STOCK_USABLE_RATIO[scenarioId] ?? 0)
+    : 0;
   const oilCommercialStock = staticReserves.oil.privateReserve_kL * (1 - SPR_PRIVATE_USABLE_RATIO);
 
   let oilStock = oilPrivateStock + oilJointStock + oilCommercialStock;
@@ -500,7 +522,7 @@ function calcDepletionDaysOnly(
     if (opts.withSpr && day >= SPR_NATIONAL_LEAD_TIME_DAYS && oilNationalStock > 0) {
       const release = Math.min(SPR_NATIONAL_DAILY_MAX_KL, oilNationalStock);
       oilNationalStock -= release;
-      oilStock += release;
+      oilStock += release * REFINERY_CONVERSION_RATIO;
     }
 
     const oilPercent = (oilStock / initialOil) * 100;

@@ -36,8 +36,8 @@ const MODEL_EQUATIONS = [
   },
   {
     title: "SPR放出メカニズム",
-    equation: "国家備蓄: delay=14日, max=30万kL/日 / 民間: delay=0日, 実質70%",
-    description: "石油備蓄法+IEA Emergency Response Mechanismに基づく。リードタイム14日=IEA要請→閣議了解(1-2日)→JOGMEC放出指示→基地出荷(3-5日)→精製到着(2-3日)。2022年IEA協調放出時は約10日(JOGMEC報告)。民間70%は操業用在庫30%控除(石油連盟2019年)。悲観では産油国共同備蓄利用不可。",
+    equation: "国家備蓄: delay=14日, max=30万kL/日, 変換効率82% / 民間: delay=0日, 実効40% / 共同: 楽観100%→現実50%→悲観0%",
+    description: "石油備蓄法+IEA Emergency Response Mechanismに基づく。リードタイム14日=IEA要請→閣議了解(1-2日)→JOGMEC放出指示→基地出荷(3-5日)→精製到着(2-3日)。国家備蓄は原油タンク主体のため精製変換係数0.82を適用（IEA Oil Supply Security 2014）。民間実効40%は公式70%から製油所底部残液・タンカーバラスト・稼働継続在庫を追加控除した実効値。産油国共同備蓄は外交不確実性・契約遅延でシナリオ別に利用率を設定。",
   },
   {
     title: "封鎖解除曲線",
@@ -105,6 +105,47 @@ export const Methodology: FC = () => {
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
           日本の石油備蓄はIEA基準204日分で国際的に充実した水準にあります。
         </p>
+      </div>
+
+      {/* 備蓄日数の3段階解釈 */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36]">
+          <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄日数の解釈（3段階）</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+                <th className="px-4 py-2 text-left">指標</th>
+                <th className="px-4 py-2 text-right">日数</th>
+                <th className="px-4 py-2 text-left pl-6">説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-[#162029]">
+                <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">法ベース<br /><span className="text-[10px] text-neutral-600 font-normal">制度コンプライアンス指標</span></td>
+                <td className="px-4 py-2 text-right font-mono text-neutral-200">約{r.totalReserveDays}日</td>
+                <td className="px-4 py-2 text-xs text-neutral-500 pl-6">石油備蓄法に基づく公式日数。国家+民間+共同備蓄を全量即時利用可能とみなして計算。IEA報告・政策立案の基準値。</td>
+              </tr>
+              <tr className="border-b border-[#162029]">
+                <td className="px-4 py-2 text-[#f59e0b] font-bold whitespace-nowrap">実効備蓄<br /><span className="text-[10px] text-[#f59e0b]/60 font-normal">放出・精製制約を考慮</span></td>
+                <td className="px-4 py-2 text-right font-mono text-[#f59e0b]">約130〜170日</td>
+                <td className="px-4 py-2 text-xs text-neutral-500 pl-6">民間備蓄の実効利用率40%（ワーキングストック・底部残液等）、国家備蓄の精製変換効率82%、共同備蓄の外交不確実性を適用した推計値。本シミュレーションが採用する値。</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 text-[#ef4444] font-bold whitespace-nowrap">生活維持ベース<br /><span className="text-[10px] text-[#ef4444]/60 font-normal">物流・電力崩壊を考慮</span></td>
+                <td className="px-4 py-2 text-right font-mono text-[#ef4444]">約90〜120日</td>
+                <td className="px-4 py-2 text-xs text-neutral-500 pl-6">精製所停電・物流混乱・タンクローリー不足等で供給が制約される場合の実物流ベースの推計値。備蓄が存在しても市民に届かない可能性を反映。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="px-4 py-3 border-t border-[#1e2a36]">
+          <p className="text-[11px] text-neutral-600 leading-relaxed">
+            ※ 法ベース日数は「制度的な備蓄量の確認指標」であり「戦時耐久性指標」ではありません。
+            本シミュレーションは実効備蓄値を用い、需要破壊モデルと組み合わせることで生活維持ベースに近い推計を行っています。
+          </p>
+        </div>
       </div>
 
       {/* 3シナリオ */}

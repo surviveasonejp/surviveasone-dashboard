@@ -135,7 +135,7 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の原油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。うち<span className="text-[#f59e0b] font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
           <p>封鎖が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に崩壊する。</p>
-          <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点推計）。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
+          <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース）。放出制約・精製変換効率を考慮した実効値は約130〜170日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>
 
@@ -185,7 +185,7 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>本シミュレーションは<span className="text-neutral-200 font-bold">リスクシナリオの可視化</span>であり、予測ではありません。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
-            <li>{`・石油備蓄${staticReserves.oil.totalReserveDays}日分はIEA加盟国で上位の水準（IEA基準約${Math.round(staticReserves.oil.totalReserveDays * 0.85)}日）`}</li>
+            <li>{`・石油備蓄${staticReserves.oil.totalReserveDays}日分（法ベース）はIEA加盟国で上位の水準（IEA基準約${Math.round(staticReserves.oil.totalReserveDays * 0.85)}日）。放出制約・精製変換効率を考慮した実効値は約130〜170日`}</li>
             <li>・代替供給ルートは実装済みだが、調達成功率の低下モデルは簡易近似。実際の国際市場の競争動態はより複雑</li>
             <li>・経済カスケードは価格弾力性の簡易モデル。為替・金利・GDP波及は未反映</li>
             <li>・再エネの季節変動（太陽光は夏:冬=2:1）・蓄電池モデルは未反映</li>
