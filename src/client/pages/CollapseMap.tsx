@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from "react";
+import { type FC, useState, useEffect, useMemo } from "react";
 import { RegionMap } from "../components/RegionMap";
 import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
@@ -9,12 +9,35 @@ import { useUserRegion } from "../hooks/useUserRegion";
 import type { RegionCollapse } from "../../shared/types";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
+import staticRegions from "../../worker/data/regions.json";
+
+// 再エネ自立率計算（RegionDetail.tsxと同一定数）
+const NATIONAL_AVG_MW = 115_000;
+const SOLAR_CF = 0.15;
+const WIND_CF = 0.22;
+const HYDRO_CF = 0.35;
+const ESSENTIAL_RATIO = 0.30;
 
 export const CollapseMap: FC = () => {
   const { regions, loading: regionsLoading } = useCollapseOrder();
   const [selectedRegion, setSelectedRegion] = useState<RegionCollapse | null>(null);
   const [showLogistics, setShowLogistics] = useState(false);
   const userRegion = useUserRegion();
+
+  // 全エリアの再エネ自立率を計算してソート
+  const renewableRanking = useMemo(() => {
+    return staticRegions.map((sr) => {
+      const renewableMW = (sr.solarCapacity_MW ?? 0) * SOLAR_CF
+        + (sr.windCapacity_MW ?? 0) * WIND_CF
+        + (sr.hydroCapacity_MW ?? 0) * HYDRO_CF;
+      const minEssentialMW = NATIONAL_AVG_MW * sr.powerDemandShare * ESSENTIAL_RATIO;
+      const rate = minEssentialMW > 0 ? (renewableMW / minEssentialMW) * 100 : 0;
+      const withNuclear = minEssentialMW > 0
+        ? ((renewableMW + (sr.nuclearCapacity_MW ?? 0)) / minEssentialMW) * 100
+        : 0;
+      return { id: sr.id, name: sr.name, rate, withNuclear, renewableMW: Math.round(renewableMW), minEssentialMW: Math.round(minEssentialMW) };
+    }).sort((a, b) => b.rate - a.rate);
+  }, []);
 
   // 位置情報で初期選択
   useEffect(() => {
@@ -147,6 +170,45 @@ export const CollapseMap: FC = () => {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+      {/* 再エネ自立率ランキング（マイクログリッド指標） */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36] space-y-1">
+          <h2 className="font-mono text-sm tracking-wider text-neutral-400">再エネ自立率ランキング</h2>
+          <p className="text-[10px] text-neutral-600">
+            電力供給停止時に再生可能エネルギーのみで生活必需需要（通常の30%）を賄える割合。
+            設備利用率: 太陽光15% / 風力22% / 水力35%
+          </p>
+        </div>
+        <div className="p-4 space-y-2">
+          {renewableRanking.map((r) => {
+            const rateColor = r.rate >= 100 ? "#22c55e" : r.rate >= 70 ? "#f59e0b" : r.rate >= 40 ? "#94a3b8" : "#ef4444";
+            return (
+              <div key={r.id} className="space-y-0.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-300 w-12">{r.name}</span>
+                  <div className="flex-1 mx-3">
+                    <div className="w-full h-1.5 bg-[#1e2a36] rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${Math.min(100, r.rate)}%`, backgroundColor: rateColor }}
+                      />
+                    </div>
+                  </div>
+                  <span className="font-mono text-xs w-20 text-right" style={{ color: rateColor }}>
+                    {r.rate >= 100 ? "自立可能" : `${Math.round(r.rate)}%`}
+                    {r.withNuclear > r.rate && (
+                      <span className="text-neutral-600 text-[9px] ml-1">（核:{Math.round(r.withNuclear)}%）</span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="px-4 pb-3 text-[9px] text-neutral-700">
+          出典: 資源エネルギー庁 再エネ設備容量 2023年度確報
         </div>
       </div>
     </div>

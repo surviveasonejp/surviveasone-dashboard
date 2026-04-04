@@ -9,6 +9,14 @@ interface RegionDetailProps {
   region: RegionCollapse | null;
 }
 
+// ─── 再エネ自立率の計算定数 ──────────────────────────
+// 全国平均電力需要: ~1,005 TWh/年 ÷ 8760h ≈ 114.7 GW（資源エネルギー庁 2023年度確報）
+const NATIONAL_AVG_MW = 115_000;
+const SOLAR_CF = 0.15;   // 太陽光 設備利用率（資源エネルギー庁 2023年実績）
+const WIND_CF = 0.22;    // 風力 設備利用率（同上）
+const HYDRO_CF = 0.35;   // 水力 設備利用率（同上）
+const ESSENTIAL_RATIO = 0.30; // 生活必需のみ = 通常需要の30%（暖房・医療・通信・上下水道）
+
 const RANK_COLORS: Record<string, string> = {
   S: "#ef4444",
   A: "#dc2626",
@@ -36,6 +44,18 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
 
   const logistics = regionData?.logistics ?? null;
   const stockpileBases = regionData?.stockpileBases ?? [];
+
+  // 再エネ自立率
+  const renewableAvgMW = regionData
+    ? (regionData.solarCapacity_MW ?? 0) * SOLAR_CF
+      + (regionData.windCapacity_MW ?? 0) * WIND_CF
+      + (regionData.hydroCapacity_MW ?? 0) * HYDRO_CF
+    : 0;
+  const minEssentialMW = NATIONAL_AVG_MW * (regionData?.powerDemandShare ?? 0) * ESSENTIAL_RATIO;
+  const selfSufficiencyRate = minEssentialMW > 0 ? (renewableAvgMW / minEssentialMW) * 100 : 0;
+  const nuclearMW = regionData?.nuclearCapacity_MW ?? 0;
+  const withNuclearRate = minEssentialMW > 0 ? ((renewableAvgMW + nuclearMW) / minEssentialMW) * 100 : 0;
+  const rateColor = selfSufficiencyRate >= 100 ? "#22c55e" : selfSufficiencyRate >= 70 ? "#f59e0b" : selfSufficiencyRate >= 40 ? "#94a3b8" : "#ef4444";
   const jointStockpile = "jointStockpile" in (regionData ?? {})
     ? (regionData as Record<string, unknown>).jointStockpile as { partner: string; location: string; capacity_kL: number; note: string } | undefined
     : undefined;
@@ -175,6 +195,45 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
           value={`${formatNumber(Math.round(region.foodSelfSufficiency * 100))}%`}
         />
       </div>
+
+      {/* 再エネ自立率（マイクログリッド指標） */}
+      {regionData && (
+        <div className="bg-[#0f1419] rounded p-3 space-y-2">
+          <div className="text-[10px] font-mono text-neutral-600 tracking-wider">再エネ自立率（生活必需比）</div>
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-neutral-400">再エネのみ</span>
+              <span className="font-mono text-sm font-bold" style={{ color: rateColor }}>
+                {selfSufficiencyRate >= 100 ? "自立可能" : `${Math.round(selfSufficiencyRate)}%`}
+              </span>
+            </div>
+            {/* バー */}
+            <div className="w-full h-2 bg-[#1e2a36] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{ width: `${Math.min(100, selfSufficiencyRate)}%`, backgroundColor: rateColor }}
+              />
+            </div>
+            {nuclearMW > 0 && (
+              <div className="flex items-center justify-between pt-0.5">
+                <span className="text-[10px] text-neutral-500">原子力含む場合</span>
+                <span className="font-mono text-[10px] text-[#94a3b8]">
+                  {withNuclearRate >= 100 ? "自立可能" : `${Math.round(withNuclearRate)}%`}
+                  <span className="text-neutral-600 ml-1">（+{Math.round(nuclearMW / 100) / 10} GW）</span>
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="grid grid-cols-3 gap-1 text-[9px] text-neutral-600 pt-1 border-t border-[#1e2a36]">
+            <div>太陽光 {regionData.solarCapacity_MW?.toLocaleString() ?? 0} MW</div>
+            <div>風力 {regionData.windCapacity_MW?.toLocaleString() ?? 0} MW</div>
+            <div>水力 {regionData.hydroCapacity_MW?.toLocaleString() ?? 0} MW</div>
+          </div>
+          <p className="text-[8px] text-neutral-700">
+            出典: 資源エネルギー庁 再エネ設備容量 2023年度確報 / 設備利用率: 太陽光15%・風力22%・水力35%
+          </p>
+        </div>
+      )}
 
       {/* ノート */}
       <p className="text-xs text-neutral-500 leading-relaxed">{region.note}</p>
