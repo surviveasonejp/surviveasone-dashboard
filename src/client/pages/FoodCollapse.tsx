@@ -254,6 +254,125 @@ export const FoodCollapse: FC = () => {
         <p className="text-[10px] text-[#f59e0b]/70 leading-relaxed">
           ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで枯渇する。「食料不足」ではなく「衛生・包装の崩壊」が先に来る。
         </p>
+        {/* 容器が先に消える — キーポイント */}
+        <div className="border-t border-[#1e2a36] pt-2 mt-1">
+          <p className="text-[10px] text-[#ef4444]/80 font-mono leading-relaxed">
+            ⚠ 「中身ではなく容器が先に消える」 — PETボトル飲料は中身の在庫があっても容器不足で棚から消える。
+            食品トレーが入手困難になると精肉・鮮魚の店頭販売が停止し、量り売り・バラ売りに移行する。
+          </p>
+        </div>
+      </div>
+
+      {/* 消費財消滅タイムライン */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">消費財消滅タイムライン</h2>
+        <p className="text-[10px] text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
+        <div className="space-y-3">
+          {([
+            {
+              period: "1〜2週間",
+              color: "#f59e0b",
+              items: [
+                { name: "レジ袋・薄手ゴミ袋", reason: "PE製。最初に出荷制限がかかる" },
+                { name: "食品用ラップ", reason: "PE製。封鎖後2〜3週で品薄化" },
+                { name: "PETボトル飲料", reason: "中身より容器が先に不足。棚から消えるが水は別経路で存在" },
+                { name: "プラ製カトラリー", reason: "PP製。代替あり（箸・金属）" },
+              ],
+            },
+            {
+              period: "1〜2ヶ月",
+              color: "#ef4444",
+              items: [
+                { name: "おむつ・生理用品", reason: "不織布・高分子吸収体（石化由来）。代替が効かない" },
+                { name: "ウェットティッシュ・除菌シート", reason: "不織布（石化由来）" },
+                { name: "食品トレー（肉・魚）", reason: "PS製。精肉・鮮魚の店頭販売が停止→量り売りへ" },
+                { name: "コンビニ弁当容器・冷凍食品パッケージ", reason: "PP/PE製。コンビニ品揃え激減" },
+                { name: "液体洗剤・シャンプー", reason: "界面活性剤（ナフサ由来）。固形石鹸への移行が必要" },
+              ],
+            },
+            {
+              period: "2〜3ヶ月",
+              color: "#dc2626",
+              items: [
+                { name: "化繊衣類（ポリエステル・ナイロン）", reason: "石化由来。綿・ウールに回帰するが供給不足" },
+                { name: "家電・修理部品", reason: "樹脂部品不足。壊れたら直せない状態に" },
+                { name: "宅配便・配送サービス", reason: "包装材不足で荷受け困難。物流崩壊の副作用" },
+              ],
+            },
+            {
+              period: "3ヶ月以降",
+              color: "#991b1b",
+              items: [
+                { name: "点滴バッグ・注射器", reason: "国家優先配給対象だが逼迫。産業配給の最優先品目" },
+                { name: "水処理薬品", reason: "ポリマー系凝集剤が不足→浄水場に影響" },
+              ],
+            },
+          ] as const).map((phase) => (
+            <div key={phase.period} className="space-y-1.5">
+              <div
+                className="text-xs font-mono font-bold px-2 py-0.5 rounded inline-block"
+                style={{ color: phase.color, backgroundColor: `${phase.color}15`, border: `1px solid ${phase.color}40` }}
+              >
+                {phase.period}
+              </div>
+              <div className="space-y-1 pl-2">
+                {phase.items.map((item) => (
+                  <div key={item.name} className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
+                    <span className="text-xs text-neutral-300 shrink-0">{item.name}</span>
+                    <span className="text-[9px] text-neutral-600">— {item.reason}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="text-[9px] font-mono text-neutral-600 border-t border-[#1e2a36] pt-2">
+          対策: ゴミ袋・ラップは食料より先に確保。おむつ・生理用品は最優先備蓄品目。
+          固形石鹸・ガラス/ステンレス容器への移行を今のうちに。
+        </p>
+      </div>
+
+      {/* 家庭支出への価格転嫁 */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">家庭支出への価格転嫁 — ナフサ価格段階別</h2>
+        <p className="text-[10px] text-neutral-600">
+          ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫枯渇後のシナリオ。
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs font-mono">
+            <thead>
+              <tr className="text-neutral-600 border-b border-[#1e2a36]">
+                <th className="px-2 py-1.5 text-left">支出カテゴリ</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "#f59e0b" }}>+40%</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "#ef4444" }}>+80%</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "#dc2626" }}>+120%</th>
+              </tr>
+            </thead>
+            <tbody>
+              {([
+                { category: "食品（加工食品・冷凍食品）", p40: "+3〜5%", p80: "+5〜10%", p120: "+10〜20%", bold: false },
+                { category: "日用品（洗剤・ゴミ袋・衛生用品）", p40: "+10〜20%", p80: "+20〜35%", p120: "+30〜50%", bold: false },
+                { category: "衣料品（化繊：ポリエステル・ナイロン）", p40: "+5〜10%", p80: "+10〜20%", p120: "+20〜30%", bold: false },
+                { category: "自動車・交通（タイヤ・修理部品）", p40: "+5〜8%", p80: "+8〜15%", p120: "+15〜25%", bold: false },
+                { category: "家計全体（加重平均）", p40: "+2〜4%", p80: "+4〜7%", p120: "+7〜12%", bold: true },
+                { category: "月30万円世帯（追加支出）", p40: "+6,000〜12,000円", p80: "+12,000〜21,000円", p120: "+21,000〜36,000円", bold: true },
+              ] satisfies Array<{ category: string; p40: string; p80: string; p120: string; bold: boolean }>).map((row) => (
+                <tr key={row.category} className="border-b border-[#0c1018]">
+                  <td className={`px-2 py-1.5 ${row.bold ? "text-neutral-200 font-bold" : "text-neutral-400"}`}>{row.category}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "#f59e0b" }}>{row.p40}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "#ef4444" }}>{row.p80}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "#dc2626" }}>{row.p120}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="text-[9px] font-mono text-neutral-600 space-y-0.5 border-t border-[#1e2a36] pt-2">
+          <p><span className="text-[#f59e0b]">+40%（¥10万/kL超）</span>: 減産開始フェーズ — 現在進行中。企業が自主減産して価格転嫁</p>
+          <p><span className="text-[#ef4444]">+80%（¥11〜13万/kL）</span>: 広範囲停止フェーズ — 在庫枯渇後。多くのクラッカーが稼働停止</p>
+          <p><span className="text-[#dc2626]">+120%（¥14万/kL超）</span>: 構造崩壊フェーズ — プラント長期停止・産業配給発動済み</p>
+          <p className="text-neutral-700">出典: IEA価格弾力性モデル + 経産省石化産業調査 + 2026年業界減産実績に基づく推計</p>
+        </div>
       </div>
 
       {/* サプライチェーン連鎖図 */}

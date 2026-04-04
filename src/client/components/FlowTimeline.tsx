@@ -39,12 +39,14 @@ const ACTION_BY_TYPE: Partial<Record<string, string[]>> = {
     "処方薬を2ヶ月分まとめて調剤する相談を主治医にする",
   ],
   rationing: [
+    "【石油需給適正化法 発動】用途別優先配分開始 — 医療・食料・物流が法的優先、一般産業は制限対象",
     "公共交通・自転車・徒歩ルートを今すぐ確認する",
     "職場・学校への緊急連絡手段を再確認する",
     "車での長距離移動は極力控え、用件をまとめる",
     "現金を5万円以上手元に置く（ATM混雑・カード決済停止に備え）",
   ],
   distribution: [
+    "【国民生活安定緊急措置法 発動】正式配給制 — 企業割当・購入許可制・転売禁止が法的に発動",
     "地域の配給センター・受付窓口（市区町村窓口・給水所）を確認する",
     "現金・証明書類（マイナンバーカード等）を手元に準備する",
     "近隣と互助グループを形成する（特に要配慮者がいる場合）",
@@ -262,6 +264,9 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
           </div>
         </div>
       )}
+
+      {/* ナフサ供給系統 — 化学品分岐マーカー */}
+      <NaphthaChain thresholds={sortedEvents} totalDays={totalDays} />
 
       {/* 現実イベント */}
       <RealEvents totalDays={totalDays} />
@@ -570,6 +575,95 @@ const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
           style={{ width: `${pct}%`, backgroundColor: color, opacity: 0.6 }}
         />
       </div>
+    </div>
+  );
+};
+
+// ─── ナフサ供給系統 ──────────────────────────────────
+
+const NAPHTHA_COLOR = "#f59e0b";
+
+interface NaphthaChainProps {
+  thresholds: ThresholdEvent[];
+  totalDays: number;
+}
+
+const NaphthaChain: FC<NaphthaChainProps> = ({ thresholds, totalDays }) => {
+  const priceSpike = thresholds.find((e) => e.resource === "oil" && e.type === "price_spike");
+  const rationing = thresholds.find((e) => e.resource === "oil" && e.type === "rationing");
+  const distribution = thresholds.find((e) => e.resource === "oil" && e.type === "distribution");
+
+  const naphthaEvents: Array<{ day: number; label: string; note: string; yenPerKl: string }> = [];
+
+  if (priceSpike) {
+    naphthaEvents.push({
+      day: Math.max(priceSpike.day - 5, 1),
+      label: "ナフサ直接輸入▲42% — エチレン減産開始",
+      note: "中東依存42%分が途絶。民間在庫（~60日）での対応開始。¥10万/kL超で減産ライン突破",
+      yenPerKl: "¥10万/kL超",
+    });
+  }
+  if (rationing) {
+    naphthaEvents.push({
+      day: rationing.day,
+      label: "エチレン設備稼働▲30%超 — 包装材・日用品品薄",
+      note: "¥11〜13万/kL: 広範囲停止ライン。ゴミ袋・ラップ・食品トレー・おむつが棚から消え始める",
+      yenPerKl: "¥11〜13万/kL",
+    });
+  }
+  if (distribution) {
+    naphthaEvents.push({
+      day: distribution.day,
+      label: "石化クラッカー停止 — 産業配給発動",
+      note: "¥13万/kL超: 構造崩壊域。医療材料・食品包装を法的優先配給（石油需給適正化法）",
+      yenPerKl: "¥13万/kL超",
+    });
+  }
+
+  if (naphthaEvents.length === 0) return null;
+
+  return (
+    <div className="space-y-1">
+      <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5 flex items-center gap-1.5">
+        <span style={{ color: NAPHTHA_COLOR }}>◈</span>
+        NAPHTHA CHAIN — 石油→化学品・生活物資 分岐
+      </div>
+      <div className="space-y-1 border-l-2 pl-3" style={{ borderColor: `${NAPHTHA_COLOR}40` }}>
+        {naphthaEvents.map((ev) => {
+          const pct = Math.min((ev.day / totalDays) * 100, 100);
+          return (
+            <div key={ev.day} className="flex items-start gap-2">
+              <div className="w-10 text-right font-mono text-xs font-bold shrink-0 pt-0.5" style={{ color: NAPHTHA_COLOR }}>
+                {ev.day}<span className="text-[9px] font-normal text-neutral-600">日</span>
+              </div>
+              <div className="relative flex-1 bg-[#0c1018] rounded overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-l"
+                  style={{
+                    width: `${pct}%`,
+                    background: `linear-gradient(90deg, ${NAPHTHA_COLOR}20, ${NAPHTHA_COLOR}06)`,
+                  }}
+                />
+                <div className="relative px-2 py-1.5 space-y-0.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-mono text-neutral-300 leading-snug">{ev.label}</span>
+                    <span
+                      className="text-[8px] font-mono px-1 py-0.5 rounded shrink-0"
+                      style={{ backgroundColor: `${NAPHTHA_COLOR}18`, color: NAPHTHA_COLOR }}
+                    >
+                      {ev.yenPerKl}
+                    </span>
+                  </div>
+                  <div className="text-[9px] text-neutral-600 leading-relaxed">{ev.note}</div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="text-[9px] font-mono text-neutral-600 pl-3">
+        ナフサ民間在庫 ~60日（石油国家備蓄241日の約1/4）。燃料より先に生活物資系統が止まる。
+      </p>
     </div>
   );
 };

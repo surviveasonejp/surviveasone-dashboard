@@ -205,6 +205,158 @@ export const Methodology: FC = () => {
         ))}
       </div>
 
+      {/* 法的フレームワークと限界 */}
+      <div className="space-y-4">
+        <h2 className="font-mono text-sm tracking-wider text-neutral-400">法的フレームワークと限界</h2>
+
+        {/* 3法の発動トリガー */}
+        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#1e2a36]">
+            <h3 className="font-mono text-xs tracking-wider text-neutral-400">3法の段階発動トリガー</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-neutral-600 font-mono border-b border-[#1e2a36]">
+                  <th className="px-4 py-2 text-left">在庫残量</th>
+                  <th className="px-4 py-2 text-left">発動法律</th>
+                  <th className="px-4 py-2 text-left">政府アクション</th>
+                  <th className="px-4 py-2 text-left">本シミュレーション対応</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#0c1018]">
+                <tr>
+                  <td className="px-4 py-2 font-mono text-[#f59e0b]">50%以下</td>
+                  <td className="px-4 py-2 text-neutral-300">石油備蓄法</td>
+                  <td className="px-4 py-2 text-neutral-500">国家備蓄放出・IEA協調・行政指導</td>
+                  <td className="px-4 py-2 font-mono text-neutral-600">price_spike閾値（高騰フェーズ）</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 font-mono text-[#ef4444]">30%以下</td>
+                  <td className="px-4 py-2 text-neutral-300">石油需給適正化法</td>
+                  <td className="px-4 py-2 text-neutral-500">用途別優先配分（医療・食料・物流優先）/ 奇数偶数制</td>
+                  <td className="px-4 py-2 font-mono text-neutral-600">rationing閾値（配給前夜フェーズ）</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 font-mono text-[#dc2626]">10%以下</td>
+                  <td className="px-4 py-2 text-neutral-300">国民生活安定緊急措置法</td>
+                  <td className="px-4 py-2 text-neutral-500">正式配給制（企業割当・購入許可制・転売禁止）</td>
+                  <td className="px-4 py-2 font-mono text-neutral-600">distribution閾値（配給制フェーズ）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div className="px-4 py-3 border-t border-[#1e2a36]">
+            <p className="text-[11px] text-neutral-600 leading-relaxed">
+              3法は「燃料危機」前提の設計。日本の配給制度はゼロから構築せず、既存法を段階的に発動する。
+              ただし配給のデジタル管理基盤（リアルタイム割当・不正防止）は制度として未整備。
+            </p>
+          </div>
+        </div>
+
+        {/* 法的空白領域 — ナフサ起点の危機 */}
+        <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
+          <h3 className="font-mono text-xs tracking-wider text-[#ef4444]">法的空白領域 — ナフサ起点の危機は3法の範囲外</h3>
+          <p className="text-xs text-neutral-500 leading-relaxed">
+            3法は「石油（燃料）の流れ」を制御する設計。ナフサ起点の石化産業崩壊は適用外または権限が脆弱。
+          </p>
+          <div className="space-y-2">
+            {([
+              {
+                label: "ナフサ用途別精密配分",
+                status: "法的根拠なし",
+                desc: "医療用樹脂・食品包装・自動車材料でナフサの価値は全く異なるが、用途ごとの強制割当制度が存在しない。",
+                color: "#ef4444",
+              },
+              {
+                label: "包装材・容器の優先配分",
+                status: "完全に法的空白",
+                desc: "食品があっても「包めない・運べない」状態に対応する法制度が存在しない。国民生活安定緊急措置法の「生活必需物資」に容器・包装材は明示されていない。",
+                color: "#ef4444",
+              },
+              {
+                label: "産業横断サプライチェーン統制",
+                status: "権限不足",
+                desc: "石油業界への命令は可能だが、「石油→化学→製品→流通」全体を横断する強制統制権限がない。樹脂・包装材メーカーへの生産命令根拠が弱い。",
+                color: "#f59e0b",
+              },
+              {
+                label: "デジタル配給基盤",
+                status: "制度未整備",
+                desc: "現行制度はアナログ配給前提（紙・指示命令）。企業ごとのリアルタイム使用量管理・不正流通監視のデジタル基盤が法制化されていない。",
+                color: "#f59e0b",
+              },
+            ] as const).map((item) => (
+              <div key={item.label} className="flex flex-col sm:flex-row gap-1 sm:gap-3 text-xs">
+                <div className="flex items-start gap-2 sm:w-64 shrink-0">
+                  <span
+                    className="shrink-0 mt-0.5 text-[9px] font-mono px-1 py-0.5 rounded"
+                    style={{ color: item.color, backgroundColor: `${item.color}15`, border: `1px solid ${item.color}30` }}
+                  >
+                    {item.status}
+                  </span>
+                  <span className="text-neutral-300 font-bold">{item.label}</span>
+                </div>
+                <span className="text-neutral-600 sm:flex-1">{item.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 追加法整備が必要なシナリオ */}
+        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+          <h3 className="font-mono text-xs tracking-wider text-neutral-400">追加法整備が必要なシナリオ</h3>
+          <div className="space-y-2 text-xs">
+            {([
+              { id: "A", label: "ナフサ産業選別", desc: "「重要化学製品指定制度」が未整備。医療・食品優先のナフサ強制割当に法的根拠なし。（準戦時経済法・化学版が必要）" },
+              { id: "B", label: "包装崩壊 → 食料流通停止", desc: "包装材の国家統制・食品物流との一体運用根拠なし。現行法ではほぼカバー外。" },
+              { id: "C", label: "長期化（3ヶ月以上）", desc: "個人単位の全面配給制度が未整備。戦後配給制度に近いが、現代版（マイナンバー連動等）は法制化されていない。" },
+              { id: "D", label: "サプライチェーン連鎖崩壊", desc: "産業横断の強制稼働命令・特定企業の操業維持義務根拠が弱い。石油業界中心の現行法では限定的。" },
+            ] as const).map((s) => (
+              <div key={s.id} className="flex gap-3">
+                <span className="font-mono font-bold text-neutral-500 shrink-0 w-4">{s.id}</span>
+                <div>
+                  <span className="text-neutral-300 font-bold">{s.label}</span>
+                  <span className="text-neutral-600 ml-2">{s.desc}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 省庁別責任マップ */}
+        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#1e2a36]">
+            <h3 className="font-mono text-xs tracking-wider text-neutral-400">省庁別責任マップ（理想構造）</h3>
+          </div>
+          <div className="divide-y divide-[#0c1018] text-xs">
+            {([
+              { ministry: "内閣官房", role: "司令塔", desc: "最終意思決定（産業選別）・省庁間強制調整・緊急命令一元発出" },
+              { ministry: "経済産業省", role: "エネルギー・化学", desc: "ナフサ・LPGの用途別強制配分 / 石化コンビナートの稼働指示 / 包装材メーカー優先順位付け" },
+              { ministry: "農林水産省", role: "食料", desc: "食品供給との統合管理 / 何を優先して包むかの判断 / バラ売り・代替流通の指示" },
+              { ministry: "国土交通省", role: "物流", desc: "燃料の物流優先配分 / 輸送対象物資の優先順位決定（医療＞食料＞工業製品）" },
+              { ministry: "総務省", role: "配給実務", desc: "地方自治体を通じた配給実施 / 地域単位の割当管理 / デジタル配給基盤" },
+              { ministry: "厚生労働省", role: "医療死守", desc: "医療用樹脂（点滴・注射器）最優先確保 / 医薬品・衛生材の配給管理" },
+              { ministry: "外務省", role: "供給確保", desc: "原油・ナフサ緊急調達交渉 / ホルムズ・代替ルート確保 / 資源スワップ協定" },
+            ] as const).map((item) => (
+              <div key={item.ministry} className="px-4 py-2 flex flex-col sm:flex-row gap-1 sm:gap-4">
+                <div className="sm:w-36 shrink-0">
+                  <span className="text-neutral-200 font-bold">{item.ministry}</span>
+                  <span className="text-neutral-600 font-mono text-[9px] ml-2">{item.role}</span>
+                </div>
+                <span className="text-neutral-500">{item.desc}</span>
+              </div>
+            ))}
+          </div>
+          <div className="px-4 py-3 border-t border-[#1e2a36]">
+            <p className="text-[11px] text-neutral-600 leading-relaxed">
+              本質: 「省庁分担」ではなく「強制統合」が必要。最終的に「誰の生産を止めるか」を決める政治判断が不可欠。
+              この権限設計は現行制度には存在せず、緊急立法が必要になる可能性がある。
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* データソース */}
       <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-[#1e2a36]">

@@ -335,6 +335,27 @@ export const Prepare: FC = () => {
         message="備蓄は配給や相互支援が届くまでの時間を稼ぐ手段 — わが家に足りないものを確認しよう"
       />
 
+      {/* 備蓄優先順位の逆転 */}
+      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
+        <h2 className="font-mono text-xs tracking-wider text-[#ef4444]">このシナリオでは備蓄の優先順位が逆転する</h2>
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-3 text-xs font-mono">
+            <span className="text-neutral-600 shrink-0 w-10">通常:</span>
+            <span className="text-neutral-500">水 → 食料 → 燃料</span>
+          </div>
+          <div className="flex items-center gap-3 text-xs font-mono">
+            <span className="text-[#ef4444] shrink-0 w-10">今回:</span>
+            <span className="text-[#ef4444] font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
+          </div>
+        </div>
+        <p className="text-[10px] text-neutral-500 leading-relaxed">
+          食料は国内在庫があるが、ナフサ不足で「包めない・運べない」状態が先に来る。
+          おむつ・生理用品・ゴミ袋・ラップ・ニトリル手袋は食料より先に店頭から消える。
+          水道水は比較的長く維持されるが、衛生用品・容器は代替が効かない。
+          <span className="text-[#f59e0b]"> 今すぐ確保すべきはプラスチック容器・衛生用品から。</span>
+        </p>
+      </div>
+
       {/* ── パーソナライズフィルタ ── */}
       <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
         <div>
