@@ -118,8 +118,33 @@ function getBlockadeRate(day: number, profile: BlockadeProfile): number {
 // ─── #5 需要破壊モデリング ───────────────────────────
 
 /**
- * 在庫残量(%)に応じた需要削減率を返す。
- * 在庫が減る = 価格高騰 → 産業が操業停止 → 需要が自然減少
+ * 在庫残量(%)から石油価格倍率を算出（フィードバックループ用）
+ *
+ * EconomicCascade.tsx の getOilPriceMultiplier() と同一ロジック。
+ * 需要破壊を「在庫% → 価格 → 需要」の経路で計算するために参照。
+ *
+ * 出典: IEA World Energy Outlook 2024 + 1973年石油ショック実績
+ */
+function getOilPriceMultiplierForDemand(stockPercent: number): number {
+  if (stockPercent > 80) return 1.0;
+  if (stockPercent > 50) return 1.0 + (80 - stockPercent) * 0.05;  // 80→50%: 1.0→2.5倍
+  if (stockPercent > 30) return 2.5 + (50 - stockPercent) * 0.1;   // 50→30%: 2.5→4.5倍
+  if (stockPercent > 10) return 4.5 + (30 - stockPercent) * 0.2;   // 30→10%: 4.5→8.5倍
+  return 8.5 + (10 - stockPercent) * 0.5;                           // 10→0%: 8.5→13.5倍
+}
+
+/**
+ * 在庫残量(%)に応じた需要削減率を返す（価格媒介型・フィードバックループ統合版）
+ *
+ * 供給ショック → 価格高騰 → 需要崩壊 の連鎖を価格を媒介して計算。
+ * 旧実装（在庫%からの段階関数）を価格弾力性モデルに置き換え。
+ * キー閾値での需要破壊量は旧実装と同値を維持し、区間を線形補間して連続化。
+ *
+ * 価格倍率 → 需要削減マッピング（IEA "Saving Oil in a Hurry" + 1973年危機実績）:
+ *   1.0倍（在庫80%以上）: 削減なし         → factor 1.0
+ *   2.5倍（在庫50%相当）: 産業用15%削減    → factor 0.85
+ *   4.5倍（在庫30%相当）: 産業+商業35%削減 → factor 0.65
+ *   8.5倍（在庫10%相当）: 生活必需のみ     → factor 0.45
  *
  * 出典:
  * - Hamilton, J.D. (2003) "What is an Oil Shock?" Journal of Econometrics, 113(2), 363-398
@@ -129,10 +154,13 @@ function getBlockadeRate(day: number, profile: BlockadeProfile): number {
  * - 閾値の50%/30%/10%は石油備蓄法の放出段階(注意→警戒→緊急)に概ね対応
  */
 function getDemandDestructionFactor(stockPercent: number): number {
-  if (stockPercent > 50) return 1.0;        // 通常
-  if (stockPercent > 30) return 0.85;       // 産業用15%削減（価格2倍相当）
-  if (stockPercent > 10) return 0.65;       // 産業用+商業用35%削減（価格3倍相当）
-  return 0.45;                               // 生活必需のみ。55%削減
+  const p = getOilPriceMultiplierForDemand(stockPercent);
+  // 価格倍率 → 需要削減: キー閾値間を線形補間
+  if (p <= 1.0) return 1.0;
+  if (p <= 2.5) return 1.0  - (p - 1.0) * (0.15 / 1.5); // 1.0→2.5倍: factor 1.0→0.85
+  if (p <= 4.5) return 0.85 - (p - 2.5) * (0.20 / 2.0); // 2.5→4.5倍: factor 0.85→0.65
+  if (p <= 8.5) return 0.65 - (p - 4.5) * (0.20 / 4.0); // 4.5→8.5倍: factor 0.65→0.45
+  return 0.45;                                             // 生活必需のみ。55%削減
 }
 
 // ─── #7 代替供給ルートモデル ─────────────────────────
