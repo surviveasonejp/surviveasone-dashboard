@@ -175,12 +175,23 @@ function getDemandDestructionFactor(stockPercent: number): number {
 interface AlternativeSupplyProfile {
   /** 代替供給開始日（調達契約→出荷→到着のリードタイム） */
   startDay: number;
-  /** フジャイラ日量 (kL) */
+  /** フジャイラ日量 (kL)。アラビアン・ライト系→精製互換性問題なし */
   fujairahDailyKL: number;
-  /** ヤンブー日量 (kL) */
+  /** ヤンブー日量 (kL)。サウジ西岸積み→アラビアン・ライト系で互換性問題なし */
   yanbuDailyKL: number;
-  /** 非中東日量 (kL) */
+  /** 非中東日量 (kL)。豪州・インドネシア・アフリカ等 */
   nonMiddleEastDailyKL: number;
+  /**
+   * 非中東原油の精製互換性係数 (0-1)
+   *
+   * 日本の製油所はアラビアン・ライト系（API比重27〜34°、硫黄分0.8〜2.5%）に最適化。
+   * 非中東原油（豪州軽質・アフリカ・WTI）は成分が異なり即座に全量処理できない。
+   * この係数は「到着した非中東原油のうち既存設備で即処理できる割合」を表す。
+   * 残りは設備改造（6〜18ヶ月）が完了するまで製品化できない。
+   *
+   * 出典: 石油連盟「製油所設備能力調査」+ 資源エネルギー庁「原油調達多様化報告」
+   */
+  nonMideastCompatibilityFactor: number;
   /** 初期調達成功率 (0-1) */
   initialSuccessRate: number;
   /** 成功率の低下速度（日次、国際競争による） */
@@ -193,29 +204,32 @@ const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
   optimistic: {
     startDay: 14,                  // 2週間で代替調達開始
     fujairahDailyKL: 80000,        // フジャイラ8万kL/日（VLCC 0.5隻分相当）
-    yanbuDailyKL: 60000,           // ヤンブー6万kL/日
-    nonMiddleEastDailyKL: 40000,   // 非中東4万kL/日
-    initialSuccessRate: 0.7,       // 初期成功率70%
-    successRateDecayPerDay: 0.001, // 緩やかに低下
-    minSuccessRate: 0.4,           // 最低40%
+    yanbuDailyKL: 60000,                // ヤンブー6万kL/日
+    nonMiddleEastDailyKL: 40000,        // 非中東4万kL/日
+    nonMideastCompatibilityFactor: 0.6, // 非中東原油の60%を即処理可能（設備余裕あり）
+    initialSuccessRate: 0.7,            // 初期成功率70%
+    successRateDecayPerDay: 0.001,      // 緩やかに低下
+    minSuccessRate: 0.4,                // 最低40%
   },
   realistic: {
-    startDay: 28,                  // 1ヶ月で代替調達開始（経産相発表と整合）
-    fujairahDailyKL: 50000,        // フジャイラ5万kL/日
-    yanbuDailyKL: 40000,           // ヤンブー4万kL/日
-    nonMiddleEastDailyKL: 20000,   // 非中東2万kL/日
-    initialSuccessRate: 0.4,       // 初期成功率40%（アジア競争激化）
-    successRateDecayPerDay: 0.002, // 日々低下
-    minSuccessRate: 0.15,          // 最低15%
+    startDay: 28,                       // 1ヶ月で代替調達開始（経産相発表と整合）
+    fujairahDailyKL: 50000,             // フジャイラ5万kL/日
+    yanbuDailyKL: 40000,                // ヤンブー4万kL/日
+    nonMiddleEastDailyKL: 20000,        // 非中東2万kL/日
+    nonMideastCompatibilityFactor: 0.4, // 非中東原油の40%のみ即処理可能
+    initialSuccessRate: 0.4,            // 初期成功率40%（アジア競争激化）
+    successRateDecayPerDay: 0.002,      // 日々低下
+    minSuccessRate: 0.15,               // 最低15%
   },
   pessimistic: {
-    startDay: 60,                  // 2ヶ月まで代替確保不能
-    fujairahDailyKL: 20000,        // フジャイラ限定的
-    yanbuDailyKL: 15000,           // ヤンブーもバベルマンデブ封鎖で制限
-    nonMiddleEastDailyKL: 10000,   // 非中東も国際取り合い
-    initialSuccessRate: 0.2,       // 初期成功率20%
-    successRateDecayPerDay: 0.003, // 急速に低下
-    minSuccessRate: 0.05,          // ほぼ調達不能
+    startDay: 60,                       // 2ヶ月まで代替確保不能
+    fujairahDailyKL: 20000,             // フジャイラ限定的
+    yanbuDailyKL: 15000,                // ヤンブーもバベルマンデブ封鎖で制限
+    nonMiddleEastDailyKL: 10000,        // 非中東も国際取り合い
+    nonMideastCompatibilityFactor: 0.2, // 非中東原油の20%のみ即処理可能（設備改造未実施）
+    initialSuccessRate: 0.2,            // 初期成功率20%
+    successRateDecayPerDay: 0.003,      // 急速に低下
+    minSuccessRate: 0.05,               // ほぼ調達不能
   },
 };
 
@@ -229,10 +243,12 @@ function getAlternativeSupply(day: number, profile: AlternativeSupplyProfile): n
     profile.initialSuccessRate - daysSinceStart * profile.successRateDecayPerDay,
   );
 
+  // フジャイラ・ヤンブーはアラビアン・ライト系 → 精製互換性問題なし
+  // 非中東原油は互換性係数を適用（設備改造が完了するまで全量処理不可）
   const totalDailyCapacity =
     profile.fujairahDailyKL +
     profile.yanbuDailyKL +
-    profile.nonMiddleEastDailyKL;
+    profile.nonMiddleEastDailyKL * profile.nonMideastCompatibilityFactor;
 
   return totalDailyCapacity * successRate;
 }
