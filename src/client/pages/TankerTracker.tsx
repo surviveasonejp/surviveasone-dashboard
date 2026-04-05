@@ -56,7 +56,7 @@ export const TankerTracker: FC = () => {
           <span className="text-[#94a3b8]">LAST TANKER</span> TRACKER
         </h1>
         <p className="text-neutral-500 text-sm">
-          日本向け最終タンカーの到着予測 — 封鎖後、最後の積荷はいつ届くか
+          日本向け最終タンカーの到着予測 — 供給危機発生後、最後の積荷はいつ届くか
         </p>
       </div>
 

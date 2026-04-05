@@ -72,3 +72,28 @@ CREATE INDEX IF NOT EXISTS idx_reserves_date ON reserves(date DESC);
 CREATE INDEX IF NOT EXISTS idx_consumption_date ON consumption(date DESC);
 CREATE INDEX IF NOT EXISTS idx_electricity_date ON electricity_demand(date DESC, area_id);
 CREATE INDEX IF NOT EXISTS idx_oil_prices_date ON oil_prices(date DESC);
+
+-- 石化ノードテーブル
+CREATE TABLE IF NOT EXISTS petrochem_nodes (
+  id            TEXT PRIMARY KEY,
+  label         TEXT NOT NULL,
+  category      TEXT NOT NULL,
+  depth         INTEGER NOT NULL,
+  parent_id     TEXT,
+  naptha_factor REAL,
+  description   TEXT NOT NULL DEFAULT '',
+  updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- 石化エッジテーブル
+CREATE TABLE IF NOT EXISTS petrochem_edges (
+  id         TEXT PRIMARY KEY,
+  source_id  TEXT NOT NULL REFERENCES petrochem_nodes(id),
+  target_id  TEXT NOT NULL REFERENCES petrochem_nodes(id),
+  flow_label TEXT,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_petrochem_nodes_category ON petrochem_nodes(category);
+CREATE INDEX IF NOT EXISTS idx_petrochem_edges_source   ON petrochem_edges(source_id);
+CREATE INDEX IF NOT EXISTS idx_petrochem_edges_target   ON petrochem_edges(target_id);

@@ -85,13 +85,13 @@ export const SurvivalClock: FC = () => {
           <ScenarioSelector selected={scenario} onChange={setScenario} />
         </div>
         <p className="text-neutral-500 text-sm">
-          ホルムズ海峡封鎖時の日本のエネルギー残存日数をリアルタイムでカウントダウン
+          ホルムズ海峡リスクシナリオにおける日本のエネルギー残存日数をリアルタイムでカウントダウン
         </p>
       </div>
 
       <AlertBanner
         level={worstLevel}
-        message="封鎖開始からのカウントダウン — 全リソースが減少中"
+        message="供給危機カウントダウン — 全リソースが減少中"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -154,7 +154,7 @@ export const SurvivalClock: FC = () => {
           const oilRange = SCENARIO_RANGES[0];
           const powerRange = SCENARIO_RANGES[2];
           const text = [
-            `封鎖${dayOffset}日目のシミュレーション。`,
+            `発生後${dayOffset}日のシミュレーション。`,
             "",
             `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日（現実シナリオ・備蓄放出込み）`,
             `3シナリオ: 石油 Day ${oilRange?.optimistic ?? "?"}〜${oilRange?.pessimistic ?? "?"}、電力 Day ${powerRange?.optimistic ?? "?"}〜${powerRange?.pessimistic ?? "?"}`,

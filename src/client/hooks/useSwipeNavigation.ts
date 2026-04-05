@@ -9,6 +9,7 @@ const PAGES = [
   "/collapse-map",
   "/last-tanker",
   "/food-collapse",
+  "/petrochem",
   "/family",
   "/prepare",
   "/about",

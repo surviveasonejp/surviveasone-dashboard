@@ -54,7 +54,7 @@ const SEGMENTS: Record<string, Segment> = {
     ],
     familyMeterPrompt: "あなたの家庭は何日持ちこたえられる？ 備蓄量を入力して生存ランクを確認",
     prepareAnchor: "sec-infant",
-    metaDescription: "封鎖シナリオで液体ミルクの店頭在庫は約3日分。子育て家庭がホルムズ海峡封鎖で受ける影響と、わが家に足りないものの確認チェックリスト。",
+    metaDescription: "供給危機シナリオで液体ミルクの店頭在庫は約3日分。子育て家庭がエネルギー供給リスクで受ける影響と、わが家に足りないものの確認チェックリスト。",
   },
   dialysis: {
     id: "dialysis",
@@ -85,7 +85,7 @@ const SEGMENTS: Record<string, Segment> = {
     ],
     familyMeterPrompt: "ポータブル電源・水の備蓄量を入力して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-dialysis",
-    metaDescription: "封鎖シナリオで透析の猶予は3-4日。停電・断水時の影響と、家族が確認すべき備えのチェックリスト。",
+    metaDescription: "供給危機シナリオで透析の猶予は3-4日。停電・断水時の影響と、家族が確認すべき備えのチェックリスト。",
   },
   elderly: {
     id: "elderly",
@@ -116,7 +116,7 @@ const SEGMENTS: Record<string, Segment> = {
     ],
     familyMeterPrompt: "医療機器の電力消費を考慮して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-medical",
-    metaDescription: "封鎖シナリオで人工呼吸器は停電8時間が限界。在宅医療・介護・障害のある家族を守るための備えの確認チェックリスト。",
+    metaDescription: "供給危機シナリオで人工呼吸器は停電8時間が限界。在宅医療・介護・障害のある家族を守るための備えの確認チェックリスト。",
   },
 };
 
@@ -228,7 +228,7 @@ export const ForSegment: FC = () => {
         className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
         onClick={() => {
           const text = [
-            `【${seg.title}】ホルムズ封鎖シナリオ`,
+            `【${seg.title}】ホルムズリスクシナリオ`,
             `${seg.heroLabel}: ${seg.heroStat}${seg.heroUnit}（現実シナリオ推定）`,
             "",
             seg.actions[0] ?? "今のうちに備えを確認してください。",

@@ -196,7 +196,7 @@ export const FamilyMeter: FC = () => {
               onClick={() => {
                 const days = Math.round(score.totalDays);
                 const text = [
-                  `ホルムズ封鎖シナリオ、わが家の備蓄を診断した。`,
+                  `ホルムズリスクシナリオ、わが家の備蓄を診断した。`,
                   `ランク【${score.rank}】推定${days}日（ボトルネック: ${score.bottleneck}）`,
                   `${inputs.members}人世帯・水${inputs.waterLiters}L・食料${inputs.foodDays}日・ガス${inputs.gasCanisterCount}本で試算。`,
                   "",

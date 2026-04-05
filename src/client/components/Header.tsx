@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/collapse-map", label: "MAP" },
   { path: "/last-tanker", label: "TANKER" },
   { path: "/food-collapse", label: "FOOD" },
+  { path: "/petrochem", label: "PETROCHEM" },
   { path: "/family", label: "FAMILY" },
   { path: "/prepare", label: "PREPARE" },
   { path: "/about", label: "ABOUT" },

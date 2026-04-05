@@ -200,7 +200,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
     for (let m = 0; m <= 12; m++) {
       const day = m * 30;
       if (day <= totalDays) {
-        markers.push({ day, label: m === 0 ? "封鎖" : `${m}ヶ月` });
+        markers.push({ day, label: m === 0 ? "発生" : `${m}ヶ月` });
       }
     }
     return markers;

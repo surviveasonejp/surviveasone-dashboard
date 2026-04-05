@@ -116,7 +116,7 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">MISSION</h2>
         <p className="text-neutral-300 leading-relaxed">
-          ホルムズ海峡封鎖時に日本のエネルギー・食料・水道がどう連鎖崩壊するかを可視化し、市民の生存判断を支援する戦術ダッシュボード。
+          ホルムズ海峡リスクシナリオにおける日本のエネルギー・食料・水道の連鎖崩壊を可視化し、市民の生存判断を支援する戦術ダッシュボード。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
           特に、乳幼児・在宅医療機器利用者・透析患者・要介護高齢者・障害のある家族を持つ人々が、
@@ -134,7 +134,7 @@ export const About: FC = () => {
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">なぜホルムズ海峡か</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の原油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。うち<span className="text-[#f59e0b] font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
-          <p>封鎖が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に崩壊する。</p>
+          <p>供給危機が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に崩壊する。</p>
           <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース）。放出制約・精製変換効率を考慮した実効値は約130〜170日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export const About: FC = () => {
           <p>全ての入力データは<span className="text-neutral-200 font-bold">政府統計・公開データ</span>に基づいています。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
-            <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。封鎖経過日数も全ページに表示</li>
+            <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。危機発生日数も全ページに表示</li>
             <li>・タンカー18隻（代替ルート5隻+ASIA VENTURE含む）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。米国産原油タンカーTATESHINA（喜望峰回り37日）を可視化(2026年4月3日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
@@ -199,7 +199,7 @@ export const About: FC = () => {
       <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-6 space-y-4">
         <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">精度検証レポート（2026年4月3日時点）</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          封鎖開始（3月1日）から33日間の実データとシミュレーション予測の照合。
+          シナリオ発生（3月1日）から33日間の実データとシミュレーション予測の照合。
           詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-[#22c55e] underline underline-offset-2">/api/validation</a>で取得可能。
         </p>
         <div className="overflow-x-auto">
@@ -228,13 +228,13 @@ export const About: FC = () => {
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">買い占め</td>
                 <td className="px-3 py-2">在庫50%以下でパニック買い発生と予測</td>
-                <td className="px-3 py-2">石油在庫50%未達だが、医療消耗品で先行発生。ニトリル手袋は封鎖10日目に歯科卸が出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく将来の供給不安による買い溜めが主因。韓国ではごみ袋買い占め</td>
+                <td className="px-3 py-2">石油在庫50%未達だが、医療消耗品で先行発生。ニトリル手袋は発生後10日目に歯科卸が出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく将来の供給不安による買い溜めが主因。韓国ではごみ袋買い占め</td>
                 <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
               </tr>
               <tr className="border-b border-[#162029]">
                 <td className="px-3 py-2 font-mono text-neutral-300">医療消耗品</td>
                 <td className="px-3 py-2">ナフサ→石化製品→包装材の連鎖モデル</td>
-                <td className="px-3 py-2">封鎖10日目に歯科卸がニトリルグローブ出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく供給不安による買い溜めが主因</td>
+                <td className="px-3 py-2">発生後10日目に歯科卸がニトリルグローブ出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく供給不安による買い溜めが主因</td>
                 <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
               </tr>
               <tr className="border-b border-[#162029]">

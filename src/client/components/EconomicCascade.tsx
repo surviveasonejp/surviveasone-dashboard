@@ -251,7 +251,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
             </thead>
             <tbody>
               {([
-                { month: "4月（封鎖後）", import_: 90, refine: 110, stock: 150, demand: 290, surplus: 60, status: "○", color: "#22c55e" },
+                { month: "4月（発生後）", import_: 90, refine: 110, stock: 150, demand: 290, surplus: 60, status: "○", color: "#22c55e" },
                 { month: "5月", import_: 90, refine: 110, stock: 60, demand: 290, surplus: -30, status: "△", color: "#f59e0b" },
                 { month: "6月", import_: 90, refine: 110, stock: 0, demand: 290, surplus: -90, status: "✗", color: "#ef4444" },
               ] as const).map((row) => (

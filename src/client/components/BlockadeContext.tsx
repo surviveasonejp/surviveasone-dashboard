@@ -23,7 +23,7 @@ export const BlockadeContext: FC = () => {
     <div className="flex items-center gap-2 text-[10px] font-mono text-neutral-500 px-3 py-1.5 bg-[#0f1419] rounded border border-[#1e2a36]">
       <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444] shrink-0" />
       <span>
-        封鎖 Day <span className="text-neutral-300 font-bold">{daysSince}</span>
+        危機 Day <span className="text-neutral-300 font-bold">{daysSince}</span>
       </span>
       <span className="text-neutral-700">|</span>
       <span>

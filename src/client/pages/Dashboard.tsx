@@ -56,7 +56,7 @@ export const Dashboard: FC = () => {
 
       <AlertBanner
         level="warning"
-        message="ホルムズ海峡封鎖シナリオ — 公開データに基づく影響度分析"
+        message="ホルムズ海峡リスクシナリオ — 公開データに基づく影響度分析"
       />
 
       <SimulationBanner />
@@ -101,7 +101,7 @@ export const Dashboard: FC = () => {
           let text: string;
           if (selectedRegion) {
             text = [
-              `【${selectedRegion.name}の予測】ホルムズ封鎖シナリオ（現実）`,
+              `【${selectedRegion.name}の予測】ホルムズリスクシナリオ（現実）`,
               `電力崩壊 Day ${selectedRegion.powerCollapseDays} / 食料限界 Day ${selectedRegion.collapseDays}`,
               `脆弱性ランク: ${selectedRegion.vulnerabilityRank}`,
               "",
@@ -117,7 +117,7 @@ export const Dashboard: FC = () => {
             const lng = countdowns.find((c) => c.label === "LNG在庫");
             const power = countdowns.find((c) => c.label === "電力供給");
             text = [
-              "ホルムズ封鎖シナリオ（現実シナリオ）:",
+              "ホルムズリスクシナリオ（現実シナリオ）:",
               `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日`,
               "",
               "全国10エリアの地域別影響を公開データで可視化 →",

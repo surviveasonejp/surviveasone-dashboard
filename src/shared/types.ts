@@ -138,3 +138,41 @@ export interface FlowSimulationResult {
   /** 政策発動時の改善効果（動的計算値） */
   policyEffects?: PolicyEffects;
 }
+
+// ─── 石化樹形図 ──────────────────────────────────────────
+
+export type PetrochemCategory = "feedstock" | "refinery" | "cracker" | "monomer" | "polymer" | "product" | "end_use";
+
+export interface PetrochemNode {
+  id: string;
+  label: string;
+  category: PetrochemCategory;
+  depth: number;
+  parent_id: string | null;
+  naptha_factor: number | null;
+  description: string;
+}
+
+export interface PetrochemEdge {
+  id: string;
+  source_id: string;
+  target_id: string;
+  flow_label: string | null;
+}
+
+export interface PetrochemRiskNode extends PetrochemNode {
+  riskLevel: number;    // 0.0〜1.0
+  impactDay: number;    // 影響顕在化日数
+  riskReason: string;
+}
+
+export interface PetrochemTreeResponse {
+  nodes: PetrochemNode[];
+  edges: PetrochemEdge[];
+}
+
+export interface PetrochemRiskResponse {
+  nodes: PetrochemRiskNode[];
+  scenario: string;
+  day: number;
+}

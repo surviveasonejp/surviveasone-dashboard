@@ -59,6 +59,7 @@ import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
 import { getAisPositions, type AisPosition } from "./ais-tracker";
+import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
 
 interface Env {
   ASSETS: Fetcher;
@@ -169,7 +170,7 @@ export default {
     if (url.pathname === "/sitemap.xml") {
       const pages = [
         "", "/dashboard", "/countdown", "/collapse-map", "/last-tanker",
-        "/food-collapse", "/family", "/prepare", "/about", "/methodology", "/api-docs",
+        "/food-collapse", "/petrochem", "/family", "/prepare", "/about", "/methodology", "/api-docs",
         "/for/parents", "/for/dialysis", "/for/elderly",
       ];
       const entries = pages.map((p) =>
@@ -351,6 +352,10 @@ async function handleApiRoute(
       return handleMethodology();
     case "/api/validation":
       return handleValidation();
+    case "/api/petrochemtree":
+      return handlePetrochemTree(env);
+    case "/api/petrochemtree/risk":
+      return handlePetrochemRisk(url, env);
     case "/api/sources":
       return handleSources();
     case "/api/docs":

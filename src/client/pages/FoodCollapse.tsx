@@ -64,7 +64,7 @@ function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollap
     : sim.oilDepletionDay;
 
   const steps: Array<{ label: string; color: string; days: number }> = [
-    { label: "ホルムズ海峡封鎖", color: "#ef4444", days: 0 },
+    { label: "ホルムズ海峡リスク発生", color: "#ef4444", days: 0 },
   ];
 
   if (lastInflowDay > 0) {
@@ -248,7 +248,7 @@ export const FoodCollapse: FC = () => {
           ))}
         </div>
         <p className="text-[10px] text-neutral-500 leading-relaxed">
-          ナフサ在庫は約14日分（2026-01経産省統計）。封鎖後5月以降に本格減産→包装材品薄へ。
+          ナフサ在庫は約14日分（2026-01経産省統計）。供給制約後5月以降に本格減産→包装材品薄へ。
           対策：ガラス・ステンレス容器への移行と食品バルク購入（包装なしで保存できる状態に）。
         </p>
         <p className="text-[10px] text-[#f59e0b]/70 leading-relaxed">
@@ -274,7 +274,7 @@ export const FoodCollapse: FC = () => {
               color: "#f59e0b",
               items: [
                 { name: "レジ袋・薄手ゴミ袋", reason: "PE製。最初に出荷制限がかかる" },
-                { name: "食品用ラップ", reason: "PE製。封鎖後2〜3週で品薄化" },
+                { name: "食品用ラップ", reason: "PE製。供給制約後2〜3週で品薄化" },
                 { name: "PETボトル飲料", reason: "中身より容器が先に不足。棚から消えるが水は別経路で存在" },
                 { name: "プラ製カトラリー", reason: "PP製。代替あり（箸・金属）" },
               ],
