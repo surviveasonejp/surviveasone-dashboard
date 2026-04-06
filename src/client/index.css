@@ -221,6 +221,11 @@ body {
   fill: #ffffff !important;
 }
 
+/* PetrochemTree SVG背景: ライトモードでも暗色を維持（上記ルールの上書きを打ち消す） */
+[data-theme="light"] svg rect.petrochem-bg {
+  fill: #151c24 !important;
+}
+
 [data-theme="light"] svg rect[stroke="#1e2a36"] {
   stroke: #cbd5e1 !important;
 }

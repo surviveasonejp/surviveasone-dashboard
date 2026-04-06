@@ -1126,7 +1126,8 @@ function handleSources(): Response {
         category: "サプライチェーン（物流・石化・冷蔵）",
         items: [
           { key: "truckDiesel_kL_per_day", value: 100000, unit: "kL/日", source: "国交省 自動車燃料消費量調査(月報)", url: "https://www.mlit.go.jp/k-toukei/nenryousyouhiryou.html", note: "営業用トラックの軽油消費量。e-Stat APIで月次取得可能", confidence: "verified" },
-          { key: "napthaInventoryDays", value: 20, unit: "日", source: "石油化学工業協会(JPCA) 月次生産実績 + Bloomberg報道", url: "https://www.jpca.or.jp/statistics/monthly/mainpd.html", note: "石油化学用原料ナフサ在庫。中東依存45%。封鎖20日でエチレンセンター限界", confidence: "verified" },
+          { key: "napthaInventoryDays", value: 14, unit: "日", source: "資源エネルギー庁 石油統計 令和8年1月分（在庫138.6万kL÷日販9.95万kL）", url: "https://www.enecho.meti.go.jp/statistics/petroleum_and_lpgas/pl007/results.html", note: "石油化学用原料ナフサの原料在庫日数。中東依存率73.6%（JPCA 2024年実績）。封鎖14日でエチレンセンター在庫限界。なお川下製品（PE/PP等ポリマー）は別途3.5ヶ月分（約105日）の在庫が確保されている（JPCA声明 2026-03-17）", confidence: "verified" },
+          { key: "petrochemDownstreamBufferDays", value: 105, unit: "日", source: "石油化学工業協会(JPCA) 声明 2026-03-17", url: "https://www.jpca.or.jp/", note: "PE・PP等ポリマー製品（川下製品）の国内在庫。ナフサ原料14日分に対し、すでに製品化されたポリオレフィン等は3.5ヶ月分が確保済み。ナフサ供給途絶後もこの在庫が包装材等の消失を遅延させる", confidence: "verified" },
           { key: "ethyleneProduction", source: "JPCA 主要石油化学製品生産実績(月次)", url: "https://www.jpca.or.jp/statistics/monthly/mainpd.html", note: "エチレン・4樹脂(PE/PP/PS/PVC)の生産・出荷・在庫。包装材消失日の根拠", confidence: "verified" },
           { key: "frozenFoodInventoryDays", value: 10, unit: "日", source: "日本冷蔵倉庫協会 月次統計", url: "https://www.jarw.or.jp/know/statistics", note: "主要12都市の品目別入庫・出庫・在庫数量。停電72hで在庫全損", confidence: "verified" },
           { key: "coldStorageFishInventory", source: "農水省 冷蔵水産物在庫量調査", url: "https://www.maff.go.jp/j/tokei/kouhyou/suisan_ryutu/reizou_zaikoryou/", note: "水産物の冷蔵在庫量(月次)", confidence: "verified" },

@@ -33,10 +33,43 @@ const CATEGORY_LABELS: Record<PetrochemCategory, string> = {
   end_use:   "最終用途",
 };
 
+/** Phase 4: 崩壊時の終端グレー色（「消えた・枯れた」印象） */
+const COLLAPSE_COLOR = "#374151";
+
+function hexToRgb(hex: string): [number, number, number] {
+  return [
+    parseInt(hex.slice(1, 3), 16),
+    parseInt(hex.slice(3, 5), 16),
+    parseInt(hex.slice(5, 7), 16),
+  ];
+}
+
+/** カテゴリ色 → グレーへの線形補間（崩壊の進行を「消滅」で表現） */
+function lerpColor(from: string, to: string, t: number): string {
+  const [r1, g1, b1] = hexToRgb(from);
+  const [r2, g2, b2] = hexToRgb(to);
+  const clamp = Math.min(1, Math.max(0, t));
+  const r = Math.round(r1 + (r2 - r1) * clamp);
+  const g = Math.round(g1 + (g2 - g1) * clamp);
+  const b = Math.round(b1 + (b2 - b1) * clamp);
+  return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+}
+
+/**
+ * Phase 3: ナフサクラッカー各留分の収率（IEA/ICIS 標準値）
+ * エチレン~30%・プロピレン~16%・ブタジエン~4%・ベンゼン~6%
+ */
+const CRACKER_YIELD: Partial<Record<string, number>> = {
+  ethylene:  0.30,
+  propylene: 0.16,
+  butadiene: 0.04,
+  benzene:   0.06,
+};
+
 const X_STEP = 160;
 const Y_STEP = 50;
 const NODE_W = 138;
-const NODE_H = 30;
+const NODE_H = 36;
 
 // ─── 消費者影響定義 ─────────────────────────────────────
 
@@ -195,13 +228,8 @@ const EdgePath: FC<EdgePathProps> = ({ src, tgt, riskLevel, highlighted }) => {
   const y2 = tgt.y + NODE_H / 2;
   const cx = (x1 + x2) / 2;
   const d = `M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`;
-  const stroke = highlighted
-    ? "#60a5fa"
-    : riskLevel > 0.7
-      ? "#ef4444"
-      : riskLevel > 0.4
-        ? "#f59e0b"
-        : "#475569";
+  // Phase 4: 通常色 #475569 → COLLAPSE_COLOR へ線形補間
+  const stroke = highlighted ? "#60a5fa" : lerpColor("#475569", COLLAPSE_COLOR, riskLevel);
   return (
     <path
       d={d}
@@ -230,8 +258,18 @@ const NodeRect: FC<NodeRectProps> = ({
 }) => {
   const baseColor = CATEGORY_COLORS[node.category] ?? "#94a3b8";
   const risk = riskNode?.riskLevel ?? 0;
-  const strokeColor = risk > 0.7 ? "#ef4444" : risk > 0.4 ? "#f59e0b" : isHighlighted ? "#60a5fa" : baseColor;
-  const fillOpacity = risk > 0.7 ? 0.3 : risk > 0.4 ? 0.18 : 0.1;
+
+  // Phase 4: カテゴリ色 → COLLAPSE_COLOR へ線形補間
+  const nodeColor = isHighlighted ? "#60a5fa" : lerpColor(baseColor, COLLAPSE_COLOR, risk);
+  const fillOpacity = 0.08 + risk * 0.22; // 0.08(平常) → 0.30(崩壊)
+
+  // Phase 3: 収率データ（crackerアウトプットのみ）
+  const yieldPercent = CRACKER_YIELD[node.id] ?? null;
+  // 収率ゲージがある場合はラベルを上寄せ
+  const labelY = yieldPercent !== null ? 13 : NODE_H / 2;
+
+  // リスクバーの色: #f59e0b → COLLAPSE_COLOR へ補間（risk 0.4→1.0 の範囲）
+  const riskBarColor = lerpColor("#f59e0b", COLLAPSE_COLOR, Math.max(0, (risk - 0.4) / 0.6));
 
   return (
     <g transform={`translate(${node.x},${node.y})`}>
@@ -239,27 +277,18 @@ const NodeRect: FC<NodeRectProps> = ({
         width={NODE_W}
         height={NODE_H}
         rx={3}
-        fill={strokeColor}
+        fill={nodeColor}
         fillOpacity={fillOpacity}
-        stroke={strokeColor}
+        stroke={nodeColor}
         strokeWidth={isHighlighted ? 2 : 1}
         strokeDasharray={risk > 0.4 ? "4 2" : undefined}
         onClick={hasChildren ? onToggle : onDetail}
         style={{ cursor: "pointer" }}
       />
-      {/* リスクバー（底部） */}
-      {risk > 0 && (
-        <rect
-          width={NODE_W * risk}
-          height={2}
-          y={NODE_H - 2}
-          rx={1}
-          fill={risk > 0.7 ? "#ef4444" : "#f59e0b"}
-        />
-      )}
+      {/* メインラベル */}
       <text
         x={6}
-        y={NODE_H / 2}
+        y={labelY}
         dominantBaseline="middle"
         fontSize={9}
         fontFamily="'JetBrains Mono', monospace"
@@ -268,6 +297,46 @@ const NodeRect: FC<NodeRectProps> = ({
       >
         {node.label.length > 15 ? node.label.slice(0, 14) + "…" : node.label}
       </text>
+      {/* Phase 3: 収率ゲージ（crackerアウトプットのみ） */}
+      {yieldPercent !== null && (
+        <>
+          {/* 背景バー */}
+          <rect x={6} y={21} width={NODE_W - 24} height={3} rx={1} fill="#1e2a36" />
+          {/* 収率バー（カテゴリ色・リスクに応じてグレーへ） */}
+          <rect
+            x={6}
+            y={21}
+            width={(NODE_W - 24) * yieldPercent}
+            height={3}
+            rx={1}
+            fill={nodeColor}
+            opacity={0.7}
+          />
+          {/* 収率% テキスト */}
+          <text
+            x={NODE_W - 16}
+            y={23}
+            dominantBaseline="middle"
+            fontSize={7}
+            fontFamily="'JetBrains Mono', monospace"
+            fill={nodeColor}
+            opacity={0.8}
+            style={{ pointerEvents: "none" }}
+          >
+            {Math.round(yieldPercent * 100)}%
+          </text>
+        </>
+      )}
+      {/* リスクバー（底部） */}
+      {risk > 0 && (
+        <rect
+          width={NODE_W * risk}
+          height={2}
+          y={NODE_H - 2}
+          rx={1}
+          fill={riskBarColor}
+        />
+      )}
       {/* 折りたたみ/展開インジケータ */}
       {hasChildren && (
         <text
@@ -489,8 +558,10 @@ export const PetrochemTree: FC = () => {
           <div style={{ overflowX: "auto" }}>
             <svg
               viewBox={`0 0 ${maxX} ${maxY}`}
-              style={{ display: "block", width: "100%", minWidth: Math.min(maxX, 600), height: "auto" }}
+              style={{ display: "block", width: "100%", minWidth: Math.min(maxX, 600), height: "auto", backgroundColor: "#151c24" }}
             >
+              {/* 背景: ライトモード等でSVG背景が白くなるのを防ぐ（petrochem-bgクラスでCSS上書きを回避） */}
+              <rect width={maxX} height={maxY} className="petrochem-bg" fill="#151c24" />
               {/* エッジ（ノードより先に描画してノードに重ならないように） */}
               {visibleEdges.map((edge) => {
                 const src = layoutMap.get(edge.source_id);
@@ -609,7 +680,7 @@ export const PetrochemTree: FC = () => {
                     className="h-full rounded-full transition-all"
                     style={{
                       width: `${detail.risk.riskLevel * 100}%`,
-                      backgroundColor: detail.risk.riskLevel > 0.7 ? "#ef4444" : "#f59e0b",
+                      backgroundColor: lerpColor("#f59e0b", COLLAPSE_COLOR, Math.max(0, (detail.risk.riskLevel - 0.4) / 0.6)),
                     }}
                   />
                 </div>
