@@ -1,14 +1,14 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-04-05",
+    "updatedAt": "2026-04-06",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-05時点でAIS位置を最新化",
-    "note": "20隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。2026-04-05更新: ENERGY HORIZON横浜入港済（4/5 02:29 UTC）、ASIA VENTURE四日市入港済（4/5 03:12 UTC）、ENEOS OCEAN青方港→大分港向け移動中（ETA 4/6 23:30）、NCC HUDAシンガポール出港・航行中（ETA 4/12）、代替ルート第2便（フジャイラ発）本日到着予定、ENEOS GLORY新規追加（インド沖STS積み替え→大分ETA 4/16）、SOHAR LNG新規追加（商船三井/オマーン共同保有・ホルムズ通過第1号 4/2・現在オマーン湾錨泊）。【重大】4/3: 商船三井LNG船SOHAR LNGがホルムズ海峡を封鎖後初通過（バラスト）、4/4: 商船三井系インド籍LPGタンカーGreen SanviがホルムズをSTS通過（インド向け）。日本向け航行中5隻・入港済6隻・回航中3隻・湾岸滞留45隻のうち2隻が通過済"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-06時点でAIS位置を最新化",
+    "note": "20隻の追跡船舶（代替ルート5隻含む） + 7チョークポイント監視。2026-04-06更新: 代替ルート第2便（フジャイラ発）4/5入港確認（東京湾方面）、ENERGY ADVANCE ETA 4/7 00:00に更新、ENEOS OCEAN大分向け本日23:30入港予定。【重大】4/6: 商船三井系インド籍LPGタンカーGREEN ASHAがホルムズ海峡を通過（3隻目・インド向け）。ホルムズ最新: トランプ期限3度目延長（4/7 20:00米東部=日本時間4/8 09:00）、過去24時間15隻通過。日本向け航行中4隻・入港済8隻・回航中3隻・湾岸滞留約42隻"
   },
   "chokepoints": [
-    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。3月27日: IRGCが「通行料制度」を正式化（中国元決済、3/13以降26隻が通過）。日本船舶は3/21イランが通過許可を表明。中国・インド・パキスタン・ロシア・イラクは許可済み。米国・英国・EU等は封鎖継続" },
+    { "id": "hormuz", "name": "ホルムズ海峡", "lat": 26.567, "lon": 56.250, "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。4/6更新: トランプ期限3度目延長（4/7 20:00米東部=日本時間4/8 09:00）。過去24時間15隻通過（Bloomberg）。日本関係通過済3隻（SOHAR LNG 4/2・GREEN SANVI 4/4・GREEN ASHA 4/6）いずれも日本向けでない。湾内約42隻依然足止め継続" },
     { "id": "malacca", "name": "マラッカ海峡", "lat": 2.500, "lon": 101.800, "note": "全長約800km、最狭部2.8km。日量1,600万バレル。VLCCアジア向け主要航路" },
     { "id": "lombok", "name": "ロンボク海峡", "lat": -8.500, "lon": 115.700, "note": "マラッカ代替航路（深喫水VLCC対応）。バリ-ロンボク間" },
     { "id": "babel", "name": "バベルマンデブ海峡", "lat": 12.583, "lon": 43.333, "note": "幅26km。紅海入口。日量600万バレル。スエズ経由代替ルート" },
@@ -109,7 +109,7 @@
       "cargoType": "原油（積載中）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.99, "route": 0.99, "military": 0.99, "combined": 0.97 },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。2014年建造。4/5 AIS: 青方（長崎）から大分港向け7.5knで航行中（9時間前更新）。喫水19.1m（国家備蓄放出原油積載中）。経産省発表: 月内130万kL放出予定。ETA 大分4/6 23:30"
+      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。2014年建造。4/6 AIS: 東アジア海域（32時間前更新）。大分港向け7.5kn航行中。喫水19.1m（国家備蓄放出原油積載中）。経産省発表: 月内130万kL放出予定。ETA 大分4/6 23:30（本日入港予定）"
     },
     {
       "id": "lng-01",
@@ -231,7 +231,7 @@
       "type": "VLCC",
       "departure": "フジャイラ（UAE）",
       "departurePort": "Fujairah",
-      "destination": "日本（港未公表）",
+      "destination": "東京湾（港未公表）",
       "destinationPort": "Japan",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
@@ -240,7 +240,7 @@
       "cargoType": "原油（ムルバンブレンド想定）",
       "status": "入港済",
       "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。ETA 4/5（本日）。AIS非追跡のため位置確認不可。Bloomberg/産経報道。赤沢経産相は社名・船名を非公表。本日到着予定だが入港確認待ち"
+      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。4/5入港確認（東京湾方面）。Bloomberg/Yahoo!ニュース報道。赤沢経産相は社名・船名を非公表。第1便（3/28、愛媛・太陽石油向け、ヤンブー発）に続く2便目。ホルムズ外調達ルート確立"
     },
     {
       "id": "vlcc-alt-03",
@@ -271,13 +271,13 @@
       "destination": "四日市",
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 4300,
-      "speed_knots": 13.0,
-      "eta_days": 13.0,
+      "speed_knots": 11.2,
+      "eta_days": 10.0,
       "cargo_t": 300000,
       "cargoType": "原油（サウジ産・紅海/スエズ経由）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.8, "route": 0.9, "military": 0.85, "combined": 0.612 },
-      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。298,706DWT。2018年建造（現代三湖重工業）。4/5 AIS: 東南アジア海域（3分前更新）を12.1knで四日市向け航行中。喫水20.1m（満載）。3/20アインスフナ出港→スエズ→紅海→バベルマンデブ→インド洋→マラッカ経由。ETA 4/16 06:00。渡邉英徳教授(東大)のOSINT分析で確認。サウジ国営による代替供給。マラッカ海峡通過中とみられる"
+      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。298,706DWT。2018年建造（現代三湖重工業）。4/6 AIS: リアルタイム更新。速度11.2kn（前回12.1knから減速）。3/20アインスフナ出港→スエズ→紅海→バベルマンデブ→インド洋→マラッカ経由。ETA 4/16 06:00（変更なし）。渡邉英徳教授(東大)のOSINT分析で確認。喫水20.1m（満載）。サウジ国営による代替供給。ホルムズ非経由確認"
     },
     {
       "id": "tanker-alt-05",
@@ -308,14 +308,14 @@
       "departurePort": "Prigorodnoye",
       "destination": "日立",
       "destinationPort": "Hitachi",
-      "distanceToJapan_nm": 200,
-      "speed_knots": 8.3,
+      "distanceToJapan_nm": 100,
+      "speed_knots": 9.2,
       "eta_days": 1.0,
       "cargo_t": 135000,
       "cargoType": "LNG",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.7, "route": 0.9, "military": 0.8, "combined": 0.504 },
-      "note": "商船三井(MOL)LNG船。IMO 9269180。日本船籍。2005年建造。4/5 AIS: 東アジア海域（4時間前更新）を8.3knで日立向け航行中（さらに減速）。3/27プリゴロドノエ（サハリン2）出港。ETA 4/6 00:00。喫水11.6m"
+      "note": "商船三井(MOL)LNG船。IMO 9269180。日本船籍。2005年建造。4/6 AIS: リアルタイム更新。速度9.2kn（前回8.3knから加速）。3/27プリゴロドノエ（サハリン2）出港。ETA 4/7 00:00（4/6 00:00から1日更新）。喫水11.6m"
     },
     {
       "id": "lng-07",
@@ -347,13 +347,13 @@
       "destination": "大分",
       "destinationPort": "Oita",
       "distanceToJapan_nm": 4500,
-      "speed_knots": 13.1,
+      "speed_knots": 13.3,
       "eta_days": 11.0,
       "cargo_t": 300000,
       "cargoType": "原油（マーバンブレンド・アブダビ産）",
       "status": "航行中",
       "arrivalProbability": { "insurance": 0.85, "route": 0.95, "military": 0.9, "combined": 0.727 },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9851608。312,217DWT。パナマ籍。2019年建造。LOA 339.5m。Bloomberg 4/1報道: フジャイラで原油を積んだOlympic Luck（ギリシャVLCC・IMO 9424211）からインド西海岸ムンバイ沖でSTS（Ship-to-Ship）転送で約180万バレルのマーバン原油を受け取り。3/30 16:23 UTCムンバイ沖出港。4/5 AIS: インド沿岸（2日前更新）を13.1knで大分向け航行中。喫水19.6m（満載）。ETA 4/16 11:30。ホルムズを経由しない初のSTS転送ルートを確立した代替供給の新形態"
+      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9851608。312,217DWT。パナマ籍。2019年建造。LOA 339.5m。Bloomberg 4/1報道: フジャイラで原油を積んだOlympic Luck（ギリシャVLCC・IMO 9424211）からインド西海岸ムンバイ沖でSTS（Ship-to-Ship）転送で約180万バレルのマーバン原油を受け取り。3/30 16:23 UTCムンバイ沖出港。4/6 AIS: リアルタイム更新。速度13.3kn（前回13.1knから微加速）。喫水19.6m（満載）。ETA 4/16 11:30（変更なし）。ホルムズを経由しない初のSTS転送ルートを確立した代替供給の新形態"
     },
     {
       "id": "lng-09",
@@ -372,7 +372,7 @@
       "cargoType": "バラスト（空荷）",
       "status": "錨泊中",
       "arrivalProbability": { "insurance": 0.0, "route": 0.0, "military": 0.0, "combined": 0.0 },
-      "note": "商船三井(MOL)/オマーンAyad社(Oman Ship Management)共同保有LNG船。IMO 9210816。MMSI 357186000。パナマ籍。2001年建造（25年）。298m×46m。111,203GT。【歴史的事象】4/2 2026: 紛争開始（2/28）以来初めてホルムズ海峡を通過した日本関連船舶・初のLNG船。AISを一時消灯して通過。通過後オマーン湾・マスカット沖に向かう。4/5 AIS: オマーン湾（Mina al Fahl Anchorage）に錨泊中（4/5 07:27 UTC着）、喫水9.5m（バラスト）。日本向けではなくカラハットLNG輸出ターミナルで積荷後の行き先は未確認。ペルシャ湾内45隻滞留のうち脱出第1号"
+      "note": "商船三井(MOL)/オマーンAyad社(Oman Ship Management)共同保有LNG船。IMO 9210816。MMSI 357186000。パナマ籍。2001年建造（25年）。298m×46m。111,203GT。【歴史的事象】4/2 2026: 紛争開始（2/28）以来初めてホルムズ海峡を通過した日本関連船舶・初のLNG船。AISを一時消灯して通過。4/6 AIS（32分前更新）: オマーン湾（Mina al Fahl Anchorage）に錨泊継続中（4/5 07:27 UTC着）。喫水9.5m（バラスト）。カラハットLNGターミナルで積荷後の行き先は未確認。日本向け不明。ペルシャ湾内約42隻滞留のうち脱出第1号（続く商船三井LPG2隻GREEN SANVI 4/4・GREEN ASHA 4/6もホルムズ通過・インド向け）"
     },
     {
       "id": "lng-08",
@@ -392,6 +392,24 @@
       "status": "入港済",
       "arrivalProbability": { "insurance": 0.95, "route": 0.97, "military": 0.95, "combined": 0.876 },
       "note": "バハマ籍LNG船。IMO 9680190。2017年建造。4/5 03:12 UTC: 四日市入港確認（VesselFinder、3分前AIS更新）。喫水9.0m（荷揚げ後バラスト）。3/24アッシュバートン出港→四日市（目的地横浜から変更）。荷揚げ完了と推定"
+    },
+    {
+      "id": "chem-us-01",
+      "name": "米国産ナフサ便 第1便",
+      "aisTracked": false,
+      "type": "Chemical",
+      "departure": "米国ガルフ（テキサス州）",
+      "departurePort": "USGC",
+      "destination": "千葉",
+      "destinationPort": "Chiba",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 0.0,
+      "eta_days": 0,
+      "cargo_t": 45000,
+      "cargoType": "ナフサ（米国産・石油化学原料）",
+      "status": "入港済",
+      "arrivalProbability": { "insurance": 0.99, "route": 0.99, "military": 0.99, "combined": 0.97 },
+      "note": "経産省が確認した米国産ナフサ第1便。4/1千葉港到着確認（経産省発表・logi-biz報道）。米国ガルフ（テキサス州）から約30〜45日かけてパナマ運河経由または喜望峰経由で輸送。船名・IMO番号は非公表（スポット契約のため）。3月の米国ガルフ→日本向けナフサ輸出は267,000mt（2021年12月以来最高水準、Kpler）。運賃は封鎖前の約2倍（960万ドル/便）。経産省発表では月30万kL（平時比3倍）を米国産として調達中。5月以降は米国夏季ドライブシーズンによりガソリン基材競合で調達量が制限されるリスクあり"
     }
   ]
 }
