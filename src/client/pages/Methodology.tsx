@@ -191,6 +191,57 @@ export const Methodology: FC = () => {
         </div>
       </div>
 
+      {/* 国際対応パターン */}
+      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1e2a36]">
+          <h2 className="font-mono text-sm tracking-wider text-neutral-400">各国の対応パターン（2026年4月時点）</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-neutral-600 font-mono border-b border-[#1e2a36]">
+                <th className="px-4 py-2 text-left">類型</th>
+                <th className="px-4 py-2 text-left">主な措置</th>
+                <th className="px-4 py-2 text-left">国・機関</th>
+                <th className="px-4 py-2 text-left">シミュレーションへの反映</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#0c1018]">
+              <tr>
+                <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">① 軍事・外交</td>
+                <td className="px-4 py-2 text-neutral-500">多国籍海上護衛連合構想・地域内外交会議</td>
+                <td className="px-4 py-2 text-neutral-400">米国主導・日本/欧州参加・パキスタン仲介</td>
+                <td className="px-4 py-2 font-mono text-neutral-600">封鎖解除曲線（楽観7日→30日）</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">② 供給確保</td>
+                <td className="px-4 py-2 text-neutral-500">IEA協調備蓄4億bbl放出・OPEC+増産+20万b/d・紅海パイプライン3倍増</td>
+                <td className="px-4 py-2 text-neutral-400">IEA・OPEC+・サウジ・日本政府</td>
+                <td className="px-4 py-2 font-mono text-neutral-600">SPR放出モデル・代替供給率maxAlternativeSupplyRatio=0.58</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">③ 需要抑制</td>
+                <td className="px-4 py-2 text-neutral-500">IEA提言（速度制限・車利用制限・在宅勤務）・タイ在宅勤務令・インド/バングラデシュ燃料配給・フィリピン労働時間短縮</td>
+                <td className="px-4 py-2 text-neutral-400">IEA・東南アジア各国（タイ/フィリピン/ベトナム）</td>
+                <td className="px-4 py-2 font-mono text-neutral-600">楽観シナリオ需要削減-15%・現実-5%の根拠の一つ</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">④ 経済対策</td>
+                <td className="px-4 py-2 text-neutral-500">ガソリン補助金（日本・韓国）・韓国原油スワップ制度・欧州石炭回帰・豪NZ家計支援給付</td>
+                <td className="px-4 py-2 text-neutral-400">日本・韓国・EU・オーストラリア・NZ</td>
+                <td className="px-4 py-2 font-mono text-neutral-600">段階的崩壊閾値（価格高騰フェーズ）・realEvents</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="px-4 py-3 border-t border-[#1e2a36]">
+          <p className="text-[11px] text-neutral-600 leading-relaxed">
+            ※ 日本を含むアジアは中東依存度が最も高く対応コストが大きい。欧州・オセアニアは比較的対応余力あり。
+            各国の「需要抑制」効果は本シミュレーションの楽観シナリオ（-15%）の根拠を支持する実績データ。
+          </p>
+        </div>
+      </div>
+
       {/* 計算式 */}
       <div className="space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">計算モデル（全11式）</h2>

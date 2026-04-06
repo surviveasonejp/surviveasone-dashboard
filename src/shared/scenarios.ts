@@ -16,7 +16,7 @@ export const SCENARIOS: Record<ScenarioId, Scenario> = {
   optimistic: {
     id: "optimistic",
     label: "楽観",
-    description: "代替航路確保・IEA備蓄放出・需要15%削減により早期回復",
+    description: "代替航路確保・IEA協調備蓄放出・速度制限/在宅勤務等の需要抑制政策実施・需要15%削減により早期回復",
     oilBlockadeRate: 0.50,
     lngBlockadeRate: 0.03,
     demandReductionRate: 0.15,
@@ -24,7 +24,7 @@ export const SCENARIOS: Record<ScenarioId, Scenario> = {
   realistic: {
     id: "realistic",
     label: "現実",
-    description: "代替供給限定・備蓄放出遅延・需要5%削減（標準想定）",
+    description: "代替供給限定・備蓄放出遅延・アジア各国で需要抑制措置が先行・需要5%削減（標準想定）",
     oilBlockadeRate: 0.94,
     lngBlockadeRate: 0.063,
     demandReductionRate: 0.05,
