@@ -63,7 +63,7 @@ async function findAndScroll(page, selector, label) {
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, colorScheme: 'dark' });
+  const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, colorScheme: 'light' });
 
   // ページ読み込み（networkidle で完了を待つ、30秒）
   await page.goto('https://surviveasonejp.org' + targetPage, { waitUntil: 'networkidle', timeout: 30000 });
