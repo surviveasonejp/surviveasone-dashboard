@@ -80,7 +80,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
   "Content-Security-Policy":
-    "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
+    "default-src 'self'; script-src 'self' 'sha256-G4lm7I27uE0JjOWA3Rwp3wfXru5xF6qgfwc0GsE4q7E=' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com",
 };
 
 function isDevRequest(request: Request): boolean {
@@ -708,6 +708,12 @@ async function handleTankerUpdate(request: Request | undefined, env: Env): Promi
   if (body.eta_days != null && (body.eta_days < 0 || body.eta_days > 365)) {
     return jsonResponse({ error: "invalid_input", message: "eta_days must be 0-365" }, 400);
   }
+  if (body.status != null && body.status.length > 100) {
+    return jsonResponse({ error: "invalid_input", message: "status max 100 chars" }, 400);
+  }
+  if (body.note != null && body.note.length > 500) {
+    return jsonResponse({ error: "invalid_input", message: "note max 500 chars" }, 400);
+  }
 
   // 既存オーバーライドを取得して追加/更新
   const existing: TankerOverride[] = await env.CACHE.get<TankerOverride[]>(TANKER_OVERRIDES_KEY, "json") ?? [];
@@ -755,10 +761,7 @@ async function handleAis(env: Env): Promise<Response> {
 // LLM・クローラー・研究者が直接引用可能な形式。
 
 async function handleSummary(url: URL, env: Env): Promise<Response> {
-  const scenario = (url.searchParams.get("scenario") ?? "realistic") as ScenarioId;
-  if (!SCENARIOS[scenario]) {
-    return new Response("Invalid scenario. Use: optimistic, realistic, pessimistic", { status: 400, headers: { "Content-Type": "text/plain; charset=utf-8" } });
-  }
+  const scenario = parseScenario(url);
 
   const { reservesData, consumptionData } = await getReservesAndConsumption(env);
   const countdowns = getAllCountdowns(reservesData, consumptionData, scenario);
@@ -775,7 +778,7 @@ async function handleSummary(url: URL, env: Env): Promise<Response> {
     .map((t) => `  Day ${String(t.day).padStart(3)}: ${t.label}`)
     .join("\n");
 
-  const text = `=== Survive as One Japan — エネルギー備蓄シミュレーション ===
+  const text = `=== SAO – Situation Awareness Observatory — エネルギー供給制約シミュレーション ===
 シナリオ: ${s.label}（${s.description}）
 データ基準日: ${staticReserves.meta.baselineDate}
 生成日時: ${new Date().toISOString()}
@@ -831,10 +834,7 @@ API: https://surviveasonejp.net/api
 // タイムライン配列を省略し、枯渇日・主要イベント・備蓄概要のみ返す。
 
 async function handleSimulate(url: URL, env: Env): Promise<Response> {
-  const scenario = (url.searchParams.get("scenario") ?? "realistic") as ScenarioId;
-  if (!SCENARIOS[scenario]) {
-    return jsonResponse({ error: "invalid_scenario", message: "Use: optimistic, realistic, pessimistic" }, 400);
-  }
+  const scenario = parseScenario(url);
 
   const sim = runFlowSimulation(scenario);
   const { reservesData, consumptionData } = await getReservesAndConsumption(env);
@@ -1154,19 +1154,28 @@ function handleSources(): Response {
 
 function handleApiDocsHtml(): Response {
   const endpoints = [
-    { method: "GET", path: "/api/reserves", desc: "石油・LNG備蓄データ", params: "?history=true で履歴取得" },
+    { method: "GET", path: "/api/health", desc: "ヘルスチェック・バージョン情報", params: "" },
+    { method: "GET", path: "/api/reserves", desc: "石油・LNG備蓄データ（国家/民間/産油国共同内訳）", params: "?history=true で履歴取得" },
     { method: "GET", path: "/api/consumption", desc: "日次消費量データ（OWID energy-data）", params: "" },
-    { method: "GET", path: "/api/countdowns", desc: "石油/LNG/電力の残存日数", params: "?scenario=realistic" },
-    { method: "GET", path: "/api/simulate", desc: "シミュレーション要約（枯渇日・イベント・備蓄）", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/regions", desc: "全国10電力エリアパラメータ（原子力・再エネ・連系線）", params: "" },
+    { method: "GET", path: "/api/electricity", desc: "電力需給実測データ（全10エリア、日次自動更新）", params: "?area=tokyo" },
+    { method: "GET", path: "/api/oil-price", desc: "WTI原油スポット価格（EIA RWTC、日次自動更新）", params: "" },
+    { method: "GET", path: "/api/countdowns", desc: "石油/LNG/電力の供給可能日数", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/collapse", desc: "全国10エリア供給影響順序", params: "?scenario=realistic" },
     { method: "GET", path: "/api/simulation", desc: "フロー型在庫シミュレーション（365日タイムライン）", params: "?scenario=realistic&maxDays=365" },
-    { method: "GET", path: "/api/collapse", desc: "10エリア崩壊順序", params: "?scenario=realistic" },
-    { method: "GET", path: "/api/food-collapse", desc: "食品カテゴリ別消失予測", params: "?scenario=realistic" },
-    { method: "GET", path: "/api/tankers", desc: "タンカー13隻の到着予測", params: "" },
-    { method: "GET", path: "/api/regions", desc: "10電力エリア別パラメータ", params: "" },
-    { method: "GET", path: "/api/electricity", desc: "電力需給実測データ", params: "?area=tokyo" },
-    { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要", params: "?scenario=realistic" },
-    { method: "GET", path: "/api/data", desc: "全データ概要（HTML）", params: "" },
-    { method: "GET", path: "/api/health", desc: "ヘルスチェック", params: "" },
+    { method: "GET", path: "/api/simulate", desc: "シミュレーション要約（制約到達日・イベント・備蓄）", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/food-collapse", desc: "食品カテゴリ別供給制約予測", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/tankers", desc: "タンカー21隻の到着予測（VLCC11+LNG9+Chemical1）", params: "" },
+    { method: "GET", path: "/api/ais", desc: "AIS生データ（位置・速度・目的港・日本向け判定）", params: "" },
+    { method: "GET", path: "/api/petrochemtree", desc: "石化サプライチェーン樹形図ノード・エッジデータ", params: "" },
+    { method: "GET", path: "/api/petrochemtree/risk", desc: "石化樹形図シナリオ別リスクスコア・崩壊フラグ", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/methodology", desc: "16計算モデルのメタデータ・パラメータ・信頼度", params: "" },
+    { method: "GET", path: "/api/validation", desc: "シミュレーション予測 vs 実際の照合結果", params: "" },
+    { method: "GET", path: "/api/sources", desc: "全データソース一覧（更新頻度・自動/手動・信頼度）", params: "" },
+    { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要（LLM・クローラー向け）", params: "?scenario=realistic" },
+    { method: "GET", path: "/api/data", desc: "全データ概要（HTML、研究者向け）", params: "" },
+    { method: "GET", path: "/api/docs", desc: "APIドキュメント（このページ）", params: "" },
+    { method: "GET", path: "/api/openapi.json", desc: "OpenAPI 3.0仕様", params: "" },
   ];
 
   const rows = endpoints.map((e) =>
@@ -1175,16 +1184,16 @@ function handleApiDocsHtml(): Response {
 
   const html = `<!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Survive as One API Documentation</title>
-<meta name="description" content="Survive as One Japan API - ホルムズ海峡封鎖シミュレーションデータAPI。14エンドポイント、認証不要、AGPL-3.0。">
+<title>SAO – Situation Awareness Observatory API Documentation</title>
+<meta name="description" content="SAO – Situation Awareness Observatory API - ホルムズ海峡封鎖シミュレーションデータAPI。23エンドポイント、認証不要、AGPL-3.0。">
 <style>body{font-family:system-ui,sans-serif;max-width:900px;margin:0 auto;padding:2rem;background:#0f1419;color:#d4d4d4;line-height:1.6}
 h1{color:#ef4444}h2{color:#f59e0b;margin-top:2rem}a{color:#3b82f6}
 table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{padding:.5rem;border:1px solid #333;text-align:left;font-size:.85rem}
 th{background:#1a2332;color:#999}code{background:#1a2332;padding:.1rem .3rem;border-radius:3px;font-size:.85rem}
 pre{background:#1a2332;padding:1rem;border-radius:6px;overflow-x:auto}</style></head>
 <body>
-<h1>Survive as One API</h1>
-<p>ホルムズ海峡封鎖時の日本のエネルギー備蓄シミュレーションデータを提供するREST API。</p>
+<h1>SAO – Situation Awareness Observatory API</h1>
+<p>ホルムズ海峡封鎖シナリオ下での日本のエネルギー・食料・石化サプライチェーンの供給制約シミュレーションデータを提供するREST API。</p>
 <p>Base URL: <code>https://surviveasonejp.net</code> | 認証不要 | レート制限: 30req/min, 100K/day</p>
 
 <h2>エンドポイント一覧</h2>
@@ -1194,9 +1203,9 @@ pre{background:#1a2332;padding:1rem;border-radius:6px;overflow-x:auto}</style></
 <h2>シナリオID</h2>
 <table><thead><tr><th>ID</th><th>Label</th><th>石油遮断</th><th>LNG遮断</th><th>需要変動</th></tr></thead>
 <tbody>
-<tr><td>optimistic</td><td>楽観</td><td>50%</td><td>3%</td><td>-15%</td></tr>
-<tr><td>realistic</td><td>現実</td><td>94%</td><td>6.3%</td><td>-5%</td></tr>
-<tr><td>pessimistic</td><td>悲観</td><td>100%</td><td>15%</td><td>+10%</td></tr>
+<tr><td>optimistic</td><td>国際協調</td><td>50%</td><td>3%</td><td>-15%</td></tr>
+<tr><td>realistic</td><td>標準対応</td><td>94%</td><td>6.3%</td><td>-5%</td></tr>
+<tr><td>pessimistic</td><td>需要超過</td><td>100%</td><td>15%</td><td>+10%</td></tr>
 </tbody></table>
 
 <h2>クイックスタート</h2>

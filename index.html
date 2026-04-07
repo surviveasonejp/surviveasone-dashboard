@@ -3,35 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="石油の94%は中東から届く。全量がホルムズ海峡を通る。封鎖シナリオで石油・LNG・電力はどうなるか——3シナリオで備蓄状況を可視化し、わが家に足りないものを確認するシミュレーター。" />
+    <!-- FOUC防止: React読み込み前にテーマを適用 -->
+    <script>
+      (function() {
+        var stored = localStorage.getItem('theme');
+        var theme = stored === 'dark' ? 'dark' : stored === 'light' ? 'light' : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+    <meta name="description" content="ホルムズ海峡封鎖シナリオで日本のエネルギー・食料・物流への供給制約がどう波及するかを可視化するシミュレーション。石油備蓄241日・LNG在庫25日・火力発電65%の依存構造を3シナリオで分析。" />
     <meta name="theme-color" content="#f1f5f9" />
-    <title>Survive as One — 日本のエネルギーは、何日もつのか</title>
+    <title>SAO – ホルムズ封鎖シナリオ エネルギー供給可視化 | Situation Awareness Observatory</title>
 
     <!-- OGP -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://surviveasonejp.org/" />
-    <meta property="og:title" content="日本のエネルギーは、何日もつのか — Survive as One" />
-    <meta property="og:description" content="石油備蓄241日・LNG在庫25日・火力発電65%。ホルムズ海峡封鎖シナリオで、石油・LNG・電力・食料の連鎖崩壊を3シナリオで可視化。乳幼児・透析・在宅医療機器を抱える家族が今すぐ確認できるシミュレーター。" />
+    <meta property="og:title" content="SAO – ホルムズ封鎖シナリオ エネルギー供給可視化 | Situation Awareness Observatory" />
+    <meta property="og:description" content="石油備蓄241日・LNG在庫25日・火力発電65%。ホルムズ海峡封鎖シナリオで、エネルギー・食料・物流への供給制約を3シナリオで可視化。乳幼児・透析・在宅医療機器を抱える家族向けの影響確認シミュレーション。" />
     <meta property="og:image" content="https://surviveasonejp.org/og-image-20260407.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Survive as One Japan" />
+    <meta property="og:site_name" content="SAO – Situation Awareness Observatory" />
     <meta property="og:locale" content="ja_JP" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@surviveasonejp" />
-    <meta name="twitter:title" content="日本のエネルギーは、何日もつのか — Survive as One" />
-    <meta name="twitter:description" content="石油94%中東依存。ホルムズ海峡封鎖シナリオで、わが家の備えを確認。赤ちゃんのミルク・人工呼吸器・透析——3シナリオで備蓄の過不足を確認するシミュレーター。" />
+    <meta name="twitter:title" content="SAO – ホルムズ封鎖シナリオ エネルギー供給可視化" />
+    <meta name="twitter:description" content="石油94%中東依存。ホルムズ海峡封鎖シナリオで、エネルギー供給制約を定量的に把握する。赤ちゃんのミルク・人工呼吸器・透析——3シナリオで供給の過不足を確認するシミュレーション。" />
     <meta name="twitter:image" content="https://surviveasonejp.org/og-image-20260407.png" />
 
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Survive as One Japan",
+      "name": "SAO – Situation Awareness Observatory",
       "url": "https://surviveasonejp.org",
-      "description": "ホルムズ海峡封鎖時、日本のエネルギー・食料・水道の連鎖崩壊タイムラインを可視化。石油備蓄241日分、LNG在庫25日分、火力発電65%への影響を全国10エリア別にシミュレーション。11の計算モデルと3シナリオで分析。",
+      "description": "ホルムズ海峡封鎖シナリオ下で日本のエネルギー・食料・物流への供給制約がどう波及するかを可視化するシミュレーション。石油備蓄241日分、LNG在庫25日分、火力発電65%への影響を全国10エリア別に分析。16の計算モデルと3シナリオで供給制約の段階的進行を定量的に提示。",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "All",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
@@ -44,8 +52,8 @@
     {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      "name": "Japan Energy Reserve Simulation Data",
-      "description": "日本のホルムズ海峡封鎖シナリオにおけるエネルギー備蓄・消費・崩壊シミュレーションデータ。石油備蓄、LNG在庫、電力需給、食料サプライチェーンを含む。",
+      "name": "Japan Energy Supply Simulation Data",
+      "description": "日本のホルムズ海峡封鎖シナリオにおけるエネルギー備蓄・消費・供給制約シミュレーションデータ。石油備蓄、LNG在庫、電力需給、食料サプライチェーンを含む。",
       "url": "https://surviveasonejp.net/api",
       "license": "https://www.gnu.org/licenses/agpl-3.0.html",
       "creator": { "@type": "Person", "name": "idx", "url": "https://github.com/idx" },
@@ -161,9 +169,9 @@
     <link rel="canonical" href="https://surviveasonejp.org/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lato:wght@900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-[#0f1419] text-white antialiased">
+  <body class="antialiased">
     <script src="/init.js"></script>
     <div id="root"></div>
     <noscript>

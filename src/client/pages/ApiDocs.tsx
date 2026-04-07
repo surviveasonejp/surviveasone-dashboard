@@ -63,7 +63,7 @@ const ENDPOINTS: EndpointDoc[] = [
     path: "/api/countdowns",
     description: "石油/LNG/電力の残存日数カウントダウン",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic（デフォルト: realistic）" },
+      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過）（デフォルト: realistic）" },
     ],
     example: `curl ${API_BASE}/api/countdowns?scenario=realistic
 
@@ -132,17 +132,41 @@ const ENDPOINTS: EndpointDoc[] = [
   },
   {
     method: "GET",
+    path: "/api/oil-price",
+    description: "WTI原油スポット価格（EIA RWTC API 日次自動取得）。経済カスケードシミュレーションの基準価格として使用",
+    example: `curl ${API_BASE}/api/oil-price
+
+// Response
+{ "wti_usd": 68.42, "date": "2026-04-07",
+  "updatedAt": "2026-04-08T18:30:00Z",
+  "source": "EIA RWTC WTI Spot Price", "cache": "hit" }`,
+  },
+  {
+    method: "GET",
     path: "/api/tankers",
-    description: "日本向けタンカー15隻の到着予測。IMO・AIS追跡状態・航路・到着確率を含む",
+    description: "日本向けタンカー21隻の到着予測。VLCC11+LNG9+Chemical1。IMO・AIS追跡状態・航路・供給元カテゴリ・ETA自動補正を含む",
     example: `// Response (抜粋)
 { "data": [
     { "id": "lng-03", "name": "GRAND ANIVA", "type": "LNG",
       "imo": "9338955", "aisTracked": true,
       "departure": "プリゴロドノエ（サハリン）", "destination": "北九州",
-      "eta_days": 1.2, "cargo_t": 145000 },
+      "eta_days": 1.2, "cargo_t": 145000,
+      "isHormuzDependent": false, "isJapanBound": true },
     ...
   ]
 }`,
+  },
+  {
+    method: "GET",
+    path: "/api/ais",
+    description: "AIS生データ（最新取得分）。IMOキー・位置・速度・目的港・日本向け判定を含む。日次2回（UTC 06:00/18:00）自動更新",
+    example: `curl ${API_BASE}/api/ais
+
+// Response (抜粋)
+{ "data": { "9338955": { "imo": "9338955", "lat": 33.5, "lon": 130.2,
+    "sog": 14.2, "destination": "KITAKYUSHU", "isJapanBound": true,
+    "etaDays": 0.8, "updatedAt": "2026-04-08T06:12:00Z" } },
+  "count": 14 }`,
   },
   {
     method: "GET",
@@ -164,7 +188,7 @@ const ENDPOINTS: EndpointDoc[] = [
 
 // Response (text/plain)
 === Survive as One Japan — エネルギー備蓄シミュレーション ===
-シナリオ: 現実（全面封鎖）
+シナリオ: 標準対応（現実的な政策対応）
 --- 備蓄残存日数 ---
 石油備蓄: 168.8日
 LNG在庫: 750.4日
@@ -173,17 +197,100 @@ LNG在庫: 750.4日
   {
     method: "GET",
     path: "/api/simulate",
-    description: "シミュレーション要約。/api/simulation の軽量版。枯渇日・主要イベント・備蓄データをコンパクトに返す",
+    description: "シミュレーション要約。/api/simulation の軽量版。制約到達日・主要イベント・備蓄データをコンパクトに返す",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過）" },
     ],
     example: `curl ${API_BASE}/api/simulate?scenario=realistic
 
 // Response (抜粋)
-{ "scenario": { "id": "realistic", "label": "現実", ... },
+{ "scenario": { "id": "realistic", "label": "標準対応", ... },
   "result": { "oilDepletionDay": 180, "lngDepletionDay": 25, "powerCollapseDay": 16 },
   "events": [ { "day": 14, "label": "国家備蓄 放出開始" }, ... ],
   "reserves": { "oil": { "totalDays": 241 }, ... }
+}`,
+  },
+  {
+    method: "GET",
+    path: "/api/petrochemtree",
+    description: "石化サプライチェーン樹形図の全ノードデータ。7カテゴリ（feedstock/refinery/cracker/monomer/polymer/product/end_use）・エッジ・収率データを含む",
+    example: `curl ${API_BASE}/api/petrochemtree
+
+// Response (抜粋)
+{ "nodes": [
+    { "id": "naphtha", "label": "ナフサ", "category": "feedstock",
+      "stockDays": 14, "hormuzDependency": 0.94 },
+    { "id": "ethylene", "label": "エチレン", "category": "monomer",
+      "yieldRate": 0.30, "altFeed": ["coal_mto", "ethane"] },
+    ...
+  ],
+  "edges": [ { "from": "naphtha", "to": "cracker", "yieldRate": 1.0 }, ... ],
+  "downstreamBufferDays": 105
+}`,
+  },
+  {
+    method: "GET",
+    path: "/api/petrochemtree/risk",
+    description: "石化樹形図の各ノードにシナリオ別リスクスコアを付与。供給制約の進行度（0–1）・崩壊フラグを含む",
+    params: [
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+    ],
+    example: `curl ${API_BASE}/api/petrochemtree/risk?scenario=realistic
+
+// Response (抜粋)
+{ "scenario": "realistic",
+  "nodes": [
+    { "id": "naphtha", "riskScore": 0.72, "collapsed": false, "collapseDay": 42 },
+    { "id": "polyethylene", "riskScore": 0.31, "collapsed": false, "collapseDay": 105 },
+    ...
+  ]
+}`,
+  },
+  {
+    method: "GET",
+    path: "/api/methodology",
+    description: "16の計算モデル・前提パラメータ・信頼度スコア・データソースのメタデータ。研究・検証用途向け",
+    example: `curl ${API_BASE}/api/methodology
+
+// Response (抜粋)
+{ "models": [
+    { "id": "flow_inventory", "label": "フロー型在庫モデル",
+      "formula": "dStock/dt = Inflow - Consumption + SPR + Alt",
+      "confidence": "verified" },
+    ...
+  ],
+  "parameters": [ { "key": "hormuzDependencyRate", "value": 0.94, "source": "JETRO 2025" }, ... ]
+}`,
+  },
+  {
+    method: "GET",
+    path: "/api/validation",
+    description: "シミュレーション予測 vs 実際の出来事の照合結果。発生33日間の検証レポート",
+    example: `curl ${API_BASE}/api/validation
+
+// Response (抜粋)
+{ "validationDate": "2026-04-03",
+  "items": [
+    { "category": "代替供給", "predicted": "28日目に代替ルート到着",
+      "actual": "3月28日今治沖到着確認", "verdict": "match" },
+    ...
+  ]
+}`,
+  },
+  {
+    method: "GET",
+    path: "/api/sources",
+    description: "全データソースの一覧。ソース名・更新頻度・自動/手動区分・信頼度を含む",
+    example: `curl ${API_BASE}/api/sources
+
+// Response (抜粋)
+{ "sources": [
+    { "id": "meti_reserves", "name": "経産省 石油備蓄推計量",
+      "auto": true, "frequency": "monthly", "confidence": "verified" },
+    { "id": "eia_wti", "name": "EIA RWTC WTI Spot Price",
+      "auto": true, "frequency": "daily", "confidence": "verified" },
+    ...
+  ]
 }`,
   },
 ];
@@ -196,24 +303,24 @@ export const ApiDocs: FC = () => {
           <span className="text-[#94a3b8]">API</span> DOCUMENTATION
         </h1>
         <p className="text-neutral-500 text-sm">
-          Survive as One API — {API_BASE}/api
+          SAO – Situation Awareness Observatory API — {API_BASE}/api
         </p>
       </div>
 
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-sm text-neutral-400 space-y-2">
+      <div className="bg-panel border border-border rounded-lg p-4 text-sm text-neutral-400 space-y-2">
         <p><span className="text-neutral-200 font-bold">Base URL:</span> <code className="font-mono text-[#f59e0b]">{API_BASE}/api</code></p>
         <p><span className="text-neutral-200 font-bold">形式:</span> JSON</p>
         <p><span className="text-neutral-200 font-bold">認証:</span> 不要</p>
         <p><span className="text-neutral-200 font-bold">CORS:</span> <code className="font-mono">Access-Control-Allow-Origin: *</code>（.netドメイン）</p>
         <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）。グローバル上限: 100,000 req/日</p>
-        <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code> / <code className="font-mono">realistic</code> / <code className="font-mono">pessimistic</code></p>
+        <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code>（国際協調） / <code className="font-mono">realistic</code>（標準対応） / <code className="font-mono">pessimistic</code>（需要超過）</p>
         <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:underline font-mono">/api/openapi.json</a></p>
         <p><span className="text-neutral-200 font-bold">ライセンス:</span> AGPL-3.0</p>
       </div>
 
       {ENDPOINTS.map((ep) => (
-        <div key={`${ep.method}-${ep.path}`} className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1e2a36] flex items-center gap-3">
+        <div key={`${ep.method}-${ep.path}`} className="bg-panel border border-border rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-border flex items-center gap-3">
             <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
               ep.method === "POST"
                 ? "bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30"
@@ -241,7 +348,7 @@ export const ApiDocs: FC = () => {
             )}
             <div>
               <h4 className="text-xs font-mono text-neutral-500 mb-1">例</h4>
-              <pre className="text-[11px] font-mono text-neutral-400 bg-[#0f1419] rounded p-3 overflow-x-auto whitespace-pre-wrap">{ep.example}</pre>
+              <pre className="text-[11px] font-mono text-neutral-400 bg-bg rounded p-3 overflow-x-auto whitespace-pre-wrap">{ep.example}</pre>
             </div>
           </div>
         </div>

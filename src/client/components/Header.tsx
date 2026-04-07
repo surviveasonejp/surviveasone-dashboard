@@ -15,7 +15,6 @@ const NAV_ITEMS: NavItem[] = [
   { path: "/last-tanker", label: "TANKER" },
   { path: "/food-collapse", label: "FOOD" },
   { path: "/petrochem", label: "PETROCHEM" },
-  { path: "/family", label: "FAMILY" },
   { path: "/prepare", label: "PREPARE" },
   { path: "/about", label: "ABOUT" },
 ];
@@ -25,11 +24,11 @@ export const Header: FC = () => {
   const currentItem = NAV_ITEMS.find((item) => item.path === location.pathname);
 
   return (
-    <header className="border-b border-[#1e2a36] bg-[#0f1419]/95 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-border bg-bg/95 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-[#ef4444] font-mono font-bold text-lg">SURVIVE</span>
-          <span className="font-mono font-bold text-lg">AS ONE</span>
+          <span className="text-[#1e3a8a] text-lg" style={{ fontFamily: "'Lato', 'Arial Black', sans-serif", fontWeight: 900, letterSpacing: "-0.02em" }}>SAO</span>
+          <span className="font-mono text-xs text-neutral-500 hidden sm:inline tracking-wide">Situation Awareness Observatory</span>
         </Link>
         {/* モバイル: 現在ページ名 + テーマ切替 */}
         <div className="md:hidden flex items-center gap-2">

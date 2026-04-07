@@ -20,7 +20,7 @@ interface PanelCardProps {
 const PanelCard: FC<PanelCardProps> = ({ to, title, subtitle, description, color }) => (
   <Link
     to={to}
-    className="bg-[#151c24] border border-[#1e2a36] hover:border-opacity-60 rounded-lg p-4 transition-colors group"
+    className="bg-panel border border-border hover:border-opacity-60 rounded-lg p-4 transition-colors group"
   >
     <div className="font-mono text-xs font-bold tracking-wider mb-1" style={{ color }}>
       {title}
@@ -58,7 +58,7 @@ export const Landing: FC = () => {
     <div className="space-y-8">
       <AlertBanner
         level="warning"
-        message="これは予測ではなくリスクシナリオのシミュレーションです — 楽観/現実/悲観の3シナリオで分析"
+        message="これは予測ではなくリスクシナリオのシミュレーションです — 国際協調/標準対応/需要超過の3シナリオで分析"
       />
 
       {/* シナリオ切替 */}
@@ -68,15 +68,15 @@ export const Landing: FC = () => {
 
       {/* ヒーロー */}
       <div className="text-center space-y-4">
-        <span className="inline-block text-neutral-500 text-xs font-mono tracking-widest border border-[#1e2a36] px-3 py-1 rounded-full">
-          HORMUZ STRAIT BLOCKADE SCENARIO
+        <span className="inline-block text-neutral-500 text-xs font-mono tracking-widest border border-border px-3 py-1 rounded-full">
+          HORMUZ STRAIT BLOCKADE SCENARIO SIMULATION
         </span>
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-          日本の<span className="text-[#ef4444]">エネルギー</span>は、<br className="md:hidden" />何日もつのか
+          ホルムズ封鎖シナリオで、<br className="md:hidden" /><span className="text-[#ef4444]">エネルギー供給</span>はどう変化するか
         </h1>
         <p className="text-neutral-400 text-sm leading-relaxed max-w-lg mx-auto">
           石油の94%は中東から届く。その全量がホルムズ海峡を通る。<br />
-          もし封鎖されたら、この国のエネルギーはいつ尽きるのか。
+          封鎖シナリオ下で、供給制約はいつ、どのように進むのか。
         </p>
       </div>
 
@@ -95,9 +95,9 @@ export const Landing: FC = () => {
       </div>
 
       {/* 依存構造 — なぜ危険か */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-5">
+      <div className="bg-panel border border-border rounded-lg p-5">
         <div className="font-mono text-xs tracking-widest text-neutral-500 mb-4 text-center">
-          WHY JAPAN IS VULNERABLE
+          JAPAN ENERGY DEPENDENCY
         </div>
         <div className="grid grid-cols-3 gap-4">
           <Stat value="94" unit="%" label="中東石油依存" color="#f59e0b" />
@@ -123,7 +123,7 @@ export const Landing: FC = () => {
       </div>
 
       {/* リスク層訴求 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-5 space-y-4">
+      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-5 space-y-4">
         <div className="text-center space-y-2">
           <div className="font-mono text-3xl font-bold text-[#ef4444]">5人に1人</div>
           <p className="text-sm text-neutral-300">
@@ -152,17 +152,17 @@ export const Landing: FC = () => {
         </div>
       </div>
 
-      {/* Family Meter CTA — 自分ごと化の核 */}
+      {/* Household Supply Check — 参考ツール */}
       <Link
         to="/family"
-        className="block bg-[#151c24] border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-6 transition-colors group"
+        className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-6 transition-colors group"
       >
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
-            <p className="text-lg font-bold">あなたの家庭の備えは足りていますか？</p>
+            <div className="font-mono text-xs tracking-widest text-[#f59e0b]">HOUSEHOLD SUPPLY CHECK</div>
+            <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              備蓄量を入力 → 生存日数とランクを即時判定。計算はブラウザ内で完結、サーバーへの送信なし
+              備蓄量を入力 → 供給可能日数の目安を確認。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
           <span className="text-[#f59e0b] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -173,36 +173,43 @@ export const Landing: FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <PanelCard
           to="/countdown"
-          title="SURVIVAL CLOCK"
-          subtitle="崩壊カウントダウン"
-          description="石油・LNG・電力の残存日数。365日フロータイムライン+代替供給ルート+経済カスケード"
+          title="SUPPLY TIMELINE"
+          subtitle="供給制約タイムライン"
+          description="石油・LNG・電力の供給可能日数。365日フロータイムライン+代替供給ルート+経済カスケード"
           color="#ef4444"
         />
         <PanelCard
           to="/collapse-map"
-          title="COLLAPSE MAP"
-          subtitle="全国10エリア崩壊順"
+          title="IMPACT MAP"
+          subtitle="全国10エリア供給影響"
           description="原子力15基・再エネ・連系線融通・物流フロー可視化。GPS自動検出であなたの地域をハイライト"
           color="#f59e0b"
         />
         <PanelCard
           to="/last-tanker"
-          title="LAST TANKER"
+          title="TANKER TRACKER"
           subtitle="タンカー追跡"
-          description="実在18隻のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。米国産原油タンカー（喜望峰回り）も可視化"
+          description="実在23隻のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。4/6-7: カタールLNG船がホルムズ通過を試みて引き返し"
           color="#94a3b8"
         />
         <PanelCard
           to="/food-collapse"
-          title="FOOD COLLAPSE"
-          subtitle="備蓄の優先順位"
-          description="衛生・包装の崩壊が食料より先に来る。ナフサ→石化→包装材の連鎖崩壊。商品カテゴリ別の店頭在庫日数から優先順位を確認"
+          title="FOOD SUPPLY"
+          subtitle="食料サプライチェーン影響"
+          description="衛生・包装への供給制約が食料より先に進む。ナフサ→石化→包装材の連鎖的影響。商品カテゴリ別の店頭在庫日数を確認"
           color="#ef4444"
+        />
+        <PanelCard
+          to="/petrochem"
+          title="PETROCHEM"
+          subtitle="石化サプライチェーン樹形図"
+          description="ナフサ→クラッカー→ポリマー→包装材の7段階。エチレン収率ゲージ・代替フィード（石炭MTO/エタン）・供給制約によるグレー化。川下バッファ105日"
+          color="#a78bfa"
         />
         <PanelCard
           to="/prepare"
           title="PREPARE"
-          subtitle="備蓄ガイド"
+          subtitle="備え確認ガイド"
           description="住居形態・家族構成で絞り込み。マンション高層/ワンルーム/車なし世帯にも対応"
           color="#22c55e"
         />
@@ -210,7 +217,7 @@ export const Landing: FC = () => {
           to="/methodology"
           title="METHODOLOGY"
           subtitle="計算モデル・前提条件"
-          description="17の計算式・20データソース・感度分析。全ての前提を公開し検証可能に"
+          description="16の計算式・24データソース・感度分析。全ての前提を公開し検証可能に"
           color="#f59e0b"
         />
       </div>
