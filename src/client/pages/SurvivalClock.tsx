@@ -115,7 +115,7 @@ export const SurvivalClock: FC = () => {
         <EconomicCascade simulation={simResult} wtiPriceUsd={oilPriceData?.wti_usd} />
       )}
 
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
+      <div className="bg-panel border border-border rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">
           計算根拠{isLive ? "（D1 データベース）" : "（静的データ）"}:
         </p>
@@ -134,10 +134,10 @@ export const SurvivalClock: FC = () => {
           {DATA_SOURCES.thermalShare && <DataBadge confidence={DATA_SOURCES.thermalShare.confidence} />}
         </div>
         <p className="text-neutral-600 text-[10px]">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
-        <div className="pt-2 border-t border-[#1e2a36] mt-2">
+        <div className="pt-2 border-t border-border mt-2">
           <DataFreshness />
         </div>
-        <div className="pt-2 border-t border-[#1e2a36] mt-2">
+        <div className="pt-2 border-t border-border mt-2">
           <UpdateLog />
         </div>
       </div>

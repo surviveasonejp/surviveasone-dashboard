@@ -116,7 +116,7 @@ export const Landing: FC = () => {
       <div className="flex justify-center">
         <Link
           to="/dashboard"
-          className="px-8 py-3 bg-[#ef4444] hover:bg-[#ef4444]/80 text-white font-mono text-sm tracking-wider rounded transition-colors"
+          className="px-8 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-mono text-sm tracking-wider rounded transition-colors"
         >
           DASHBOARD を見る →
         </Link>

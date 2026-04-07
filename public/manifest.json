@@ -1,17 +1,17 @@
 {
-  "name": "Survive as One — 日本のエネルギーが尽きるまで",
-  "short_name": "Survive as One",
-  "description": "ホルムズ海峡封鎖時のエネルギー崩壊を可視化する戦術ダッシュボード",
+  "name": "SAO – Situation Awareness Observatory",
+  "short_name": "SAO",
+  "description": "ホルムズ海峡封鎖シナリオで日本のエネルギー供給制約を可視化する意思決定支援ツール",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f1419",
-  "theme_color": "#0f1419",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3a8a",
   "orientation": "portrait-primary",
   "categories": ["utilities", "news"],
   "lang": "ja",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "/icon-192-v2.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512-v2.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

@@ -140,7 +140,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   const activeTanker = tankers.find((t) => t.id === activeId);
 
   return (
-    <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg overflow-hidden relative">
+    <div className="bg-[#0c1018] border border-border rounded-lg overflow-hidden relative">
       <svg
         data-screenshot="tanker-map"
         viewBox={`0 0 ${W} ${H}`}
@@ -387,7 +387,7 @@ export const TankerMap: FC<TankerMapProps> = ({
 
       {/* ツールチップ（選択/ホバー時） */}
       {activeTanker && positions.has(activeTanker.id) && (
-        <div className="absolute bottom-12 left-3 bg-[#151c24]/95 border border-[#1e2a36] rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
+        <div className="absolute bottom-12 left-3 bg-panel/95 border border-border rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
           <div className="flex items-center gap-2">
             <span
               className="px-1 py-0.5 rounded text-[10px]"

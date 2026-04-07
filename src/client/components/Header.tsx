@@ -28,7 +28,7 @@ export const Header: FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <span className="text-[#1e3a8a] text-lg" style={{ fontFamily: "'Lato', 'Arial Black', sans-serif", fontWeight: 900, letterSpacing: "-0.02em" }}>SAO</span>
-          <span className="font-mono text-xs text-neutral-500 hidden sm:inline tracking-wide">Situation Awareness Observatory</span>
+          <span className="font-mono text-xs text-neutral-500 tracking-wide">Situation Awareness Observatory</span>
         </Link>
         {/* モバイル: 現在ページ名 + テーマ切替 */}
         <div className="md:hidden flex items-center gap-2">

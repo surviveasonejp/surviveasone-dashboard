@@ -19,6 +19,7 @@ const JAPAN_DEST_PORTS = new Set([
   "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
   "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
   "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
+  "Yokohama", "Hitachi", "Sakai/Izumiotsu",
 ]);
 
 /** データセット内の最大積載量（TAKASAGO 313,989t） */
@@ -67,17 +68,21 @@ export const TankerTracker: FC = () => {
 
       <SimulationBanner />
 
-      {/* 最終タンカー到着カウントダウン */}
+      {/* タンカー到着カウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <CountdownTimer
-          label="最終VLCC到着（原油）"
+          label="最終VLCC到着（代替ルート原油）"
           totalSeconds={(vlccTankers[vlccTankers.length - 1]?.eta_days ?? 0) * 86400}
         />
         <CountdownTimer
-          label="最終LNG船到着"
-          totalSeconds={(lngTankers[lngTankers.length - 1]?.eta_days ?? 0) * 86400}
+          label="次のLNG船到着（非ホルムズ）"
+          totalSeconds={(lngTankers.find((t) => t.eta_days > 0)?.eta_days ?? 0) * 86400}
+          noAlert
         />
       </div>
+      <p className="text-[10px] text-neutral-500 font-mono -mt-2">
+        LNG: 豪州・サハリン・マレーシア産は封鎖の影響なく継続入港。カタール産（ホルムズ経由）は停止中。
+      </p>
 
       {/* 到着タイムライン */}
       <ArrivalTimeline
@@ -94,8 +99,8 @@ export const TankerTracker: FC = () => {
       />
 
       {/* 到着順ランキング */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">到着順ランキング</h2>
         </div>
 
@@ -103,7 +108,7 @@ export const TankerTracker: FC = () => {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-border">
                 <th className="px-4 py-2 text-left">#</th>
                 <th className="px-4 py-2 text-left">船名</th>
                 <th className="px-4 py-2 text-left">種別</th>
@@ -130,7 +135,7 @@ export const TankerTracker: FC = () => {
                     ref={(el) => {
                       if (el) rowRefs.current.set(tanker.id, el);
                     }}
-                    className={`border-b border-[#162029] cursor-pointer transition-colors ${
+                    className={`border-b border-border cursor-pointer transition-colors ${
                       isSelected ? "bg-white/[0.06]" : "hover:bg-white/[0.02]"
                     } ${dimClass}`}
                     onClick={() => setSelectedId(isSelected ? null : tanker.id)}
@@ -210,7 +215,7 @@ export const TankerTracker: FC = () => {
         </div>
 
         {/* モバイル: カードレイアウト */}
-        <div className="md:hidden divide-y divide-[#162029]">
+        <div className="md:hidden divide-y divide-border">
           {tankers.map((tanker, index) => {
             const blocked = isBlocked(tanker);
             const notJapan = isNotJapanBound(tanker);
@@ -315,7 +320,7 @@ export const TankerTracker: FC = () => {
       </div>
 
       {/* 計算根拠 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
+      <div className="bg-panel border border-border rounded-lg p-4 text-xs text-neutral-500 font-mono space-y-2">
         <p className="text-neutral-400 font-bold">計算根拠:</p>
         <p>到着予測日数 = 航路距離(海里) ÷ (速度(knots) × 24時間)</p>
         <p>推定位置 = 航路ウェイポイント上をETA進捗率で線形補間</p>

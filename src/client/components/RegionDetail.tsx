@@ -28,7 +28,7 @@ const RANK_COLORS: Record<string, string> = {
 export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
   if (!region) {
     return (
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 flex items-center justify-center min-h-[300px]">
+      <div className="bg-panel border border-border rounded-lg p-6 flex items-center justify-center min-h-[300px]">
         <p className="text-neutral-500 font-mono text-sm">エリアを選択してください</p>
       </div>
     );
@@ -66,7 +66,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
     : null;
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-4">
+    <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold">{region.name}</h3>
@@ -101,7 +101,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
       </div>
 
       {/* 国家石油備蓄基地 */}
-      <div className="bg-[#0f1419] rounded p-3 space-y-1.5">
+      <div className="bg-bg rounded p-3 space-y-1.5">
         <div className="text-[10px] font-mono text-neutral-600 tracking-wider">国家石油備蓄基地</div>
         {stockpileBases.length > 0 ? (
           <div className="space-y-1">
@@ -122,7 +122,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
           <p className="text-xs text-neutral-500">国家備蓄基地なし（民間備蓄に依存）</p>
         )}
         {jointStockpile && (
-          <div className="text-xs text-neutral-400 border-t border-[#1e2a36] pt-1.5 mt-1.5">
+          <div className="text-xs text-neutral-400 border-t border-border pt-1.5 mt-1.5">
             <span className="text-neutral-500">産油国共同備蓄: </span>
             {jointStockpile.partner} / {jointStockpile.location} ({(jointStockpile.capacity_kL / 10000).toLocaleString()}万kL)
           </div>
@@ -132,7 +132,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
 
       {/* ロジスティクス */}
       {logistics && (
-        <div className="bg-[#0f1419] rounded p-3 space-y-1.5">
+        <div className="bg-bg rounded p-3 space-y-1.5">
           <div className="text-[10px] font-mono text-neutral-600 tracking-wider">LOGISTICS</div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
             <span className="text-neutral-500">配送遅延</span>
@@ -155,7 +155,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
             )}
           </div>
           {"interRegionSupply" in logistics && (
-            <div className="text-[9px] text-neutral-500 space-y-0.5 border-t border-[#1e2a36] pt-1.5 mt-1">
+            <div className="text-[9px] text-neutral-500 space-y-0.5 border-t border-border pt-1.5 mt-1">
               <div className="text-neutral-600 tracking-wider">供給元</div>
               {(logistics.interRegionSupply as Array<{ from: string; mode: string; capacity_kL_per_day: number; note: string }>).map((route, i) => (
                 <div key={i} className="flex justify-between">
@@ -185,7 +185,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
         )}
       </div>
 
-      <hr className="border-[#1e2a36]" />
+      <hr className="border-border" />
 
       {/* エリア情報 */}
       <div className="space-y-2 text-sm">
@@ -198,7 +198,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
 
       {/* 再エネ自立率（マイクログリッド指標） */}
       {regionData && (
-        <div className="bg-[#0f1419] rounded p-3 space-y-2">
+        <div className="bg-bg rounded p-3 space-y-2">
           <div className="text-[10px] font-mono text-neutral-600 tracking-wider">再エネ自立率（生活必需比）</div>
           <div className="space-y-1">
             <div className="flex items-center justify-between">
@@ -208,7 +208,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
               </span>
             </div>
             {/* バー */}
-            <div className="w-full h-2 bg-[#1e2a36] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-border rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{ width: `${Math.min(100, selfSufficiencyRate)}%`, backgroundColor: rateColor }}
@@ -224,7 +224,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-1 text-[9px] text-neutral-600 pt-1 border-t border-[#1e2a36]">
+          <div className="grid grid-cols-3 gap-1 text-[9px] text-neutral-600 pt-1 border-t border-border">
             <div>太陽光 {regionData.solarCapacity_MW?.toLocaleString() ?? 0} MW</div>
             <div>風力 {regionData.windCapacity_MW?.toLocaleString() ?? 0} MW</div>
             <div>水力 {regionData.hydroCapacity_MW?.toLocaleString() ?? 0} MW</div>

@@ -136,7 +136,7 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
   const maxImpact = Math.max(...results.map((r) => r.impact), 1);
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+    <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
       <div className="text-xs font-mono text-neutral-500 tracking-wider">
         SENSITIVITY ANALYSIS — 各仮定が実際の値と20%ずれた場合の枯渇日数の変動幅
       </div>

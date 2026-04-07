@@ -38,7 +38,7 @@ export async function getCachedResponse(
   // GETリクエストのみキャッシュ
   if (request.method !== "GET") return null;
 
-  const cache = await caches.open("api-response");
+  const cache = await caches.open("api-response-v2");
   const cached = await cache.match(request);
 
   if (cached) {
@@ -72,7 +72,7 @@ export async function cacheResponse(
   cacheable.headers.set("X-Cache", "MISS");
   cacheable.headers.set("X-Cache-TTL", ttl.toString());
 
-  const cache = await caches.open("api-response");
+  const cache = await caches.open("api-response-v2");
   // bodyを2つ必要とするのでcloneしてからput
   const [forCache, forClient] = [cacheable.clone(), cacheable];
   await cache.put(request, forCache);

@@ -270,7 +270,7 @@ const Accordion: FC<AccordionProps> = ({ title, forceOpen = false, highlight = f
     <div className="print:!block">
       <button
         className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors print:hidden ${
-          highlight ? "bg-[#151c24] border" : "bg-[#151c24] border border-[#1e2a36]"
+          highlight ? "bg-panel border" : "bg-panel border border-border"
         }`}
         style={highlight && color ? { borderColor: `${color}60` } : undefined}
         onClick={() => setOpen(!open)}
@@ -336,7 +336,7 @@ export const Prepare: FC = () => {
       />
 
       {/* 備蓄優先順位の逆転 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
+      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-xs tracking-wider text-[#ef4444]">このシナリオでは備蓄の優先順位が逆転する</h2>
         <div className="space-y-1.5">
           <div className="flex items-center gap-3 text-xs font-mono">
@@ -357,7 +357,7 @@ export const Prepare: FC = () => {
       </div>
 
       {/* ── パーソナライズフィルタ ── */}
-      <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
+      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
         <div>
           <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">あなたの状況を選んでください</h2>
           <p className="text-[10px] text-neutral-500 mt-1">該当するセクションだけを展開表示します。選択内容はこのブラウザ内のみで処理され、サーバーへの送信は一切行いません。</p>
@@ -378,7 +378,7 @@ export const Prepare: FC = () => {
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   housing === opt.value
                     ? "bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/50"
-                    : "bg-transparent text-neutral-400 border-[#1e2a36] hover:border-neutral-500"
+                    : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => setHousing(housing === opt.value ? "" : opt.value)}
               >
@@ -401,7 +401,7 @@ export const Prepare: FC = () => {
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   hasCar === opt.value
                     ? "bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/50"
-                    : "bg-transparent text-neutral-400 border-[#1e2a36] hover:border-neutral-500"
+                    : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => setHasCar(hasCar === opt.value ? null : opt.value)}
               >
@@ -428,7 +428,7 @@ export const Prepare: FC = () => {
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   familyTags.has(opt.value)
                     ? "bg-[#ef4444]/20 text-[#ef4444] border-[#ef4444]/50"
-                    : "bg-transparent text-neutral-400 border-[#1e2a36] hover:border-neutral-500"
+                    : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => toggleFamily(opt.value)}
               >
@@ -447,7 +447,7 @@ export const Prepare: FC = () => {
           </button>
           {filterApplied && (
             <button
-              className="px-4 py-2 rounded text-xs font-mono text-neutral-500 border border-[#1e2a36] hover:bg-white/5 transition-colors"
+              className="px-4 py-2 rounded text-xs font-mono text-neutral-500 border border-border hover:bg-white/5 transition-colors"
               onClick={resetFilter}
             >
               リセット
@@ -458,14 +458,14 @@ export const Prepare: FC = () => {
 
       {/* 印刷ボタン */}
       <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-white/5 text-neutral-400 border border-[#1e2a36] hover:bg-white/10 transition-colors print:hidden"
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-white/5 text-neutral-400 border border-border hover:bg-white/10 transition-colors print:hidden"
         onClick={() => window.print()}
       >
         このページを印刷する（紙で配布用）
       </button>
 
       {/* ── 初動72時間：行政支援空白期間 ── */}
-      <div className="bg-[#151c24] border border-[#ef4444]/40 rounded-lg p-5 space-y-3">
+      <div className="bg-panel border border-[#ef4444]/40 rounded-lg p-5 space-y-3">
         <div className="flex items-center gap-2">
           <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-[#ef4444] bg-[#ef4444]/15 border border-[#ef4444]/40">
             最優先
@@ -499,7 +499,7 @@ export const Prepare: FC = () => {
       <Accordion title="フェーズ別行動指針" forceOpen>
         <div data-screenshot="prepare-guide" className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {PHASE_GUIDE.map((phase) => (
-            <div key={phase.phase} className="bg-[#151c24] border rounded-lg p-4 space-y-2" style={{ borderColor: `${phase.color}40` }}>
+            <div key={phase.phase} className="bg-panel border rounded-lg p-4 space-y-2" style={{ borderColor: `${phase.color}40` }}>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold px-2 py-0.5 rounded" style={{ color: phase.color, backgroundColor: `${phase.color}15`, border: `1px solid ${phase.color}40` }}>
                   {phase.label}
@@ -522,11 +522,11 @@ export const Prepare: FC = () => {
       <Accordion title="備蓄チェックリスト" forceOpen>
         <div className="space-y-4">
           {PREPARE_LIST.map((section) => (
-            <div key={section.category} className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-[#1e2a36] bg-[#162029]">
+            <div key={section.category} className="bg-panel border border-border rounded-lg overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-border bg-[#162029]">
                 <h3 className="font-mono text-sm font-bold text-neutral-300">{section.category}</h3>
               </div>
-              <div className="divide-y divide-[#162029]">
+              <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
                     <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
@@ -543,7 +543,7 @@ export const Prepare: FC = () => {
       {/* ── 住居形態別（フィルタ連動） ── */}
       {HOUSING_DATA.map((h) => (
         <Accordion key={h.id} title={h.type} forceOpen={showHousing(h.id)} highlight={showHousing(h.id)} color={h.color}>
-          <div className="bg-[#151c24] border rounded-lg overflow-hidden" style={{ borderColor: `${h.color}40` }}>
+          <div className="bg-panel border rounded-lg overflow-hidden" style={{ borderColor: `${h.color}40` }}>
             <ul className="px-4 py-3 space-y-2">
               {h.points.map((point, i) => (
                 <li key={i} className="text-xs text-neutral-400 leading-relaxed flex gap-2">
@@ -564,8 +564,8 @@ export const Prepare: FC = () => {
           highlight={showVulnerable(section.id)}
           color="#ef4444"
         >
-          <div id={`sec-${section.id}`} className="bg-[#151c24] border border-[#ef444440] rounded-lg overflow-hidden scroll-mt-20">
-            <div className="divide-y divide-[#162029]">
+          <div id={`sec-${section.id}`} className="bg-panel border border-[#ef444440] rounded-lg overflow-hidden scroll-mt-20">
+            <div className="divide-y divide-border">
               {section.items.map((item) => (
                 <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
                   <div className="sm:w-48 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
@@ -582,13 +582,13 @@ export const Prepare: FC = () => {
         <p className="text-xs text-neutral-500 mb-3">物資の備蓄だけでは生き残れない。情報・連絡体制・移動手段・コミュニティが生死を分ける。</p>
         <div className="space-y-4">
           {ACTION_LIST.map((section) => (
-            <div key={section.category} className="bg-[#151c24] border border-[#3b82f640] rounded-lg overflow-hidden">
+            <div key={section.category} className="bg-panel border border-[#3b82f640] rounded-lg overflow-hidden">
               <div className="px-4 py-2.5 border-b border-[#3b82f620] bg-[#101820]">
                 <h3 className="font-mono text-sm font-bold text-blue-300">
                   <span className="mr-1.5">{section.icon}</span>{section.category}
                 </h3>
               </div>
-              <div className="divide-y divide-[#162029]">
+              <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
                     <div className="sm:w-56 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
@@ -654,7 +654,7 @@ export const Prepare: FC = () => {
               ],
             },
           ].map((guide) => (
-            <div key={guide.label} className="bg-[#151c24] border rounded-lg p-4 space-y-2" style={{ borderColor: `${guide.color}40` }}>
+            <div key={guide.label} className="bg-panel border rounded-lg p-4 space-y-2" style={{ borderColor: `${guide.color}40` }}>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded" style={{ color: guide.color, backgroundColor: `${guide.color}15`, border: `1px solid ${guide.color}40` }}>
                   {guide.pct}
@@ -674,7 +674,7 @@ export const Prepare: FC = () => {
       </Accordion>
 
       {/* ── 公式防災ガイドライン ── */}
-      <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+      <div className="bg-[#0c1018] border border-border rounded-lg p-4 space-y-2">
         <h2 className="font-mono text-xs tracking-wider text-neutral-500">公式防災ガイドライン</h2>
         <ul className="space-y-1.5">
           {[

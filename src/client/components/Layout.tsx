@@ -8,7 +8,7 @@ export const Layout: FC = () => {
   const isDragging = dragX !== 0;
 
   return (
-    <div className="min-h-screen bg-[#0f1419] text-white overflow-x-hidden">
+    <div className="min-h-screen bg-bg text-white overflow-x-hidden">
       <Header />
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
         <div
@@ -22,9 +22,9 @@ export const Layout: FC = () => {
         </div>
       </main>
       {/* フッター */}
-      <footer className="border-t border-[#1e2a36] bg-[#0f1419] py-4 px-4 pb-16 md:pb-4">
+      <footer className="border-t border-border bg-bg py-4 px-4 pb-16 md:pb-4">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-neutral-600">
-          <span className="font-mono tracking-wider">Survive as One Japan</span>
+          <span className="font-mono tracking-wider">SAO – Situation Awareness Observatory</span>
           <div className="flex items-center gap-3 font-mono">
             <a href="https://github.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">GitHub</a>
             <span className="text-neutral-700">&middot;</span>

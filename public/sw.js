@@ -2,7 +2,7 @@
 // 戦略: App Shell キャッシュ + API ネットワーク優先
 // 目的: 電源喪失前にインストール → オフラインで FOOD/FAMILY/PREPARE 等を閲覧可能
 
-const CACHE_NAME = "sao-v3";
+const CACHE_NAME = "sao-v5";
 
 // App Shell: オフラインで必要な静的リソース
 const APP_SHELL = [
@@ -117,12 +117,18 @@ async function cacheFirst(request) {
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
-    if (response.ok) {
+    if (response.ok && request.method === "GET") {
       const cache = await caches.open(CACHE_NAME);
       cache.put(request, response.clone());
     }
     return response;
   } catch {
+    if (request.method !== "GET") {
+      return new Response('{"error":"offline"}', {
+        status: 503,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     const cached = await caches.match(request);
     return cached || new Response('{"error":"offline"}', {
       status: 503,

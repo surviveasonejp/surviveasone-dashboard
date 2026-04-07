@@ -139,7 +139,7 @@ export const ForSegment: FC = () => {
       <AlertBanner level="warning" message={seg.alertMessage} />
 
       {/* 危機の数字 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1">
+      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1">
         <div className="font-mono text-4xl font-bold" style={{ color: seg.heroColor }}>
           {seg.heroStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
         </div>
@@ -152,7 +152,7 @@ export const ForSegment: FC = () => {
         <h2 className="font-mono text-xs tracking-wider text-neutral-400">あなたの家庭に起きること</h2>
         <div className="space-y-2">
           {seg.risks.map((risk) => (
-            <div key={risk.label} className="bg-[#151c24] border border-[#1e2a36] rounded-lg px-4 py-3 flex gap-4">
+            <div key={risk.label} className="bg-panel border border-border rounded-lg px-4 py-3 flex gap-4">
               <div className="shrink-0 w-20">
                 <div className="font-mono text-sm font-bold text-[#ef4444]">{risk.days}</div>
                 <div className="text-[10px] text-neutral-500">{risk.label}</div>
@@ -164,7 +164,7 @@ export const ForSegment: FC = () => {
       </div>
 
       {/* 今すぐやるべきこと */}
-      <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-5 space-y-3">
+      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-5 space-y-3">
         <h2 className="font-mono text-xs tracking-wider text-[#22c55e]">優先して確認すべき5つのこと</h2>
         <ol className="space-y-2">
           {seg.actions.map((action, i) => (
@@ -177,7 +177,7 @@ export const ForSegment: FC = () => {
       </div>
 
       {/* 公的支援・情報源 */}
-      <div className="bg-[#0c1018] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+      <div className="bg-[#0c1018] border border-border rounded-lg p-4 space-y-2">
         <h2 className="font-mono text-xs tracking-wider text-neutral-500">公的支援・情報源</h2>
         <ul className="space-y-1.5">
           {seg.officialLinks.map((link) => (
@@ -198,7 +198,7 @@ export const ForSegment: FC = () => {
       {/* CTA: Family Meter */}
       <Link
         to="/family"
-        className="block bg-[#151c24] border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-5 transition-colors group"
+        className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-5 transition-colors group"
       >
         <div className="flex items-center justify-between">
           <div className="space-y-1">
@@ -212,7 +212,7 @@ export const ForSegment: FC = () => {
       {/* CTA: 詳細チェックリスト */}
       <Link
         to={`/prepare#${seg.prepareAnchor}`}
-        className="block bg-[#151c24] border border-[#1e2a36] hover:border-neutral-600 rounded-lg p-5 transition-colors group"
+        className="block bg-panel border border-border hover:border-neutral-600 rounded-lg p-5 transition-colors group"
       >
         <div className="flex items-center justify-between">
           <div className="space-y-1">

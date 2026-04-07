@@ -36,13 +36,13 @@ const MODEL_EQUATIONS = [
   },
   {
     title: "SPR放出メカニズム",
-    equation: "国家備蓄: delay=14日, max=30万kL/日, 変換効率82% / 民間: delay=0日, 実効40% / 共同: 楽観100%→現実50%→悲観0%",
+    equation: "国家備蓄: delay=14日, max=30万kL/日, 変換効率82% / 民間: delay=0日, 実効40% / 共同: 国際協調100%→標準対応50%→需要超過0%",
     description: "石油備蓄法+IEA Emergency Response Mechanismに基づく。リードタイム14日=IEA要請→閣議了解(1-2日)→JOGMEC放出指示→基地出荷(3-5日)→精製到着(2-3日)。国家備蓄は原油タンク主体のため精製変換係数0.82を適用（IEA Oil Supply Security 2014）。民間実効40%は公式70%から製油所底部残液・タンカーバラスト・稼働継続在庫を追加控除した実効値。産油国共同備蓄は外交不確実性・契約遅延でシナリオ別に利用率を設定。",
   },
   {
     title: "封鎖解除曲線",
     equation: "blockadeRate(t) = initial + (final - initial) × ((t - start) / (end - start))",
-    description: "楽観: 7日で介入→30日で解除(残留10%) / 現実: 30日全面→120日段階的(残留30%) / 悲観: 90日全面→365日(残留60%)。線形補間。",
+    description: "国際協調: 7日→30日で解除(残留10%) / 標準対応: 30日→120日段階的(残留30%) / 需要超過: 90日→365日(残留60%)。線形補間。",
   },
   {
     title: "需要破壊モデル",
@@ -95,11 +95,11 @@ export const Methodology: FC = () => {
       </div>
 
       {/* シミュレーション宣言 */}
-      <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-6 space-y-3">
+      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">重要な前提</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
           本シミュレーションは<span className="text-neutral-200 font-bold">予測ではなく、リスクシナリオの可視化</span>です。
-          楽観・現実・悲観の3シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
+          国際協調・標準対応・需要超過の3シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
@@ -108,26 +108,26 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 備蓄日数の3段階解釈 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄日数の解釈（3段階）</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-border">
                 <th className="px-4 py-2 text-left">指標</th>
                 <th className="px-4 py-2 text-right">日数</th>
                 <th className="px-4 py-2 text-left pl-6">説明</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-[#162029]">
+              <tr className="border-b border-border">
                 <td className="px-4 py-2 text-neutral-300 font-bold whitespace-nowrap">法ベース<br /><span className="text-[10px] text-neutral-600 font-normal">制度コンプライアンス指標</span></td>
                 <td className="px-4 py-2 text-right font-mono text-neutral-200">約{r.totalReserveDays}日</td>
                 <td className="px-4 py-2 text-xs text-neutral-500 pl-6">石油備蓄法に基づく公式日数。国家+民間+共同備蓄を全量即時利用可能とみなして計算。IEA報告・政策立案の基準値。</td>
               </tr>
-              <tr className="border-b border-[#162029]">
+              <tr className="border-b border-border">
                 <td className="px-4 py-2 text-[#f59e0b] font-bold whitespace-nowrap">実効備蓄<br /><span className="text-[10px] text-[#f59e0b]/60 font-normal">放出・精製制約を考慮</span></td>
                 <td className="px-4 py-2 text-right font-mono text-[#f59e0b]">約130〜170日</td>
                 <td className="px-4 py-2 text-xs text-neutral-500 pl-6">民間備蓄の実効利用率40%（ワーキングストック・底部残液等）、国家備蓄の精製変換効率82%、共同備蓄の外交不確実性を適用した推計値。本シミュレーションが採用する値。</td>
@@ -140,7 +140,7 @@ export const Methodology: FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="px-4 py-3 border-t border-[#1e2a36]">
+        <div className="px-4 py-3 border-t border-border">
           <p className="text-[11px] text-neutral-600 leading-relaxed">
             ※ 法ベース日数は「制度的な備蓄量の確認指標」であり「戦時耐久性指標」ではありません。
             本シミュレーションは実効備蓄値を用い、需要破壊モデルと組み合わせることで生活維持ベースに近い推計を行っています。
@@ -149,14 +149,14 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 3シナリオ */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">3シナリオ</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-border">
                 <th className="px-4 py-2 text-left">シナリオ</th>
                 <th className="px-4 py-2 text-right">石油遮断</th>
                 <th className="px-4 py-2 text-right">LNG遮断</th>
@@ -165,14 +165,14 @@ export const Methodology: FC = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-[#162029]">
+              <tr className="border-b border-border">
                 <td className="px-4 py-2 text-[#22c55e] font-bold">楽観</td>
                 <td className="px-4 py-2 text-right font-mono">50%</td>
                 <td className="px-4 py-2 text-right font-mono">3%</td>
                 <td className="px-4 py-2 text-right font-mono">-15%</td>
                 <td className="px-4 py-2 text-right text-neutral-400 text-xs">7日→30日で解除</td>
               </tr>
-              <tr className="border-b border-[#162029]">
+              <tr className="border-b border-border">
                 <td className="px-4 py-2 text-[#f59e0b] font-bold">現実</td>
                 <td className="px-4 py-2 text-right font-mono">94%</td>
                 <td className="px-4 py-2 text-right font-mono">6.3%</td>
@@ -192,14 +192,14 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 国際対応パターン */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">各国の対応パターン（2026年4月時点）</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="text-neutral-600 font-mono border-b border-[#1e2a36]">
+              <tr className="text-neutral-600 font-mono border-b border-border">
                 <th className="px-4 py-2 text-left">類型</th>
                 <th className="px-4 py-2 text-left">主な措置</th>
                 <th className="px-4 py-2 text-left">国・機関</th>
@@ -234,7 +234,7 @@ export const Methodology: FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="px-4 py-3 border-t border-[#1e2a36]">
+        <div className="px-4 py-3 border-t border-border">
           <p className="text-[11px] text-neutral-600 leading-relaxed">
             ※ 日本を含むアジアは中東依存度が最も高く対応コストが大きい。欧州・オセアニアは比較的対応余力あり。
             各国の「需要抑制」効果は本シミュレーションの楽観シナリオ（-15%）の根拠を支持する実績データ。
@@ -246,9 +246,9 @@ export const Methodology: FC = () => {
       <div className="space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">計算モデル（全11式）</h2>
         {MODEL_EQUATIONS.map((eq) => (
-          <div key={eq.title} className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+          <div key={eq.title} className="bg-panel border border-border rounded-lg p-4 space-y-2">
             <h3 className="text-sm font-bold text-neutral-200">{eq.title}</h3>
-            <code className="block text-xs font-mono text-[#f59e0b] bg-[#0f1419] rounded px-3 py-2 overflow-x-auto">
+            <code className="block text-xs font-mono text-[#f59e0b] bg-bg rounded px-3 py-2 overflow-x-auto">
               {eq.equation}
             </code>
             <p className="text-xs text-neutral-500 leading-relaxed">{eq.description}</p>
@@ -261,14 +261,14 @@ export const Methodology: FC = () => {
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">法的フレームワークと限界</h2>
 
         {/* 3法の発動トリガー */}
-        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1e2a36]">
+        <div className="bg-panel border border-border rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
             <h3 className="font-mono text-xs tracking-wider text-neutral-400">3法の段階発動トリガー</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-neutral-600 font-mono border-b border-[#1e2a36]">
+                <tr className="text-neutral-600 font-mono border-b border-border">
                   <th className="px-4 py-2 text-left">在庫残量</th>
                   <th className="px-4 py-2 text-left">発動法律</th>
                   <th className="px-4 py-2 text-left">政府アクション</th>
@@ -297,7 +297,7 @@ export const Methodology: FC = () => {
               </tbody>
             </table>
           </div>
-          <div className="px-4 py-3 border-t border-[#1e2a36]">
+          <div className="px-4 py-3 border-t border-border">
             <p className="text-[11px] text-neutral-600 leading-relaxed">
               3法は「燃料危機」前提の設計。日本の配給制度はゼロから構築せず、既存法を段階的に発動する。
               ただし配給のデジタル管理基盤（リアルタイム割当・不正防止）は制度として未整備。
@@ -306,7 +306,7 @@ export const Methodology: FC = () => {
         </div>
 
         {/* 法的空白領域 — ナフサ起点の危機 */}
-        <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
+        <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
           <h3 className="font-mono text-xs tracking-wider text-[#ef4444]">法的空白領域 — ナフサ起点の危機は3法の範囲外</h3>
           <p className="text-xs text-neutral-500 leading-relaxed">
             3法は「石油（燃料）の流れ」を制御する設計。ナフサ起点の石化産業崩壊は適用外または権限が脆弱。
@@ -355,7 +355,7 @@ export const Methodology: FC = () => {
         </div>
 
         {/* 追加法整備が必要なシナリオ */}
-        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+        <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
           <h3 className="font-mono text-xs tracking-wider text-neutral-400">追加法整備が必要なシナリオ</h3>
           <div className="space-y-2 text-xs">
             {([
@@ -376,8 +376,8 @@ export const Methodology: FC = () => {
         </div>
 
         {/* 省庁別責任マップ */}
-        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1e2a36]">
+        <div className="bg-panel border border-border rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
             <h3 className="font-mono text-xs tracking-wider text-neutral-400">省庁別責任マップ（理想構造）</h3>
           </div>
           <div className="divide-y divide-[#0c1018] text-xs">
@@ -399,7 +399,7 @@ export const Methodology: FC = () => {
               </div>
             ))}
           </div>
-          <div className="px-4 py-3 border-t border-[#1e2a36]">
+          <div className="px-4 py-3 border-t border-border">
             <p className="text-[11px] text-neutral-600 leading-relaxed">
               本質: 「省庁分担」ではなく「強制統合」が必要。最終的に「誰の生産を止めるか」を決める政治判断が不可欠。
               この権限設計は現行制度には存在せず、緊急立法が必要になる可能性がある。
@@ -409,11 +409,11 @@ export const Methodology: FC = () => {
       </div>
 
       {/* データソース */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">データソース（全て公開データ）</h2>
         </div>
-        <div className="divide-y divide-[#162029]">
+        <div className="divide-y divide-border">
           {DATA_SOURCES.map((ds) => (
             <div key={ds.name} className="px-4 py-3 space-y-1">
               <div className="flex items-center justify-between">
@@ -461,7 +461,7 @@ export const Methodology: FC = () => {
               desc: "政府の節電要請（目標20%削減）や燃料消費削減が達成された場合。実績: 東日本大震災後のピーク需要15%削減（2011年夏）。現モデルのdemandReductionRateを超える削減があれば改善。",
             },
           ].map((item) => (
-            <div key={item.icon} className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+            <div key={item.icon} className="bg-panel border border-border rounded-lg p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-bold text-neutral-200">{item.icon} {item.title}</h3>
               </div>
@@ -484,7 +484,7 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 制約と不確実性 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
+      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">制約と不確実性</h2>
         <ul className="space-y-2 text-xs text-neutral-400 leading-relaxed">
           <li>・石炭火力（28%）はホルムズ非依存（豪州・インドネシア主体）。短期的な直接影響は限定的だが、エネルギー価格全般への波及は考慮</li>
@@ -499,7 +499,7 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 引用フォーマット */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-3">
+      <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">引用・参照</h2>
         <p className="text-neutral-500 text-xs">
           本シミュレーションを論文・レポート・記事等で参照する場合、以下のフォーマットを使用してください。
@@ -507,13 +507,13 @@ export const Methodology: FC = () => {
         <div className="space-y-3">
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">APA</div>
-            <code className="block text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 select-all">
+            <code className="block text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 select-all">
               Survive as One Japan. (2026). Hormuz Strait blockade energy simulation for Japan. https://surviveasonejp.org
             </code>
           </div>
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">BibTeX</div>
-            <pre className="text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 overflow-x-auto select-all">
+            <pre className="text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 overflow-x-auto select-all">
 {`@misc{surviveasonejp2026,
   title  = {Survive as One Japan: Hormuz Strait
             Blockade Energy Simulation},
@@ -526,7 +526,7 @@ export const Methodology: FC = () => {
           </div>
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">API経由のデータ引用</div>
-            <code className="block text-xs font-mono text-neutral-400 bg-[#0f1419] rounded px-3 py-2 select-all">
+            <code className="block text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 select-all">
               Survive as One Japan API (https://surviveasonejp.net/api/simulate?scenario=realistic), accessed {new Date().toISOString().slice(0, 10)}.
             </code>
           </div>
@@ -534,7 +534,7 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 検証への招待 */}
-      <div className="bg-[#151c24] border border-[#22c55e]/30 rounded-lg p-6 space-y-3">
+      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">検証と貢献</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">
           ソースコードはAGPL-3.0で全量公開されています。計算ロジックは誰でも検証可能です。
@@ -547,7 +547,7 @@ export const Methodology: FC = () => {
             href="https://github.com/surviveasonejp/surviveasone-dashboard"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 border border-[#1e2a36] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
+            className="px-4 py-2 border border-border text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
           >
             GitHub &rarr;
           </a>
@@ -565,13 +565,13 @@ export const Methodology: FC = () => {
       <div className="flex flex-wrap gap-3">
         <Link
           to="/about"
-          className="px-4 py-2 border border-[#1e2a36] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-border text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
         >
           &larr; ABOUT
         </Link>
         <Link
           to="/dashboard"
-          className="px-4 py-2 border border-[#1e2a36] text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-border text-neutral-400 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
         >
           DASHBOARD &rarr;
         </Link>

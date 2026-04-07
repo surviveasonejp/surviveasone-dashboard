@@ -62,9 +62,9 @@ const SCENARIO_KEYS = ["optimistic", "realistic", "pessimistic"] as const;
 type ScenarioKey = (typeof SCENARIO_KEYS)[number];
 
 const SCENARIO_STYLES: Record<ScenarioKey, { stroke: string; label: string; opacity: number; width: number }> = {
-  optimistic:  { stroke: "#22c55e", label: "楽観", opacity: 0.65, width: 1.5 },
-  realistic:   { stroke: "#f59e0b", label: "現実", opacity: 0.9,  width: 2.0 },
-  pessimistic: { stroke: "#ef4444", label: "悲観", opacity: 0.6,  width: 1.5 },
+  optimistic:  { stroke: "#2563eb", label: "国際協調", opacity: 0.65, width: 1.5 },
+  realistic:   { stroke: "#16a34a", label: "標準対応", opacity: 0.9,  width: 2.0 },
+  pessimistic: { stroke: "#d97706", label: "需要超過", opacity: 0.6,  width: 1.5 },
 };
 
 // ─── 行型 ──────────────────────────────────────────────
@@ -218,9 +218,9 @@ export const ArrivalTimeline: FC<Props> = ({ tankers, selectedId, onSelect }) =>
   };
 
   return (
-    <div data-screenshot="arrival-timeline" className="bg-[#151c24] border border-[#1e2a36] rounded-lg">
+    <div data-screenshot="arrival-timeline" className="bg-panel border border-border rounded-lg">
       {/* ヘッダー */}
-      <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="px-4 py-3 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-mono text-sm tracking-wider text-neutral-400">ARRIVAL TIMELINE</h2>
@@ -490,7 +490,7 @@ export const ArrivalTimeline: FC<Props> = ({ tankers, selectedId, onSelect }) =>
 
         <div className="flex items-center mt-2">
           <div className="w-[92px] shrink-0" />
-          <div className="flex-1 border-t border-[#1e2a36]" />
+          <div className="flex-1 border-t border-border" />
         </div>
       </div>
     </div>

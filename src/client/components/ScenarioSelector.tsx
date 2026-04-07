@@ -7,9 +7,9 @@ interface ScenarioSelectorProps {
 }
 
 const SCENARIO_COLORS: Record<ScenarioId, string> = {
-  optimistic: "#22c55e",
-  realistic: "#f59e0b",
-  pessimistic: "#ef4444",
+  optimistic: "#2563eb",
+  realistic: "#16a34a",
+  pessimistic: "#d97706",
 };
 
 export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange }) => (
@@ -25,11 +25,11 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
           <button
             key={s.id}
             onClick={() => onChange(s.id)}
-            className="px-2.5 py-1 text-[11px] font-mono tracking-wider rounded border transition-colors cursor-pointer"
+            className={`px-2.5 py-1 text-[11px] font-mono tracking-wider rounded border transition-colors cursor-pointer${!isActive ? " border-border text-neutral-400" : ""}`}
             style={
               isActive
                 ? { borderColor: color, color, backgroundColor: `${color}15` }
-                : { borderColor: "#1e2a36", color: "#666" }
+                : undefined
             }
             title={s.description}
           >

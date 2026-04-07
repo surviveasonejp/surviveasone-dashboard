@@ -214,8 +214,18 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
     [result],
   );
 
+  if (totalDays === 0) {
+    return (
+      <div className="bg-panel border border-border rounded-lg p-4">
+        <div className="text-xs font-mono text-neutral-500 tracking-wider animate-pulse">
+          FLOW SIMULATION — データ読み込み中...
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-4">
+    <div className="bg-panel border border-border rounded-lg p-4 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between">
         <div className="text-xs font-mono text-neutral-500 tracking-wider">
@@ -310,7 +320,7 @@ const StockChart: FC<StockChartProps> = ({
   const chartW = viewW - padLeft - padRight;
   const chartH = viewH - padTop - padBottom;
 
-  const toX = (day: number) => padLeft + (day / totalDays) * chartW;
+  const toX = (day: number) => totalDays === 0 ? padLeft : padLeft + (day / totalDays) * chartW;
   const toY = (ratio: number) => padTop + chartH - Math.min(ratio, 1) * chartH;
 
   // 石油パス
@@ -536,7 +546,7 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
       </div>
       {/* アクションパネル */}
       {expanded && actions && (
-        <div className="ml-12 mt-1 mb-1 bg-[#0c1018] border border-[#1e2a36] rounded p-2.5 space-y-1">
+        <div className="ml-12 mt-1 mb-1 bg-[#0c1018] border border-border rounded p-2.5 space-y-1">
           <div className="text-[9px] font-mono tracking-wider mb-1.5" style={{ color: resourceColor }}>
             このフェーズで確認すること
           </div>
@@ -564,7 +574,7 @@ interface SummaryBoxProps {
 const SummaryBox: FC<SummaryBoxProps> = ({ label, days, color, totalDays }) => {
   const pct = Math.min((days / totalDays) * 100, 100);
   return (
-    <div className="bg-[#0f1419] rounded p-3 space-y-1.5">
+    <div className="bg-bg rounded p-3 space-y-1.5">
       <div className="text-[10px] font-mono text-neutral-500">{label}</div>
       <div className="font-mono font-bold text-xl" style={{ color }}>
         {days >= totalDays ? `${totalDays}+` : days}

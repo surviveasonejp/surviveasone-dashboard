@@ -53,7 +53,7 @@ export const SimulationBanner: FC = () => {
             </thead>
             <tbody>
               {Object.values(DATA_SOURCES).map((ds) => (
-                <tr key={ds.label} className="border-t border-[#162029]">
+                <tr key={ds.label} className="border-t border-border">
                   <td className="py-1.5 pr-3 text-neutral-300">{ds.label}</td>
                   <td className="py-1.5 pr-3">
                     <DataBadge confidence={ds.confidence} />

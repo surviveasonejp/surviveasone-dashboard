@@ -21,7 +21,7 @@ export const LocationBar: FC<LocationBarProps> = ({ regionName, source, loading,
   // 未検出: 「現在地を検出」ボタンを表示
   if (!regionName) {
     return (
-      <div className="flex items-center gap-2 text-[10px] font-mono px-3 py-1.5 bg-[#0f1419] rounded border border-[#1e2a36]">
+      <div className="flex items-center gap-2 text-[10px] font-mono px-3 py-1.5 bg-bg rounded border border-border">
         <span className="w-1.5 h-1.5 rounded-full bg-neutral-600 shrink-0" />
         <span className="text-neutral-500">エリア未選択</span>
         <button
@@ -37,7 +37,7 @@ export const LocationBar: FC<LocationBarProps> = ({ regionName, source, loading,
   const sourceLabel = source === "geolocation" ? "GPS" : source === "saved" ? "保存済み" : "";
 
   return (
-    <div className="flex items-center gap-2 text-[10px] font-mono px-3 py-1.5 bg-[#0f1419] rounded border border-[#22c55e]/30">
+    <div className="flex items-center gap-2 text-[10px] font-mono px-3 py-1.5 bg-bg rounded border border-[#22c55e]/30">
       <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shrink-0" />
       <span className="text-[#22c55e]">現在地:</span>
       <span className="text-neutral-300 font-bold">{regionName}エリア</span>

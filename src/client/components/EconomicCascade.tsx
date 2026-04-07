@@ -139,13 +139,13 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
   if (snapshots.length === 0) return null;
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+    <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
       <div className="text-xs font-mono text-neutral-500 tracking-wider">
         ECONOMIC CASCADE — 価格連鎖シミュレーション
       </div>
 
       {/* ナフサ vs 石油 在庫比較 */}
-      <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono border border-[#1e2a36] rounded p-2 bg-[#0c1018]">
+      <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono border border-border rounded p-2 bg-[#0c1018]">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-sm inline-block bg-[#f59e0b]" />
           <span className="text-neutral-500">ナフサ民間在庫</span>
@@ -167,7 +167,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
       <div className="overflow-x-auto">
         <table className="w-full text-xs font-mono">
           <thead>
-            <tr className="text-neutral-600 border-b border-[#1e2a36]">
+            <tr className="text-neutral-600 border-b border-border">
               <th className="px-2 py-1.5 text-left">Day</th>
               <th className="px-2 py-1.5 text-right">在庫</th>
               <th className="px-2 py-1.5 text-right">ナフサ</th>
@@ -228,7 +228,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
       </div>
 
       {/* ナフサ月別需給バランス */}
-      <div className="border-t border-[#1e2a36] pt-3 space-y-2">
+      <div className="border-t border-border pt-3 space-y-2">
         <div className="text-xs font-mono text-neutral-500 tracking-wider">
           NAPHTHA SUPPLY BALANCE — ナフサ月別需給シミュレーション
         </div>
@@ -238,7 +238,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="text-neutral-600 border-b border-[#1e2a36]">
+              <tr className="text-neutral-600 border-b border-border">
                 <th className="px-2 py-1.5 text-left">月</th>
                 <th className="px-2 py-1.5 text-right">輸入</th>
                 <th className="px-2 py-1.5 text-right">精製</th>
@@ -278,7 +278,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
 
       {/* 産業配給優先順位 — 配給前夜・配給制フェーズ時に表示 */}
       {snapshots.some((s) => s.phase === "rationing" || s.phase === "collapse") && (
-        <div className="border-t border-[#1e2a36] pt-3 space-y-2">
+        <div className="border-t border-border pt-3 space-y-2">
           <div className="text-xs font-mono text-[#ef4444] tracking-wider">
             産業配給 — ナフサ割当の優先順位
           </div>

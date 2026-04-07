@@ -74,14 +74,14 @@ export const CollapseMap: FC = () => {
 
       {/* 地図 + 詳細 2カラム */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
+        <div className="lg:col-span-2 bg-panel border border-border rounded-lg p-4">
           <div className="flex justify-end mb-2">
             <button
               onClick={() => setShowLogistics(!showLogistics)}
               className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${
                 showLogistics
                   ? "border-[#8b5cf6] text-[#8b5cf6] bg-[#8b5cf6]/10"
-                  : "border-[#1e2a36] text-neutral-500 hover:text-neutral-400"
+                  : "border-border text-neutral-500 hover:text-neutral-400"
               }`}
             >
               🚚 物流フロー {showLogistics ? "ON" : "OFF"}
@@ -101,14 +101,14 @@ export const CollapseMap: FC = () => {
       </div>
 
       {/* 崩壊順ランキングテーブル */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">崩壊順ランキング</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-border">
                 <th className="px-4 py-2 text-left">#</th>
                 <th className="px-4 py-2 text-left">エリア</th>
                 <th className="px-4 py-2 text-left">ランク</th>
@@ -126,7 +126,7 @@ export const CollapseMap: FC = () => {
                 return (
                   <tr
                     key={region.id}
-                    className={`border-b border-[#162029] cursor-pointer transition-colors ${
+                    className={`border-b border-border cursor-pointer transition-colors ${
                       selectedRegion?.id === region.id ? "bg-white/5" : "hover:bg-white/[0.02]"
                     }`}
                     onClick={() => setSelectedRegion(region)}
@@ -173,8 +173,8 @@ export const CollapseMap: FC = () => {
         </div>
       </div>
       {/* 再エネ自立率ランキング（マイクログリッド指標） */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36] space-y-1">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border space-y-1">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">再エネ自立率ランキング</h2>
           <p className="text-[10px] text-neutral-600">
             電力供給停止時に再生可能エネルギーのみで生活必需需要（通常の30%）を賄える割合。
@@ -189,7 +189,7 @@ export const CollapseMap: FC = () => {
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-300 w-12">{r.name}</span>
                   <div className="flex-1 mx-3">
-                    <div className="w-full h-1.5 bg-[#1e2a36] rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-border rounded-full overflow-hidden">
                       <div
                         className="h-full rounded-full"
                         style={{ width: `${Math.min(100, r.rate)}%`, backgroundColor: rateColor }}

@@ -472,7 +472,7 @@ export const PetrochemTree: FC = () => {
       />
 
       {/* 日数スライダー */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <span className="font-mono text-xs text-neutral-400 tracking-wider block">
@@ -522,7 +522,7 @@ export const PetrochemTree: FC = () => {
       </div>
 
       {/* 凡例 + 操作 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
+      <div className="bg-panel border border-border rounded-lg p-4">
         <div className="flex flex-wrap gap-3 mb-3">
           {categories.map((cat) => (
             <div key={cat} className="flex items-center gap-1.5">
@@ -534,13 +534,13 @@ export const PetrochemTree: FC = () => {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={expandAll}
-            className="text-[10px] font-mono px-2 py-1 rounded border border-[#1e2a36] text-neutral-400 hover:text-white hover:border-neutral-500"
+            className="text-[10px] font-mono px-2 py-1 rounded border border-border text-neutral-400 hover:text-white hover:border-neutral-500"
           >
             全展開
           </button>
           <button
             onClick={collapseDeep}
-            className="text-[10px] font-mono px-2 py-1 rounded border border-[#1e2a36] text-neutral-400 hover:text-white hover:border-neutral-500"
+            className="text-[10px] font-mono px-2 py-1 rounded border border-border text-neutral-400 hover:text-white hover:border-neutral-500"
           >
             深部を折りたたむ
           </button>
@@ -551,7 +551,7 @@ export const PetrochemTree: FC = () => {
       </div>
 
       {/* SVGツリー */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-3">
+      <div className="bg-panel border border-border rounded-lg p-3">
         {nodes.length === 0 ? (
           <p className="text-neutral-500 text-sm text-center py-8">データ読み込み中...</p>
         ) : (
@@ -641,7 +641,7 @@ export const PetrochemTree: FC = () => {
                 </div>
                 <p className="text-[10px] text-neutral-500 leading-relaxed">{impact.detail}</p>
                 {isAffected && (
-                  <div className="w-full h-1 bg-[#1e2a36] rounded-full overflow-hidden">
+                  <div className="w-full h-1 bg-border rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{
@@ -659,7 +659,7 @@ export const PetrochemTree: FC = () => {
 
       {/* 詳細パネル */}
       {detail && (
-        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-2">
+        <div className="bg-panel border border-border rounded-lg p-4 space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="font-mono font-bold text-sm" style={{ color: CATEGORY_COLORS[detail.node.category] }}>
               {detail.node.label}
@@ -675,7 +675,7 @@ export const PetrochemTree: FC = () => {
           {detail.risk && detail.risk.riskLevel > 0 && (
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <div className="w-24 h-2 rounded-full bg-[#1e2a36] overflow-hidden">
+                <div className="w-24 h-2 rounded-full bg-border overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{

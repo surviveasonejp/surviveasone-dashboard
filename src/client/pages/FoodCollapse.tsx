@@ -137,7 +137,7 @@ export const FoodCollapse: FC = () => {
       />
 
       {/* エリア選択 */}
-      <div data-no-swipe className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
+      <div data-no-swipe className="bg-panel border border-border rounded-lg p-4">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="font-mono text-xs text-neutral-400 tracking-wider shrink-0">
             電力エリア選択
@@ -148,7 +148,7 @@ export const FoodCollapse: FC = () => {
               className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors cursor-pointer ${
                 selectedRegionId === null
                   ? "border-[#ef4444] text-[#ef4444] bg-[#ef4444]/10"
-                  : "border-[#1e2a36] text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
+                  : "border-border text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
               }`}
             >
               全国
@@ -163,7 +163,7 @@ export const FoodCollapse: FC = () => {
                   className={`px-3 py-1.5 text-xs font-mono rounded border transition-colors cursor-pointer ${
                     isActive
                       ? "bg-white/10"
-                      : "border-[#1e2a36] text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
+                      : "border-border text-neutral-500 hover:text-neutral-300 hover:border-[#444]"
                   }`}
                   style={isActive ? { borderColor: color, color } : undefined}
                 >
@@ -209,7 +209,7 @@ export const FoodCollapse: FC = () => {
           return (
             <div
               key={product.id}
-              className="bg-[#151c24] border rounded-lg p-4 space-y-2"
+              className="bg-panel border rounded-lg p-4 space-y-2"
               style={{ borderColor: `${color}40` }}
             >
               <div className="flex items-center gap-2">
@@ -231,7 +231,7 @@ export const FoodCollapse: FC = () => {
       </div>
 
       {/* ナフサ連鎖説明 */}
-      <div className="bg-[#151c24] border border-[#f59e0b]/30 rounded-lg p-4 space-y-2">
+      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-4 space-y-2">
         <h2 className="font-mono text-xs tracking-wider text-[#f59e0b]">なぜ食品包装が消えるのか</h2>
         <div className="flex flex-wrap items-center gap-1 text-xs font-mono">
           {[
@@ -255,7 +255,7 @@ export const FoodCollapse: FC = () => {
           ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで枯渇する。「食料不足」ではなく「衛生・包装の崩壊」が先に来る。
         </p>
         {/* 容器が先に消える — キーポイント */}
-        <div className="border-t border-[#1e2a36] pt-2 mt-1">
+        <div className="border-t border-border pt-2 mt-1">
           <p className="text-[10px] text-[#ef4444]/80 font-mono leading-relaxed">
             ⚠ 「中身ではなく容器が先に消える」 — PETボトル飲料は中身の在庫があっても容器不足で棚から消える。
             食品トレーが入手困難になると精肉・鮮魚の店頭販売が停止し、量り売り・バラ売りに移行する。
@@ -264,7 +264,7 @@ export const FoodCollapse: FC = () => {
       </div>
 
       {/* 消費財消滅タイムライン */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">消費財消滅タイムライン</h2>
         <p className="text-[10px] text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
         <div className="space-y-3">
@@ -326,14 +326,14 @@ export const FoodCollapse: FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-[9px] font-mono text-neutral-600 border-t border-[#1e2a36] pt-2">
+        <p className="text-[9px] font-mono text-neutral-600 border-t border-border pt-2">
           対策: ゴミ袋・ラップは食料より先に確保。おむつ・生理用品は最優先備蓄品目。
           固形石鹸・ガラス/ステンレス容器への移行を今のうちに。
         </p>
       </div>
 
       {/* 家庭支出への価格転嫁 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">家庭支出への価格転嫁 — ナフサ価格段階別</h2>
         <p className="text-[10px] text-neutral-600">
           ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫枯渇後のシナリオ。
@@ -341,7 +341,7 @@ export const FoodCollapse: FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="text-neutral-600 border-b border-[#1e2a36]">
+              <tr className="text-neutral-600 border-b border-border">
                 <th className="px-2 py-1.5 text-left">支出カテゴリ</th>
                 <th className="px-2 py-1.5 text-right" style={{ color: "#f59e0b" }}>+40%</th>
                 <th className="px-2 py-1.5 text-right" style={{ color: "#ef4444" }}>+80%</th>
@@ -350,12 +350,12 @@ export const FoodCollapse: FC = () => {
             </thead>
             <tbody>
               {([
-                { category: "食品（加工食品・冷凍食品）", p40: "+3〜5%", p80: "+5〜10%", p120: "+10〜20%", bold: false },
-                { category: "日用品（洗剤・ゴミ袋・衛生用品）", p40: "+10〜20%", p80: "+20〜35%", p120: "+30〜50%", bold: false },
-                { category: "衣料品（化繊：ポリエステル・ナイロン）", p40: "+5〜10%", p80: "+10〜20%", p120: "+20〜30%", bold: false },
-                { category: "自動車・交通（タイヤ・修理部品）", p40: "+5〜8%", p80: "+8〜15%", p120: "+15〜25%", bold: false },
-                { category: "家計全体（加重平均）", p40: "+2〜4%", p80: "+4〜7%", p120: "+7〜12%", bold: true },
-                { category: "月30万円世帯（追加支出）", p40: "+6,000〜12,000円", p80: "+12,000〜21,000円", p120: "+21,000〜36,000円", bold: true },
+                { category: "食品（加工・冷凍）", p40: "+3〜5%", p80: "+5〜10%", p120: "+10〜20%", bold: false },
+                { category: "日用品（洗剤・衛生）", p40: "+10〜20%", p80: "+20〜35%", p120: "+30〜50%", bold: false },
+                { category: "衣料品（化繊）", p40: "+5〜10%", p80: "+10〜20%", p120: "+20〜30%", bold: false },
+                { category: "自動車・交通", p40: "+5〜8%", p80: "+8〜15%", p120: "+15〜25%", bold: false },
+                { category: "家計全体", p40: "+2〜4%", p80: "+4〜7%", p120: "+7〜12%", bold: true },
+                { category: "月30万円世帯", p40: "+6,000〜12,000円", p80: "+12,000〜21,000円", p120: "+21,000〜36,000円", bold: true },
               ] satisfies Array<{ category: string; p40: string; p80: string; p120: string; bold: boolean }>).map((row) => (
                 <tr key={row.category} className="border-b border-[#0c1018]">
                   <td className={`px-2 py-1.5 ${row.bold ? "text-neutral-200 font-bold" : "text-neutral-400"}`}>{row.category}</td>
@@ -367,7 +367,7 @@ export const FoodCollapse: FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="text-[9px] font-mono text-neutral-600 space-y-0.5 border-t border-[#1e2a36] pt-2">
+        <div className="text-[9px] font-mono text-neutral-600 space-y-0.5 border-t border-border pt-2">
           <p><span className="text-[#f59e0b]">+40%（¥10万/kL超）</span>: 減産開始フェーズ — 現在進行中。企業が自主減産して価格転嫁</p>
           <p><span className="text-[#ef4444]">+80%（¥11〜13万/kL）</span>: 広範囲停止フェーズ — 在庫枯渇後。多くのクラッカーが稼働停止</p>
           <p><span className="text-[#dc2626]">+120%（¥14万/kL超）</span>: 構造崩壊フェーズ — プラント長期停止・産業配給発動済み</p>
@@ -376,7 +376,7 @@ export const FoodCollapse: FC = () => {
       </div>
 
       {/* サプライチェーン連鎖図 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">サプライチェーン崩壊フロー</h2>
         <div className="flex flex-col gap-1">
           {chainSteps.map((step, i) => (
@@ -407,8 +407,8 @@ export const FoodCollapse: FC = () => {
       </div>
 
       {/* エリア別食料自給率 */}
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2a36]">
+      <div className="bg-panel border border-border rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">
             エリア別食料自給率 — 自給率が高いほど持ちこたえる
           </h2>
@@ -416,7 +416,7 @@ export const FoodCollapse: FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-neutral-500 font-mono text-xs border-b border-[#1e2a36]">
+              <tr className="text-neutral-500 font-mono text-xs border-b border-border">
                 <th className="px-4 py-2 text-left">エリア</th>
                 <th className="px-4 py-2 text-right">自給率</th>
                 <th className="px-4 py-2 text-left">ゲージ</th>
@@ -433,7 +433,7 @@ export const FoodCollapse: FC = () => {
                   return (
                     <tr
                       key={region.id}
-                      className={`border-b border-[#162029] cursor-pointer transition-colors ${
+                      className={`border-b border-border cursor-pointer transition-colors ${
                         isSelected ? "bg-white/5" : "hover:bg-white/[0.02]"
                       }`}
                       onClick={() => setSelectedRegionId(region.id)}
@@ -445,7 +445,7 @@ export const FoodCollapse: FC = () => {
                         {formatNumber(Math.round(region.foodSelfSufficiency * 100))}%
                       </td>
                       <td className="px-4 py-2">
-                        <div className="w-full h-2 rounded-full bg-[#1e2a36] overflow-hidden">
+                        <div className="w-full h-2 rounded-full bg-border overflow-hidden">
                           <div
                             className="h-full rounded-full"
                             style={{ width: `${pct}%`, backgroundColor: barColor }}

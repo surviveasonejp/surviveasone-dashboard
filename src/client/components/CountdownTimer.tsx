@@ -12,18 +12,20 @@ interface CountdownTimerProps {
   range?: ScenarioRange;
   /** 現在選択中のシナリオID */
   activeScenario?: "optimistic" | "realistic" | "pessimistic";
+  /** trueのとき残り日数によるアラート色付けを無効化（到着カウントダウン用） */
+  noAlert?: boolean;
 }
 
 const SCENARIO_LABELS = {
-  optimistic: "楽観",
-  realistic: "現実",
-  pessimistic: "悲観",
+  optimistic: "国際協調",
+  realistic: "標準対応",
+  pessimistic: "需要超過",
 } as const;
 
 const SCENARIO_COLORS = {
-  optimistic: "#22c55e",
-  realistic: "#f59e0b",
-  pessimistic: "#ef4444",
+  optimistic: "#2563eb",
+  realistic: "#16a34a",
+  pessimistic: "#d97706",
 } as const;
 
 export const CountdownTimer: FC<CountdownTimerProps> = ({
@@ -32,14 +34,15 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   compact = false,
   range,
   activeScenario = "realistic",
+  noAlert = false,
 }) => {
   const { days, hours, minutes, seconds, alertLevel } = useCountdown(totalSeconds);
-  const color = getAlertColor(alertLevel);
-  const isCritical = alertLevel === "critical";
+  const color = noAlert ? "#94a3b8" : getAlertColor(alertLevel);
+  const isCritical = !noAlert && alertLevel === "critical";
 
   if (compact) {
     return (
-      <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4">
+      <div className="bg-panel border border-border rounded-lg p-4">
         <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1">
           {label}
           <span className="ml-1.5 text-neutral-600">({SCENARIO_LABELS[activeScenario]}シナリオ)</span>
@@ -66,7 +69,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   }
 
   return (
-    <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 text-center">
+    <div className="bg-panel border border-border rounded-lg p-6 text-center">
       <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">
         {label}
         <span className="ml-1.5 text-neutral-600">({SCENARIO_LABELS[activeScenario]}シナリオ)</span>
@@ -86,7 +89,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
       <div className="text-sm font-mono text-neutral-400 mt-2">
         枯渇日: {formatDepletionDate(days)}
       </div>
-      <div className="mt-4 h-1 rounded-full bg-[#1e2a36] overflow-hidden">
+      <div className="mt-4 h-1 rounded-full bg-border overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-1000"
           style={{

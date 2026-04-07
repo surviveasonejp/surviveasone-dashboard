@@ -35,7 +35,7 @@ const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onCh
       value={value}
       onChange={(e) => onChange(Number(e.target.value))}
       aria-label={`${label}: ${value}${unit}`}
-      className="w-full h-2 rounded-full appearance-none bg-[#1e2a36] cursor-pointer"
+      className="w-full h-2 rounded-full appearance-none bg-border cursor-pointer"
     />
     <div className="flex justify-between text-[10px] text-neutral-600 font-mono">
       <span>{min}{unit}</span>
@@ -121,7 +121,7 @@ export const FamilyMeter: FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
-        <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-6 space-y-5">
+        <div className="bg-panel border border-border rounded-lg p-6 space-y-5">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄入力</h2>
           <InputSlider label="世帯人数" value={inputs.members} min={1} max={10} step={1} unit="人" onChange={update("members")} />
           <InputSlider label="水備蓄" value={inputs.waterLiters} min={0} max={500} step={5} unit="L" onChange={update("waterLiters")} />
@@ -134,7 +134,7 @@ export const FamilyMeter: FC = () => {
               className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${
                 inputs.hasMedicalDevice
                   ? "bg-[#ef4444] border-[#ef4444]"
-                  : "border-[#1e2a36] hover:border-neutral-500"
+                  : "border-border hover:border-neutral-500"
               }`}
               onClick={() => {
                 const next = { ...inputs, hasMedicalDevice: !inputs.hasMedicalDevice };
@@ -160,7 +160,7 @@ export const FamilyMeter: FC = () => {
         <div className="space-y-4">
           {/* ランク表示 */}
           <div
-            className="bg-[#151c24] border rounded-lg p-6 text-center space-y-3"
+            className="bg-panel border rounded-lg p-6 text-center space-y-3"
             style={{ borderColor: `${rankColor}40` }}
           >
             <div className="text-xs font-mono text-neutral-500 tracking-wider" id="rank-label" data-screenshot="family-rank">SURVIVAL RANK</div>
@@ -212,7 +212,7 @@ export const FamilyMeter: FC = () => {
           </div>
 
           {/* 内訳バー */}
-          <div className="bg-[#151c24] border border-[#1e2a36] rounded-lg p-4 space-y-3">
+          <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
             <h3 className="font-mono text-xs text-neutral-500 tracking-wider">リソース別限界日数</h3>
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
@@ -227,7 +227,7 @@ export const FamilyMeter: FC = () => {
                       {formatDecimal(b.days)}日
                     </span>
                   </div>
-                  <div className="w-full h-2 rounded-full bg-[#1e2a36] overflow-hidden">
+                  <div className="w-full h-2 rounded-full bg-border overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{ width: `${pct}%`, backgroundColor: b.color }}
@@ -259,7 +259,7 @@ export const FamilyMeter: FC = () => {
       </div>
 
       {/* 要配慮者向け注意喚起 */}
-      <div className="bg-[#151c24] border border-[#ef4444]/20 rounded-lg p-5 space-y-3">
+      <div className="bg-panel border border-[#ef4444]/20 rounded-lg p-5 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-red-400">要配慮者がいる家庭へ</h2>
         <p className="text-xs text-neutral-400">
           上記の計算は健常な成人を前提としています。以下に該当する家族がいる場合、必要な備蓄量は大幅に増えます。
@@ -271,7 +271,7 @@ export const FamilyMeter: FC = () => {
             { label: "透析患者", note: "透析不能の猶予は3-4日。代替施設の事前把握必須" },
             { label: "要介護者", note: "処方薬90日分・介護用品14日分・電動機器の電源" },
           ].map((item) => (
-            <div key={item.label} className="bg-[#0f1419] rounded p-3 space-y-1">
+            <div key={item.label} className="bg-bg rounded p-3 space-y-1">
               <div className="text-xs font-bold text-red-300">{item.label}</div>
               <div className="text-[10px] text-neutral-500">{item.note}</div>
             </div>
@@ -303,7 +303,7 @@ export const FamilyMeter: FC = () => {
         const totalCost = neededItems.reduce((sum, i) => sum + i.price, 0);
         if (neededItems.length === 0) return null;
         return (
-          <div className="bg-[#151c24] border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
+          <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
             <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">
               30日生存に必要な追加備蓄
             </h2>
@@ -323,14 +323,14 @@ export const FamilyMeter: FC = () => {
                 </div>
               ))}
             </div>
-            <div className="border-t border-[#1e2a36] pt-3 flex items-center justify-between">
+            <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-neutral-400">概算合計</span>
               <span className="font-mono font-bold text-lg text-[#ef4444]">
                 ¥{totalCost.toLocaleString()}
               </span>
             </div>
             {totalCost > 10000 && (
-              <p className="text-xs text-neutral-500 bg-[#0f1419] rounded p-3 leading-relaxed">
+              <p className="text-xs text-neutral-500 bg-bg rounded p-3 leading-relaxed">
                 一度に全部揃える必要はありません。<br />
                 優先順位：<span className="text-neutral-300">水 → 食料 → ガス → 電源</span>。まず水だけでも確認してください。
               </p>
