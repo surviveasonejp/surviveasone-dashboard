@@ -9,6 +9,8 @@ import type { ResourceCountdown, RegionCollapse } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
+import { PolicyIntervention } from "../components/PolicyIntervention";
+import { IndustryImpactMatrix } from "../components/IndustryImpactMatrix";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
 import { useApiData } from "../hooks/useApiData";
@@ -106,6 +108,12 @@ export const Dashboard: FC = () => {
           />
         ))}
       </div>
+
+      {/* 政策介入効果比較 */}
+      <PolicyIntervention scenario={scenario} />
+
+      {/* 産業別ダメージヒートマップ */}
+      <IndustryImpactMatrix scenario={scenario} />
 
       {/* 下段: 地図 + 詳細 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">

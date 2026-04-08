@@ -115,7 +115,7 @@ const SIMULATION_FEATURES = [
 ];
 
 export const About: FC = () => {
-  const { canInstall, install } = usePwaInstall();
+  const { canInstall, install, platform, isInstalled } = usePwaInstall();
   return (
     <div className="space-y-8 max-w-3xl">
       <div className="space-y-2">
@@ -407,18 +407,30 @@ export const About: FC = () => {
       </div>
 
       {/* PWAインストール */}
-      {canInstall && (
+      {!isInstalled && (
         <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
           <h2 className="font-mono text-sm tracking-wider text-neutral-400">INSTALL AS APP</h2>
           <p className="text-neutral-300 text-sm leading-relaxed">
             ホーム画面に追加するとオフラインでも閲覧できます。停電・通信障害時に備えて事前にインストールしておくことを推奨します。
           </p>
-          <button
-            onClick={install}
-            className="inline-block px-6 py-2 border border-neutral-600 text-neutral-300 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors cursor-pointer"
-          >
-            ホーム画面に追加する →
-          </button>
+          {canInstall && (
+            <button
+              onClick={install}
+              className="inline-block px-6 py-2 border border-neutral-600 text-neutral-300 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors cursor-pointer"
+            >
+              ホーム画面に追加する →
+            </button>
+          )}
+          {!canInstall && platform === "ios" && (
+            <p className="text-neutral-400 text-sm">
+              Safari の <strong>共有ボタン（↑）</strong> →「ホーム画面に追加」を選択してください。
+            </p>
+          )}
+          {!canInstall && platform === "android-chrome" && (
+            <p className="text-neutral-400 text-sm">
+              Chrome の <strong>メニュー（⋮）</strong> →「ホーム画面に追加」を選択してください。
+            </p>
+          )}
         </div>
       )}
 

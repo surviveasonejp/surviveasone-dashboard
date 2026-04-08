@@ -16,6 +16,22 @@ interface Env {
   AISSTREAM_API_KEY?: string;
 }
 
+// ─── tanker_overrides 自動書き込み用 ─────────────────────────
+// /api/tankers が参照する KV。AIS ETA を Cron 実行直後に反映する。
+
+const TANKER_OVERRIDES_KEY = "tanker_overrides";
+const TANKERS_CACHE_KEY = "api:tankers";
+/** AIS最終成功取得タイムスタンプ（ISO文字列）を格納するKVキー */
+export const AIS_LAST_SUCCESS_KEY = "tanker_ais_last_success_at";
+
+interface TankerOverride {
+  id: string;
+  eta_days?: number;
+  status?: string;
+  note?: string;
+  updatedAt: string;
+}
+
 /** AISStream.ioから受信するメッセージ */
 interface AisMessage {
   MessageType: string;
@@ -65,16 +81,31 @@ export interface AisPosition {
 // AISStream.ioはMMSIフィルタのみ対応
 
 const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string; destPort?: string }> = [
-  // VLCC
-  { id: "vlcc-alt-06", mmsi: "636021014", name: "TATESHINA", destPort: "Ehime" },       // IMO 9910117 米国ガルフ代替ルート便
-  { id: "vlcc-02", mmsi: "538003869", name: "KAZUSA", destPort: "Kiire" },              // IMO 9513402
-  { id: "vlcc-03", mmsi: "354919000", name: "TAKASAGO", destPort: "Mizushima" },        // IMO 9770696
-  // LNG
-  { id: "lng-01", mmsi: "432807000", name: "ENERGY HORIZON", destPort: "Chiba" },       // IMO 9483877
-  { id: "lng-02", mmsi: "311000261", name: "SEISHU MARU", destPort: "Kawasaki" },       // IMO 9666558
-  { id: "lng-03", mmsi: "212883000", name: "GRAND ANIVA", destPort: "Kitakyushu" },     // IMO 9338955
-  { id: "lng-04", mmsi: "563099000", name: "DIAMOND GAS ORCHID", destPort: "Yokkaichi" }, // IMO 9779226
-  { id: "lng-05", mmsi: "432634000", name: "ENERGY NAVIGATOR", destPort: "Hiroshima" }, // IMO 9355264
+  // ─── VLCC ────────────────────────────────────────────────────────────
+  { id: "vlcc-alt-06", mmsi: "636021014", name: "TATESHINA",       destPort: "Ehime" },       // IMO 9910117 米国ガルフ→喜望峰→愛媛
+  { id: "vlcc-02",     mmsi: "538003869", name: "KAZUSA",          destPort: "Mizushima" },    // IMO 9513402
+  { id: "vlcc-03",     mmsi: "354919000", name: "TAKASAGO",        destPort: "Mizushima" },    // IMO 9770696
+  { id: "vlcc-05",     mmsi: "477254200", name: "ENEOS OCEAN",     destPort: "Oita" },         // IMO 9662875 JX Ocean
+  { id: "vlcc-alt-04", mmsi: "303521000", name: "KHURAIS",         destPort: "Yokkaichi" },    // IMO 9783679 Bahri/スエズ経由
+  { id: "vlcc-alt-07", mmsi: "352002979", name: "ENEOS GLORY",     destPort: "Oita" },         // IMO 9851608 JX Ocean/STS転送
+  // ─── VLCCサイズ以外の代替ルート ──────────────────────────────────────
+  { id: "tanker-alt-05", mmsi: "403494000", name: "NCC HUDA",      destPort: "Yokohama" },     // IMO 9399272 Bahri MRタンカー
+  // ─── LNG ────────────────────────────────────────────────────────────
+  { id: "lng-01",      mmsi: "432807000", name: "ENERGY HORIZON",  destPort: "Yokohama" },     // IMO 9483877 Gorgon→横浜
+  { id: "lng-02",      mmsi: "311000261", name: "SEISHU MARU",     destPort: "Kawasaki" },     // IMO 9666558
+  { id: "lng-03",      mmsi: "212883000", name: "GRAND ANIVA",     destPort: "Kitakyushu" },   // IMO 9338955 サハリン2
+  { id: "lng-04",      mmsi: "563099000", name: "DIAMOND GAS ORCHID", destPort: "Yokkaichi" }, // IMO 9779226
+  { id: "lng-05",      mmsi: "432634000", name: "ENERGY NAVIGATOR",destPort: "Hiroshima" },    // IMO 9355264
+  { id: "lng-06",      mmsi: "432884000", name: "ENERGY ADVANCE",  destPort: "Hitachi" },      // IMO 9269180 サハリン2→日立
+  { id: "lng-07",      mmsi: "432924000", name: "LNG MARS",        destPort: "Sakai" },        // IMO 9645748 Darwin→堺
+  { id: "lng-08",      mmsi: "311058200", name: "ASIA VENTURE",    destPort: "Yokkaichi" },    // IMO 9680190 Ashburton→四日市
+  { id: "lng-09",      mmsi: "357186000", name: "SOHAR LNG",       destPort: "Japan" },        // IMO 9210816 ホルムズ通過第1号
+  { id: "lng-10",      mmsi: "355037000", name: "DIAMOND GAS ROSE",destPort: "Futtsu" },       // IMO 9355252 サハリン2→富津
+  { id: "lng-11",      mmsi: "352965000", name: "PACIFIC NOTUS",   destPort: "Sodegaura" },    // IMO 9309688 Bintulu→袖ケ浦
+  { id: "lng-12",      mmsi: "432820000", name: "ENERGY FRONTIER", destPort: "Chiba" },        // IMO 9422908 Gladstone→千葉
+  // ─── 引き返し/監視対象 ────────────────────────────────────────────────
+  { id: "lng-cat-01",  mmsi: "311133000", name: "AL DAAYEN",       destPort: "Japan" },        // IMO 9325702 カタール/引き返し
+  { id: "lng-cat-02",  mmsi: "538006284", name: "RASHEEDA",        destPort: "Japan" },        // IMO 9443413 カタール/引き返し
 ];
 
 const AIS_POSITIONS_KEY = "ais_positions";
@@ -166,7 +197,7 @@ export async function fetchAisPositions(env: Env): Promise<{
       const timeout = setTimeout(() => {
         ws.close();
         resolve({ received, updated });
-      }, 8000); // 8秒でタイムアウト（Cron CPU制限内）
+      }, 20000); // 20秒でタイムアウト（全船取得に余裕を持たせる）
 
       ws.addEventListener("open", () => {
         // サブスクリプションメッセージ送信（3秒以内に必須）
@@ -278,3 +309,72 @@ export async function getAisPositions(cache: KVNamespace): Promise<Record<string
 
 /** 追跡対象船舶の一覧 */
 export { TRACKED_VESSELS };
+
+// ─── AIS → tanker_overrides 自動同期 ─────────────────────────
+
+/**
+ * AIS位置データをもとに tanker_overrides KVを自動更新し、
+ * タンカーAPIキャッシュを無効化する。
+ *
+ * Cron内で fetchAisPositions() の直後に呼び出すことで、
+ * AIS取得→ETA自動反映→キャッシュ更新まで一気通貫で完了する。
+ *
+ * 更新条件:
+ *   - calculatedEtaDays が 0.3〜60日の範囲 → eta_days を上書き
+ *   - SOG < 0.3kn かつ calculatedEtaDays が未算出 → 現在の override を維持（上書きしない）
+ *
+ * cron.ts からは `fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))` で呼ぶ
+ */
+export async function applyAisToOverrides(
+  cache: KVNamespace,
+): Promise<{ updated: string[]; skipped: string[] }> {
+  // KVから最新AIS位置を読み込む（fetchAisPositions()が保存した値）
+  const positions = await getAisPositions(cache);
+
+  const existing: TankerOverride[] =
+    await cache.get<TankerOverride[]>(TANKER_OVERRIDES_KEY, "json") ?? [];
+  const overrideMap = new Map(existing.map((o) => [o.id, o]));
+
+  const updated: string[] = [];
+  const skipped: string[] = [];
+  const today = new Date().toISOString().slice(0, 10);
+
+  for (const [vesselId, pos] of Object.entries(positions)) {
+    const etaDays = pos.calculatedEtaDays;
+
+    // ETAが算出できない（停泊中・速度不足）はスキップ（既存overrideを保護）
+    if (etaDays == null || etaDays < 0.3 || etaDays > 60) {
+      skipped.push(vesselId);
+      continue;
+    }
+
+    const rounded = Math.round(etaDays * 10) / 10;
+    const override: TankerOverride = {
+      id: vesselId,
+      eta_days: rounded,
+      status: overrideMap.get(vesselId)?.status, // 既存ステータスを維持
+      note: `AIS自動: SOG=${pos.sog.toFixed(1)}kn pos=${pos.lat.toFixed(2)},${pos.lon.toFixed(2)}`,
+      updatedAt: today,
+    };
+
+    overrideMap.set(vesselId, override);
+    updated.push(vesselId);
+    console.log(`AIS→override: ${vesselId} (${pos.shipName}) eta=${rounded}d SOG=${pos.sog.toFixed(1)}kn`);
+  }
+
+  if (updated.length > 0) {
+    const newOverrides = Array.from(overrideMap.values());
+    await cache.put(TANKER_OVERRIDES_KEY, JSON.stringify(newOverrides), {
+      expirationTtl: 86400 * 30, // 30日保持
+    });
+    // AIS最終成功取得タイムスタンプを保存（UI表示・鮮度管理用）
+    await cache.put(AIS_LAST_SUCCESS_KEY, new Date().toISOString(), {
+      expirationTtl: 86400 * 7, // 7日保持
+    });
+    // タンカーAPIキャッシュを無効化（次リクエストで最新ETA反映）
+    await cache.delete(TANKERS_CACHE_KEY);
+    console.log(`AIS→overrides: ${updated.length}隻更新, ${skipped.length}隻スキップ`);
+  }
+
+  return { updated, skipped };
+}

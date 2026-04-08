@@ -3,6 +3,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
+import { useUserRegion } from "../hooks/useUserRegion";
 import type { FamilyInputs } from "../../shared/types";
 import {
   getSurvivalRankColor,
@@ -10,6 +11,11 @@ import {
   getAlertLevel,
 } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
+import {
+  REGION_PROFILES,
+  getRegionProfile,
+  getAreaAdvice,
+} from "../lib/regionAdvice";
 
 interface SliderProps {
   label: string;
@@ -78,6 +84,7 @@ function loadInputs(): FamilyInputs {
 
 export const FamilyMeter: FC = () => {
   const [inputs, setInputs] = useState<FamilyInputs>(loadInputs);
+  const { regionId, setManualRegion } = useUserRegion();
 
   const score = useFamilySurvival(inputs);
   const rankColor = getSurvivalRankColor(score.rank);
@@ -257,6 +264,144 @@ export const FamilyMeter: FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 居住地別アドバイス */}
+      {(() => {
+        const profile = regionId ? getRegionProfile(regionId) : null;
+        const advice = profile ? getAreaAdvice(profile.areaType) : null;
+        return (
+          <div className="bg-panel border border-border rounded-lg p-5 space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h2 className="font-mono text-sm tracking-wider text-neutral-500">
+                居住地タイプ別 備蓄優先事項
+              </h2>
+              {profile && advice && (
+                <span
+                  className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold"
+                  style={{ backgroundColor: `${advice.typeColor}15`, color: advice.typeColor }}
+                >
+                  {profile.name} — {advice.typeLabel}
+                </span>
+              )}
+            </div>
+
+            {/* 地域選択 */}
+            <div className="space-y-1.5">
+              <div className="text-[10px] text-neutral-500">居住地を選択（任意）</div>
+              <div className="flex flex-wrap gap-1.5">
+                {REGION_PROFILES.map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setManualRegion(regionId === r.id ? null : r.id)}
+                    className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${
+                      regionId === r.id
+                        ? "border-[#2563eb] text-[#2563eb] bg-[#2563eb]/10"
+                        : "border-border text-neutral-500 hover:border-neutral-400"
+                    }`}
+                  >
+                    {r.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {advice && profile ? (
+              <div className="space-y-4">
+                {/* サマリ */}
+                <p
+                  className="text-xs leading-relaxed rounded-lg px-3 py-2.5"
+                  style={{ backgroundColor: advice.typeBg, color: advice.typeColor }}
+                >
+                  {advice.summary}
+                </p>
+
+                {/* 推奨備蓄目安 */}
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  <div className="border border-border rounded p-2 space-y-0.5">
+                    <div className="font-mono font-bold text-lg" style={{ color: advice.typeColor }}>
+                      {advice.recommendedDays.food}日
+                    </div>
+                    <div className="text-[10px] text-neutral-500">推奨食料備蓄</div>
+                    {inputs.foodDays < advice.recommendedDays.food && (
+                      <div className="text-[9px] text-[#dc2626] font-mono">
+                        現在{inputs.foodDays}日 — {advice.recommendedDays.food - inputs.foodDays}日不足
+                      </div>
+                    )}
+                  </div>
+                  <div className="border border-border rounded p-2 space-y-0.5">
+                    <div className="font-mono font-bold text-lg" style={{ color: advice.typeColor }}>
+                      {advice.recommendedDays.water}日
+                    </div>
+                    <div className="text-[10px] text-neutral-500">推奨水備蓄</div>
+                    {(() => {
+                      const waterDays = inputs.members > 0 ? inputs.waterLiters / (inputs.members * 3) : 0;
+                      return waterDays < advice.recommendedDays.water ? (
+                        <div className="text-[9px] text-[#dc2626] font-mono">
+                          現在{Math.round(waterDays)}日 — 不足
+                        </div>
+                      ) : null;
+                    })()}
+                  </div>
+                </div>
+
+                {/* 優先事項 */}
+                <div className="space-y-1.5">
+                  <div className="text-[10px] font-mono text-neutral-500 tracking-wider">優先確認事項</div>
+                  <div className="space-y-1.5">
+                    {advice.priorities.map((p) => (
+                      <div key={p.resource} className="flex gap-2 text-xs">
+                        <span
+                          className="shrink-0 font-mono font-bold mt-0.5"
+                          style={{ color: p.urgent ? "#dc2626" : "#d97706" }}
+                        >
+                          {p.urgent ? "!" : "▸"}
+                        </span>
+                        <div>
+                          <span className="font-bold text-text">{p.resource}</span>
+                          <span className="text-neutral-500 ml-1">— {p.reason}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* リスク・強み */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[10px]">
+                  <div className="space-y-1">
+                    <div className="font-mono text-[#dc2626]">このエリアのリスク</div>
+                    <ul className="space-y-0.5 text-neutral-500">
+                      {advice.risks.map((r) => (
+                        <li key={r} className="flex gap-1">
+                          <span className="text-[#dc2626] shrink-0">×</span>{r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="space-y-1">
+                    <div className="font-mono text-[#16a34a]">このエリアの強み</div>
+                    <ul className="space-y-0.5 text-neutral-500">
+                      {advice.positives.map((p) => (
+                        <li key={p} className="flex gap-1">
+                          <span className="text-[#16a34a] shrink-0">✓</span>{p}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="text-[9px] text-neutral-500 border-t border-border pt-2">
+                  食料自給率 {profile.foodSelfSufficiency.toFixed(2)}（農水省）/ 物流遅延目安 {profile.deliveryDelayDays}日。
+                  居住地タイプはこの地域の平均的な状況に基づきます。個別の住環境により大きく異なります。
+                </p>
+              </div>
+            ) : (
+              <p className="text-xs text-neutral-500">
+                上のボタンで居住地を選択すると、そのエリアに合わせた備蓄アドバイスを表示します。
+              </p>
+            )}
+          </div>
+        );
+      })()}
 
       {/* 要配慮者向け注意喚起 */}
       <div className="bg-panel border border-[#ef4444]/20 rounded-lg p-5 space-y-3">

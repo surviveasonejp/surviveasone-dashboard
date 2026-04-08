@@ -153,6 +153,9 @@ export function getAllCountdowns(
 
 // ─── タンカー ──────────────────────────────────────────
 
+/** tankers.json の meta.updatedAt（APIレスポンスの meta.updatedAt に使用） */
+export const TANKERS_DATA_UPDATED_AT: string = staticTankerData.meta.updatedAt;
+
 export function calcTankerArrivals(): TankerInfo[] {
   // meta.updatedAt からの経過日数でETAを自動減算
   const updatedAt = new Date(staticTankerData.meta.updatedAt + "T00:00:00Z");

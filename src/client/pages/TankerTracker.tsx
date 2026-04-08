@@ -33,7 +33,7 @@ function getSizeClass(cargo_t: number): { label: string; color: string } {
 }
 
 export const TankerTracker: FC = () => {
-  const tankers = useTankerData();
+  const { tankers, meta } = useTankerData();
   const isBlocked = (t: { departurePort: string }) => HORMUZ_PORTS.has(t.departurePort);
   const isNotJapanBound = (t: { destinationPort: string }) => !JAPAN_DEST_PORTS.has(t.destinationPort);
   const isDimmed = (t: { departurePort: string; destinationPort: string }) => isBlocked(t) || isNotJapanBound(t);
@@ -57,8 +57,20 @@ export const TankerTracker: FC = () => {
           <span className="text-[#94a3b8]">LAST TANKER</span> TRACKER
         </h1>
         <p className="text-neutral-500 text-sm">
-          日本向け最終タンカーの到着予測 — 供給危機発生後、最後の積荷はいつ届くか
+          ホルムズ封鎖シナリオ下での日本向けタンカー入港追跡 — 代替ルート・非ホルムズ便の到着見通しと封鎖影響を航路別に可視化
         </p>
+        <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[11px] font-mono text-neutral-500">
+          <span>データ基準日: {meta.updatedAt}</span>
+          {meta.lastAisFetch ? (
+            <span>AIS最終取得: {new Intl.DateTimeFormat("ja-JP", {
+              timeZone: "Asia/Tokyo",
+              month: "numeric", day: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            }).format(new Date(meta.lastAisFetch))} JST</span>
+          ) : (
+            <span className="text-neutral-600">AIS: 未取得</span>
+          )}
+        </div>
       </div>
 
       <AlertBanner
@@ -71,14 +83,47 @@ export const TankerTracker: FC = () => {
       {/* タンカー到着カウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <CountdownTimer
-          label="最終VLCC到着（代替ルート原油）"
+          label="代替ルートVLCC 最遠入港予測"
           totalSeconds={(vlccTankers[vlccTankers.length - 1]?.eta_days ?? 0) * 86400}
         />
-        <CountdownTimer
-          label="次のLNG船到着（非ホルムズ）"
-          totalSeconds={(lngTankers.find((t) => t.eta_days > 0)?.eta_days ?? 0) * 86400}
-          noAlert
-        />
+        {(() => {
+          const nextLng = lngTankers.find((t) => t.eta_days >= 1);
+          const arrivingToday = !nextLng && lngTankers.some((t) => t.eta_days > 0);
+          if (nextLng) {
+            return (
+              <CountdownTimer
+                label="次のLNG船到着（非ホルムズ）"
+                totalSeconds={nextLng.eta_days * 86400}
+                noAlert
+              />
+            );
+          }
+          return (
+            <div className="bg-panel border border-border rounded-lg p-6 text-center">
+              <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">
+                次のLNG船到着（非ホルムズ）
+              </div>
+              {arrivingToday ? (
+                <>
+                  <div className="font-mono font-bold text-4xl mb-2 text-[#2563eb]">本日入港予定</div>
+                  <div className="text-neutral-500 font-mono text-sm mt-3">
+                    追跡中の1便が本日到着見込み
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="font-mono font-bold text-4xl mb-2 text-[#16a34a]">入港済み</div>
+                  <div className="text-neutral-500 font-mono text-sm mt-3">
+                    追跡中の全便が到着済み
+                  </div>
+                  <div className="text-xs font-mono text-neutral-400 mt-1">
+                    次便のAISデータ待ち
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })()}
       </div>
       <p className="text-[10px] text-neutral-500 font-mono -mt-2">
         LNG: 豪州・サハリン・マレーシア産は封鎖の影響なく継続入港。カタール産（ホルムズ経由）は停止中。

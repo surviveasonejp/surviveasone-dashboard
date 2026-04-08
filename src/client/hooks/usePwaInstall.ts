@@ -5,11 +5,24 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+type PlatformType = "ios" | "android-chrome" | "desktop" | "other";
+
+function detectPlatform(): PlatformType {
+  const ua = navigator.userAgent;
+  if (/iPad|iPhone|iPod/.test(ua)) return "ios";
+  if (/Android/.test(ua) && /Chrome/.test(ua)) return "android-chrome";
+  if (/Chrome|Edge/.test(ua)) return "desktop";
+  return "other";
+}
+
 export function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [platform, setPlatform] = useState<PlatformType>("other");
 
   useEffect(() => {
+    setPlatform(detectPlatform());
+
     // すでにスタンドアロン（インストール済み）なら非表示
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsInstalled(true);
@@ -43,5 +56,10 @@ export function usePwaInstall() {
     setDeferredPrompt(null);
   };
 
-  return { canInstall: deferredPrompt !== null && !isInstalled, install };
+  return {
+    canInstall: deferredPrompt !== null && !isInstalled,
+    install,
+    platform,
+    isInstalled,
+  };
 }

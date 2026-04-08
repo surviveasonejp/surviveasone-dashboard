@@ -50,6 +50,7 @@ import type { FamilyInputs } from "../shared/types";
 import {
   getAllCountdowns,
   calcTankerArrivals,
+  TANKERS_DATA_UPDATED_AT,
   calcFoodDepletion,
   calcRegionCollapse,
   mapReservesRow,
@@ -58,7 +59,7 @@ import {
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
-import { getAisPositions, type AisPosition } from "./ais-tracker";
+import { getAisPositions, AIS_LAST_SUCCESS_KEY, type AisPosition } from "./ais-tracker";
 import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
 
 interface Env {
@@ -642,9 +643,13 @@ interface TankerOverride {
 }
 
 async function handleTankers(env: Env): Promise<Response> {
+  // AIS最終成功取得タイムスタンプ（cache hit/miss 両方で付与）
+  const lastAisFetch = await env.CACHE.get(AIS_LAST_SUCCESS_KEY);
+  const meta = { updatedAt: TANKERS_DATA_UPDATED_AT, lastAisFetch: lastAisFetch ?? undefined };
+
   const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.TANKERS);
   if (cached) {
-    return jsonResponse({ data: cached.data, cache: "hit" });
+    return jsonResponse({ data: cached.data, meta, cache: "hit" });
   }
 
   const baseTankers = calcTankerArrivals();
@@ -671,6 +676,7 @@ async function handleTankers(env: Env): Promise<Response> {
   await setCache(env.CACHE, CACHE_KEYS.TANKERS, baseTankers, CACHE_TTL.SIMULATION);
   return jsonResponse({
     data: baseTankers,
+    meta,
     cache: "miss",
     overrides: overrides?.length ?? 0,
     ais: aisCount > 0 ? { count: aisCount, positions: aisPositions } : undefined,

@@ -22,6 +22,12 @@ interface Segment {
   familyMeterPrompt: string;
   prepareAnchor: string;
   metaDescription: string;
+  /** CTAの種類: family=FamilyMeter, dashboard=Dashboard, docs=ApiDocs */
+  ctaType?: "family" | "dashboard" | "docs";
+  /** primaryCTAのリンク先 */
+  ctaLink?: string;
+  ctaLabel?: string;
+  ctaTag?: string;
 }
 
 const SEGMENTS: Record<string, Segment> = {
@@ -86,6 +92,117 @@ const SEGMENTS: Record<string, Segment> = {
     familyMeterPrompt: "ポータブル電源・水の備蓄量を入力して、あなたの家庭の生存日数を確認",
     prepareAnchor: "sec-dialysis",
     metaDescription: "供給危機シナリオで透析の猶予は3-4日。停電・断水時の影響と、家族が確認すべき備えのチェックリスト。",
+  },
+  policy: {
+    id: "policy",
+    title: "政策立案者・行政担当者の方へ",
+    subtitle: "エネルギー安全保障・危機管理・防災行政に携わる方",
+    heroStat: "241",
+    heroUnit: "日",
+    heroLabel: "現在の石油備蓄（国家+民間+産油国共同、2026年3月経産省推計）",
+    heroColor: "#2563eb",
+    alertMessage: "政策介入の効果はシナリオにより大きく異なります。SPR早期放出・IEA協調・配給制の組み合わせが鍵です。",
+    risks: [
+      { label: "SPR放出リードタイム", days: "14日", detail: "国家備蓄は放出決定から実際の供給まで約14日のリードタイムが必要（輸送・精製工程）" },
+      { label: "IEA協調発動", days: "Day 10実績", detail: "2026年3月11日、IEA加盟国が協調備蓄放出を発動。石油枯渇を平均18日延命" },
+      { label: "配給制移行閾値", days: "在庫30%", detail: "在庫30%以下で奇数偶数制、10%以下で政府管理配給制へ移行するモデル値" },
+      { label: "LNG緊急調達", days: "Day 21〜", detail: "非ホルムズルート（豪州・米国）からのスポット調達。7日分相当を追加できる見込み" },
+      { label: "代替原油互換性", days: "精製能力依存", detail: "米国ガルフ/西アフリカ産は硫黄分・API度が異なる。既存精製設備では100%代替にならない" },
+    ],
+    actions: [
+      "SPR放出の事前決定と放出量シナリオを確認（/api/simulation で感度分析可能）",
+      "IEA協調放出のトリガー条件と自国分担量を確認（/methodology でモデル仕様を公開）",
+      "配給制移行の法的根拠・発動手順を再確認（石油需給適正化法・電力広域的運営推進機関）",
+      "要配慮者（透析・在宅医療機器・乳幼児）への優先供給ルートを設計",
+      "地域別脆弱性（沖縄・北海道・離島）に対する先行的な政策支援を検討",
+    ],
+    officialLinks: [
+      { label: "経産省｜石油備蓄の現況（月次推計）", href: "https://www.meti.go.jp/statistics/tyo/sekiyuneed/index.html" },
+      { label: "IEA｜Emergency Response（英語）", href: "https://www.iea.org/topics/emergency-response" },
+      { label: "OCCTO｜電力広域的運営推進機関（需給調整）", href: "https://www.occto.or.jp/" },
+      { label: "SAO API仕様書 → /api-docs", href: "/api-docs" },
+    ],
+    familyMeterPrompt: "Dashboardでシナリオ切替・政策介入効果を確認する",
+    prepareAnchor: "methodology",
+    metaDescription: "ホルムズ封鎖シナリオにおけるSPR放出・IEA協調・配給制の政策介入効果を16式シミュレーションで定量化。政策立案者向けのデータ・API・モデル仕様を公開。",
+    ctaType: "dashboard",
+    ctaLink: "/dashboard",
+    ctaLabel: "政策介入効果比較 → Dashboard",
+    ctaTag: "POLICY SIMULATION",
+  },
+  media: {
+    id: "media",
+    title: "メディア・報道関係者の方へ",
+    subtitle: "報道・取材・コンテンツ制作に携わる方",
+    heroStat: "16",
+    heroUnit: "式",
+    heroLabel: "シミュレーションモデル数（3シナリオ・全データ公開）",
+    heroColor: "#8b5cf6",
+    alertMessage: "全データ・シミュレーション結果・ソースコードはAGPL-3.0で公開しています。引用・報道に自由にご利用ください。",
+    risks: [
+      { label: "引用推奨表記", days: "—", detail: "「SAO – Situation Awareness Observatory（surviveasonejp.org）によるシミュレーション」" },
+      { label: "データの性質", days: "シミュレーション", detail: "公開データに基づく定量モデル。実際の政策決定・備蓄放出等により大幅に変動します" },
+      { label: "API利用", days: "無料", detail: "surviveasonejp.net/api/* — JSON形式、認証不要。商用利用はAGPL-3.0条件に従う" },
+      { label: "モデル検証状況", days: "検証中", detail: "/api/validation で発生後の精度検証結果を公開。予測と実績の差分を追跡しています" },
+      { label: "一次ソース", days: "全20項目", detail: "経産省・IEA・ISEP・JETRO等の公開データのみを使用。/methodology で出典を明示" },
+    ],
+    actions: [
+      "数値の引用前に必ずシナリオ条件を確認（楽観/現実/悲観で大きく異なる）",
+      "/api/validation で最新の精度検証結果を確認",
+      "CITATION.cff（GitHubリポジトリ）を学術引用形式として利用可能",
+      "API利用・データ可視化への組み込みは surviveasonejp.org/api-docs を参照",
+      "取材・連携のご相談は GitHub Issues または X @surviveasonejp へ",
+    ],
+    officialLinks: [
+      { label: "SAO Methodology — モデル仕様・一次ソース一覧", href: "/methodology" },
+      { label: "API仕様書 — 全エンドポイント", href: "/api-docs" },
+      { label: "GitHub — AGPL-3.0公開リポジトリ", href: "https://github.com/surviveasonejp/surviveasone-dashboard" },
+      { label: "精度検証 API — /api/validation", href: "https://surviveasonejp.net/api/validation" },
+    ],
+    familyMeterPrompt: "シミュレーション仕様書（Methodology）でモデルの詳細を確認する",
+    prepareAnchor: "methodology",
+    metaDescription: "SAO（Situation Awareness Observatory）のデータ・APIを報道・取材・研究でご利用いただけます。全16式のシミュレーションモデルと出典をAGPL-3.0で公開。",
+    ctaType: "docs",
+    ctaLink: "/methodology",
+    ctaLabel: "Methodology — モデル仕様・出典一覧",
+    ctaTag: "DATA & SOURCES",
+  },
+  research: {
+    id: "research",
+    title: "研究者・シンクタンクの方へ",
+    subtitle: "エネルギー安全保障・防災・政策研究・経済分析に携わる方",
+    heroStat: "20",
+    heroUnit: "項目",
+    heroLabel: "一次ソース数（全て公開データ・APIで取得可能）",
+    heroColor: "#0891b2",
+    alertMessage: "モデル・データ・ソースコードはすべてAGPL-3.0で公開。研究・教育目的での改変・再配布を歓迎します。",
+    risks: [
+      { label: "モデルの限界", days: "—", detail: "単一国家・石油中心モデル。グローバルな供給代替・金融市場フィードバックは未実装" },
+      { label: "需要破壊モデル", days: "価格媒介型", detail: "WTI実測値→ガソリン価格→需要削減率のフィードバックループ。弾力性は1973年ショック実績に基づく" },
+      { label: "精製互換性", days: "実装済み", detail: "非中東原油のAPI度・硫黄分差異によるペナルティ係数をモデル化。SensitivityChartで確認可能" },
+      { label: "データパイプライン", days: "自動更新", detail: "EIA WTI日次・経産省備蓄月次・AIS 1日2回・OCCTO電力日次を自動取得" },
+      { label: "再現性", days: "AGPL-3.0", detail: "GitHubで全計算ロジックを公開。Cloudflare Workers環境でのセルフホストが可能" },
+    ],
+    actions: [
+      "GitHubリポジトリでシミュレーションコード（flowSimulation.ts）を確認",
+      "/methodology でモデル設計・弾力性仮定・出典を確認",
+      "API（/api/simulation?scenario=realistic）でシミュレーション結果をJSON取得",
+      "CITATION.cffで学術引用形式を確認（GitHub Actions でDOI発行予定）",
+      "改善提案・モデル議論はGitHub Issuesで歓迎（特に精製互換性・代替原油モデル）",
+    ],
+    officialLinks: [
+      { label: "GitHub — 全ソースコード（AGPL-3.0）", href: "https://github.com/surviveasonejp/surviveasone-dashboard" },
+      { label: "Methodology — モデル設計・弾力性仮定・出典", href: "/methodology" },
+      { label: "API — /api/simulation（JSONシミュレーション結果）", href: "https://surviveasonejp.net/api/simulation?scenario=realistic" },
+      { label: "API — /api/validation（精度検証・予測vs実績）", href: "https://surviveasonejp.net/api/validation" },
+    ],
+    familyMeterPrompt: "API仕様書でデータ取得方法を確認する",
+    prepareAnchor: "methodology",
+    metaDescription: "日本のエネルギー安全保障シミュレーション。16式モデル・全ソースコード・自動更新データパイプラインをAGPL-3.0で公開。研究・教育・政策分析に自由にご利用ください。",
+    ctaType: "docs",
+    ctaLink: "/api-docs",
+    ctaLabel: "API仕様書 → /api-docs",
+    ctaTag: "OPEN DATA & CODE",
   },
   elderly: {
     id: "elderly",
@@ -195,33 +312,51 @@ export const ForSegment: FC = () => {
         </ul>
       </div>
 
-      {/* CTA: Family Meter */}
-      <Link
-        to="/family"
-        className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-5 transition-colors group"
-      >
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
-            <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
+      {/* プライマリCTA */}
+      {seg.ctaType && seg.ctaLink ? (
+        <Link
+          to={seg.ctaLink}
+          className="block bg-panel border border-[#2563eb]/40 hover:border-[#2563eb]/70 rounded-lg p-5 transition-colors group"
+        >
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <div className="font-mono text-xs tracking-widest text-[#2563eb]">{seg.ctaTag ?? "NEXT STEP"}</div>
+              <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
+            </div>
+            <span className="text-[#2563eb] font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
-          <span className="text-[#f59e0b] font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
-        </div>
-      </Link>
+        </Link>
+      ) : (
+        <>
+          {/* CTA: Family Meter（個人向けセグメントのみ） */}
+          <Link
+            to="/family"
+            className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-5 transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
+                <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
+              </div>
+              <span className="text-[#f59e0b] font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </div>
+          </Link>
 
-      {/* CTA: 詳細チェックリスト */}
-      <Link
-        to={`/prepare#${seg.prepareAnchor}`}
-        className="block bg-panel border border-border hover:border-neutral-600 rounded-lg p-5 transition-colors group"
-      >
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <div className="font-mono text-xs tracking-widest text-neutral-500">SURVIVAL GUIDE</div>
-            <p className="text-sm font-bold">詳細な備蓄チェックリストを見る</p>
-          </div>
-          <span className="text-neutral-500 font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
-        </div>
-      </Link>
+          {/* CTA: 詳細チェックリスト */}
+          <Link
+            to={`/prepare#${seg.prepareAnchor}`}
+            className="block bg-panel border border-border hover:border-neutral-600 rounded-lg p-5 transition-colors group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="font-mono text-xs tracking-widest text-neutral-500">SURVIVAL GUIDE</div>
+                <p className="text-sm font-bold">詳細な備蓄チェックリストを見る</p>
+              </div>
+              <span className="text-neutral-500 font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+            </div>
+          </Link>
+        </>
+      )}
 
       {/* シェア */}
       <button

@@ -11,7 +11,7 @@ import { invalidateCache, CACHE_KEYS } from "./kv-cache";
 import { fetchElectricityDemand } from "./electricity";
 import { fetchReservesUpdate } from "./reserves-fetcher";
 import { fetchLngUpdate } from "./lng-fetcher";
-import { fetchAisPositions } from "./ais-tracker";
+import { fetchAisPositions, applyAisToOverrides } from "./ais-tracker";
 import { fetchOilPrice } from "./oil-price-fetcher";
 
 interface Env {
@@ -47,9 +47,11 @@ export async function handleScheduled(
 
   if (hour === 18) {
     ctx.waitUntil(fetchElectricityDemand(env.DB));
-    // AISタンカー位置取得（電力需給と並行実行）
+    // AISタンカー位置取得 → overrides自動同期（電力需給と並行実行）
     if (env.AISSTREAM_API_KEY) {
-      ctx.waitUntil(fetchAisPositions(env));
+      ctx.waitUntil(
+        fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE)),
+      );
     }
     // WTI原油価格取得（日次）
     if (env.EIA_API_KEY) {
@@ -57,10 +59,12 @@ export async function handleScheduled(
     }
   }
 
-  // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得（取得漏れカバー、月18日は備蓄更新と相乗り）
+  // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期（月18日は備蓄更新と相乗り）
   if (hour === 6 && dayOfMonth !== 18) {
     if (env.AISSTREAM_API_KEY) {
-      ctx.waitUntil(fetchAisPositions(env));
+      ctx.waitUntil(
+        fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE)),
+      );
     }
   }
 

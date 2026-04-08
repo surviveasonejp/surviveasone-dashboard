@@ -48,6 +48,27 @@ body {
   animation: fade-in 0.15s ease-out;
 }
 
+/* ─── ページ入場アニメーション ─────────────────────── */
+
+@keyframes page-enter-from-right {
+  from { transform: translateX(48px); opacity: 0.65; }
+  to   { transform: translateX(0);    opacity: 1;    }
+}
+
+@keyframes page-enter-from-left {
+  from { transform: translateX(-48px); opacity: 0.65; }
+  to   { transform: translateX(0);     opacity: 1;    }
+}
+
+/* data-enter 属性が付いている間だけ入場アニメーションを実行 */
+.page-content[data-enter="from-right"] {
+  animation: page-enter-from-right 260ms ease-out backwards;
+}
+
+.page-content[data-enter="from-left"] {
+  animation: page-enter-from-left 260ms ease-out backwards;
+}
+
 /* ─── ライトモード ──────────────────────────────── */
 
 /* 背景 */
@@ -234,10 +255,6 @@ body {
   fill: #ffffff !important;
 }
 
-/* PetrochemTree SVG背景: ライトモードでも暗色を維持（上記ルールの上書きを打ち消す） */
-[data-theme="light"] svg rect.petrochem-bg {
-  fill: #151c24 !important;
-}
 
 [data-theme="light"] svg rect[stroke="#1e2a36"] {
   stroke: #cbd5e1 !important;
