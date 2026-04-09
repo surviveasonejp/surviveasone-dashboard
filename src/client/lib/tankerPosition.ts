@@ -41,6 +41,8 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Cameron": "us-pacific",
   "USGC": "us-pacific",
   "Ingleside": "us-pacific",
+  "Ingleside-Cape": "usgc-capehope",
+  "USGC-Cape": "usgc-capehope",
 };
 
 /** 航路上のウェイポイント列に沿って t (0〜1) の位置を補間 */

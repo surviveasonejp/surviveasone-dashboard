@@ -33,5 +33,8 @@
   "Himeji": { "lat": 34.78, "lon": 134.67 },
   "Sodegaura": { "lat": 35.43, "lon": 139.95 },
   "USGC": { "lat": 29.75, "lon": -93.60 },
-  "Ingleside": { "lat": 27.87, "lon": -97.21 }
+  "Ingleside": { "lat": 27.87, "lon": -97.21 },
+  "Ingleside-Cape": { "lat": 27.87, "lon": -97.21 },
+  "USGC-Cape": { "lat": 29.75, "lon": -93.60 },
+  "Ehime": { "lat": 33.98, "lon": 132.97 }
 }

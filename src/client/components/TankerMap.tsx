@@ -26,6 +26,7 @@ const JAPAN_PORTS: Array<{ id: string; name: string; lat: number; lon: number }>
   { id: "Kitakyushu", name: "北九州", lat: 33.95, lon: 130.82 },
   { id: "Himeji", name: "姫路", lat: 34.78, lon: 134.67 },
   { id: "Sodegaura", name: "袖ケ浦", lat: 35.43, lon: 139.95 },
+  { id: "Ehime", name: "菊間", lat: 33.98, lon: 132.97 },
 ];
 
 // ─── 定数 ──────────────────────────────────────────
@@ -53,7 +54,7 @@ const HORMUZ_PORTS = new Set([
 const JAPAN_DEST_PORTS = new Set([
   "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
   "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
-  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita",
+  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
 ]);
 
 const isDimmed = (t: { departurePort: string; destinationPort: string }) =>
@@ -84,6 +85,7 @@ const CHOKEPOINTS = [
   { id: "tsugaru", name: "津軽海峡", lat: 41.65, lon: 140.8, critical: false },
   { id: "panama", name: "パナマ運河", lat: 9.08, lon: -79.68, critical: false },
   { id: "babel", name: "バベルマンデブ海峡", lat: 12.583, lon: 43.333, critical: false },
+  { id: "good-hope", name: "喜望峰", lat: -34.357, lon: 18.474, critical: false },
 ];
 
 // ─── コンポーネント ─────────────────────────────────

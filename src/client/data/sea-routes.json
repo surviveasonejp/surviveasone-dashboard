@@ -36,5 +36,11 @@
     "chokepoints": ["panama"],
     "partialRoute": true,
     "visibleStartProgress": 0.82
+  },
+  "usgc-capehope": {
+    "waypoints": [[18.5,-34.3],[40,-30],[65,-20],[80,-10],[95,2],[101.8,2.5],[107,5],[115,12],[122,22],[128,30]],
+    "chokepoints": ["good-hope","malacca"],
+    "partialRoute": true,
+    "visibleStartProgress": 0.47
   }
 }
