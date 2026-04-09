@@ -39,6 +39,8 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Yanbu": "yanbu-suez",
   "Sabine Pass": "us-pacific",
   "Cameron": "us-pacific",
+  "USGC": "us-pacific",
+  "Ingleside": "us-pacific",
 };
 
 /** 航路上のウェイポイント列に沿って t (0〜1) の位置を補間 */

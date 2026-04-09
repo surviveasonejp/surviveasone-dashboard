@@ -31,5 +31,7 @@
   "Chita": { "lat": 34.97, "lon": 136.87 },
   "Kitakyushu": { "lat": 33.95, "lon": 130.82 },
   "Himeji": { "lat": 34.78, "lon": 134.67 },
-  "Sodegaura": { "lat": 35.43, "lon": 139.95 }
+  "Sodegaura": { "lat": 35.43, "lon": 139.95 },
+  "USGC": { "lat": 29.75, "lon": -93.60 },
+  "Ingleside": { "lat": 27.87, "lon": -97.21 }
 }
