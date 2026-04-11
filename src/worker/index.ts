@@ -243,10 +243,7 @@ export default {
       return new Response(
         JSON.stringify({
           error: "rate_limit_exceeded",
-          message:
-            ipCheck.reason === "per_minute_limit"
-              ? "リクエスト頻度が高すぎます。1分後に再試行してください。"
-              : "本日のIPあたりのリクエスト上限に達しました。",
+          message: "リクエスト数の上限に達しました。しばらく時間をおいて再試行してください。",
           retry_after_seconds: ipCheck.retryAfter,
         }),
         {

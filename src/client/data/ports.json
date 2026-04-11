@@ -36,5 +36,6 @@
   "Ingleside": { "lat": 27.87, "lon": -97.21 },
   "Ingleside-Cape": { "lat": 27.87, "lon": -97.21 },
   "USGC-Cape": { "lat": 29.75, "lon": -93.60 },
-  "Ehime": { "lat": 33.98, "lon": 132.97 }
+  "Ehime": { "lat": 33.98, "lon": 132.97 },
+  "Tomakomai": { "lat": 42.64, "lon": 141.60 }
 }

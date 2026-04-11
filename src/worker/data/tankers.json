@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-04-09",
+    "updatedAt": "2026-04-11",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-09時点でAIS位置を最新化",
-    "note": "28隻の追跡船舶（代替ルート5隻+Suezmax2隻新規含む） + 7チョークポイント監視。2026-04-09更新: LNG MARS 4/8 22:01堺/泉北入港確認。NCC HUDA 目的地を四日市（JPYKK001）に修正・ETA 4/11。新規追加: OTIS（Suezmax・千葉向け・ETA4/29）・FRONT SINGAPORE（Suezmax・日本向け・ETA5月上旬）をパナマ運河経由米国産原油タンカーとして追加。LNG次便: DIAMOND GAS ROSE(サハリン→富津 ETA4/13)・PACIFIC NOTUS(ビントゥル→袖ケ浦 ETA4/16)・ENERGY FRONTIER(グラッドストン→千葉 ETA4/21)。【重大4/8】米イラン2週間停戦合意（日本時間4/8朝）→イラン外相「2週間ホルムズ安全通航可能」と表明。しかし同日午後イスラエルがレバノンへ大規模攻撃→IRGCがタンカー通航を再停止。停戦合意後も足止め船舶に動きなし（Bloomberg）。米国発中型タンカー4/7時点8隻が日本向け航行中（ETA4末〜5末、計約1,200万バレル）。日本向け航行中9隻・入港済11隻・回航中3隻・湾岸滞留約42隻+カタールLNG2隻引き返し継続"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-11時点でAIS位置を最新化",
+    "note": "30隻の追跡船舶（代替ルート5隻+Suezmax2隻+湾内東進VLCC2隻新規含む） + 7チョークポイント監視。2026-04-11更新: 【重大4/10】商船三井管理VLCC「MAYASAN」(苫小牧向け・IMO 9839856)とPhoenix Ocean「YAKUMOSAN」(日本向け・IMO 9362877)の2隻が4/9夜、ラスタヌラ/カタール沖停泊からホルムズ海峡に向けて東進開始（Bloomberg 4/10報道）。停戦下での初の湾内日本関係VLCC移動開始。NCC HUDA ETA 4/12に修正（渡邉英徳教授X報告 4/10）。ETA修正（4/11時点）: TATESHINA→5/10(29日)・NISSHO MARU→4/17(6日)・KHURAIS→4/16(5日)・ENEOS GLORY→4/16(5日)・DIAMOND GAS ROSE→4/13(2日)・PACIFIC NOTUS→4/16(5日)・ENERGY FRONTIER→4/21(10日)・非中東調達便→4/25(14日)・OTIS→4/29(18日)・FRONT SINGAPORE→5/8(27日)。湾内停留約40隻継続・AL DAAYEN/RASHEEDA引き返し継続。日本向け航行中11隻・入港済11隻・回航中2隻"
   },
   "chokepoints": [
     {
@@ -71,7 +71,7 @@
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 19000,
       "speed_knots": 13.5,
-      "eta_days": 31.0,
+      "eta_days": 29,
       "cargo_t": 312000,
       "cargoType": "原油（米国産WTI系・喜望峰回り）",
       "status": "航行中",
@@ -142,7 +142,7 @@
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 5800,
       "speed_knots": 12.0,
-      "eta_days": 8.0,
+      "eta_days": 6,
       "cargo_t": 300000,
       "cargoType": "原油（イラニアンヘビー）",
       "status": "航行中",
@@ -355,7 +355,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 3600,
       "speed_knots": 12.0,
-      "eta_days": 16.0,
+      "eta_days": 14,
       "cargo_t": 300000,
       "cargoType": "原油（非中東調達）",
       "status": "航行中",
@@ -379,7 +379,7 @@
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 4300,
       "speed_knots": 11.2,
-      "eta_days": 7.0,
+      "eta_days": 5,
       "cargo_t": 300000,
       "cargoType": "原油（サウジ産・紅海/スエズ経由）",
       "status": "航行中",
@@ -403,7 +403,7 @@
       "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 800,
       "speed_knots": 14.4,
-      "eta_days": 2.0,
+      "eta_days": 1,
       "cargo_t": 45459,
       "cargoType": "石油/化学品（サウジ産・紅海ルート）",
       "status": "航行中",
@@ -413,7 +413,7 @@
         "military": 0.85,
         "combined": 0.65
       },
-      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。4/9時点: 東シナ海から四日市（JPYKK001）向け航行中（AIS）。3/18ヤンブー出港→シンガポール寄港（4/2到着・補給）→四日市へ（横浜は誤記: JPYKK001=四日市コード）。ETA 4/11 02:00。渡邉英徳教授(東大)のOSINT分析で確認。ラービグ（サウジ）→四日市（三菱商事化学品ターミナル）"
+      "note": "National Chemical Carriers（Bahri子会社・サウジ国営）MRタンカー。IMO 9399272。45,459DWT。183m。2011年建造。4/10渡邉英徳教授(東大)X報告: マラッカ海峡通過済み・四日市向け航行中・ETA 4/12に修正。3/18ヤンブー出港→シンガポール寄港（4/2到着・補給）→四日市へ（JPYKK001=四日市コード）。ラービグ（サウジ）→四日市（三菱商事化学品ターミナル）"
     },
     {
       "id": "lng-06",
@@ -475,7 +475,7 @@
       "destinationPort": "Futtsu",
       "distanceToJapan_nm": 920,
       "speed_knots": 18.5,
-      "eta_days": 4.0,
+      "eta_days": 2,
       "cargo_t": 145000,
       "cargoType": "LNG（サハリン2産）",
       "status": "航行中",
@@ -499,7 +499,7 @@
       "destinationPort": "Sodegaura",
       "distanceToJapan_nm": 3200,
       "speed_knots": 18.5,
-      "eta_days": 7.0,
+      "eta_days": 5,
       "cargo_t": 155000,
       "cargoType": "LNG（マレーシアMLNG産）",
       "status": "航行中",
@@ -523,7 +523,7 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 5100,
       "speed_knots": 18.0,
-      "eta_days": 12.0,
+      "eta_days": 10,
       "cargo_t": 155000,
       "cargoType": "LNG（豪州APLNG産）",
       "status": "航行中",
@@ -547,7 +547,7 @@
       "destinationPort": "Oita",
       "distanceToJapan_nm": 4500,
       "speed_knots": 13.3,
-      "eta_days": 7.0,
+      "eta_days": 5,
       "cargo_t": 300000,
       "cargoType": "原油（マーバンブレンド・アブダビ産）",
       "status": "航行中",
@@ -690,7 +690,7 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 6200,
       "speed_knots": 13.0,
-      "eta_days": 20,
+      "eta_days": 18,
       "cargo_t": 135000,
       "cargoType": "原油（米国産WTI系・パナマ運河経由）",
       "status": "航行中",
@@ -714,7 +714,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 9200,
       "speed_knots": 13.0,
-      "eta_days": 30,
+      "eta_days": 27,
       "cargo_t": 135000,
       "cargoType": "原油（米国産WTI系・パナマ運河経由）",
       "status": "航行中",
@@ -725,6 +725,54 @@
         "combined": 0.961
       },
       "note": "香港籍Suezmaxタンカー。IMO 9832248。MMSI 477539200。2019年建造。150,000DWT。275m。チャーター料1,400万ドル（封鎖前の約2倍）。4/9時点: 米国ガルフ→パナマ運河→太平洋経由で日本向け航行中（Bloomberg 4/8-9報道）。ETA 5月上旬。日本に向かう3隻の中型タンカーのうちの1隻（Kpler/Bloomberg分析）。米国産原油計約1,200万バレルのうち約100万バレル担当。ホルムズ・バベルマンデブ海峡を完全回避。Front Line（フロントライン）傘下"
+    },
+    {
+      "id": "vlcc-jap-01",
+      "name": "MAYASAN",
+      "imo": "9839856",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "ラスタヌラ（サウジアラビア）",
+      "departurePort": "Ras Tanura",
+      "destination": "苫小牧（北海道）",
+      "destinationPort": "Tomakomai",
+      "distanceToJapan_nm": 6800,
+      "speed_knots": 12.5,
+      "eta_days": 22,
+      "cargo_t": 274000,
+      "cargoType": "原油（UAE/サウジ産・約200万バレル）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.55,
+        "route": 0.8,
+        "military": 0.65,
+        "combined": 0.286
+      },
+      "note": "商船三井管理VLCC。IMO 9839856。MMSI 431618000。312,006DWT。LOA 340m。日本船籍。2018年建造。【重大4/10】2/28戦争開始数日前にペルシャ湾に入り、2月下旬にUAEとサウジで原油を積載（約200万バレル）。3月中旬以降ラスタヌラ沖で停泊待機。4/9夜、YAKUMOSANとともにホルムズ海峡に向けて東進開始（Bloomberg 4/10報道）。停戦下での初の湾内日本関係VLCC移動。AIS目的地: 苫小牧（北海道）。ホルムズ通過成功すればETA 5/3頃。到着はホルムズ通過成否に依存"
+    },
+    {
+      "id": "vlcc-jap-02",
+      "name": "YAKUMOSAN",
+      "imo": "9362877",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "カタール沖浮体式貯蔵施設",
+      "departurePort": "Ras Laffan",
+      "destination": "日本（港未公表）",
+      "destinationPort": "Japan",
+      "distanceToJapan_nm": 6800,
+      "speed_knots": 12.5,
+      "eta_days": 22,
+      "cargo_t": 274000,
+      "cargoType": "原油（カタール産・約200万バレル）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.55,
+        "route": 0.8,
+        "military": 0.65,
+        "combined": 0.286
+      },
+      "note": "Phoenix Ocean Corp.（商船三井同一住所）保有VLCC。IMO 9362877。MMSI 538003428。302,165DWT。LOA 333m。マーシャル諸島籍。2008年建造。【重大4/10】2月下旬にペルシャ湾へ入り、3月初旬にカタール沖の浮体式貯蔵施設からカタール産原油を積載（約200万バレル）。4/9夜、MAYASANとともにホルムズ海峡に向けて東進開始（Bloomberg 4/10報道）。停戦下での初の日本関係VLCC移動。目的地未公表。ホルムズ通過成功すればETA 5/3頃"
     }
   ]
 }
