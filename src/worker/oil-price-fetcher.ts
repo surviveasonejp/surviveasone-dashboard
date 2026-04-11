@@ -23,6 +23,16 @@ interface EiaResponse {
   };
 }
 
+/** EIA APIレスポンスのスキーマをランタイム検証 */
+function isValidEiaResponse(raw: unknown): raw is EiaResponse {
+  if (!raw || typeof raw !== "object") return false;
+  const r = raw as Record<string, unknown>;
+  if (!r.response || typeof r.response !== "object") return false;
+  const resp = r.response as Record<string, unknown>;
+  if (!Array.isArray(resp.data)) return false;
+  return true;
+}
+
 const EIA_WTI_URL = "https://api.eia.gov/v2/petroleum/pri/spt/data/";
 const WTI_SERIES = "RWTC";
 
@@ -59,13 +69,18 @@ export async function fetchOilPrice(env: Env): Promise<void> {
 
   let json: EiaResponse;
   try {
-    json = await response.json() as EiaResponse;
+    const parsed: unknown = await response.json();
+    if (!isValidEiaResponse(parsed)) {
+      console.error("EIA API: unexpected response schema", JSON.stringify(parsed).slice(0, 200));
+      return;
+    }
+    json = parsed;
   } catch (e) {
     console.error("EIA API: failed to parse JSON:", e);
     return;
   }
 
-  const record = json.response?.data?.[0];
+  const record = json.response.data[0];
   if (!record || record.value === null || record.value === undefined) {
     console.error("EIA API: no data in response");
     return;

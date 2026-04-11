@@ -70,3 +70,82 @@ VALUES
   ('naphtha_cracker->alt_feedstock', 'naphtha_cracker', 'alt_feedstock',   '代替調達'),
   ('alt_feedstock->ethane_cracking', 'alt_feedstock',   'ethane_cracking', 'エタン分解'),
   ('alt_feedstock->coal_mto',        'alt_feedstock',   'coal_mto',        '石炭MTO');
+
+-- ─── Phase A: PETボトルチェーン追加 ──────────────────────────────
+
+INSERT OR IGNORE INTO petrochem_nodes (id, label, category, depth, parent_id, naptha_factor, description)
+VALUES
+  (
+    'ethylene_oxide',
+    'エチレンオキサイド(EO)',
+    'monomer',
+    5,
+    'ethylene',
+    0.9,
+    'エチレンを酸素で酸化して製造。EGの前駆体。世界需要の約25%が界面活性剤、20%がPET原料EGに'
+  ),
+  (
+    'paraxylene',
+    'パラキシレン(PX)',
+    'monomer',
+    5,
+    'benzene',
+    0.7,
+    'BTXキシレン異性化で製造。PTA（テレフタル酸）の前駆体。世界生産約5,000万t/年'
+  ),
+  (
+    'ethylene_glycol',
+    'エチレングリコール(EG)',
+    'polymer',
+    6,
+    'ethylene_oxide',
+    0.9,
+    'EOを水和して製造。PET樹脂の原料（EG30%+PTA70%）。日本は約90%輸入依存'
+  ),
+  (
+    'pta',
+    'テレフタル酸(PTA)',
+    'polymer',
+    6,
+    'paraxylene',
+    0.7,
+    'PXを酸化して製造。PET樹脂の主原料（重量比70%）。国内生産能力が限定的で輸入依存率45%'
+  ),
+  (
+    'pet_resin',
+    'PET樹脂',
+    'polymer',
+    7,
+    'ethylene_glycol',
+    0.8,
+    'EG+PTAを重縮合。国内生産25万t/年。PETボトル・フィルム・繊維に使用。輸入品との競合激しく封鎖時は輸入途絶リスク'
+  ),
+  (
+    'pet_bottle',
+    'PETボトル',
+    'end_use',
+    8,
+    'pet_resin',
+    0.8,
+    '飲料水・お茶・醤油・ソースボトル。年間約200億本消費。代替容器（紙・ガラス・缶）への切替に時間を要する'
+  ),
+  (
+    'pet_film',
+    'PETフィルム',
+    'end_use',
+    8,
+    'pet_resin',
+    0.7,
+    '食品包装・太陽電池バックシート・磁気テープ基材。食品包装分野では牛乳・ハム・チーズの袋に使用'
+  );
+
+INSERT OR IGNORE INTO petrochem_edges (id, source_id, target_id, flow_label)
+VALUES
+  ('ethylene->ethylene_oxide',       'ethylene',        'ethylene_oxide',   '酸化'),
+  ('ethylene_oxide->ethylene_glycol','ethylene_oxide',   'ethylene_glycol',  '水和'),
+  ('benzene->paraxylene',            'benzene',          'paraxylene',       '異性化'),
+  ('paraxylene->pta',                'paraxylene',       'pta',              '酸化'),
+  ('ethylene_glycol->pet_resin',     'ethylene_glycol',  'pet_resin',        '重縮合(30%)'),
+  ('pta->pet_resin',                 'pta',              'pet_resin',        '重縮合(70%)'),
+  ('pet_resin->pet_bottle',          'pet_resin',        'pet_bottle',       '延伸成形'),
+  ('pet_resin->pet_film',            'pet_resin',        'pet_film',         '二軸延伸');

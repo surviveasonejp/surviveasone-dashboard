@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Survive as One API",
-    "description": "ホルムズ海峡経由の供給途絶シナリオにおける日本のエネルギー崩壊タイムラインをシミュレーションするAPI。全エンドポイント認証不要・無料。",
+    "title": "SAO – Situation Awareness Observatory API",
+    "description": "ホルムズ海峡封鎖シナリオにおける日本のエネルギー・食料・物流への供給制約の波及をシミュレーションするAPI。全エンドポイント認証不要・無料。16の計算モデルと4シナリオ（国際協調/標準対応/需要超過/停戦・回復）で分析。",
     "version": "0.3.0",
     "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },
     "contact": { "url": "https://github.com/surviveasonejp/surviveasone-dashboard" }
@@ -37,15 +37,15 @@
     "/api/countdowns": {
       "get": {
         "summary": "残存日数カウントダウン",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
         "responses": { "200": { "description": "石油/LNG/電力の残存日数" } }
       }
     },
     "/api/collapse": {
       "get": {
-        "summary": "10エリア崩壊順序",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
-        "responses": { "200": { "description": "崩壊順序・連系線融通・原子力補正" } }
+        "summary": "10エリア供給制約順序",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "responses": { "200": { "description": "供給制約順序・連系線融通・原子力補正" } }
       }
     },
     "/api/simulation": {
@@ -53,7 +53,7 @@
         "summary": "フロー型在庫シミュレーション（365日タイムライン）",
         "description": "日次の在庫推移・閾値イベント・SPR放出・代替供給を含む詳細シミュレーション。大量データ。要約版は /api/simulate を使用。",
         "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
           { "name": "maxDays", "in": "query", "schema": { "type": "integer", "default": 365, "minimum": 1, "maximum": 730 } }
         ],
         "responses": { "200": { "description": "日次タイムライン+閾値イベント+枯渇日" } }
@@ -61,38 +61,27 @@
     },
     "/api/simulate": {
       "get": {
-        "summary": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
-        "description": "/api/simulation の軽量版。枯渇日・主要イベント・備蓄データをコンパクトに返す。LLM・ChatGPT Plugin向け。",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
-        "responses": { "200": { "description": "枯渇日・イベント・備蓄概要" } }
+        "summary": "シミュレーション要約（制約到達日・主要イベント・備蓄データ）",
+        "description": "/api/simulation の軽量版。制約到達日・主要イベント・備蓄データをコンパクトに返す。LLM・ChatGPT Plugin向け。",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "responses": { "200": { "description": "制約到達日・イベント・備蓄概要" } }
       }
     },
     "/api/food-collapse": {
       "get": {
-        "summary": "食品カテゴリ別消失予測",
+        "summary": "食品カテゴリ別在庫日数予測",
         "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } },
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
           { "name": "region", "in": "query", "schema": { "type": "string" }, "description": "エリアID（hokkaido〜okinawa）" }
         ],
-        "responses": { "200": { "description": "食品別崩壊日数" } }
+        "responses": { "200": { "description": "食品別在庫日数" } }
       }
     },
     "/api/tankers": {
-      "get": { "summary": "タンカー15隻の到着予測+AIS位置", "responses": { "200": { "description": "船名・IMO・航路・ETA・AIS追跡状態" } } }
-    },
-    "/api/electricity": {
       "get": {
-        "summary": "電力需給実測データ（全10エリア対応）",
-        "parameters": [{ "name": "area", "in": "query", "required": true, "schema": { "type": "string", "enum": ["hokkaido","tohoku","tokyo","chubu","hokuriku","kansai","chugoku","shikoku","kyushu","okinawa"] } }],
-        "responses": { "200": { "description": "ピーク需要・供給・火力/原子力/再エネ内訳" } }
-      }
-    },
-    "/api/summary": {
-      "get": {
-        "summary": "プレーンテキスト概要（LLM・クローラー向け）",
-        "description": "現在の備蓄状況とシミュレーション結果をプレーンテキストで返す。Content-Type: text/plain。",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic"], "default": "realistic" } }],
-        "responses": { "200": { "description": "テキスト形式の備蓄・シミュレーション概要" } }
+        "summary": "タンカー30隻の到着予測+AIS位置",
+        "description": "VLCC13+LNG14+Chemical1+Suezmax2の計30隻。IMO・AIS追跡状態・航路・供給元カテゴリ・ETA自動補正を含む。ホルムズ未通過船・引き返し船のフラグ付き。",
+        "responses": { "200": { "description": "船名・IMO・航路・ETA・AIS追跡状態・到着確率" } }
       }
     },
     "/api/ais": {
@@ -102,11 +91,75 @@
         "responses": { "200": { "description": "AIS位置データ+日本向け判定" } }
       }
     },
+    "/api/electricity": {
+      "get": {
+        "summary": "電力需給実測データ（全10エリア対応）",
+        "parameters": [{ "name": "area", "in": "query", "required": true, "schema": { "type": "string", "enum": ["hokkaido","tohoku","tokyo","chubu","hokuriku","kansai","chugoku","shikoku","kyushu","okinawa"] } }],
+        "responses": { "200": { "description": "ピーク需要・供給・火力/原子力/再エネ内訳" } }
+      }
+    },
+    "/api/oil-price": {
+      "get": {
+        "summary": "WTI原油スポット価格（EIA RWTC日次自動取得）",
+        "description": "経済カスケードシミュレーションの基準価格として使用。",
+        "responses": { "200": { "description": "WTI価格（$/バレル）・取得日・EIAソース" } }
+      }
+    },
+    "/api/summary": {
+      "get": {
+        "summary": "プレーンテキスト概要（LLM・クローラー向け）",
+        "description": "現在の備蓄状況とシミュレーション結果をプレーンテキストで返す。Content-Type: text/plain。",
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "responses": { "200": { "description": "テキスト形式の備蓄・シミュレーション概要" } }
+      }
+    },
+    "/api/petrochemtree": {
+      "get": {
+        "summary": "石化サプライチェーン樹形図ノードデータ",
+        "description": "ナフサ→石化製品→包装材の7段階（feedstock/refinery/cracker/monomer/polymer/product/end_use）のノード・エッジ・収率データ。クラッカー収率ゲージ（エチレン~30%/プロピレン~16%/ブタジエン~4%）・代替フィード（石炭MTO/エタン）・川下バッファ105日を含む。KVキャッシュ24h。",
+        "responses": { "200": { "description": "ノード一覧・エッジ・収率・川下バッファ日数" } }
+      }
+    },
+    "/api/petrochemtree/risk": {
+      "get": {
+        "summary": "石化樹形図シナリオ別リスクスコア",
+        "description": "各ノードにシナリオ別リスクスコア（0–1）と制約到達日を付与。供給制約進行度・制約フラグを含む。",
+        "parameters": [
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
+          { "name": "day", "in": "query", "schema": { "type": "integer", "default": 0, "minimum": 0, "maximum": 365 }, "description": "シミュレーション日数（0=封鎖開始時点）" }
+        ],
+        "responses": { "200": { "description": "ノード別リスクスコア・制約フラグ・制約到達日" } }
+      }
+    },
+    "/api/methodology": {
+      "get": {
+        "summary": "計算モデル・前提条件メタデータ",
+        "description": "16の計算モデル・前提パラメータ（hormuzDependencyRate等）・信頼度スコア・データソースの構造化JSON。研究・検証用途向け。",
+        "responses": { "200": { "description": "モデル一覧・係数・出典・信頼度スコア" } }
+      }
+    },
+    "/api/validation": {
+      "get": {
+        "summary": "シミュレーション予測 vs 実際の照合結果",
+        "description": "発生33日間の実データとシミュレーション予測の照合。ナフサ枯渇・ガソリン価格・代替供給・SPR放出などを比較。",
+        "responses": { "200": { "description": "照合結果（match/consistent/early/out_of_scope）" } }
+      }
+    },
+    "/api/sources": {
+      "get": {
+        "summary": "全データソース一覧",
+        "description": "全データソースのソース名・更新頻度・自動/手動区分・信頼度スコアを返す。",
+        "responses": { "200": { "description": "ソース一覧・更新頻度・信頼度" } }
+      }
+    },
     "/api/docs": {
       "get": { "summary": "APIドキュメント（HTML）", "responses": { "200": { "description": "HTMLフォーマットのAPI仕様書" } } }
     },
     "/api/data": {
       "get": { "summary": "全データソース概要（HTML）", "description": "研究者・クローラー向け。全データソースの一覧と現在値をHTML形式で提供。", "responses": { "200": { "description": "HTMLフォーマットのデータ概要" } } }
+    },
+    "/api/openapi.json": {
+      "get": { "summary": "OpenAPI 3.0仕様（このファイル）", "responses": { "200": { "description": "OpenAPI 3.0仕様JSON" } } }
     }
   }
 }

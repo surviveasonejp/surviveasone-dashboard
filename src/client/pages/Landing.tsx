@@ -8,6 +8,7 @@ import { useApiData } from "../hooks/useApiData";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
 import { IeaComparison } from "../components/IeaComparison";
 import type { ResourceCountdown } from "../../shared/types";
+import staticReserves from "../data/reserves.json";
 
 interface PanelCardProps {
   to: string;
@@ -82,12 +83,12 @@ export const Landing: FC = () => {
           CURRENT RESILIENCE STATUS
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Stat value="241" unit="日" label="石油備蓄（国家+民間）" color="#16a34a" />
+          <Stat value={String(staticReserves.oil.totalReserveDays)} unit="日" label="石油備蓄（国家+民間+産油国共同）" color="#16a34a" />
           <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="#16a34a" />
           <Stat value="3" unit="ルート" label="代替調達稼働中" color="#2563eb" />
         </div>
         <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          {getReservesSummaryText()}。3/11 IEA史上最大の協調放出（4億バレル）実施済み。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
+          {getReservesSummaryText()}（放出中・計45日分放出済み）。3/11 IEA史上最大の協調放出（4億バレル）実施済み。4/10 高市首相が追加20日分放出（5月開始）を発表。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
         </p>
       </div>
 
@@ -208,14 +209,14 @@ export const Landing: FC = () => {
           to="/countdown"
           title="SUPPLY TIMELINE"
           subtitle="供給制約タイムライン"
-          description="石油・LNG・電力の供給可能日数。365日フロータイムライン+代替供給ルート+経済カスケード"
+          description="石油・LNG・電力の供給可能日数。365日フロータイムライン+代替供給ルート+経済カスケード。回復タイムラインスライダー・代替ルートパネル・政策マイルストーンタイムライン搭載"
           color="#ef4444"
         />
         <PanelCard
           to="/last-tanker"
           title="TANKER TRACKER"
           subtitle="タンカー追跡"
-          description="実在23隻のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。4/6-7: カタールLNG船がホルムズ通過を試みて引き返し"
+          description="実在30隻（VLCC13+LNG14+Chemical1+Suezmax2）のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。シナリオ連動代替ルート可視化"
           color="#94a3b8"
         />
         <PanelCard

@@ -11,6 +11,7 @@ import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns"
 import { DataFreshness } from "../components/DataFreshness";
 import { PolicyIntervention } from "../components/PolicyIntervention";
 import { IndustryImpactMatrix } from "../components/IndustryImpactMatrix";
+import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
 import { useApiData } from "../hooks/useApiData";
@@ -110,80 +111,7 @@ export const Dashboard: FC = () => {
       </div>
 
       {/* 停戦・回復タイムライン（ceasefire時のみ表示） */}
-      {scenario === "ceasefire" && (
-        <div className="bg-[#0d9488]/10 border border-[#0d9488]/30 rounded-lg p-4 space-y-3">
-          <div className="font-mono text-xs tracking-widest text-[#0d9488]">
-            CEASEFIRE RECOVERY TIMELINE — 供給正常化ロードマップ（シミュレーション）
-          </div>
-
-          {/* フェーズバー（比率: 45:15:30:30:60 = 180日分） */}
-          <div>
-            <div className="flex h-5 rounded overflow-hidden text-[8px] font-mono leading-none">
-              <div className="flex items-center justify-center text-white px-1 bg-[#dc2626]/80" style={{ width: "25%" }}>
-                封鎖継続
-              </div>
-              <div className="flex items-center justify-center text-white bg-[#d97706]/80" style={{ width: "8.3%" }}>
-                保険
-              </div>
-              <div className="flex items-center justify-center text-white bg-[#eab308]/80" style={{ width: "16.7%" }}>
-                港湾再開
-              </div>
-              <div className="flex items-center justify-center text-white bg-[#84cc16]/80" style={{ width: "16.7%" }}>
-                契約正常化
-              </div>
-              <div className="flex items-center justify-center text-white bg-[#0d9488]/80" style={{ width: "33.3%" }}>
-                構造的残存
-              </div>
-            </div>
-            <div className="flex text-[8px] font-mono text-neutral-400 mt-0.5 select-none">
-              <div style={{ width: "25%" }}>Day 0</div>
-              <div style={{ width: "8.3%" }}>45</div>
-              <div style={{ width: "16.7%" }}>60</div>
-              <div style={{ width: "16.7%" }}>90</div>
-              <div style={{ width: "33.3%" }}>120</div>
-              <div className="text-right pr-1" style={{ flex: 1 }}>180+</div>
-            </div>
-          </div>
-
-          {/* 遮断率推移 */}
-          <div className="flex gap-1 flex-wrap text-[9px] font-mono text-neutral-500">
-            <span>遮断率:</span>
-            <span className="text-[#dc2626]">94%</span>
-            <span>→</span>
-            <span className="text-[#d97706]">80%</span>
-            <span>→</span>
-            <span className="text-[#eab308]">45%</span>
-            <span>→</span>
-            <span className="text-[#84cc16]">15%</span>
-            <span>→</span>
-            <span className="text-[#0d9488]">8%（構造的残存）</span>
-          </div>
-
-          {/* キーイベント4件 */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-mono border-t border-[#0d9488]/20 pt-2">
-            <div className="space-y-0.5">
-              <div className="text-[#0d9488] font-bold">Day 45</div>
-              <div className="text-neutral-500 leading-tight">停戦宣言（想定）<br/>WTI急落・念のため需要増</div>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[#0d9488] font-bold">Day 59</div>
-              <div className="text-neutral-500 leading-tight">初VLCC通過<br/>湾内タンカー40隻流出開始</div>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[#0d9488] font-bold">Day 65</div>
-              <div className="text-neutral-500 leading-tight">IEA放出縮小協議<br/>備蓄消化フェーズへ</div>
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[#0d9488] font-bold">Day 110</div>
-              <div className="text-neutral-500 leading-tight">SPR再充填閣議決定<br/>保険料2〜3倍で安定化</div>
-            </div>
-          </div>
-
-          <p className="text-[9px] text-neutral-500 font-mono leading-relaxed">
-            ※ 停戦後も即正常化ではありません。港湾再開・タンカー回航・契約再締結に60〜90日、完全正常化に180日以上かかる見込みです。
-          </p>
-        </div>
-      )}
+      {scenario === "ceasefire" && <RecoveryTimelineSlider />}
 
       {/* 政策介入効果比較 */}
       <PolicyIntervention scenario={scenario} />

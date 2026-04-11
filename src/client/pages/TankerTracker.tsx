@@ -5,6 +5,7 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { TankerMap, type MapScenario } from "../components/TankerMap";
 import { SupplyGapChart } from "../components/SupplyGapChart";
 import { ArrivalTimeline } from "../components/ArrivalTimeline";
+import { AlternativeRoutePanel } from "../components/AlternativeRoutePanel";
 import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
@@ -181,6 +182,9 @@ export const TankerTracker: FC = () => {
 
       {/* 供給ギャップチャート */}
       <SupplyGapChart scenario={mapScenario} />
+
+      {/* 代替ルート供給余力パネル */}
+      <AlternativeRoutePanel />
 
       {/* 到着順ランキング */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">

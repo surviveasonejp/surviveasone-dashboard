@@ -108,9 +108,10 @@ function getSizeLabel(cargo_t: number): string {
 
 function getCapacityStrokeWidth(capacity_mbpd: number, isActive: boolean): number {
   // 視覚的に「ホルムズが圧倒的に太い」ことを示すため非線形スケールを使用
-  const base = capacity_mbpd >= 2.0
+  const mbpd = (typeof capacity_mbpd === "number" && !isNaN(capacity_mbpd)) ? capacity_mbpd : 0;
+  const base = mbpd >= 2.0
     ? 7.0                                          // primary (Hormuz 2.3mbpd)
-    : 1.6 + (capacity_mbpd / 2.0) * 1.4;          // bypass/existing_alt: 1.6〜2.6px
+    : 1.6 + (mbpd / 2.0) * 1.4;                   // bypass/existing_alt: 1.6〜2.6px
   return isActive ? base * 1.3 : base;
 }
 

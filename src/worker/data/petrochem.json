@@ -48,7 +48,14 @@
     { "id": "water_pipe_pvc",   "label": "水道管(PVC)",           "category": "end_use",   "depth": 7, "parent_id": "pvc",             "naptha_factor": null, "description": "国内水道管の約70%がPVC。補修不能→断水加速" },
     { "id": "food_tray_ps",     "label": "食品トレー(PS/EPS)",   "category": "end_use",   "depth": 7, "parent_id": "ps",              "naptha_factor": 0.6,  "description": "精肉・鮮魚・惣菜の包装トレー" },
     { "id": "truck_logistics",  "label": "トラック物流",           "category": "end_use",   "depth": 7, "parent_id": "tire",            "naptha_factor": null, "description": "タイヤ+軽油の両方に依存。物流網の結節点" },
-    { "id": "agriculture",      "label": "農業生産",               "category": "end_use",   "depth": 7, "parent_id": "fertilizer",      "naptha_factor": null, "description": "肥料+農機燃料+農業資材(PE農フィルム)に依存" }
+    { "id": "agriculture",      "label": "農業生産",               "category": "end_use",   "depth": 7, "parent_id": "fertilizer",      "naptha_factor": null, "description": "肥料+農機燃料+農業資材(PE農フィルム)に依存" },
+    { "id": "ethylene_oxide",   "label": "エチレンオキサイド(EO)", "category": "monomer",   "depth": 5, "parent_id": "ethylene",         "naptha_factor": 0.9,  "description": "エチレンを酸素で酸化して製造。EGの前駆体。世界需要の約25%が界面活性剤、20%がPET原料EGに" },
+    { "id": "paraxylene",       "label": "パラキシレン(PX)",       "category": "monomer",   "depth": 5, "parent_id": "benzene",          "naptha_factor": 0.7,  "description": "BTXキシレン異性化で製造。PTA（テレフタル酸）の前駆体。世界生産約5,000万t/年" },
+    { "id": "ethylene_glycol",  "label": "エチレングリコール(EG)", "category": "polymer",   "depth": 6, "parent_id": "ethylene_oxide",   "naptha_factor": 0.9,  "description": "EOを水和して製造。PET樹脂の原料（EG30%+PTA70%）。日本は約90%輸入依存" },
+    { "id": "pta",              "label": "テレフタル酸(PTA)",      "category": "polymer",   "depth": 6, "parent_id": "paraxylene",       "naptha_factor": 0.7,  "description": "PXを酸化して製造。PET樹脂の主原料（重量比70%）。国内生産能力が限定的で輸入依存率45%" },
+    { "id": "pet_resin",        "label": "PET樹脂",                "category": "polymer",   "depth": 7, "parent_id": "ethylene_glycol",  "naptha_factor": 0.8,  "description": "EG+PTAを重縮合。国内生産25万t/年。PETボトル・フィルム・繊維に使用。輸入品との競合激しく封鎖時は輸入途絶リスク" },
+    { "id": "pet_bottle",       "label": "PETボトル",              "category": "end_use",   "depth": 8, "parent_id": "pet_resin",        "naptha_factor": 0.8,  "description": "飲料水・お茶・醤油・ソースボトル。年間約200億本消費。代替容器（紙・ガラス・缶）への切替に時間を要する" },
+    { "id": "pet_film",         "label": "PETフィルム",            "category": "end_use",   "depth": 8, "parent_id": "pet_resin",        "naptha_factor": 0.7,  "description": "食品包装・太陽電池バックシート・磁気テープ基材。食品包装分野では牛乳・ハム・チーズの袋に使用" }
   ],
   "edges": [
     { "id": "crude_oil->refinery",           "source_id": "crude_oil",       "target_id": "refinery",         "flow_label": "精製" },
@@ -96,6 +103,14 @@
     { "id": "tire->truck_logistics",         "source_id": "tire",            "target_id": "truck_logistics",  "flow_label": "使用" },
     { "id": "fertilizer->agriculture",       "source_id": "fertilizer",      "target_id": "agriculture",      "flow_label": "施肥" },
     { "id": "agri_machine->agriculture",     "source_id": "agri_machine",    "target_id": "agriculture",      "flow_label": "作業" },
-    { "id": "pvc->food_wrap_pe",             "source_id": "pvc",             "target_id": "food_wrap_pe",     "flow_label": "成膜（PVCラップ）" }
+    { "id": "pvc->food_wrap_pe",             "source_id": "pvc",             "target_id": "food_wrap_pe",     "flow_label": "成膜（PVCラップ）" },
+    { "id": "ethylene->ethylene_oxide",      "source_id": "ethylene",        "target_id": "ethylene_oxide",   "flow_label": "酸化" },
+    { "id": "ethylene_oxide->ethylene_glycol","source_id": "ethylene_oxide",  "target_id": "ethylene_glycol",  "flow_label": "水和" },
+    { "id": "benzene->paraxylene",           "source_id": "benzene",         "target_id": "paraxylene",       "flow_label": "異性化" },
+    { "id": "paraxylene->pta",               "source_id": "paraxylene",      "target_id": "pta",              "flow_label": "酸化" },
+    { "id": "ethylene_glycol->pet_resin",    "source_id": "ethylene_glycol", "target_id": "pet_resin",        "flow_label": "重縮合(30%)" },
+    { "id": "pta->pet_resin",                "source_id": "pta",             "target_id": "pet_resin",        "flow_label": "重縮合(70%)" },
+    { "id": "pet_resin->pet_bottle",         "source_id": "pet_resin",       "target_id": "pet_bottle",       "flow_label": "延伸成形" },
+    { "id": "pet_resin->pet_film",           "source_id": "pet_resin",       "target_id": "pet_film",         "flow_label": "二軸延伸" }
   ]
 }

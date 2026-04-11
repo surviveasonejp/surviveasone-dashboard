@@ -1,27 +1,27 @@
 {
   "meta": {
-    "source": "経産省 石油備蓄推計量(2026年3月20日時点) + 資源エネルギー庁 石油備蓄統計 + ISEP電力調査統計(2024年暦年) + JETRO(2025年)",
-    "updatedAt": "2026-03-23",
-    "baselineDate": "2026-03-20"
+    "source": "資源エネルギー庁 石油備蓄推計量速報(2026年4月8日公表・4月5日時点) + IEA(2026年3月) + ISEP電力調査統計(2024年暦年) + METI(2026年)",
+    "updatedAt": "2026-04-12",
+    "baselineDate": "2026-04-05"
   },
   "oil": {
-    "nationalReserve_kL": 43220000,
-    "privateReserve_kL": 26330000,
-    "jointReserve_kL": 1780000,
-    "totalReserve_kL": 71330000,
-    "nationalReserveDays": 146,
-    "privateReserveDays": 89,
-    "jointReserveDays": 6,
-    "totalReserveDays": 241,
+    "nationalReserve_kL": 42330000,
+    "privateReserve_kL": 24270000,
+    "jointReserve_kL": 1180000,
+    "totalReserve_kL": 67780000,
+    "nationalReserveDays": 143,
+    "privateReserveDays": 82,
+    "jointReserveDays": 4,
+    "totalReserveDays": 229,
     "hormuzDependencyRate": 0.94,
     "unit": "kL",
-    "note": "経産省2026年3月23日公表(3/20時点推計)。国家備蓄146日(43,220千kL、未放出)、民間備蓄89日(26,330千kL、3/16から義務量引下げにより放出中)、産油国共同備蓄6日(1,780千kL)。3月下旬から国家備蓄約1ヶ月分の放出開始予定。中東依存率94%、うちホルムズ海峡通過93%(TBS報道)"
+    "note": "資源エネルギー庁2026年4月8日公表速報(4/5時点推計)。国家備蓄143日(42,330千kL、3/26から放出中)、民間備蓄82日(24,270千kL、3/16から義務量70日→55日引下げによる放出中)、産油国共同備蓄4日(1,180千kL、放出中)。合計229日。放出規模: 国家30日分(8,500千kL)・民間15日分・産油国共同5日分＝計45日分（日本史上最大、IEA400MB協調放出の一環）。さらに4月10日高市首相が国家備蓄からの追加20日分放出（5月開始）を発表。全計画完了後は国家約102日・民間約75日・産油国共同ほぼ0日・合計約177日見込み。中東依存率94%（95%との報道も）、うちホルムズ経由93%。5月以降は喜望峰ルート代替供給が本格化"
   },
   "effectiveEstimate": {
-    "comment": "法ベース日数（制度コンプライアンス指標）に放出制約・精製能力制約を適用した実効推定値。予測ではなくリスクシナリオ評価用の参考値。",
-    "legalBasisDays": 241,
-    "effectiveDays": { "min": 130, "max": 170 },
-    "livelihoodDays": { "min": 90, "max": 120 },
+    "comment": "法ベース日数（制度コンプライアンス指標）に放出制約・精製能力制約を適用した実効推定値。予測ではなくリスクシナリオ評価用の参考値。放出プログラム進行中のため民間の実効利用率は義務量引下げにより上昇。",
+    "legalBasisDays": 229,
+    "effectiveDays": { "min": 120, "max": 160 },
+    "livelihoodDays": { "min": 85, "max": 110 },
     "adjustments": {
       "privateUsableRatio": 0.40,
       "privateUsableRatioNote": "製油所ワーキングストック・底部残液・タンカーバラスト等を考慮した実効利用可能率（公式推定70%から補正）",
@@ -30,18 +30,18 @@
       "jointUsableRatioByScenario": { "optimistic": 1.0, "realistic": 0.5, "pessimistic": 0.0 },
       "jointUsableRatioNote": "産油国共同備蓄の実効利用率。外交不確実性・契約遅延をシナリオ別に反映"
     },
-    "source": "資源エネルギー庁「石油備蓄の現況」+ IEA Emergency Response Mechanism分析に基づく補正推計"
+    "source": "資源エネルギー庁「石油備蓄の現況」速報 + IEA Emergency Response Mechanism分析に基づく補正推計"
   },
   "lng": {
     "inventory_t": 4500000,
     "hormuzDependencyRate": 0.063,
     "unit": "t",
-    "note": "LNG在庫450万t(2025年平均、経産省ガス事業統計+電力調査統計)。ホルムズ依存6.3%(カタール5.3%+UAE1.0%、JETRO 2025年実績)。主要輸入先: 豪州39.7%、マレーシア14.8%、ロシア8.9%"
+    "note": "LNG在庫450万t(2025年平均、経産省ガス事業統計+電力調査統計)。ホルムズ依存6.3%(カタール5.3%+UAE1.0%、JETRO 2025年実績)。主要輸入先: 豪州39.7%、マレーシア14.8%、ロシア8.9%。2026年1月から緊急LNG備蓄積み増し(年間最大100万t規模をMETI計画)。2026年4月1日より石炭火力規制を緩和(LNG依存低減・供給安定化の緊急措置)"
   },
   "electricity": {
     "thermalShareRate": 0.65,
     "nuclearShareRate": 0.082,
     "renewableShareRate": 0.267,
-    "note": "火力65%(LNG29.1%+石炭28.2%+石油1.4%+その他6.3%)、原子力8.2%、再エネ26.7%(太陽光11.4%+水力7.9%+バイオマス5.9%+風力1.1%+地熱0.3%)。ISEP 2024年暦年速報値(電力調査統計ベース)"
+    "note": "火力65%(LNG29.1%+石炭28.2%+石油1.4%+その他6.3%)、原子力8.2%、再エネ26.7%(太陽光11.4%+水力7.9%+バイオマス5.9%+風力1.1%+地熱0.3%)。ISEP 2024年暦年速報値(電力調査統計ベース)。2026年4月1日から石炭火力規制緩和実施により2026年度の石炭比率は上昇見込み"
   }
 }

@@ -47,6 +47,7 @@ import {
 import { handleScheduled } from "./cron";
 import { type ScenarioId, SCENARIOS } from "../shared/scenarios";
 import type { FamilyInputs } from "../shared/types";
+import openApiSpec from "../../public/openapi.json";
 import {
   getAllCountdowns,
   calcTankerArrivals,
@@ -100,15 +101,16 @@ function addSecurityHeaders(response: Response, isDev: boolean): Response {
   return newResponse;
 }
 
-/** タイミングセーフな文字列比較（タイミング攻撃防止） */
+/** タイミングセーフな文字列比較（タイミング攻撃防止）
+ * 長さの早期リターンを排除し、長さ不一致もXORに含めて定数時間で処理 */
 function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
   const encoder = new TextEncoder();
   const bufA = encoder.encode(a);
   const bufB = encoder.encode(b);
-  let result = 0;
-  for (let i = 0; i < bufA.length; i++) {
-    result |= bufA[i] ^ bufB[i];
+  const maxLen = Math.max(bufA.length, bufB.length);
+  let result = bufA.length ^ bufB.length;
+  for (let i = 0; i < maxLen; i++) {
+    result |= (bufA[i] ?? 0) ^ (bufB[i] ?? 0);
   }
   return result === 0;
 }
@@ -361,8 +363,9 @@ async function handleApiRoute(
     case "/api/data":
       return handleDataHtml(env);
     case "/api/openapi.json":
-      // OpenAPI仕様は静的ファイルとして配信
-      return env.ASSETS.fetch(new Request("https://surviveasonejp.org/openapi.json"));
+      return new Response(JSON.stringify(openApiSpec, null, 2), {
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      });
     case "/api":
       return jsonResponse({
         name: "Survive as One API",
@@ -473,14 +476,23 @@ async function handleOilPrice(env: Env): Promise<Response> {
   // KVキャッシュ確認
   const cached = await env.CACHE.get(CACHE_KEYS.OIL_PRICE, "text");
   if (cached) {
-    const data = JSON.parse(cached) as { wti_usd: number; date: string; updatedAt: string };
-    return jsonResponse({
-      wti_usd: data.wti_usd,
-      date: data.date,
-      updatedAt: data.updatedAt,
-      source: "EIA RWTC WTI Spot Price",
-      cache: "hit",
-    });
+    try {
+      const parsed: unknown = JSON.parse(cached);
+      if (parsed && typeof parsed === "object") {
+        const p = parsed as Record<string, unknown>;
+        if (typeof p.wti_usd === "number" && typeof p.date === "string" && typeof p.updatedAt === "string") {
+          return jsonResponse({
+            wti_usd: p.wti_usd,
+            date: p.date,
+            updatedAt: p.updatedAt,
+            source: "EIA RWTC WTI Spot Price",
+            cache: "hit",
+          });
+        }
+      }
+    } catch {
+      // KVキャッシュ破損時はD1フォールバックへ
+    }
   }
 
   // D1フォールバック

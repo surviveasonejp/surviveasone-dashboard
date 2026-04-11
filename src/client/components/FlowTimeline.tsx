@@ -713,13 +713,65 @@ interface PolicyEventsProps {
 
 const PolicyEvents: FC<PolicyEventsProps> = ({ policyEffects }) => {
   return (
-    <div className="space-y-1">
-      <div className="text-[10px] font-mono text-neutral-600 tracking-wider mb-1.5">
+    <div className="space-y-3">
+      <div className="text-[10px] font-mono text-neutral-600 tracking-wider">
         POLICY RESPONSE — 政策発動時のシナリオ改善効果
       </div>
-      <p className="text-[9px] font-mono text-neutral-700 mb-2">
-        以下の政策が発動した場合、崩壊タイムラインは改善します。実際の効果は発動タイミングと達成率により変動します。
+
+      {/* 横型マイルストーンタイムライン */}
+      <div className="relative">
+        {/* ベースライン */}
+        <div className="absolute top-3.5 left-0 right-0 h-px bg-[#1e2a36]" />
+
+        <div className="flex items-start justify-between relative">
+          {POLICY_EVENTS.map((ev) => {
+            const color = POLICY_COLORS[ev.category] ?? "#888";
+            const catLabel = POLICY_LABELS[ev.category] ?? "";
+            const effectText = getEffectText(ev.category, ev.dayOffset, policyEffects, ev.effect);
+            return (
+              <div
+                key={ev.label}
+                className="flex flex-col items-center"
+                style={{ width: "25%" }}
+              >
+                {/* ドット */}
+                <div
+                  className="w-2.5 h-2.5 rounded-full border-2 border-[#0c1018] z-10 mb-1.5 shrink-0"
+                  style={{ backgroundColor: color }}
+                />
+                {/* テキスト */}
+                <div className="text-center space-y-0.5 px-1">
+                  <div className="font-mono font-bold text-[9px]" style={{ color }}>
+                    Day {ev.dayOffset}
+                  </div>
+                  <div className="text-[8px] font-mono px-1 py-0.5 rounded leading-tight" style={{ backgroundColor: `${color}15`, color }}>
+                    {catLabel}
+                  </div>
+                  <div className="text-[8px] text-neutral-500 leading-tight hidden sm:block">
+                    {ev.label.replace(/（.*?）/, "").replace(/\s*[-−].*$/, "")}
+                  </div>
+                  {policyEffects && (
+                    <div className="text-[8px] font-mono leading-tight" style={{ color }}>
+                      {effectText}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Day 0 ラベル */}
+        <div className="absolute left-0 top-0 text-[8px] font-mono text-neutral-600 -translate-y-4">
+          封鎖Day 0
+        </div>
+      </div>
+
+      <p className="text-[9px] font-mono text-neutral-700">
+        以下の政策が発動した場合、供給制約タイムラインは改善します。実際の効果は発動タイミングと達成率により変動します。
       </p>
+
+      {/* 既存の縦リスト */}
       {POLICY_EVENTS.map((ev) => {
         const color = POLICY_COLORS[ev.category] ?? "#888";
         const catLabel = POLICY_LABELS[ev.category] ?? "";

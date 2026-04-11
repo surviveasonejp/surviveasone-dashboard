@@ -13,7 +13,7 @@ const DATA_SOURCES_LIST = [
   { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "EIA RWTC API", note: "WTI原油スポット価格 日次自動取得 → D1 oil_prices + KV", auto: true },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー23隻(VLCC11+LNG11+Chemical1)のIMO・航路(2026年4月8日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]含む)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー30隻(VLCC13+LNG14+Chemical1+Suezmax2)のIMO・航路(2026年4月12日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]含む)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
@@ -61,7 +61,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 8",
     label: "モデル誠実性・現実連動",
     status: "completed" as const,
-    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント40件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
+    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント53件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
   },
   {
     phase: "Phase 9",
@@ -85,7 +85,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 12",
     label: "リアルタイム化",
     status: "completed" as const,
-    items: ["AIS位置+目的港取得", "ETA自動減算", "日本向け判定", "タンカー23隻実データ検証", "供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）", "米国産原油タンカー（喜望峰回り）可視化"],
+    items: ["AIS位置+目的港取得", "ETA自動減算", "日本向け判定", "タンカー23隻実データ検証（初期）", "供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）", "米国産原油タンカー（喜望峰回り）可視化"],
   },
   {
     phase: "Phase 13",
@@ -98,6 +98,12 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     label: "停戦シナリオ・トップページ刷新",
     status: "completed" as const,
     items: ["停戦・回復シナリオ（4つ目）", "5段階封鎖解除曲線", "停戦フェーズrealEvents 8件", "安心情報ファーストビュー", "ScenarioSelector位置最適化", "停戦バナー（ceasefire時）", "要配慮者フレーム調整", "パネルカード4枚に整理"],
+  },
+  {
+    phase: "Phase 15",
+    label: "タンカー精緻化・代替ルート可視化・意思決定支援UI",
+    status: "completed" as const,
+    items: ["タンカー30隻追跡（Suezmax2隻追加）", "realEvents 53件", "Catmull-Romスプライン航路+陸地回避", "代替ルート可視化TM-A/B/C（容量比例線幅・シナリオ連動・供給ギャップチャート）", "回復タイムラインスライダー", "代替ルートパネル", "政策マイルストーンタイムライン", "省庁データパイプライン（JPCA石化+JARW冷蔵庫）"],
   },
 ];
 
@@ -156,7 +162,7 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の原油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。うち<span className="text-[#f59e0b] font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
           <p>供給危機が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に制約される。</p>
-          <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース）。放出制約・精製変換効率を考慮した実効値は約130〜170日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
+          <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース・放出中）。放出制約・精製変換効率を考慮した実効値は約120〜160日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>
 
@@ -168,8 +174,10 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。危機発生日数も全ページに表示</li>
-            <li>・タンカー23隻（VLCC11+LNG11+Chemical1）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。入港済10隻・航行中5隻・引き返し2隻(2026年4月8日)</li>
-            <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート</li>
+            <li>・タンカー30隻（VLCC13+LNG14+Chemical1+Suezmax2）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。MAYASAN/YAKUMOSAN（4/11 東進確認）(2026年4月12日)</li>
+            <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート。5月以降は喜望峰ルート代替供給が本格化予定</li>
+            <li>・4/10: 高市首相が国家備蓄から追加20日分放出（5月開始）を発表。国家30日分+民間15日分+産油国5日分=計45日分放出済み。全計画完了後は合計約177日見込み</li>
+            <li>・4/1: 石炭火力規制を緩和（LNG依存低減・供給安定化の緊急措置）</li>
             <li>・給油所数は資源エネルギー庁の公的統計(2023年度末27,414箇所)を使用</li>
             <li>・全数値はreserves.jsonからの動的参照に統一。ハードコード値ゼロ</li>
             <li>・セキュリティ監査実施済み（CRITICAL 0/HIGH 0/MEDIUM 0）</li>
@@ -206,7 +214,7 @@ export const About: FC = () => {
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>本シミュレーションは<span className="text-neutral-200 font-bold">リスクシナリオの可視化</span>であり、予測ではありません。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
-            <li>{`・石油備蓄${staticReserves.oil.totalReserveDays}日分（法ベース）はIEA加盟国で上位の水準（IEA基準約${Math.round(staticReserves.oil.totalReserveDays * 0.85)}日）。放出制約・精製変換効率を考慮した実効値は約130〜170日`}</li>
+            <li>{`・石油備蓄${staticReserves.oil.totalReserveDays}日分（法ベース・放出中）はIEA加盟国で上位の水準（IEA基準約${Math.round(staticReserves.oil.totalReserveDays * 0.85)}日）。放出制約・精製変換効率を考慮した実効値は約120〜160日。4/10高市首相が追加20日分放出（5月開始）を発表、全計画完了後は合計約177日見込み`}</li>
             <li>・代替供給ルートは実装済みだが、調達成功率の低下モデルは簡易近似。実際の国際市場の競争動態はより複雑</li>
             <li>・経済カスケードは価格弾力性の簡易モデル。為替・金利・GDP波及は未反映</li>
             <li>・再エネの季節変動（太陽光は夏:冬=2:1）・蓄電池モデルは未反映</li>

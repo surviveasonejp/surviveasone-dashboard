@@ -60,6 +60,17 @@ interface AisMessage {
   };
 }
 
+/** AISStreamからのメッセージ構造をランタイム検証 */
+function isValidAisMessage(raw: unknown): raw is AisMessage {
+  if (!raw || typeof raw !== "object") return false;
+  const m = raw as Record<string, unknown>;
+  if (!m.MetaData || typeof m.MetaData !== "object") return false;
+  const meta = m.MetaData as Record<string, unknown>;
+  if (typeof meta.MMSI !== "number") return false;
+  if (!m.Message || typeof m.Message !== "object") return false;
+  return true;
+}
+
 /** KVに保存するAIS位置データ */
 export interface AisPosition {
   mmsi: number;
@@ -213,7 +224,9 @@ export async function fetchAisPositions(env: Env): Promise<{
 
       ws.addEventListener("message", (event) => {
         try {
-          const msg: AisMessage = JSON.parse(event.data as string);
+          const parsed: unknown = JSON.parse(event.data as string);
+          if (!isValidAisMessage(parsed)) return;
+          const msg = parsed;
           received++;
 
           const mmsi = String(msg.MetaData.MMSI);

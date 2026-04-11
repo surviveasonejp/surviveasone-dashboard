@@ -63,7 +63,7 @@ const ENDPOINTS: EndpointDoc[] = [
     path: "/api/countdowns",
     description: "石油/LNG/電力の残存日数カウントダウン",
     params: [
-      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過）（デフォルト: realistic）" },
+      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過） / ceasefire（停戦・回復）（デフォルト: realistic）" },
     ],
     example: `curl ${API_BASE}/api/countdowns?scenario=realistic
 
@@ -78,9 +78,9 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/collapse",
-    description: "全国10エリアの崩壊順序。連系線融通・原子力補正・再エネバッファ込み",
+    description: "全国10エリアの供給制約順序。連系線融通・原子力補正・再エネバッファ込み",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic / ceasefire" },
     ],
     example: `curl ${API_BASE}/api/collapse?scenario=realistic
 
@@ -96,9 +96,9 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/simulation",
-    description: "フロー型在庫シミュレーション。365日の日次タイムライン + 閾値イベント + 水道崩壊カスケード",
+    description: "フロー型在庫シミュレーション。365日の日次タイムライン + 閾値イベント + 水道カスケード",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic / ceasefire" },
       { name: "maxDays", type: "number", note: "シミュレーション日数（デフォルト: 365、最大: 730）" },
     ],
     example: `curl ${API_BASE}/api/simulation?scenario=realistic&maxDays=365
@@ -116,9 +116,9 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/food-collapse",
-    description: "食品カテゴリ別の消失予測。軽油・ナフサ・電力依存度に基づくサプライチェーン崩壊",
+    description: "食品カテゴリ別の在庫日数予測。軽油・ナフサ・電力依存度に基づく供給制約モデル",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic / ceasefire" },
       { name: "region", type: "string", note: "エリアID（例: tokyo）。省略時は全国" },
     ],
     example: `// Response (抜粋)
@@ -144,7 +144,7 @@ const ENDPOINTS: EndpointDoc[] = [
   {
     method: "GET",
     path: "/api/tankers",
-    description: "日本向けタンカー21隻の到着予測。VLCC11+LNG9+Chemical1。IMO・AIS追跡状態・航路・供給元カテゴリ・ETA自動補正を含む",
+    description: "タンカー30隻（VLCC13+LNG14+Chemical1+Suezmax2）の到着予測。IMO・AIS追跡状態・航路・供給元カテゴリ・ETA自動補正・ホルムズ通過フラグ・引き返しフラグを含む",
     example: `// Response (抜粋)
 { "data": [
     { "id": "lng-03", "name": "GRAND ANIVA", "type": "LNG",
@@ -182,7 +182,7 @@ const ENDPOINTS: EndpointDoc[] = [
     path: "/api/summary",
     description: "プレーンテキスト概要。LLM・クローラー・研究者向け。Content-Type: text/plain",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic / ceasefire" },
     ],
     example: `curl ${API_BASE}/api/summary?scenario=realistic
 
@@ -199,7 +199,7 @@ LNG在庫: 750.4日
     path: "/api/simulate",
     description: "シミュレーション要約。/api/simulation の軽量版。制約到達日・主要イベント・備蓄データをコンパクトに返す",
     params: [
-      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過）" },
+      { name: "scenario", type: "string", note: "optimistic（国際協調） / realistic（標準対応） / pessimistic（需要超過） / ceasefire（停戦・回復）" },
     ],
     example: `curl ${API_BASE}/api/simulate?scenario=realistic
 
@@ -231,9 +231,10 @@ LNG在庫: 750.4日
   {
     method: "GET",
     path: "/api/petrochemtree/risk",
-    description: "石化樹形図の各ノードにシナリオ別リスクスコアを付与。供給制約の進行度（0–1）・崩壊フラグを含む",
+    description: "石化樹形図の各ノードにシナリオ別リスクスコアを付与。供給制約の進行度（0–1）・制約フラグ・制約到達日を含む",
     params: [
-      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic" },
+      { name: "scenario", type: "string", note: "optimistic / realistic / pessimistic / ceasefire" },
+      { name: "day", type: "number", note: "シミュレーション日数（デフォルト: 0）" },
     ],
     example: `curl ${API_BASE}/api/petrochemtree/risk?scenario=realistic
 
@@ -293,6 +294,24 @@ LNG在庫: 750.4日
   ]
 }`,
   },
+  {
+    method: "GET",
+    path: "/api/docs",
+    description: "APIドキュメント（HTMLフォーマット）。ブラウザで閲覧可能なAPI仕様書",
+    example: `curl ${API_BASE}/api/docs`,
+  },
+  {
+    method: "GET",
+    path: "/api/data",
+    description: "全データソース概要（HTMLフォーマット）。研究者・クローラー向け。全データソースの一覧と現在値を提供",
+    example: `curl ${API_BASE}/api/data`,
+  },
+  {
+    method: "GET",
+    path: "/api/openapi.json",
+    description: "OpenAPI 3.0仕様JSON。Swagger UI・Postman・その他API クライアントへのインポートに使用",
+    example: `curl ${API_BASE}/api/openapi.json`,
+  },
 ];
 
 export const ApiDocs: FC = () => {
@@ -313,7 +332,7 @@ export const ApiDocs: FC = () => {
         <p><span className="text-neutral-200 font-bold">認証:</span> 不要</p>
         <p><span className="text-neutral-200 font-bold">CORS:</span> <code className="font-mono">Access-Control-Allow-Origin: *</code>（.netドメイン）</p>
         <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）。グローバル上限: 100,000 req/日</p>
-        <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code>（国際協調） / <code className="font-mono">realistic</code>（標準対応） / <code className="font-mono">pessimistic</code>（需要超過）</p>
+        <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code>（国際協調） / <code className="font-mono">realistic</code>（標準対応） / <code className="font-mono">pessimistic</code>（需要超過） / <code className="font-mono">ceasefire</code>（停戦・回復）</p>
         <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:underline font-mono">/api/openapi.json</a></p>
         <p><span className="text-neutral-200 font-bold">ライセンス:</span> AGPL-3.0</p>
       </div>
