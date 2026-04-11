@@ -280,7 +280,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
       <NaphthaChain thresholds={sortedEvents} totalDays={totalDays} />
 
       {/* 現実イベント */}
-      <RealEvents totalDays={totalDays} />
+      <RealEvents totalDays={totalDays} scenarioId={scenarioId} />
 
       {/* 政策発動シナリオ */}
       <PolicyEvents policyEffects={result.policyEffects} />
@@ -762,10 +762,14 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 interface RealEventsProps {
   totalDays: number;
+  scenarioId: ScenarioId;
 }
 
-const RealEvents: FC<RealEventsProps> = ({ totalDays }) => {
-  const events = realEventsData.events;
+const RealEvents: FC<RealEventsProps> = ({ totalDays, scenarioId }) => {
+  // シナリオ固有イベントはそのシナリオ選択時のみ表示。scenario未指定のイベントは常時表示
+  const events = realEventsData.events.filter(
+    (ev) => !("scenario" in ev) || ev.scenario === scenarioId,
+  );
   if (events.length === 0) return null;
 
   return (

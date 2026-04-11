@@ -38,6 +38,7 @@ const NAPHTHA_DEPLETION_DAYS: Record<ScenarioId, number> = {
   optimistic:  60,
   realistic:   30,
   pessimistic: 14,
+  ceasefire:   45, // 停戦前（45日）はrealisticと同等、停戦後は段階的回復
 };
 
 function calcPetrochemRisk(

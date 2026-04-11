@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { type ScenarioId } from "../../shared/scenarios";
 import { useCountdown } from "../hooks/useCountdown";
 import { getAlertColor } from "../lib/alertHelpers";
 import { formatNumber, formatTimeHMS, formatDepletionDate } from "../lib/formatters";
@@ -11,22 +12,24 @@ interface CountdownTimerProps {
   /** 3シナリオの日数レンジ（表示中シナリオは totalSeconds から算出） */
   range?: ScenarioRange;
   /** 現在選択中のシナリオID */
-  activeScenario?: "optimistic" | "realistic" | "pessimistic";
+  activeScenario?: ScenarioId;
   /** trueのとき残り日数によるアラート色付けを無効化（到着カウントダウン用） */
   noAlert?: boolean;
 }
 
-const SCENARIO_LABELS = {
+const SCENARIO_LABELS: Record<ScenarioId, string> = {
   optimistic: "国際協調",
   realistic: "標準対応",
   pessimistic: "需要超過",
-} as const;
+  ceasefire: "停戦・回復",
+};
 
-const SCENARIO_COLORS = {
+const SCENARIO_COLORS: Record<ScenarioId, string> = {
   optimistic: "#2563eb",
   realistic: "#16a34a",
   pessimistic: "#d97706",
-} as const;
+  ceasefire: "#0d9488",
+};
 
 export const CountdownTimer: FC<CountdownTimerProps> = ({
   label,
@@ -37,8 +40,12 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   noAlert = false,
 }) => {
   const { days, hours, minutes, seconds, alertLevel } = useCountdown(totalSeconds);
-  const color = noAlert ? "#94a3b8" : getAlertColor(alertLevel);
-  const isCritical = !noAlert && alertLevel === "critical";
+  const isCeasefire = activeScenario === "ceasefire";
+  const color = noAlert ? "#94a3b8" : isCeasefire ? SCENARIO_COLORS.ceasefire : getAlertColor(alertLevel);
+  const isCritical = !noAlert && !isCeasefire && alertLevel === "critical";
+  // 停戦シナリオではレンジバー非表示（3シナリオ比較レンジは適用外）
+  const showRange = range !== undefined && !isCeasefire;
+  const depletionLabel = isCeasefire ? "正常化目標:" : "枯渇日:";
 
   if (compact) {
     return (
@@ -59,10 +66,10 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
             {formatTimeHMS(hours, minutes, seconds)}
           </span>
         </div>
-        {/* レンジ表示（compact） */}
-        {range && <RangeBar range={range} activeScenario={activeScenario} />}
+        {/* レンジ表示（compact）: 停戦シナリオでは非表示 */}
+        {showRange && <RangeBar range={range} activeScenario={activeScenario} />}
         <div className="text-xs font-mono text-neutral-400 mt-1">
-          枯渇日: {formatDepletionDate(days)}
+          {depletionLabel} {formatDepletionDate(days)}
         </div>
       </div>
     );
@@ -84,10 +91,10 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
       <div className="font-mono text-2xl text-neutral-300">
         {formatTimeHMS(hours, minutes, seconds)}
       </div>
-      {/* レンジ表示（フル） */}
-      {range && <RangeBar range={range} activeScenario={activeScenario} />}
+      {/* レンジ表示（フル）: 停戦シナリオでは非表示 */}
+      {showRange && <RangeBar range={range} activeScenario={activeScenario} />}
       <div className="text-sm font-mono text-neutral-400 mt-2">
-        枯渇日: {formatDepletionDate(days)}
+        {depletionLabel} {formatDepletionDate(days)}
       </div>
       <div className="mt-4 h-1 rounded-full bg-border overflow-hidden">
         <div
@@ -106,7 +113,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
 
 interface RangeBarProps {
   range: ScenarioRange;
-  activeScenario: "optimistic" | "realistic" | "pessimistic";
+  activeScenario: ScenarioId;
 }
 
 const RangeBar: FC<RangeBarProps> = ({ range, activeScenario }) => {

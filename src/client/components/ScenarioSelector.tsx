@@ -10,6 +10,7 @@ const SCENARIO_COLORS: Record<ScenarioId, string> = {
   optimistic: "#2563eb",
   realistic: "#16a34a",
   pessimistic: "#d97706",
+  ceasefire: "#0d9488",
 };
 
 export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange }) => (

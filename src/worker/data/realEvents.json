@@ -365,6 +365,78 @@
       "label": "湾内停留の日本関係VLCC2隻（MAYASAN・YAKUMOSAN）がホルムズ海峡へ東進開始",
       "source": "Bloomberg 2026-04-10",
       "impact": "商船三井管理「MAYASAN」（UAE/サウジ産約200万バレル・苫小牧向け）とPhoenix Ocean「YAKUMOSAN」（カタール産約200万バレル）が4/9夜に東進開始。停戦下での初の日本関係VLCC移動。湾内停留タンカー（約40隻）のうち日本関係2隻が脱出を試みる。2隻合計で約400万バレル（日本の約3日分の原油輸入量）。ホルムズ通過成功すればETA 5/3頃。通過可否はイランの対応に依存"
+    },
+    {
+      "date": "2026-04-12",
+      "dayOffset": 42,
+      "category": "international",
+      "label": "停戦仲介交渉開始（カタール・オマーン）",
+      "source": "シミュレーション想定イベント",
+      "impact": "カタール・オマーンが仲介役として停戦交渉を本格化。交渉開始の報道でWTI一時5ドル下落",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-04-15",
+      "dayOffset": 45,
+      "category": "government",
+      "label": "停戦宣言（想定）",
+      "source": "シミュレーション想定イベント",
+      "impact": "停戦合意に伴いWTI急落（10〜20ドル規模）。ただし「停戦は本物か」懸念が残り保険料は高止まり。市民の「念のため補充」行動が一時的に需要増加",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-04-17",
+      "dayOffset": 47,
+      "category": "industry",
+      "label": "タンカー保険「危険区域」解除審査開始",
+      "source": "シミュレーション想定イベント",
+      "impact": "ロイズ・ロンドン市場が危険区域指定の解除審査を開始。最短14日で解除見込み。解除前は高額追加保険料が継続し実質的な航行制限が残る",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-04-29",
+      "dayOffset": 59,
+      "category": "industry",
+      "label": "初のVLCCホルムズ通過（停戦後）",
+      "source": "シミュレーション想定イベント",
+      "impact": "保険「危険区域」解除後、初のVLCCがホルムズ海峡を通過。湾内停留タンカー（約40隻）の流出が本格化。日本到着は15〜21日後（ETA 5/14〜5/20頃）",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-05-15",
+      "dayOffset": 75,
+      "category": "international",
+      "label": "IEA緊急放出縮小・段階的終了を協議",
+      "source": "シミュレーション想定イベント",
+      "impact": "供給回復の見通しを受けIEAが協調放出の縮小スケジュールを協議。縮小ペースは港湾正常化速度と連動",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-06-20",
+      "dayOffset": 111,
+      "category": "industry",
+      "label": "タンカー保険料、封鎖前水準の2〜3倍で安定",
+      "source": "シミュレーション想定イベント",
+      "impact": "緊急付加保険料は消滅するが構造的リスクプレミアムが残存。日本の石油調達コストは封鎖前比1.2〜1.5倍で安定化",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-06-25",
+      "dayOffset": 116,
+      "category": "government",
+      "label": "WTI急落局面（15〜25ドル下落の可能性）",
+      "source": "シミュレーション想定イベント",
+      "impact": "湾内在庫の一斉放出とIEA備蓄放出の重複で一時的な供給過剰が発生。WTIが急落する局面に注意",
+      "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-07-10",
+      "dayOffset": 131,
+      "category": "government",
+      "label": "SPR再充填開始の閣議決定",
+      "source": "シミュレーション想定イベント",
+      "impact": "放出した国家備蓄の再充填に着手。月次3〜5万kLペースで1〜2年かけて回復見込み。再充填需要が一定の価格下支えに",
+      "scenario": "ceasefire"
     }
   ]
 }

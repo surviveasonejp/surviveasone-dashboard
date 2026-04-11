@@ -13,6 +13,10 @@ import { fetchReservesUpdate } from "./reserves-fetcher";
 import { fetchLngUpdate } from "./lng-fetcher";
 import { fetchAisPositions, applyAisToOverrides } from "./ais-tracker";
 import { fetchOilPrice } from "./oil-price-fetcher";
+import { fetchTradeUpdate } from "./trade-fetcher";
+import { fetchOilProductsUpdate } from "./oil-products-fetcher";
+import { fetchJpcaUpdate } from "./jpca-fetcher";
+import { fetchJarwUpdate } from "./jarw-fetcher";
 
 interface Env {
   DB: D1Database;
@@ -20,6 +24,7 @@ interface Env {
   ARCHIVE: R2Bucket;
   AISSTREAM_API_KEY?: string;
   EIA_API_KEY?: string;
+  ESTAT_APP_ID?: string;
 }
 
 const OWID_CSV_URL = "https://raw.githubusercontent.com/owid/energy-data/master/owid-energy-data.csv";
@@ -43,6 +48,8 @@ export async function handleScheduled(
 
   if (hour === 3 && dayOfWeek === 1) {
     ctx.waitUntil(fetchArchiveAndUpdate(env));
+    // 石油製品在庫（週次）— OWID 取得と並行実行
+    ctx.waitUntil(fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE }));
   }
 
   if (hour === 18) {
@@ -68,10 +75,13 @@ export async function handleScheduled(
     }
   }
 
-  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫データ自動更新
+  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW 自動更新
   if (hour === 6 && dayOfMonth === 18) {
     ctx.waitUntil(fetchReservesUpdate(env));
     ctx.waitUntil(fetchLngUpdate(env));
+    ctx.waitUntil(fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
+    ctx.waitUntil(fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    ctx.waitUntil(fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE }));
   }
 }
 

@@ -32,6 +32,15 @@
   ],
   "triggers": {
     "crons": ["0 3 * * 1", "0 6 * * *", "0 18 * * *", "0 6 18 * *"]
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    },
+    "traces": {
+      "enabled": false
+    }
   }
   // ───────────────────────────────────────────────────
   // Cloudflare 無料枠制限（超過防止はWorkerコードで実装済み）

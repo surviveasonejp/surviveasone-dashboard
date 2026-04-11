@@ -65,6 +65,7 @@ const JOINT_STOCK_USABLE_RATIO: Record<string, number> = {
   optimistic: 1.0,
   realistic: 0.5,
   pessimistic: 0.0,
+  ceasefire: 0.5,  // 標準対応と同等（停戦後も産油国との交渉継続）
 };
 
 // 国家備蓄（原油タンク）の精製変換係数
@@ -75,16 +76,29 @@ const REFINERY_CONVERSION_RATIO = 0.82;
 
 // ─── #4 封鎖解除曲線 ────────────────────────────────
 
-interface BlockadeProfile {
-  /** 初期遮断率（day 0） */
-  initialRate: number;
-  /** 解除開始日 */
-  reliefStartDay: number;
-  /** 完全解除日（この日に最終遮断率に達する） */
-  reliefEndDay: number;
-  /** 最終遮断率 */
-  finalRate: number;
+/** 多段階解除用セグメント */
+interface BlockadeSegment {
+  startDay: number;
+  endDay: number;
+  startRate: number;
+  endRate: number;
 }
+
+interface BlockadeProfile {
+  /** 初期遮断率（day 0、buildArrivalScheduleで使用） */
+  initialRate: number;
+  /** 解除開始日（segments未指定時のフォールバック） */
+  reliefStartDay: number;
+  /** 完全解除日（segments未指定時のフォールバック） */
+  reliefEndDay: number;
+  /** 最終遮断率（segments未指定時のフォールバック） */
+  finalRate: number;
+  /** 多段階解除セグメント（指定時はreliefStartDay/reliefEndDay/finalRateより優先） */
+  segments?: readonly BlockadeSegment[];
+}
+
+/** 停戦シナリオの停戦宣言想定日（封鎖開始からの日数） */
+const CEASEFIRE_DAY = 45;
 
 const BLOCKADE_PROFILES: Record<ScenarioId, BlockadeProfile> = {
   optimistic: {
@@ -105,9 +119,35 @@ const BLOCKADE_PROFILES: Record<ScenarioId, BlockadeProfile> = {
     reliefEndDay: 365,    // 1年かけて段階的解除
     finalRate: 0.60,      // 60%残留
   },
+  ceasefire: {
+    // 停戦シナリオ: 45日目に停戦宣言、段階的に封鎖解除
+    // 保険会社「危険区域解除」→港湾再開→契約再締結→構造的残存 の4フェーズ
+    initialRate: 0.94,
+    reliefStartDay: CEASEFIRE_DAY,
+    reliefEndDay: 180,
+    finalRate: 0.08,
+    segments: [
+      { startDay: 0,             endDay: CEASEFIRE_DAY, startRate: 0.94, endRate: 0.94 }, // 封鎖継続
+      { startDay: CEASEFIRE_DAY, endDay: 60,            startRate: 0.94, endRate: 0.80 }, // 保険会社危険区域解除審査（最短14日）
+      { startDay: 60,            endDay: 90,            startRate: 0.80, endRate: 0.45 }, // 港湾部分再開・待機タンカー流入
+      { startDay: 90,            endDay: 120,           startRate: 0.45, endRate: 0.15 }, // 契約再締結・フォースマジュール解除
+      { startDay: 120,           endDay: 180,           startRate: 0.15, endRate: 0.08 }, // 構造的残存（制裁・施設修復ラグ）
+    ],
+  },
 };
 
 function getBlockadeRate(day: number, profile: BlockadeProfile): number {
+  if (profile.segments !== undefined) {
+    for (const seg of profile.segments) {
+      if (day < seg.endDay) {
+        const t = (day - seg.startDay) / (seg.endDay - seg.startDay);
+        return seg.startRate + (seg.endRate - seg.startRate) * t;
+      }
+    }
+    // 全セグメント経過後は最終セグメントの終了レートを維持
+    const lastSeg = profile.segments.at(-1);
+    return lastSeg !== undefined ? lastSeg.endRate : profile.finalRate;
+  }
   if (day < profile.reliefStartDay) return profile.initialRate;
   if (day >= profile.reliefEndDay) return profile.finalRate;
   // 線形補間で段階的に解除
@@ -239,6 +279,18 @@ const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
     initialSuccessRate: 0.2,            // 初期成功率20%
     successRateDecayPerDay: 0.003,      // 急速に低下
     minSuccessRate: 0.05,               // ほぼ調達不能
+  },
+  ceasefire: {
+    // 停戦シナリオ: 封鎖期間中は標準対応と同等の代替調達を継続
+    // 停戦後は主要ルート回復に伴い代替調達の需要が自然に低下
+    startDay: 28,
+    fujairahDailyKL: 50000,
+    yanbuDailyKL: 40000,
+    nonMiddleEastDailyKL: 20000,
+    nonMideastCompatibilityFactor: 0.4,
+    initialSuccessRate: 0.4,
+    successRateDecayPerDay: 0.001,      // 回復局面のため低下が緩やか
+    minSuccessRate: 0.2,
   },
 };
 

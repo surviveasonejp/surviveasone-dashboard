@@ -125,3 +125,144 @@ export async function getElectricityHistory(db: D1Database, area_id: string, lim
     .all<ElectricityDemandRow>();
   return result.results;
 }
+
+// ─── 貿易統計 ─────────────────────────────────────────
+
+export interface TradeStatisticsRow {
+  month: string;
+  commodity: string;
+  total_volume_kl: number | null;
+  mideast_volume_kl: number | null;
+  hormuz_rate: number;
+  top_origins: string | null; // JSON
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestTradeStatistics(
+  db: D1Database,
+  commodity: "crude_oil" | "lng",
+): Promise<TradeStatisticsRow | null> {
+  return db
+    .prepare(
+      "SELECT * FROM trade_statistics WHERE commodity = ? ORDER BY month DESC LIMIT 1",
+    )
+    .bind(commodity)
+    .first<TradeStatisticsRow>();
+}
+
+export async function getTradeStatisticsHistory(
+  db: D1Database,
+  commodity: "crude_oil" | "lng",
+  limit: number = 12,
+): Promise<TradeStatisticsRow[]> {
+  const result = await db
+    .prepare(
+      "SELECT * FROM trade_statistics WHERE commodity = ? ORDER BY month DESC LIMIT ?",
+    )
+    .bind(commodity, limit)
+    .all<TradeStatisticsRow>();
+  return result.results;
+}
+
+// ─── 石油製品在庫 ────────────────────────────────────
+
+export interface OilProductsInventoryRow {
+  week_ending: string;
+  gasoline_kl: number | null;
+  kerosene_kl: number | null;
+  diesel_kl: number | null;
+  fuel_oil_heavy_kl: number | null;
+  naphtha_kl: number | null;
+  total_kl: number | null;
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestOilProductsInventory(
+  db: D1Database,
+): Promise<OilProductsInventoryRow | null> {
+  return db
+    .prepare("SELECT * FROM oil_products_inventory ORDER BY week_ending DESC LIMIT 1")
+    .first<OilProductsInventoryRow>();
+}
+
+export async function getOilProductsHistory(
+  db: D1Database,
+  limit: number = 52,
+): Promise<OilProductsInventoryRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM oil_products_inventory ORDER BY week_ending DESC LIMIT ?")
+    .bind(limit)
+    .all<OilProductsInventoryRow>();
+  return result.results;
+}
+
+// ─── 石化生産実績 ────────────────────────────────────
+
+export interface PetrochemProductionRow {
+  month: string;
+  product: string;
+  production_t: number;
+  inventory_t: number | null;
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestPetrochemProduction(
+  db: D1Database,
+  product: string,
+): Promise<PetrochemProductionRow | null> {
+  return db
+    .prepare(
+      "SELECT * FROM petrochem_production WHERE product = ? ORDER BY month DESC LIMIT 1",
+    )
+    .bind(product)
+    .first<PetrochemProductionRow>();
+}
+
+export async function getPetrochemProductionHistory(
+  db: D1Database,
+  product: string,
+  limit: number = 12,
+): Promise<PetrochemProductionRow[]> {
+  const result = await db
+    .prepare(
+      "SELECT * FROM petrochem_production WHERE product = ? ORDER BY month DESC LIMIT ?",
+    )
+    .bind(product, limit)
+    .all<PetrochemProductionRow>();
+  return result.results;
+}
+
+// ─── 冷蔵倉庫在庫 ───────────────────────────────────
+
+export interface FoodColdStorageRow {
+  month: string;
+  total_t: number;
+  seafood_t: number | null;
+  meat_t: number | null;
+  dairy_t: number | null;
+  other_t: number | null;
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestFoodColdStorage(
+  db: D1Database,
+): Promise<FoodColdStorageRow | null> {
+  return db
+    .prepare("SELECT * FROM food_cold_storage ORDER BY month DESC LIMIT 1")
+    .first<FoodColdStorageRow>();
+}
+
+export async function getFoodColdStorageHistory(
+  db: D1Database,
+  limit: number = 12,
+): Promise<FoodColdStorageRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM food_cold_storage ORDER BY month DESC LIMIT ?")
+    .bind(limit)
+    .all<FoodColdStorageRow>();
+  return result.results;
+}

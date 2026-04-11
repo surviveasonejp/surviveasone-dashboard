@@ -60,6 +60,12 @@ export const CACHE_KEYS = {
   TANKERS: "api:tankers",
   OIL_PRICE: "oil:wti:latest",
   PETROCHEM_TREE: "api:petrochemtree",
+  // 新規追加: 省庁データソース
+  TRADE_LATEST: "api:trade:latest",
+  OIL_PRODUCTS_LATEST: "api:oil-products:latest",
+  JPCA_LATEST: "api:jpca:latest",
+  FOOD_COLD_STORAGE_LATEST: "api:food-cold-storage:latest",
+  FOOD_SUPPLY_LATEST: "api:food-supply:latest",
 } as const;
 
 /** シナリオ別キャッシュキー生成 */
@@ -69,11 +75,15 @@ export function scenarioCacheKey(base: string, scenario: string, extra?: string)
 
 /** TTL定義（秒） */
 export const CACHE_TTL = {
-  RESERVES: 3600,      // 1時間（日次更新データ）
-  CONSUMPTION: 86400,  // 24時間（年次ベースライン）
-  REGIONS: 86400,      // 24時間（静的に近いデータ）
-  ELECTRICITY: 300,    // 5分（電力需給実測、日次自動取得）
-  SIMULATION: 3600,    // 1時間（シミュレーション結果）
-  OIL_PRICE: 86400,    // 24時間（WTI原油価格、日次自動取得）
-  PETROCHEM: 86400,    // 24時間（静的ツリーデータ）
+  RESERVES: 3600,           // 1時間（日次更新データ）
+  CONSUMPTION: 86400,       // 24時間（年次ベースライン）
+  REGIONS: 86400,           // 24時間（静的に近いデータ）
+  ELECTRICITY: 300,         // 5分（電力需給実測、日次自動取得）
+  SIMULATION: 3600,         // 1時間（シミュレーション結果）
+  OIL_PRICE: 86400,         // 24時間（WTI原油価格、日次自動取得）
+  PETROCHEM: 86400,         // 24時間（静的ツリーデータ）
+  TRADE: 86400 * 3,         // 72時間（貿易統計、月次更新）
+  OIL_PRODUCTS: 86400 * 8,  // 8日（石油製品在庫、週次更新）
+  JPCA: 86400 * 35,         // 35日（JPCA統計、月次更新）
+  FOOD_COLD_STORAGE: 86400 * 35, // 35日（JARW統計、月次更新）
 } as const;

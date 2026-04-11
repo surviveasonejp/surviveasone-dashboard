@@ -1,4 +1,4 @@
-export type ScenarioId = "optimistic" | "realistic" | "pessimistic";
+export type ScenarioId = "optimistic" | "realistic" | "pessimistic" | "ceasefire";
 
 export interface Scenario {
   id: ScenarioId;
@@ -37,12 +37,21 @@ export const SCENARIOS: Record<ScenarioId, Scenario> = {
     lngBlockadeRate: 0.15,
     demandReductionRate: -0.10,
   },
+  ceasefire: {
+    id: "ceasefire",
+    label: "停戦・回復",
+    description: "停戦合意後の段階的供給回復。港湾再開・タンカー回航・契約正常化に60〜90日要する。構造的残存リスク8%",
+    oilBlockadeRate: 0.08,
+    lngBlockadeRate: 0.005,
+    demandReductionRate: -0.08,
+  },
 } as const;
 
 export const SCENARIO_LIST: Scenario[] = [
   SCENARIOS.optimistic,
   SCENARIOS.realistic,
   SCENARIOS.pessimistic,
+  SCENARIOS.ceasefire,
 ];
 
 export const DEFAULT_SCENARIO: ScenarioId = "realistic";

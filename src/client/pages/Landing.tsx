@@ -53,18 +53,14 @@ export const Landing: FC = () => {
   const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
   const { data } = useApiData<ResourceCountdown[]>(`/api/countdowns?scenario=${scenario}`, FALLBACK_COUNTDOWNS);
   const countdowns = data ?? FALLBACK_COUNTDOWNS;
+  const isCeasefire = scenario === "ceasefire";
 
   return (
     <div className="space-y-8">
       <AlertBanner
         level="warning"
-        message="これは予測ではなくリスクシナリオのシミュレーションです — 国際協調/標準対応/需要超過の3シナリオで分析"
+        message="これは予測ではなくリスクシナリオのシミュレーションです — 国際協調/標準対応/需要超過/停戦・回復の4シナリオで分析"
       />
-
-      {/* シナリオ切替 */}
-      <div className="flex justify-center">
-        <ScenarioSelector selected={scenario} onChange={setScenario} />
-      </div>
 
       {/* ヒーロー */}
       <div className="text-center space-y-4">
@@ -80,6 +76,61 @@ export const Landing: FC = () => {
         </p>
       </div>
 
+      {/* 安心情報ファースト — 現在の備え・対応状況 */}
+      <div className="bg-panel border border-[#16a34a]/30 rounded-lg p-5">
+        <div className="font-mono text-xs tracking-widest text-[#16a34a] mb-4 text-center">
+          CURRENT RESILIENCE STATUS
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          <Stat value="241" unit="日" label="石油備蓄（国家+民間）" color="#16a34a" />
+          <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="#16a34a" />
+          <Stat value="3" unit="ルート" label="代替調達稼働中" color="#2563eb" />
+        </div>
+        <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
+          {getReservesSummaryText()}。3/11 IEA史上最大の協調放出（4億バレル）実施済み。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
+        </p>
+      </div>
+
+      {/* 依存構造 — リスクの文脈 */}
+      <div className="bg-panel border border-border rounded-lg p-5">
+        <div className="font-mono text-xs tracking-widest text-neutral-500 mb-4 text-center">
+          JAPAN ENERGY DEPENDENCY
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          <Stat value="94" unit="%" label="中東石油依存" color="#f59e0b" />
+          <Stat value="65" unit="%" label="火力発電比率" color="#f59e0b" />
+          <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
+        </div>
+        <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
+          火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
+        </p>
+      </div>
+
+      {/* IEA加盟国比較 — 依存構造の後に国際的文脈を提示 */}
+      <IeaComparison />
+
+      {/* シナリオ切替 — 文脈を把握した後に選択 */}
+      <div className="flex justify-center">
+        <ScenarioSelector selected={scenario} onChange={setScenario} />
+      </div>
+
+      {/* 停戦シナリオ説明バナー（ceasefire選択時のみ表示） */}
+      {isCeasefire && (
+        <div className="bg-panel border border-[#0d9488]/40 rounded-lg p-4 space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-bold text-[#0d9488]">CEASEFIRE SCENARIO</span>
+            <span className="text-xs text-neutral-500">— 供給はいつ正常化するか</span>
+          </div>
+          <p className="text-xs text-neutral-400 leading-relaxed">
+            封鎖45日目に停戦宣言（想定）→ 保険会社「危険区域」解除（+14日）→ 港湾部分再開（+60日）→ 契約再締結（+90日）→ 構造的残存リスク8%で安定化（+120日）。
+            下の数値はシナリオ推定値です。備蓄放出・代替供給により変動します。
+          </p>
+          <Link to="/countdown" className="inline-block text-xs font-mono text-[#0d9488] hover:underline">
+            正常化タイムラインの詳細 → SUPPLY TIMELINE
+          </Link>
+        </div>
+      )}
+
       {/* 3本カウントダウン */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {countdowns.map((cd, i) => (
@@ -94,24 +145,6 @@ export const Landing: FC = () => {
         ))}
       </div>
 
-      {/* 依存構造 — なぜ危険か */}
-      <div className="bg-panel border border-border rounded-lg p-5">
-        <div className="font-mono text-xs tracking-widest text-neutral-500 mb-4 text-center">
-          JAPAN ENERGY DEPENDENCY
-        </div>
-        <div className="grid grid-cols-3 gap-4">
-          <Stat value="94" unit="%" label="中東石油依存" color="#f59e0b" />
-          <Stat value="65" unit="%" label="火力発電比率" color="#f59e0b" />
-          <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
-        </div>
-        <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
-          {getReservesSummaryText()}。火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
-        </p>
-      </div>
-
-      {/* IEA加盟国比較 */}
-      <IeaComparison />
-
       {/* メインCTA */}
       <div className="flex justify-center">
         <Link
@@ -122,22 +155,22 @@ export const Landing: FC = () => {
         </Link>
       </div>
 
-      {/* リスク層訴求 */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-5 space-y-4">
+      {/* 要配慮者導線 */}
+      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4">
         <div className="text-center space-y-2">
-          <div className="font-mono text-3xl font-bold text-[#ef4444]">5人に1人</div>
+          <div className="font-mono text-3xl font-bold text-[#f59e0b]">5人に1人</div>
           <p className="text-sm text-neutral-300">
-            乳幼児・子育て家庭・透析・在宅医療・介護——インフラ停止時に特別な備えが必要な家庭は日本人口の<span className="text-[#ef4444] font-bold">約20%</span>
+            乳幼児・子育て・透析・在宅医療・介護のある家庭。供給制約が生じたとき、通常の家庭より早く追加確認が必要になるのはこの層です。
           </p>
           <p className="text-xs text-neutral-500">
-            備蓄は国からの配給や地域の相互支援が届くまでの時間を稼ぐ手段。買い占めではなく「わが家に何が足りないか」の確認を。
+            備蓄は、公的支援が届くまでの時間を稼ぐ手段。「わが家に何が不足しているか」を確認することから始めましょう。
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {[
-            { to: "/for/parents", label: "子育て家庭", sub: "備えの確認を", color: "#ef4444" },
-            { to: "/for/dialysis", label: "透析患者の家族", sub: "備えの確認を", color: "#ef4444" },
-            { to: "/for/elderly", label: "介護・医療機器", sub: "備えの確認を", color: "#f59e0b" },
+            { to: "/for/parents", label: "子育て家庭", sub: "状況を確認する", color: "#ef4444" },
+            { to: "/for/dialysis", label: "透析患者の家族", sub: "状況を確認する", color: "#ef4444" },
+            { to: "/for/elderly", label: "介護・医療機器", sub: "状況を確認する", color: "#f59e0b" },
           ].map((seg) => (
             <Link
               key={seg.to}
@@ -169,21 +202,14 @@ export const Landing: FC = () => {
         </div>
       </Link>
 
-      {/* パネルカード */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      {/* パネルカード（4枚）*/}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <PanelCard
           to="/countdown"
           title="SUPPLY TIMELINE"
           subtitle="供給制約タイムライン"
           description="石油・LNG・電力の供給可能日数。365日フロータイムライン+代替供給ルート+経済カスケード"
           color="#ef4444"
-        />
-        <PanelCard
-          to="/collapse-map"
-          title="IMPACT MAP"
-          subtitle="全国10エリア供給影響"
-          description="原子力15基・再エネ・連系線融通・物流フロー可視化。GPS自動検出であなたの地域をハイライト"
-          color="#f59e0b"
         />
         <PanelCard
           to="/last-tanker"
@@ -200,32 +226,18 @@ export const Landing: FC = () => {
           color="#ef4444"
         />
         <PanelCard
-          to="/petrochem"
-          title="PETROCHEM"
-          subtitle="石化サプライチェーン樹形図"
-          description="ナフサ→クラッカー→ポリマー→包装材の7段階。エチレン収率ゲージ・代替フィード（石炭MTO/エタン）・供給制約によるグレー化。川下バッファ105日"
-          color="#a78bfa"
-        />
-        <PanelCard
           to="/prepare"
           title="PREPARE"
           subtitle="備え確認ガイド"
           description="住居形態・家族構成で絞り込み。マンション高層/ワンルーム/車なし世帯にも対応"
           color="#22c55e"
         />
-        <PanelCard
-          to="/methodology"
-          title="METHODOLOGY"
-          subtitle="計算モデル・前提条件"
-          description="16の計算式・24データソース・感度分析。全ての前提を公開し検証可能に"
-          color="#f59e0b"
-        />
       </div>
 
       {/* フッター注記 */}
       <div className="text-center space-y-2 pt-2">
         <p className="text-xs text-neutral-600 font-mono max-w-lg mx-auto leading-relaxed">
-          本シミュレーションは公開統計データに基づく最悪ケースに近いシナリオの推定値です。
+          本シミュレーションは公開統計データに基づくシナリオの推定値です。
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
           日本の石油備蓄はIEA基準で国際的に充実した水準にあります。
           前提条件・計算モデルの詳細は<Link to="/about" className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400">ABOUTページ</Link>を参照してください。
