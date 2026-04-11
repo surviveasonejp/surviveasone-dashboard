@@ -9,15 +9,24 @@ interface Position {
 
 const PORTS = portsData as Record<string, Position>;
 
-const ROUTES = routesData as Record<
-  string,
-  {
-    waypoints: [number, number][];
-    chokepoints: string[];
-    partialRoute?: boolean;
-    visibleStartProgress?: number;
-  }
->;
+export type RouteType = "primary" | "bypass" | "existing_alt";
+
+export interface RouteDefinition {
+  waypoints: [number, number][];
+  chokepoints: string[];
+  partialRoute?: boolean;
+  visibleStartProgress?: number;
+  capacity_mbpd: number;
+  route_type: RouteType;
+  label: string;
+  transit_days: number;
+  risk_note?: string;
+}
+
+const ROUTES = routesData as unknown as Record<string, RouteDefinition>;
+
+/** 全ルートデータ（TankerMap等で直接参照用） */
+export const ALL_ROUTES: Record<string, RouteDefinition> = ROUTES;
 
 const PORT_ROUTE_MAP: Record<string, string> = {
   "Ras Tanura": "hormuz-malacca",

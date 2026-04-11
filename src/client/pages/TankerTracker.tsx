@@ -2,7 +2,8 @@ import { type FC, useState, useRef, useEffect } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
-import { TankerMap } from "../components/TankerMap";
+import { TankerMap, type MapScenario } from "../components/TankerMap";
+import { SupplyGapChart } from "../components/SupplyGapChart";
 import { ArrivalTimeline } from "../components/ArrivalTimeline";
 import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
@@ -40,6 +41,7 @@ export const TankerTracker: FC = () => {
   const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isDimmed(t));
   const lngTankers = tankers.filter((t) => t.type === "LNG" && !isDimmed(t));
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [mapScenario, setMapScenario] = useState<MapScenario>("full");
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
 
   // マップで船舶選択時、テーブルの該当行にスクロール
@@ -136,12 +138,49 @@ export const TankerTracker: FC = () => {
         onSelect={setSelectedId}
       />
 
-      {/* 推定航跡マップ */}
-      <TankerMap
-        tankers={tankers}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-      />
+      {/* 推定航跡マップ + シナリオセレクター */}
+      <div className="space-y-2">
+        {/* シナリオセレクター */}
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-mono text-neutral-500 shrink-0">マップ表示:</span>
+          <div className="flex rounded-md overflow-hidden border border-border text-[11px] font-mono">
+            {(
+              [
+                { key: "normal" as MapScenario, label: "通常時" },
+                { key: "partial" as MapScenario, label: "部分封鎖" },
+                { key: "full" as MapScenario, label: "完全封鎖" },
+              ] as const
+            ).map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setMapScenario(key)}
+                className={`px-3 py-1 transition-colors ${
+                  mapScenario === key
+                    ? "bg-neutral-700 text-neutral-100"
+                    : "bg-transparent text-neutral-500 hover:bg-neutral-800 hover:text-neutral-300"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <span className="text-[10px] text-neutral-600 font-mono hidden sm:inline">
+            {mapScenario === "normal" && "全ルート通常稼働 — 参考表示"}
+            {mapScenario === "partial" && "ホルムズ50%制限 — フジャイラ迂回一部稼働"}
+            {mapScenario === "full" && "ホルムズ完全封鎖 — 代替ルートを強調表示"}
+          </span>
+        </div>
+
+        <TankerMap
+          tankers={tankers}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          scenario={mapScenario}
+        />
+      </div>
+
+      {/* 供給ギャップチャート */}
+      <SupplyGapChart scenario={mapScenario} />
 
       {/* 到着順ランキング */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
