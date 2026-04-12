@@ -31,6 +31,20 @@ const SCENARIO_COLORS: Record<ScenarioId, string> = {
   ceasefire: "#0d9488",
 };
 
+/** 365日以上は年単位で表示 */
+function formatDaysMain(days: number): { value: string; unit: string; sub?: string } {
+  if (days >= 365) {
+    const years = Math.floor(days / 365);
+    const rem = Math.round(days % 365);
+    return {
+      value: String(years),
+      unit: "年",
+      sub: rem > 0 ? `${rem}日` : undefined,
+    };
+  }
+  return { value: formatNumber(days), unit: "日" };
+}
+
 export const CountdownTimer: FC<CountdownTimerProps> = ({
   label,
   totalSeconds,
@@ -46,6 +60,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   // 停戦シナリオではレンジバー非表示（3シナリオ比較レンジは適用外）
   const showRange = range !== undefined && !isCeasefire;
   const depletionLabel = isCeasefire ? "正常化目標:" : "枯渇日:";
+  const { value: mainValue, unit: mainUnit, sub: mainSub } = formatDaysMain(days);
 
   if (compact) {
     return (
@@ -59,9 +74,12 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
             className={`font-mono font-bold text-2xl ${isCritical ? "animate-pulse-danger" : ""}`}
             style={{ color }}
           >
-            {formatNumber(days)}
+            {mainValue}
           </span>
-          <span className="text-neutral-500 text-sm font-mono">日</span>
+          <span className="text-neutral-500 text-sm font-mono">{mainUnit}</span>
+          {mainSub && (
+            <span className="font-mono text-sm text-neutral-400">{mainSub}</span>
+          )}
           <span className="font-mono text-sm text-neutral-400">
             {formatTimeHMS(hours, minutes, seconds)}
           </span>
@@ -82,13 +100,16 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
         <span className="ml-1.5 text-neutral-600">({SCENARIO_LABELS[activeScenario]}シナリオ)</span>
       </div>
       <div
-        className={`font-mono font-bold text-6xl md:text-7xl mb-2 ${isCritical ? "animate-pulse-danger" : ""}`}
+        className={`font-mono font-bold text-6xl md:text-7xl mb-1 ${isCritical ? "animate-pulse-danger" : ""}`}
         style={{ color }}
       >
-        {formatNumber(days)}
+        {mainValue}
       </div>
-      <div className="text-neutral-500 font-mono text-lg mb-3">日</div>
-      <div className="font-mono text-2xl text-neutral-300">
+      <div className="text-neutral-500 font-mono text-lg mb-1">{mainUnit}</div>
+      {mainSub && (
+        <div className="font-mono text-2xl text-neutral-400 mb-1">{mainSub}</div>
+      )}
+      <div className="font-mono text-2xl text-neutral-300 mb-3">
         {formatTimeHMS(hours, minutes, seconds)}
       </div>
       {/* レンジ表示（フル）: 停戦シナリオでは非表示 */}
@@ -116,6 +137,14 @@ interface RangeBarProps {
   activeScenario: ScenarioId;
 }
 
+/** レンジバー用: 365日以上は「X.X年」表示 */
+function formatRangeDays(val: number): string {
+  if (val >= 365) {
+    return `${(val / 365).toFixed(1)}年`;
+  }
+  return `${Math.round(val)}日`;
+}
+
 const RangeBar: FC<RangeBarProps> = ({ range, activeScenario }) => {
   const max = Math.max(range.optimistic, range.realistic, range.pessimistic, 1);
   const scenarios = ["pessimistic", "realistic", "optimistic"] as const;
@@ -130,7 +159,7 @@ const RangeBar: FC<RangeBarProps> = ({ range, activeScenario }) => {
         return (
           <div key={id} className="flex items-center gap-1.5">
             <span
-              className="text-[9px] font-mono w-6 text-right shrink-0"
+              className="text-[10px] font-mono w-6 text-right shrink-0"
               style={{ color: isActive ? sColor : "#555" }}
             >
               {SCENARIO_LABELS[id]}
@@ -146,10 +175,10 @@ const RangeBar: FC<RangeBarProps> = ({ range, activeScenario }) => {
               />
             </div>
             <span
-              className="text-[9px] font-mono w-8 text-right shrink-0"
+              className="text-[10px] font-mono w-10 text-right shrink-0"
               style={{ color: isActive ? sColor : "#555" }}
             >
-              {Math.round(val)}
+              {formatRangeDays(val)}
             </span>
           </div>
         );

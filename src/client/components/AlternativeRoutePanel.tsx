@@ -94,9 +94,9 @@ const ROUTE_CONFIGS: RouteDisplayConfig[] = [
 function CapacityBar({ mbpd, max }: { mbpd: number; max: number }) {
   const pct = max > 0 ? Math.min((mbpd / max) * 100, 100) : 0;
   return (
-    <div className="h-1 bg-[#e2e8f0] rounded-full overflow-hidden">
+    <div className="h-1 bg-border rounded-full overflow-hidden">
       <div
-        className="h-full bg-[#2563eb] rounded-full"
+        className="h-full bg-accent rounded-full"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -126,59 +126,59 @@ export const AlternativeRoutePanel: FC = () => {
   const blockedRoute = ROUTE_CONFIGS.filter((c) => c.status === "blocked");
 
   return (
-    <div className="bg-white border border-[#e2e8f0] rounded-lg p-4 space-y-4">
+    <div className="bg-panel border border-border rounded-lg p-4 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="font-mono text-xs tracking-widest text-neutral-500">
+        <div className="font-mono text-xs tracking-widest text-text-muted">
           ALTERNATIVE ROUTES — 代替ルート供給余力
         </div>
-        <div className="text-[10px] font-mono text-neutral-400">
+        <div className="text-xs font-mono text-text-muted">
           ホルムズ封鎖シナリオ
         </div>
       </div>
 
       {/* 供給ギャップサマリー */}
-      <div className="bg-[#f8fafc] border border-[#e2e8f0] rounded-lg p-3 space-y-2">
-        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
+      <div className="bg-bg border border-border rounded-lg p-3 space-y-2">
+        <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
           <div>
             <div className="font-bold text-lg text-[#dc2626]">
               {hormuzCapacity.toFixed(1)}
               <span className="text-xs font-normal text-neutral-400"> Mbpd</span>
             </div>
-            <div className="text-neutral-500">ホルムズ経由</div>
-            <div className="text-[8px] text-[#dc2626]">封鎖時停止</div>
+            <div className="text-text-muted">ホルムズ経由</div>
+            <div className="text-[10px] text-[#dc2626]">封鎖時停止</div>
           </div>
           <div>
             <div className="font-bold text-lg text-[#2563eb]">
               {altCapacity.toFixed(2)}
-              <span className="text-xs font-normal text-neutral-400"> Mbpd</span>
+              <span className="text-xs font-normal text-text-muted"> Mbpd</span>
             </div>
-            <div className="text-neutral-500">代替ルート合計</div>
-            <div className="text-[8px] text-[#2563eb]">確保可能</div>
+            <div className="text-text-muted">代替ルート合計</div>
+            <div className="text-[10px] text-[#2563eb]">確保可能</div>
           </div>
           <div>
             <div className="font-bold text-lg text-[#d97706]">
               {gapMbpd.toFixed(2)}
-              <span className="text-xs font-normal text-neutral-400"> Mbpd</span>
+              <span className="text-xs font-normal text-text-muted"> Mbpd</span>
             </div>
-            <div className="text-neutral-500">供給ギャップ</div>
-            <div className="text-[8px] text-[#d97706]">需要削減で補完</div>
+            <div className="text-text-muted">供給ギャップ</div>
+            <div className="text-[10px] text-[#d97706]">需要削減で補完</div>
           </div>
         </div>
 
         {/* カバー率バー */}
         <div className="space-y-1">
-          <div className="flex justify-between text-[9px] font-mono text-neutral-500">
+          <div className="flex justify-between text-[10px] font-mono text-text-muted">
             <span>代替ルートカバー率</span>
             <span className="font-bold text-[#2563eb]">{coverageRate.toFixed(0)}%</span>
           </div>
-          <div className="h-2 bg-[#e2e8f0] rounded-full overflow-hidden">
+          <div className="h-2 bg-border rounded-full overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${coverageRate}%`, backgroundColor: "#2563eb" }}
+              style={{ width: `${coverageRate}%`, backgroundColor: "var(--color-accent)" }}
             />
           </div>
-          <div className="text-[9px] font-mono text-neutral-400">
+          <div className="text-[9px] font-mono text-text-muted">
             備蓄放出・需要削減を合わせると、180日以上の対応余力があります
           </div>
         </div>
@@ -189,7 +189,7 @@ export const AlternativeRoutePanel: FC = () => {
 
         {/* 封鎖停止ルート */}
         <div className="space-y-1">
-          <div className="text-[9px] font-mono text-neutral-400 tracking-wider flex items-center gap-1.5">
+          <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#dc2626] inline-block" />
             封鎖時停止ルート
           </div>
@@ -204,7 +204,7 @@ export const AlternativeRoutePanel: FC = () => {
 
         {/* 代替・迂回ルート */}
         <div className="space-y-1">
-          <div className="text-[9px] font-mono text-neutral-400 tracking-wider flex items-center gap-1.5">
+          <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#d97706] inline-block" />
             代替・迂回ルート（封鎖時に転換）
           </div>
@@ -219,7 +219,7 @@ export const AlternativeRoutePanel: FC = () => {
 
         {/* 継続中（非ホルムズ） */}
         <div className="space-y-1">
-          <div className="text-[9px] font-mono text-neutral-400 tracking-wider flex items-center gap-1.5">
+          <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#16a34a] inline-block" />
             継続中（非ホルムズ・封鎖影響なし）
           </div>
@@ -234,7 +234,7 @@ export const AlternativeRoutePanel: FC = () => {
       </div>
 
       {/* 補足 */}
-      <p className="text-[9px] text-neutral-400 border-t border-[#e2e8f0] pt-2 leading-relaxed">
+      <p className="text-[10px] text-text-muted border-t border-border pt-2 leading-relaxed">
         供給能力は参考値。実際の転換には輸送契約の組み替え・港湾受け入れ能力・タンカー不足により数週間のラグが生じます。日本の石油輸入中東依存率は約92%ですが、LNG は非ホルムズ調達が93.7%を占めます。
       </p>
     </div>
@@ -252,23 +252,23 @@ interface RouteRowProps {
 const RouteRow: FC<RouteRowProps> = ({ route, config, maxCapacity }) => {
   const isBlocked = config.status === "blocked";
   return (
-    <div className={`flex items-center gap-2 text-[10px] font-mono ${isBlocked ? "opacity-50" : ""}`}>
+    <div className={`flex items-center gap-2 text-xs font-mono ${isBlocked ? "opacity-50" : ""}`}>
       {/* 航行日数 */}
       <div className="w-12 text-right shrink-0">
         <span className="font-bold" style={{ color: config.statusColor }}>
           {route.transit_days}
         </span>
-        <span className="text-[8px] text-neutral-400">日</span>
+        <span className="text-[10px] text-text-muted">日</span>
       </div>
 
       {/* ルート情報 */}
       <div className="flex-1 space-y-0.5">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className={`text-[11px] ${isBlocked ? "line-through text-neutral-400" : "text-[#0f172a]"}`}>
+          <span className={`text-xs ${isBlocked ? "line-through text-text-muted" : "text-text"}`}>
             {route.label}
           </span>
           <span
-            className="text-[8px] px-1.5 py-0.5 rounded font-bold shrink-0"
+            className="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0"
             style={{
               backgroundColor: `${config.statusColor}18`,
               color: config.statusColor,
@@ -280,12 +280,12 @@ const RouteRow: FC<RouteRowProps> = ({ route, config, maxCapacity }) => {
         {/* 容量バー */}
         <div className="flex items-center gap-1.5">
           <CapacityBar mbpd={route.capacity_mbpd ?? 0} max={maxCapacity} />
-          <span className="text-[9px] text-neutral-400 shrink-0">
+          <span className="text-[10px] text-neutral-400 shrink-0">
             {(route.capacity_mbpd ?? 0).toFixed(2)} Mbpd
           </span>
         </div>
         {(config.note ?? route.risk_note) && (
-          <div className="text-[9px] text-neutral-400 truncate">
+          <div className="text-[10px] text-text-muted truncate">
             {config.note ?? route.risk_note}
           </div>
         )}

@@ -266,3 +266,93 @@ export async function getFoodColdStorageHistory(
     .all<FoodColdStorageRow>();
   return result.results;
 }
+
+// ─── 発電機停止情報（HJKS） ──────────────────────────────
+
+export interface PowerOutageRow {
+  id: string;
+  area: string;
+  operator: string;
+  plant_code: string;
+  plant_name: string;
+  fuel_type: string;
+  unit_name: string;
+  capacity_kw: number | null;
+  outage_type: string | null;
+  category: string | null;
+  reduction_kw: number | null;
+  outage_at: string | null;
+  recovery_forecast: string | null;
+  recovery_planned_at: string | null;
+  cause: string | null;
+  source_updated_at: string | null;
+  fetched_at: string;
+}
+
+/** 最新取得バッチの停止情報を全件返す */
+export async function getLatestPowerOutages(
+  db: D1Database,
+): Promise<PowerOutageRow[]> {
+  const result = await db
+    .prepare(`
+      SELECT * FROM power_outages
+      WHERE fetched_at = (SELECT MAX(fetched_at) FROM power_outages)
+      ORDER BY area, fuel_type, plant_name
+    `)
+    .all<PowerOutageRow>();
+  return result.results;
+}
+
+/** 燃料種別でフィルタして停止情報を返す */
+export async function getPowerOutagesByFuelType(
+  db: D1Database,
+  fuelType: string,
+): Promise<PowerOutageRow[]> {
+  const result = await db
+    .prepare(`
+      SELECT * FROM power_outages
+      WHERE fetched_at = (SELECT MAX(fetched_at) FROM power_outages)
+        AND fuel_type LIKE ?
+      ORDER BY area, plant_name
+    `)
+    .bind(`%${fuelType}%`)
+    .all<PowerOutageRow>();
+  return result.results;
+}
+
+/** 停止情報のサマリ（件数・合計出力制約量） */
+export async function getPowerOutageSummary(db: D1Database): Promise<{
+  total: number;
+  lngCount: number;
+  nuclearCount: number;
+  totalReductionKw: number;
+  fetchedAt: string | null;
+} | null> {
+  const row = await db
+    .prepare(`
+      SELECT
+        COUNT(*) as total,
+        SUM(CASE WHEN fuel_type LIKE '%LNG%' OR fuel_type LIKE '%ガス%' THEN 1 ELSE 0 END) as lng_count,
+        SUM(CASE WHEN fuel_type LIKE '%原子%' OR fuel_type LIKE '%核%' THEN 1 ELSE 0 END) as nuclear_count,
+        SUM(COALESCE(reduction_kw, 0)) as total_reduction_kw,
+        MAX(fetched_at) as fetched_at
+      FROM power_outages
+      WHERE fetched_at = (SELECT MAX(fetched_at) FROM power_outages)
+    `)
+    .first<{
+      total: number;
+      lng_count: number;
+      nuclear_count: number;
+      total_reduction_kw: number;
+      fetched_at: string | null;
+    }>();
+
+  if (!row) return null;
+  return {
+    total: row.total,
+    lngCount: row.lng_count,
+    nuclearCount: row.nuclear_count,
+    totalReductionKw: row.total_reduction_kw,
+    fetchedAt: row.fetched_at,
+  };
+}

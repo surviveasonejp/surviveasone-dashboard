@@ -60,6 +60,7 @@ function calcPetrochemRisk(
     let impactMultiplier = 0.5;
     if (node.depth >= 5 && node.depth <= 6) impactMultiplier = 0.7;
     if (node.depth === 7) impactMultiplier = 0.9;
+    if (node.depth >= 8) impactMultiplier = 0.95;
     const impactDay = Math.round(depletionDay * impactMultiplier);
 
     // リスクレベル: 線形補間

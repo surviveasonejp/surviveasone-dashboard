@@ -90,26 +90,51 @@ export function useSwipeNavigation() {
     }
   }, [currentIndex]);
 
+  // navigate() 完了後（古い div が unmount された後）に state をリセット。
+  // setTimeout 内で setDragX(0) を呼ぶと、navigate() のレンダーより先に
+  // state 更新が処理されて古い div が translateX(0) にスナップするフラッシュが起きる。
+  // useEffect は DOM コミット後に発火するため古い div は既に消えている。
+  useEffect(() => {
+    setDragX(0);
+    setTransitionEnabled(false);
+  }, [location.key]);
+
   const canGoLeft = currentIndex > 0;
   const canGoRight = currentIndex < SWIPE_PAGES.length - 1;
 
   const commitNavigate = useCallback(
     (targetIndex: number, exitX: number) => {
-      // 入場方向を先にセット（navigate() より前）
-      enterDirRef.current = exitX < 0 ? "from-right" : "from-left";
+      // 退場アニメーション前に null にクリア。
+      // CSS Animations は Inline Style より優先されるため、前回ナビゲーションで残った
+      // enterDirRef 値が古いページの data-enter に反映されると入場アニメーションが
+      // 退場の translate を打ち消し「前の画面が一瞬見える」フラッシュが起きる。
+      enterDirRef.current = null;
 
       // 退場アニメーション開始
       setTransitionEnabled(true);
       setDragX(exitX);
 
-      // アニメーション完了後に遷移・リセット
+      // アニメーション完了後に遷移（state リセットは location.key の useEffect に委譲）
       setTimeout(() => {
+        enterDirRef.current = exitX < 0 ? "from-right" : "from-left";
         navigate(SWIPE_PAGES[targetIndex] ?? "/");
-        setTransitionEnabled(false);
-        setDragX(0);
       }, SLIDE_DURATION);
     },
     [navigate],
+  );
+
+  // ヘッダーリンク等からのナビゲーション: navigate() 前に enterDir をセット
+  const navigateTo = useCallback(
+    (to: string) => {
+      const toIndex = SWIPE_PAGES.indexOf(to);
+      if (toIndex >= 0 && toIndex !== currentIndex) {
+        enterDirRef.current = toIndex > currentIndex ? "from-right" : "from-left";
+      } else {
+        enterDirRef.current = null;
+      }
+      navigate(to);
+    },
+    [navigate, currentIndex],
   );
 
   const bind = useDrag(
@@ -208,6 +233,7 @@ export function useSwipeNavigation() {
     dragX,
     transitionEnabled,
     enterDir: enterDirRef.current,
+    navigateTo,
     prevPage,
     nextPage,
   };

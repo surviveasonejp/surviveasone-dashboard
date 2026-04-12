@@ -114,7 +114,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
                 </span>
               </div>
             ))}
-            <div className="text-[9px] text-neutral-500 font-mono pt-0.5">
+            <div className="text-[10px] text-neutral-500 font-mono pt-0.5">
               合計: {(stockpileBases.reduce((s, b) => s + b.capacity_kL, 0) / 10000).toLocaleString()}万kL
             </div>
           </div>
@@ -155,7 +155,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
             )}
           </div>
           {"interRegionSupply" in logistics && (
-            <div className="text-[9px] text-neutral-500 space-y-0.5 border-t border-border pt-1.5 mt-1">
+            <div className="text-[10px] text-neutral-500 space-y-0.5 border-t border-border pt-1.5 mt-1">
               <div className="text-neutral-600 tracking-wider">供給元</div>
               {(logistics.interRegionSupply as Array<{ from: string; mode: string; capacity_kL_per_day: number; note: string }>).map((route, i) => (
                 <div key={i} className="flex justify-between">
@@ -165,7 +165,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
               ))}
             </div>
           )}
-          <p className="text-[9px] text-neutral-600 leading-relaxed">{logistics.note}</p>
+          <p className="text-[10px] text-neutral-600 leading-relaxed">{logistics.note}</p>
           <p className="text-[8px] text-neutral-700">給油所数出典: 資源エネルギー庁 2023年度末</p>
         </div>
       )}
@@ -224,7 +224,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-1 text-[9px] text-neutral-600 pt-1 border-t border-border">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] text-neutral-600 pt-1 border-t border-border">
             <div>太陽光 {regionData.solarCapacity_MW?.toLocaleString() ?? 0} MW</div>
             <div>風力 {regionData.windCapacity_MW?.toLocaleString() ?? 0} MW</div>
             <div>水力 {regionData.hydroCapacity_MW?.toLocaleString() ?? 0} MW</div>

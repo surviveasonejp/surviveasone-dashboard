@@ -55,7 +55,14 @@
     { "id": "pta",              "label": "テレフタル酸(PTA)",      "category": "polymer",   "depth": 6, "parent_id": "paraxylene",       "naptha_factor": 0.7,  "description": "PXを酸化して製造。PET樹脂の主原料（重量比70%）。国内生産能力が限定的で輸入依存率45%" },
     { "id": "pet_resin",        "label": "PET樹脂",                "category": "polymer",   "depth": 7, "parent_id": "ethylene_glycol",  "naptha_factor": 0.8,  "description": "EG+PTAを重縮合。国内生産25万t/年。PETボトル・フィルム・繊維に使用。輸入品との競合激しく封鎖時は輸入途絶リスク" },
     { "id": "pet_bottle",       "label": "PETボトル",              "category": "end_use",   "depth": 8, "parent_id": "pet_resin",        "naptha_factor": 0.8,  "description": "飲料水・お茶・醤油・ソースボトル。年間約200億本消費。代替容器（紙・ガラス・缶）への切替に時間を要する" },
-    { "id": "pet_film",         "label": "PETフィルム",            "category": "end_use",   "depth": 8, "parent_id": "pet_resin",        "naptha_factor": 0.7,  "description": "食品包装・太陽電池バックシート・磁気テープ基材。食品包装分野では牛乳・ハム・チーズの袋に使用" }
+    { "id": "pet_film",         "label": "PETフィルム",            "category": "end_use",   "depth": 8, "parent_id": "pet_resin",        "naptha_factor": 0.7,  "description": "食品包装・太陽電池バックシート・磁気テープ基材。食品包装分野では牛乳・ハム・チーズの袋に使用" },
+    { "id": "acrylonitrile",    "label": "アクリロニトリル(AN)",   "category": "monomer",   "depth": 5, "parent_id": "propylene",        "naptha_factor": 0.8,  "description": "プロピレンをアンモオキシデーション（SOHIO法）で製造。ABS・炭素繊維・アクリル繊維の主原料。国内3工場が全量供給" },
+    { "id": "abs_resin",        "label": "ABS樹脂",                "category": "polymer",   "depth": 6, "parent_id": "acrylonitrile",   "naptha_factor": 0.7,  "description": "AN+ブタジエン+スチレンの三元共重合体。耐衝撃性・加工性に優れ家電外装・自動車内装に汎用。封鎖時は国内在庫20〜30日分が目安" },
+    { "id": "electronics_housing", "label": "家電外装・自動車内装","category": "end_use",   "depth": 7, "parent_id": "abs_resin",       "naptha_factor": 0.6,  "description": "テレビ・洗濯機・冷蔵庫の外装、自動車インパネ・ドアトリム。ABS樹脂供給制約で国内家電生産に直接影響" },
+    { "id": "phenol",           "label": "フェノール",             "category": "monomer",   "depth": 5, "parent_id": "benzene",          "naptha_factor": 0.6,  "description": "ベンゼンをプロピレンでクメン経由製造（クメン法）。BPA・フェノール樹脂・ナイロン6の主原料。国内自給率80%だが封鎖時は原料ベンゼン逼迫" },
+    { "id": "bpa",              "label": "ビスフェノールA(BPA)",   "category": "intermediate","depth": 6, "parent_id": "phenol",          "naptha_factor": 0.6,  "description": "フェノール+アセトン（プロピレン誘導）を縮合。PC・エポキシ樹脂の必須原料。国内主要メーカー2社でほぼ全量供給" },
+    { "id": "polycarbonate",    "label": "ポリカーボネート(PC)",   "category": "polymer",   "depth": 7, "parent_id": "bpa",              "naptha_factor": 0.6,  "description": "BPA+ホスゲンを重合。光学的透明性・耐衝撃性が高く医療機器・光ディスク・建材に使用。国内生産20万t/年。光学グレード品は輸入依存高" },
+    { "id": "optical_parts",    "label": "光学・医療部品",          "category": "end_use",   "depth": 8, "parent_id": "polycarbonate",   "naptha_factor": 0.6,  "description": "透析回路チャンバー・点滴ボトル・眼鏡レンズ・CDケース。医療用途では国内在庫14日分とされ封鎖早期に影響が顕在化する" }
   ],
   "edges": [
     { "id": "crude_oil->refinery",           "source_id": "crude_oil",       "target_id": "refinery",         "flow_label": "精製" },
@@ -111,6 +118,13 @@
     { "id": "ethylene_glycol->pet_resin",    "source_id": "ethylene_glycol", "target_id": "pet_resin",        "flow_label": "重縮合(30%)" },
     { "id": "pta->pet_resin",                "source_id": "pta",             "target_id": "pet_resin",        "flow_label": "重縮合(70%)" },
     { "id": "pet_resin->pet_bottle",         "source_id": "pet_resin",       "target_id": "pet_bottle",       "flow_label": "延伸成形" },
-    { "id": "pet_resin->pet_film",           "source_id": "pet_resin",       "target_id": "pet_film",         "flow_label": "二軸延伸" }
+    { "id": "pet_resin->pet_film",           "source_id": "pet_resin",       "target_id": "pet_film",         "flow_label": "二軸延伸" },
+    { "id": "propylene->acrylonitrile",      "source_id": "propylene",       "target_id": "acrylonitrile",    "flow_label": "アンモオキシデーション" },
+    { "id": "acrylonitrile->abs_resin",      "source_id": "acrylonitrile",   "target_id": "abs_resin",        "flow_label": "共重合(AN+スチレン+ブタジエン)" },
+    { "id": "abs_resin->electronics_housing","source_id": "abs_resin",       "target_id": "electronics_housing","flow_label": "射出成形" },
+    { "id": "benzene->phenol",               "source_id": "benzene",         "target_id": "phenol",           "flow_label": "クメン法" },
+    { "id": "phenol->bpa",                   "source_id": "phenol",          "target_id": "bpa",              "flow_label": "縮合" },
+    { "id": "bpa->polycarbonate",            "source_id": "bpa",             "target_id": "polycarbonate",    "flow_label": "界面重合" },
+    { "id": "polycarbonate->optical_parts",  "source_id": "polycarbonate",   "target_id": "optical_parts",    "flow_label": "精密成形" }
   ]
 }

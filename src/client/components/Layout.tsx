@@ -12,6 +12,7 @@ export const Layout: FC = () => {
     dragX,
     transitionEnabled,
     enterDir,
+    navigateTo,
     prevPage,
     nextPage,
   } = useSwipeNavigation();
@@ -21,7 +22,7 @@ export const Layout: FC = () => {
 
   return (
     <div className="min-h-screen bg-bg text-white overflow-x-hidden">
-      <Header />
+      <Header onNavigate={navigateTo} />
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
         <div
           key={location.key}
@@ -58,13 +59,13 @@ export const Layout: FC = () => {
             {prevPage ? (
               <Link
                 to={prevPage.path}
-                className="flex items-center gap-1 text-[11px] font-mono text-neutral-500 active:text-text transition-colors py-1 px-1 min-w-[72px]"
+                className="flex items-center gap-1 text-xs font-mono text-neutral-500 active:text-text transition-colors py-3 px-3 min-w-[80px] min-h-[44px]"
               >
                 <span className="text-base leading-none">‹</span>
                 <span className="truncate">{prevPage.label}</span>
               </Link>
             ) : (
-              <div className="min-w-[72px]" />
+              <div className="min-w-[80px]" />
             )}
 
             {/* ページ位置インジケーター */}
@@ -92,13 +93,13 @@ export const Layout: FC = () => {
             {nextPage ? (
               <Link
                 to={nextPage.path}
-                className="flex items-center gap-1 text-[11px] font-mono text-neutral-500 active:text-text transition-colors py-1 px-1 min-w-[72px] justify-end"
+                className="flex items-center gap-1 text-xs font-mono text-neutral-500 active:text-text transition-colors py-3 px-3 min-w-[80px] min-h-[44px] justify-end"
               >
                 <span className="truncate">{nextPage.label}</span>
                 <span className="text-base leading-none">›</span>
               </Link>
             ) : (
-              <div className="min-w-[72px]" />
+              <div className="min-w-[80px]" />
             )}
 
           </div>

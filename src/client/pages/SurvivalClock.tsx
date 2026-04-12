@@ -77,7 +77,7 @@ export const SurvivalClock: FC = () => {
               <span className="text-[#ef4444]">SURVIVAL</span> CLOCK
             </h1>
             {isLive && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+              <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
                 LIVE
               </span>
             )}
@@ -123,17 +123,17 @@ export const SurvivalClock: FC = () => {
           <p>石油: {formatNumber(oilTotal)}kL ÷ ({formatNumber(oilDailyKL)}kL/日 × {Math.round(oilHormuz * 100)}%) ≈ {oilDays.toFixed(1)}日</p>
           {DATA_SOURCES.oilReserve && <DataBadge confidence={DATA_SOURCES.oilReserve.confidence} />}
         </div>
-        <p className="text-neutral-600 text-[10px]">出典: 経産省 石油備蓄推計量({staticReserves.meta.baselineDate}) / OWID energy-data</p>
+        <p className="text-neutral-600 text-xs">出典: 経産省 石油備蓄推計量({staticReserves.meta.baselineDate}) / OWID energy-data</p>
         <div className="flex items-center gap-2">
           <p>LNG: {formatNumber(lngInv)}t ÷ ({formatNumber(lngDaily)}t/日 × {(lngHormuz * 100).toFixed(1)}%) ≈ {lngDays.toFixed(1)}日</p>
           {DATA_SOURCES.lngInventory && <DataBadge confidence={DATA_SOURCES.lngInventory.confidence} />}
         </div>
-        <p className="text-neutral-600 text-[10px]">出典: 経産省ガス事業統計 / JETRO貿易統計(2025年)</p>
+        <p className="text-neutral-600 text-xs">出典: 経産省ガス事業統計 / JETRO貿易統計(2025年)</p>
         <div className="flex items-center gap-2">
           <p>電力: LNG枯渇 × 火力依存率{Math.round(thermalShare * 100)}% ≈ {powerDays.toFixed(1)}日</p>
           {DATA_SOURCES.thermalShare && <DataBadge confidence={DATA_SOURCES.thermalShare.confidence} />}
         </div>
-        <p className="text-neutral-600 text-[10px]">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
+        <p className="text-neutral-600 text-xs">出典: ISEP 電力調査統計(2024年暦年速報) / 原子力規制委員会</p>
         <div className="pt-2 border-t border-border mt-2">
           <DataFreshness />
         </div>

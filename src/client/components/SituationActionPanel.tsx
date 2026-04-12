@@ -224,7 +224,7 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
           <div className="font-mono text-xs tracking-widest text-[#0d9488]">
             SITUATION ACTIONS — 今確認すべき事項
           </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#0d9488]/15 text-[#0d9488]">
+          <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#0d9488]/15 text-[#0d9488]">
             停戦・回復フェーズ
           </span>
         </div>
@@ -238,14 +238,14 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
             "燃料価格・物流コストの正常化を確認してから大型購入を検討する",
           ].map((action, i) => (
             <div key={i} className="flex items-start gap-2.5 text-xs text-text">
-              <span className="shrink-0 w-4 h-4 rounded-full border border-[#0d9488]/40 text-[#0d9488] flex items-center justify-center font-mono text-[10px] mt-0.5">
+              <span className="shrink-0 w-5 h-5 rounded-full border border-[#0d9488]/40 text-[#0d9488] flex items-center justify-center font-mono text-[10px] mt-0.5">
                 {i + 1}
               </span>
               <span className="leading-relaxed">{action}</span>
             </div>
           ))}
         </div>
-        <div className="text-[10px] text-text-muted border-t border-[#0d9488]/15 pt-2">
+        <div className="text-xs text-text-muted border-t border-[#0d9488]/15 pt-2">
           シミュレーション上の推定です。実際の回復状況は政策対応により変動します。
           <Link to="/prepare" className="text-[#0d9488] ml-1 hover:underline">詳細チェックリスト →</Link>
         </div>
@@ -267,7 +267,7 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
         <div className="font-mono text-xs tracking-widest text-neutral-500">
           SITUATION ACTIONS — 今確認すべき事項
         </div>
-        <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${badge.className}`}>
+        <span className={`text-xs font-mono px-2 py-0.5 rounded ${badge.className}`}>
           {badge.label}
         </span>
       </div>
@@ -275,18 +275,18 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
       {/* 次のフェーズ予告 */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <span className="font-mono text-[10px] text-neutral-400">次のフェーズ:</span>
+          <span className="font-mono text-xs text-neutral-400">次のフェーズ:</span>
           <span className={`font-mono text-xs font-bold ${phase.colorClass}`}>
             {phase.label}
           </span>
-          <span className="font-mono text-[10px] text-neutral-500">
+          <span className="font-mono text-xs text-neutral-500">
             — Day {first.day} 想定
           </span>
         </div>
         {second && (
           <>
-            <span className="text-neutral-300 font-mono text-[10px]">→</span>
-            <span className="font-mono text-[10px] text-neutral-400">
+            <span className="text-neutral-300 font-mono text-xs">→</span>
+            <span className="font-mono text-xs text-neutral-400">
               その後: {PHASE_DATA[second.type]?.label ?? second.type}（Day {second.day}）
             </span>
           </>
@@ -297,7 +297,7 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
       <div className="space-y-2">
         {phase.actions.map((action, i) => (
           <div key={i} className="flex items-start gap-2.5 text-xs text-text">
-            <span className={`shrink-0 w-4 h-4 rounded-full border ${phase.borderClass} ${phase.colorClass} flex items-center justify-center font-mono text-[10px] mt-0.5`}>
+            <span className={`shrink-0 w-5 h-5 rounded-full border ${phase.borderClass} ${phase.colorClass} flex items-center justify-center font-mono text-[10px] mt-0.5`}>
               {i + 1}
             </span>
             <span className="leading-relaxed">{action}</span>
@@ -307,12 +307,12 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
 
       {/* フッター */}
       <div className="flex items-center justify-between flex-wrap gap-2 border-t border-neutral-200 pt-2">
-        <p className="text-[10px] text-text-muted leading-relaxed">
+        <p className="text-xs text-text-muted leading-relaxed">
           シミュレーション上の推定値です。備蓄放出・代替供給により変動します。
         </p>
         <Link
           to="/prepare"
-          className="text-[10px] font-mono text-[#2563eb] hover:underline shrink-0"
+          className="text-xs font-mono text-[#2563eb] hover:underline shrink-0"
         >
           詳細チェックリスト →
         </Link>

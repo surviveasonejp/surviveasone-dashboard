@@ -201,10 +201,10 @@ export const RecoveryTimelineSlider: FC = () => {
           aria-label={`封鎖Day選択: 現在 Day ${day}`}
         />
         {/* スナップボタン */}
-        <div className="flex justify-between text-[9px] font-mono">
+        <div className="flex justify-between text-xs font-mono">
           <button
             onClick={() => setDay(0)}
-            className="px-1.5 py-0.5 rounded transition-colors hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700"
+            className="px-2 py-1.5 rounded transition-colors hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 min-h-[36px]"
           >
             Day 0
           </button>
@@ -212,7 +212,7 @@ export const RecoveryTimelineSlider: FC = () => {
             <button
               key={ev.day}
               onClick={() => setDay(ev.day)}
-              className="px-1.5 py-0.5 rounded transition-colors hover:bg-neutral-100"
+              className="px-2 py-1.5 rounded transition-colors hover:bg-neutral-100 min-h-[36px]"
               style={{ color: day === ev.day ? ev.color : "#94a3b8" }}
             >
               {ev.day}
@@ -220,7 +220,7 @@ export const RecoveryTimelineSlider: FC = () => {
           ))}
           <button
             onClick={() => setDay(180)}
-            className="px-1.5 py-0.5 rounded transition-colors hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700"
+            className="px-2 py-1.5 rounded transition-colors hover:bg-neutral-100 text-neutral-400 hover:text-neutral-700 min-h-[36px]"
           >
             Day 180
           </button>
@@ -234,14 +234,14 @@ export const RecoveryTimelineSlider: FC = () => {
             {(blockadeRate * 100).toFixed(0)}
             <span className="text-xs font-normal text-neutral-400">%</span>
           </div>
-          <div className="text-[9px] text-neutral-500">遮断率</div>
+          <div className="text-[10px] text-neutral-500">遮断率</div>
         </div>
         <div className="bg-white border border-[#e2e8f0] rounded-lg p-2 space-y-0.5">
           <div className="font-mono font-bold text-xl text-[#16a34a]">
             {supplyRestoreRate.toFixed(0)}
             <span className="text-xs font-normal text-neutral-400">%</span>
           </div>
-          <div className="text-[9px] text-neutral-500">供給回復率</div>
+          <div className="text-[10px] text-neutral-500">供給回復率</div>
         </div>
         <div className="bg-white border border-[#e2e8f0] rounded-lg p-2 space-y-0.5">
           <div
@@ -250,13 +250,13 @@ export const RecoveryTimelineSlider: FC = () => {
           >
             {phase.shortLabel}
           </div>
-          <div className="text-[9px] text-neutral-500">フェーズ</div>
+          <div className="text-[10px] text-neutral-500">フェーズ</div>
         </div>
       </div>
 
       {/* 遮断率推移インジケーター */}
       <div className="space-y-1">
-        <div className="text-[9px] font-mono text-neutral-500">遮断率推移</div>
+        <div className="text-[10px] font-mono text-neutral-500">遮断率推移</div>
         <div className="relative h-2 bg-[#e2e8f0] rounded-full overflow-hidden">
           <div
             className="absolute inset-y-0 left-0 rounded-full transition-all duration-200"
@@ -266,7 +266,7 @@ export const RecoveryTimelineSlider: FC = () => {
             }}
           />
         </div>
-        <div className="flex justify-between text-[8px] font-mono text-neutral-400">
+        <div className="flex justify-between text-[10px] font-mono text-neutral-400">
           <span>0%（正常化）</span>
           <span>94%（封鎖初期）</span>
         </div>
@@ -275,7 +275,7 @@ export const RecoveryTimelineSlider: FC = () => {
       {/* 近傍キーイベント表示 */}
       {nearbyEvent && (
         <div
-          className="flex items-start gap-2 rounded px-3 py-2.5 text-[10px] font-mono border-l-2"
+          className="flex items-start gap-2 rounded px-3 py-2.5 text-xs font-mono border-l-2"
           style={{
             backgroundColor: `${nearbyEvent.color}12`,
             borderColor: nearbyEvent.color,
@@ -286,7 +286,7 @@ export const RecoveryTimelineSlider: FC = () => {
           </span>
           <div className="space-y-0.5">
             <div style={{ color: nearbyEvent.color }}>{nearbyEvent.label}</div>
-            <div className="text-neutral-500 text-[9px]">{nearbyEvent.detail}</div>
+            <div className="text-neutral-500 text-[10px]">{nearbyEvent.detail}</div>
           </div>
         </div>
       )}
@@ -296,14 +296,14 @@ export const RecoveryTimelineSlider: FC = () => {
         className="rounded-lg px-3 py-2.5 border-l-2 bg-white"
         style={{ borderColor: phase.color }}
       >
-        <div className="text-[9px] font-mono text-neutral-400 mb-1">
+        <div className="text-[10px] font-mono text-neutral-400 mb-1">
           Day {day} の見通し
         </div>
-        <div className="text-[11px] text-[#0f172a] leading-relaxed">{phase.decision}</div>
+        <div className="text-sm text-[#0f172a] leading-relaxed">{phase.decision}</div>
       </div>
 
       {/* 時系列サマリー */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px] font-mono border-t border-[#0d9488]/20 pt-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono border-t border-[#0d9488]/20 pt-3">
         {KEY_EVENTS.map((ev) => {
           const isPast = day > ev.day;
           const isCurrent = Math.abs(day - ev.day) <= 3;
@@ -319,7 +319,7 @@ export const RecoveryTimelineSlider: FC = () => {
             >
               <div className="font-bold" style={{ color: ev.color }}>
                 Day {ev.day}
-                {isPast && <span className="ml-1 text-[8px] text-neutral-400">済</span>}
+                {isPast && <span className="ml-1 text-[10px] text-neutral-400">済</span>}
               </div>
               <div className="text-neutral-500 leading-tight">{ev.label}</div>
             </button>
@@ -327,7 +327,7 @@ export const RecoveryTimelineSlider: FC = () => {
         })}
       </div>
 
-      <p className="text-[9px] text-neutral-400 font-mono leading-relaxed">
+      <p className="text-[10px] text-neutral-400 font-mono leading-relaxed">
         ※ 停戦後も即正常化ではありません。港湾再開・タンカー回航・契約再締結に60〜90日、完全正常化に180日以上かかる見込みです。このタイムラインはシミュレーション上の推定値であり、実際の交渉・軍事情勢により前後します。
       </p>
     </div>

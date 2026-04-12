@@ -26,7 +26,7 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
           <button
             key={s.id}
             onClick={() => onChange(s.id)}
-            className={`px-2.5 py-1 text-[11px] font-mono tracking-wider rounded border transition-colors cursor-pointer${!isActive ? " border-border text-neutral-400" : ""}`}
+            className={`px-3 py-2 text-xs font-mono tracking-wider rounded border transition-colors cursor-pointer min-h-[36px]${!isActive ? " border-border text-neutral-400" : ""}`}
             style={
               isActive
                 ? { borderColor: color, color, backgroundColor: `${color}15` }

@@ -48,7 +48,7 @@ const ENTRIES: FreshnessEntry[] = [
 
 export const DataFreshness: FC = () => {
   return (
-    <div className="flex flex-wrap gap-3 text-[10px] font-mono">
+    <div className="flex flex-wrap gap-2 text-xs font-mono">
       {ENTRIES.map((entry) => {
         const days = getDaysSince(entry.baselineDate);
         const color = getFreshnessColor(days);

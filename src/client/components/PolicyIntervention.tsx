@@ -212,7 +212,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                     <div className="font-mono text-xs font-bold text-text">
                       {card.title}
                     </div>
-                    <div className="text-[10px] font-mono text-[#2563eb]">
+                    <div className="text-xs font-mono text-[#2563eb]">
                       発動: {card.triggerDay}
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                     +{primaryGain}
                     <span className="text-xs font-normal text-neutral-400">日</span>
                   </div>
-                  <div className="text-[10px] text-neutral-400">
+                  <div className="text-xs text-neutral-400">
                     {RESOURCE_LABELS[card.primaryResource]}延命
                   </div>
                 </div>
@@ -232,7 +232,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
               <GainBar days={primaryGain} max={maxGain} />
 
               {/* 3リソースの詳細 */}
-              <div className="grid grid-cols-3 gap-1 text-center">
+              <div className="grid grid-cols-3 gap-2 text-center">
                 {(["oil", "lng", "power"] as const).map((res) => {
                   const val = gains[res];
                   const isMain = res === card.primaryResource;
@@ -241,20 +241,20 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                       <div className={`font-mono text-xs font-bold ${val > 0 ? (isMain ? "text-[#2563eb]" : "text-neutral-500") : "text-neutral-300"}`}>
                         {val > 0 ? `+${val}` : "—"}
                       </div>
-                      <div className="text-[9px] text-neutral-400">{RESOURCE_LABELS[res]}</div>
+                      <div className="text-[10px] text-neutral-400">{RESOURCE_LABELS[res]}</div>
                     </div>
                   );
                 })}
               </div>
 
               {/* 説明 */}
-              <p className="text-[11px] text-neutral-500 leading-relaxed">
+              <p className="text-xs text-neutral-500 leading-relaxed">
                 {card.description}
               </p>
 
               {/* 副作用 */}
               {card.sideEffect && (
-                <div className="text-[10px] text-[#d97706] font-mono">
+                <div className="text-xs text-[#d97706] font-mono">
                   ⚠ {card.sideEffect}
                 </div>
               )}
@@ -273,7 +273,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
             <button
               type="button"
               onClick={() => setSelected(new Set())}
-              className="text-[10px] font-mono text-neutral-400 hover:text-neutral-600 transition-colors"
+              className="text-xs font-mono text-neutral-400 hover:text-neutral-600 transition-colors"
             >
               クリア
             </button>
@@ -288,7 +288,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                   <div className="font-mono font-bold text-sm text-[#22c55e]">
                     {val > 0 ? `+${val}日` : "—"}
                   </div>
-                  <div className="text-[9px] text-neutral-400">
+                  <div className="text-[10px] text-neutral-400">
                     → Day {baseline + val}
                   </div>
                 </div>
@@ -296,7 +296,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
             })}
           </div>
           <GainBar days={combinedGains.oil + combinedGains.lng + combinedGains.power} max={combinedMaxGain * 3} highlight />
-          <p className="text-[10px] text-neutral-400 leading-relaxed">
+          <p className="text-xs text-neutral-400 leading-relaxed">
             加算近似による推定です。実際の相乗効果・干渉はモデルに含まれていません。
           </p>
         </div>

@@ -48,7 +48,7 @@ export const Dashboard: FC = () => {
             <span className="text-[#ef4444]">SAO</span>
           </h1>
           {isFromApi && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
               LIVE
             </span>
           )}
@@ -78,22 +78,22 @@ export const Dashboard: FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
             <div className="font-mono font-bold text-2xl text-[#22c55e]">{staticReserves.oil.totalReserveDays}</div>
-            <div className="text-[10px] text-neutral-500 mt-0.5 leading-tight">石油備蓄日数<br/>（法ベース・IEA上位）</div>
+            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">石油備蓄日数<br/>（法ベース・IEA上位）</div>
           </div>
           <div className="text-center">
             <div className="font-mono font-bold text-2xl text-[#22c55e]">6.3<span className="text-sm font-normal">%</span></div>
-            <div className="text-[10px] text-neutral-500 mt-0.5 leading-tight">LNG ホルムズ依存率<br/>93.7%は非ホルムズ供給</div>
+            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">LNG ホルムズ依存率<br/>93.7%は非ホルムズ供給</div>
           </div>
           <div className="text-center">
             <div className="font-mono font-bold text-2xl text-[#22c55e]">3</div>
-            <div className="text-[10px] text-neutral-500 mt-0.5 leading-tight">代替供給ルート<br/>フジャイラ/ヤンブー/非中東</div>
+            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">代替供給ルート<br/>フジャイラ/ヤンブー/非中東</div>
           </div>
           <div className="text-center">
             <div className="font-mono font-bold text-xl text-[#22c55e]">IEA</div>
-            <div className="text-[10px] text-neutral-500 mt-0.5 leading-tight">協調備蓄放出・需要抑制<br/>政策介入で段階的に軽減</div>
+            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">協調備蓄放出・需要抑制<br/>政策介入で段階的に軽減</div>
           </div>
         </div>
-        <p className="text-[10px] text-neutral-500 leading-relaxed border-t border-[#22c55e]/15 pt-2">
+        <p className="text-xs text-neutral-500 leading-relaxed border-t border-[#22c55e]/15 pt-2">
           即時崩壊シナリオではありません。政策対応・代替供給・需要抑制により影響は段階的に制御可能です。
           下記シミュレーションは代替供給・備蓄放出を含んだモデルです。
         </p>

@@ -191,7 +191,7 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
         <div className="font-mono text-xs tracking-widest text-neutral-500">
           WORK IMPACT — あなたの仕事への影響
         </div>
-        <div className="text-[10px] text-neutral-400 font-mono">
+        <div className="text-xs text-neutral-400 font-mono">
           業種を選んで影響タイムラインを確認
         </div>
       </div>
@@ -207,7 +207,7 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
               type="button"
               onClick={() => setSelectedId(isSelected ? null : occ.id)}
               className={[
-                "flex flex-col items-center gap-1 p-3 rounded-lg border text-center transition-all cursor-pointer",
+                "flex flex-col items-center gap-1 p-3 rounded-lg border text-center transition-all cursor-pointer min-h-[80px] justify-center",
                 isSelected
                   ? `border-current ${pm.bg} shadow-sm`
                   : "border-border hover:border-neutral-300",
@@ -215,10 +215,10 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
               style={isSelected ? { color: pm.color, borderColor: `${pm.color}60` } : undefined}
             >
               <span className="text-xl leading-none">{occ.icon}</span>
-              <span className="font-mono text-[11px] font-bold leading-tight text-text">
+              <span className="font-mono text-xs font-bold leading-tight text-text">
                 {occ.label}
               </span>
-              <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full ${pm.bg}`} style={{ color: pm.color }}>
+              <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${pm.bg}`} style={{ color: pm.color }}>
                 {pm.label}
               </span>
             </button>
@@ -237,10 +237,10 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
             <span className="text-2xl">{selected.icon}</span>
             <div>
               <div className="font-mono font-bold text-sm text-text">{selected.label}</div>
-              <div className="text-[10px] text-neutral-400">{selected.description}</div>
+              <div className="text-xs text-neutral-400">{selected.description}</div>
             </div>
             <span
-              className="ml-auto text-[10px] font-mono px-2 py-0.5 rounded-full shrink-0"
+              className="ml-auto text-xs font-mono px-2 py-0.5 rounded-full shrink-0"
               style={{ backgroundColor: `${meta.color}20`, color: meta.color, border: `1px solid ${meta.color}40` }}
             >
               {meta.label}
@@ -250,20 +250,20 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
           {/* 影響タイムライン */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-panel rounded-lg p-3 border border-border text-center">
-              <div className="text-[10px] text-neutral-400 font-mono mb-1">制約開始</div>
+              <div className="text-xs text-neutral-400 font-mono mb-1">制約開始</div>
               <div className="font-mono font-bold text-xl" style={{ color: meta.color }}>
                 Day {constraintDay}
               </div>
-              <div className="text-[10px] text-neutral-500 mt-0.5">
+              <div className="text-xs text-neutral-500 mt-0.5">
                 {scenario}シナリオ試算
               </div>
             </div>
             <div className="bg-panel rounded-lg p-3 border border-border text-center">
-              <div className="text-[10px] text-neutral-400 font-mono mb-1">本格影響</div>
+              <div className="text-xs text-neutral-400 font-mono mb-1">本格影響</div>
               <div className="font-mono font-bold text-xl text-[#ef4444]">
                 Day {impactDay}
               </div>
-              <div className="text-[10px] text-neutral-500 mt-0.5">
+              <div className="text-xs text-neutral-500 mt-0.5">
                 業務・操業への深刻な影響
               </div>
             </div>
@@ -271,19 +271,19 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
 
           {/* 影響詳細 */}
           <div className="space-y-1.5">
-            <div className="font-mono text-[10px] tracking-wider text-neutral-500">影響内容</div>
+            <div className="font-mono text-xs tracking-wider text-neutral-500">影響内容</div>
             <p className="text-xs text-text-muted leading-relaxed">{selected.impactDetail}</p>
           </div>
 
           {/* 今確認すべき3点 */}
           <div className="space-y-2">
-            <div className="font-mono text-[10px] tracking-wider" style={{ color: meta.color }}>
+            <div className="font-mono text-xs tracking-wider" style={{ color: meta.color }}>
               今確認すべき3点
             </div>
             {selected.checks.map((check, i) => (
               <div key={i} className="flex items-start gap-2.5 text-xs text-text">
                 <span
-                  className="shrink-0 w-4 h-4 rounded-full border flex items-center justify-center font-mono text-[10px] mt-0.5"
+                  className="shrink-0 w-5 h-5 rounded-full border flex items-center justify-center font-mono text-[10px] mt-0.5"
                   style={{ borderColor: `${meta.color}50`, color: meta.color }}
                 >
                   {i + 1}
@@ -293,14 +293,14 @@ export const WorkImpactSelector: FC<Props> = ({ scenario }) => {
             ))}
           </div>
 
-          <p className="text-[10px] text-neutral-400 border-t border-neutral-100 pt-2 leading-relaxed">
+          <p className="text-xs text-neutral-400 border-t border-neutral-100 pt-2 leading-relaxed">
             シミュレーション上の推定値です。石油備蓄{Math.round(oilDays)}日を基準に計算。実際の影響は政策介入・代替供給により変動します。
           </p>
         </div>
       )}
 
       {!selected && (
-        <p className="text-[11px] text-neutral-400 text-center py-2 font-mono">
+        <p className="text-xs text-neutral-400 text-center py-2 font-mono">
           業種を選ぶと影響タイムラインと確認事項が表示されます
         </p>
       )}

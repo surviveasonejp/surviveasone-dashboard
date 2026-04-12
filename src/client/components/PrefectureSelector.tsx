@@ -151,7 +151,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
         <div className="font-mono text-xs tracking-widest text-neutral-500">
           PREFECTURE — 都道府県から探す
         </div>
-        <div className="text-[10px] text-neutral-400 font-mono">
+        <div className="text-xs text-neutral-400 font-mono">
           地図のエリア表示と連動
         </div>
       </div>
@@ -176,21 +176,21 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
           {/* 都道府県名 + エリア */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-mono font-bold text-sm text-text">{selectedPref.name}</span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2563eb]/10 text-[#2563eb] border border-[#2563eb]/20">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#2563eb]/10 text-[#2563eb] border border-[#2563eb]/20">
               {REGION_LABELS[selectedPref.region] ?? selectedPref.region}エリア
             </span>
             {selectedPref.nuclear && (
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/12 text-[#22c55e] border border-[#22c55e]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/12 text-[#22c55e] border border-[#22c55e]/20">
                 原発あり
               </span>
             )}
             {selectedPref.majorPort && (
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#3b82f6]/12 text-[#3b82f6] border border-[#3b82f6]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#3b82f6]/12 text-[#3b82f6] border border-[#3b82f6]/20">
                 主要港あり
               </span>
             )}
             {selectedPref.island && (
-              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/12 text-[#f59e0b] border border-[#f59e0b]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/12 text-[#f59e0b] border border-[#f59e0b]/20">
                 離島・補給路長
               </span>
             )}
@@ -205,7 +205,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
               { label: "石油枯渇", days: regionData.oilDepletionDays, color: "#d97706" },
             ].map(({ label, days, color }) => (
               <div key={label} className="bg-bg rounded p-2 text-center border border-border">
-                <div className="text-[9px] font-mono text-neutral-500">{label}</div>
+                <div className="text-[10px] font-mono text-neutral-500">{label}</div>
                 <div className="font-mono font-bold text-base" style={{ color }}>
                   {days}日
                 </div>
@@ -215,27 +215,27 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
 
           {/* 特記事項 */}
           {selectedPref.note && (
-            <p className="text-[11px] text-text-muted leading-relaxed bg-bg rounded p-2.5 border border-border">
-              <span className="font-mono text-[9px] text-neutral-400 tracking-wider block mb-1">特記事項</span>
+            <p className="text-xs text-text-muted leading-relaxed bg-bg rounded p-2.5 border border-border">
+              <span className="font-mono text-[10px] text-neutral-400 tracking-wider block mb-1">特記事項</span>
               {selectedPref.note}
             </p>
           )}
 
           {/* エリア脆弱性ランク */}
-          <div className="flex items-center gap-2 text-[10px] font-mono">
+          <div className="flex items-center gap-2 text-xs font-mono">
             <span className="text-neutral-400">エリア脆弱性ランク:</span>
             <span className="font-bold text-sm text-text">{regionData.vulnerabilityRank}</span>
             <span className="text-neutral-500 ml-auto">{regionData.note}</span>
           </div>
 
-          <p className="text-[9px] text-neutral-400 leading-relaxed">
+          <p className="text-[10px] text-neutral-400 leading-relaxed">
             表示値は{REGION_LABELS[selectedPref.region]}エリア全体の推計です。都道府県内の格差（都市部/農村部・離島）は考慮されていません。
           </p>
         </div>
       )}
 
       {!selectedPref && (
-        <p className="text-[11px] text-neutral-400 text-center py-1 font-mono">
+        <p className="text-xs text-neutral-400 text-center py-1 font-mono">
           都道府県を選ぶと地図のエリアがハイライトされます
         </p>
       )}

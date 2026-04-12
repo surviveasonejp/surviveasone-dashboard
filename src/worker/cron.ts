@@ -17,6 +17,7 @@ import { fetchTradeUpdate } from "./trade-fetcher";
 import { fetchOilProductsUpdate } from "./oil-products-fetcher";
 import { fetchJpcaUpdate } from "./jpca-fetcher";
 import { fetchJarwUpdate } from "./jarw-fetcher";
+import { fetchHjksOutages } from "./hjks-fetcher";
 
 interface Env {
   DB: D1Database;
@@ -50,6 +51,8 @@ export async function handleScheduled(
     ctx.waitUntil(fetchArchiveAndUpdate(env));
     // 石油製品在庫（週次）— OWID 取得と並行実行
     ctx.waitUntil(fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    // HJKS 発電機停止情報（週次）— 大型火力・原子力の出力制約を追跡
+    ctx.waitUntil(fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE }));
   }
 
   if (hour === 18) {

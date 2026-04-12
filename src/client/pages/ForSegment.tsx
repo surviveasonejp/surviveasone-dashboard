@@ -301,14 +301,14 @@ export const ForSegment: FC = () => {
 
       {/* 供給制約の基準値 */}
       <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1.5">
-        <div className="font-mono text-[10px] tracking-widest text-text-muted mb-1">
+        <div className="font-mono text-xs tracking-widest text-text-muted mb-1">
           {SCENARIO_LABELS[scenario]} — 推定値
         </div>
         <div className="font-mono text-4xl font-bold" style={{ color: seg.heroColor }}>
           {displayStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
         </div>
         <div className="text-sm text-text-muted">{displayLabel}</div>
-        <div className="text-[10px] text-text-muted border-t border-[#ef4444]/15 pt-1.5 mt-0.5">
+        <div className="text-xs text-text-muted border-t border-[#ef4444]/15 pt-1.5 mt-0.5">
           シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します
         </div>
       </div>
@@ -321,7 +321,7 @@ export const ForSegment: FC = () => {
             <div key={risk.label} className="bg-panel border border-border rounded-lg px-4 py-3 flex gap-4">
               <div className="shrink-0 w-20">
                 <div className="font-mono text-sm font-bold text-[#ef4444]">{risk.days}</div>
-                <div className="text-[10px] text-text-muted">{risk.label}</div>
+                <div className="text-xs text-text-muted">{risk.label}</div>
               </div>
               <div className="text-xs text-text-muted leading-relaxed">{risk.detail}</div>
             </div>

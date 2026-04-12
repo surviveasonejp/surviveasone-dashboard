@@ -7,6 +7,7 @@ import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { useApiData } from "../hooks/useApiData";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
 import { IeaComparison } from "../components/IeaComparison";
+import { BlockadeDayCounter } from "../components/BlockadeDayCounter";
 import type { ResourceCountdown } from "../../shared/types";
 import staticReserves from "../data/reserves.json";
 
@@ -76,6 +77,9 @@ export const Landing: FC = () => {
           封鎖シナリオ下で、供給制約はいつ、どのように進むのか。
         </p>
       </div>
+
+      {/* 封鎖Day カウンター */}
+      <BlockadeDayCounter activeScenario={scenario} />
 
       {/* 安心情報ファースト — 現在の備え・対応状況 */}
       <div className="bg-panel border border-[#16a34a]/30 rounded-lg p-5">
@@ -154,7 +158,7 @@ export const Landing: FC = () => {
         >
           DASHBOARD を見る →
         </Link>
-        <p className="text-[10px] text-text-muted font-mono">
+        <p className="text-xs text-text-muted font-mono">
           今確認すべき事項 · 政策介入効果比較 · 業種別影響 · 都道府県選択
         </p>
       </div>
@@ -179,11 +183,11 @@ export const Landing: FC = () => {
             <Link
               key={seg.to}
               to={seg.to}
-              className="block px-3 py-2.5 rounded border text-center transition-colors hover:bg-[#f59e0b]/5"
+              className="block px-3 py-3 rounded border text-center transition-colors hover:bg-[#f59e0b]/5 min-h-[60px] flex flex-col justify-center"
               style={{ borderColor: `${seg.color}40` }}
             >
               <div className="text-xs font-bold text-text">{seg.label}</div>
-              <div className="text-[10px] font-mono mt-0.5" style={{ color: seg.color }}>{seg.sub}</div>
+              <div className="text-xs font-mono mt-0.5" style={{ color: seg.color }}>{seg.sub}</div>
             </Link>
           ))}
         </div>
@@ -199,7 +203,7 @@ export const Landing: FC = () => {
             <div className="font-mono text-xs tracking-widest text-[#f59e0b]">HOUSEHOLD SUPPLY CHECK</div>
             <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              備蓄量を入力 → 供給可能日数の目安を確認。計算はブラウザ内で完結、サーバーへの送信なし
+              備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目から「今すぐやること」を提示。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
           <span className="text-[#f59e0b] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -212,7 +216,7 @@ export const Landing: FC = () => {
           to="/countdown"
           title="SUPPLY TIMELINE"
           subtitle="供給制約タイムライン"
-          description="石油・LNG・電力の供給可能日数。365日フロータイムライン+代替供給ルート+経済カスケード。回復タイムラインスライダー・代替ルートパネル・政策マイルストーンタイムライン搭載"
+          description="石油・LNG・電力の供給可能日数。封鎖Day Nカウンター・365日フロータイムライン・代替ルートパネル・回復タイムラインスライダー・政策マイルストーンタイムライン搭載"
           color="#ef4444"
         />
         <PanelCard

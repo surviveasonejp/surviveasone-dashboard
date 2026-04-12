@@ -149,3 +149,89 @@ VALUES
   ('pta->pet_resin',                 'pta',              'pet_resin',        '重縮合(70%)'),
   ('pet_resin->pet_bottle',          'pet_resin',        'pet_bottle',       '延伸成形'),
   ('pet_resin->pet_film',            'pet_resin',        'pet_film',         '二軸延伸');
+
+-- ─── Phase B: ABSチェーン ────────────────────────────────────────
+
+INSERT OR IGNORE INTO petrochem_nodes (id, label, category, depth, parent_id, naptha_factor, description)
+VALUES
+  (
+    'acrylonitrile',
+    'アクリロニトリル(AN)',
+    'monomer',
+    5,
+    'propylene',
+    0.8,
+    'プロピレンをアンモオキシデーション（SOHIO法）で製造。ABS・炭素繊維・アクリル繊維の主原料。国内3工場が全量供給'
+  ),
+  (
+    'abs_resin',
+    'ABS樹脂',
+    'polymer',
+    6,
+    'acrylonitrile',
+    0.7,
+    'AN+ブタジエン+スチレンの三元共重合体。耐衝撃性・加工性に優れ家電外装・自動車内装に汎用。封鎖時は国内在庫20〜30日分が目安'
+  ),
+  (
+    'electronics_housing',
+    '家電外装・自動車内装',
+    'end_use',
+    7,
+    'abs_resin',
+    0.6,
+    'テレビ・洗濯機・冷蔵庫の外装、自動車インパネ・ドアトリム。ABS樹脂供給制約で国内家電生産に直接影響'
+  );
+
+INSERT OR IGNORE INTO petrochem_edges (id, source_id, target_id, flow_label)
+VALUES
+  ('propylene->acrylonitrile',       'propylene',       'acrylonitrile',    'アンモオキシデーション'),
+  ('acrylonitrile->abs_resin',       'acrylonitrile',   'abs_resin',        '共重合(AN+スチレン+ブタジエン)'),
+  ('abs_resin->electronics_housing', 'abs_resin',       'electronics_housing', '射出成形');
+
+-- ─── Phase C: フェノール/PCチェーン ─────────────────────────────
+
+INSERT OR IGNORE INTO petrochem_nodes (id, label, category, depth, parent_id, naptha_factor, description)
+VALUES
+  (
+    'phenol',
+    'フェノール',
+    'monomer',
+    5,
+    'benzene',
+    0.6,
+    'ベンゼンをプロピレンでクメン経由製造（クメン法）。BPA・フェノール樹脂・ナイロン6の主原料。国内自給率80%だが封鎖時は原料ベンゼン逼迫'
+  ),
+  (
+    'bpa',
+    'ビスフェノールA(BPA)',
+    'intermediate',
+    6,
+    'phenol',
+    0.6,
+    'フェノール+アセトン（プロピレン誘導）を縮合。PC・エポキシ樹脂の必須原料。国内主要メーカー2社でほぼ全量供給'
+  ),
+  (
+    'polycarbonate',
+    'ポリカーボネート(PC)',
+    'polymer',
+    7,
+    'bpa',
+    0.6,
+    'BPA+ホスゲンを重合。光学的透明性・耐衝撃性が高く医療機器・光ディスク・建材に使用。国内生産20万t/年。光学グレード品は輸入依存高'
+  ),
+  (
+    'optical_parts',
+    '光学・医療部品',
+    'end_use',
+    8,
+    'polycarbonate',
+    0.6,
+    '透析回路チャンバー・点滴ボトル・眼鏡レンズ・CDケース。医療用途では国内在庫14日分とされ封鎖早期に影響が顕在化する'
+  );
+
+INSERT OR IGNORE INTO petrochem_edges (id, source_id, target_id, flow_label)
+VALUES
+  ('benzene->phenol',              'benzene',      'phenol',          'クメン法'),
+  ('phenol->bpa',                  'phenol',       'bpa',             '縮合'),
+  ('bpa->polycarbonate',           'bpa',          'polycarbonate',   '界面重合'),
+  ('polycarbonate->optical_parts', 'polycarbonate','optical_parts',   '精密成形');

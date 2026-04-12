@@ -36,6 +36,10 @@
   "Ingleside": { "lat": 27.87, "lon": -97.21 },
   "Ingleside-Cape": { "lat": 27.87, "lon": -97.21 },
   "USGC-Cape": { "lat": 29.75, "lon": -93.60 },
+  "USGC-Drake": { "lat": 29.75, "lon": -93.60 },
   "Ehime": { "lat": 33.98, "lon": 132.97 },
-  "Tomakomai": { "lat": 42.64, "lon": 141.60 }
+  "Tomakomai": { "lat": 42.64, "lon": 141.60 },
+  "Ain Sukhna": { "lat": 29.60, "lon": 32.55 },
+  "Malaysia Hub": { "lat": 4.00, "lon": 104.00 },
+  "Mumbai STS": { "lat": 18.50, "lon": 70.50 }
 }

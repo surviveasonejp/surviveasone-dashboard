@@ -222,7 +222,7 @@ export const FoodCollapse: FC = () => {
               <div className="text-neutral-400 font-mono text-xs">
                 日分の店頭在庫（{scenario === "optimistic" ? "楽観" : scenario === "pessimistic" ? "悲観" : "現実"}シナリオ）
               </div>
-              <p className="text-[10px] text-neutral-600 leading-relaxed">
+              <p className="text-xs text-neutral-600 leading-relaxed">
                 {product.collapseReason}
               </p>
             </div>
@@ -247,16 +247,16 @@ export const FoodCollapse: FC = () => {
             </span>
           ))}
         </div>
-        <p className="text-[10px] text-neutral-500 leading-relaxed">
+        <p className="text-xs text-neutral-500 leading-relaxed">
           ナフサ在庫は約14日分（2026-01経産省統計）。供給制約後5月以降に本格減産→包装材品薄へ。
           対策：ガラス・ステンレス容器への移行と食品バルク購入（包装なしで保存できる状態に）。
         </p>
-        <p className="text-[10px] text-[#f59e0b]/70 leading-relaxed">
+        <p className="text-xs text-[#f59e0b]/70 leading-relaxed">
           ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで枯渇する。「食料不足」ではなく「衛生・包装の崩壊」が先に来る。
         </p>
         {/* 容器が先に消える — キーポイント */}
         <div className="border-t border-border pt-2 mt-1">
-          <p className="text-[10px] text-[#ef4444]/80 font-mono leading-relaxed">
+          <p className="text-xs text-[#ef4444]/80 font-mono leading-relaxed">
             ⚠ 「中身ではなく容器が先に消える」 — PETボトル飲料は中身の在庫があっても容器不足で棚から消える。
             食品トレーが入手困難になると精肉・鮮魚の店頭販売が停止し、量り売り・バラ売りに移行する。
           </p>
@@ -266,7 +266,7 @@ export const FoodCollapse: FC = () => {
       {/* 消費財消滅タイムライン */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">消費財消滅タイムライン</h2>
-        <p className="text-[10px] text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
+        <p className="text-xs text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
         <div className="space-y-3">
           {([
             {
@@ -319,14 +319,14 @@ export const FoodCollapse: FC = () => {
                 {phase.items.map((item) => (
                   <div key={item.name} className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
                     <span className="text-xs text-neutral-300 shrink-0">{item.name}</span>
-                    <span className="text-[9px] text-neutral-600">— {item.reason}</span>
+                    <span className="text-[10px] text-neutral-600">— {item.reason}</span>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-        <p className="text-[9px] font-mono text-neutral-600 border-t border-border pt-2">
+        <p className="text-[10px] font-mono text-neutral-600 border-t border-border pt-2">
           対策: ゴミ袋・ラップは食料より先に確保。おむつ・生理用品は最優先備蓄品目。
           固形石鹸・ガラス/ステンレス容器への移行を今のうちに。
         </p>
@@ -335,7 +335,7 @@ export const FoodCollapse: FC = () => {
       {/* 家庭支出への価格転嫁 */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">家庭支出への価格転嫁 — ナフサ価格段階別</h2>
-        <p className="text-[10px] text-neutral-600">
+        <p className="text-xs text-neutral-600">
           ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫枯渇後のシナリオ。
         </p>
         <div className="overflow-x-auto">
@@ -367,7 +367,7 @@ export const FoodCollapse: FC = () => {
             </tbody>
           </table>
         </div>
-        <div className="text-[9px] font-mono text-neutral-600 space-y-0.5 border-t border-border pt-2">
+        <div className="text-[10px] font-mono text-neutral-600 space-y-0.5 border-t border-border pt-2">
           <p><span className="text-[#f59e0b]">+40%（¥10万/kL超）</span>: 減産開始フェーズ — 現在進行中。企業が自主減産して価格転嫁</p>
           <p><span className="text-[#ef4444]">+80%（¥11〜13万/kL）</span>: 広範囲停止フェーズ — 在庫枯渇後。多くのクラッカーが稼働停止</p>
           <p><span className="text-[#dc2626]">+120%（¥14万/kL超）</span>: 構造崩壊フェーズ — プラント長期停止・産業配給発動済み</p>

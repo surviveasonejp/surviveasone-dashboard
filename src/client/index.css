@@ -48,6 +48,19 @@ body {
   animation: fade-in 0.15s ease-out;
 }
 
+/* ─── タンカーマップ シナリオ切替アニメーション ──────── */
+
+@keyframes tanker-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ×マーク: scale 0 → 1 のポップイン */
+@keyframes tanker-x-pop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
 /* ─── ページ入場アニメーション ─────────────────────── */
 
 @keyframes page-enter-from-right {
@@ -258,6 +271,26 @@ body {
 
 [data-theme="light"] svg rect[stroke="#1e2a36"] {
   stroke: #cbd5e1 !important;
+}
+
+/* ─── 西半球インセット（海・陸色）─────────────────── */
+/* ダークモード（デフォルト）*/
+.inset-ocean {
+  fill: #0c1520;
+}
+.inset-land {
+  fill: #2a3d56;
+  stroke: #4a6a8a;
+  stroke-width: 0.6;
+}
+/* ライトモード */
+[data-theme="light"] .inset-ocean {
+  fill: #d4eaf5 !important;
+}
+[data-theme="light"] .inset-land {
+  fill: #cbd5e1 !important;
+  stroke: #94a3b8 !important;
+  stroke-width: 0.8 !important;
 }
 
 /* ─── レンジスライダー thumb ──────────────────────── */

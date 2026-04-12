@@ -105,6 +105,12 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     status: "completed" as const,
     items: ["タンカー30隻追跡（Suezmax2隻追加）", "realEvents 53件", "Catmull-Romスプライン航路+陸地回避", "代替ルート可視化TM-A/B/C（容量比例線幅・シナリオ連動・供給ギャップチャート）", "回復タイムラインスライダー", "代替ルートパネル", "政策マイルストーンタイムライン", "省庁データパイプライン（JPCA石化+JARW冷蔵庫）"],
   },
+  {
+    phase: "Phase 16",
+    label: "外部評価対応・意思決定インターフェース化",
+    status: "completed" as const,
+    items: ["封鎖Day Nカウンター（BlockadeDayCounter・Day 0=IRGC停止命令）", "シナリオ連動プログレスバー（解除推定Day表示）", "FamilyMeterボトルネック連動緊急アドバイス（あとN日でX→今すぐやること3項目）", "Xシェア文言リデザイン（短く・個人化・即理解）", "FlowTimeline Day N表示統一（EventItem・チャートマーカー・PolicyEventsと表記統一）"],
+  },
 ];
 
 const SIMULATION_FEATURES = [
@@ -287,7 +293,7 @@ export const About: FC = () => {
             </tbody>
           </table>
         </div>
-        <p className="text-[10px] text-neutral-600">
+        <p className="text-xs text-neutral-600">
           評価基準: 「一致」=日数・事象が正確に一致。「整合」=方向性と規模感が合致。「やや遅延」=発生したが予測日と数日のずれ。「モデル外」=現在のモデルがカバーしていない領域。
           検証用API: <a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-neutral-500 underline underline-offset-2">/api/validation</a> |
           出典マッピング: <a href="https://surviveasonejp.net/api/sources" target="_blank" rel="noopener noreferrer" className="text-neutral-500 underline underline-offset-2">/api/sources</a> |
@@ -306,7 +312,7 @@ export const About: FC = () => {
               <span className="text-sm text-neutral-300 sm:w-56 shrink-0 flex items-center gap-1.5">
                 {ds.name}
                 {ds.auto && (
-                  <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+                  <span className="text-[10px] font-mono px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
                     AUTO
                   </span>
                 )}
@@ -342,17 +348,17 @@ export const About: FC = () => {
                   <span className="font-mono text-sm font-bold text-neutral-300">{p.phase}</span>
                   <span className="text-xs text-neutral-500">{p.label}</span>
                   {p.status === "completed" && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">LIVE</span>
+                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">LIVE</span>
                   )}
                   {p.status === "active" && (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30">IN PROGRESS</span>
+                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30">IN PROGRESS</span>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {p.items.map((item) => (
                     <span
                       key={item}
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-mono${p.status === "planned" ? " bg-border text-neutral-500 border border-border" : ""}`}
+                      className={`text-xs px-1.5 py-0.5 rounded font-mono${p.status === "planned" ? " bg-border text-neutral-500 border border-border" : ""}`}
                       style={{
                         backgroundColor:
                           p.status === "completed" ? "#22c55e12"
@@ -370,7 +376,7 @@ export const About: FC = () => {
                   {"remaining" in p && p.remaining?.map((item) => (
                     <span
                       key={item}
-                      className="text-[10px] px-1.5 py-0.5 rounded font-mono bg-border text-neutral-500 border border-neutral-300 border-dashed"
+                      className="text-xs px-1.5 py-0.5 rounded font-mono bg-border text-neutral-500 border border-neutral-300 border-dashed"
                     >
                       {item}
                     </span>

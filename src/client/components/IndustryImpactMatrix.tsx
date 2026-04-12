@@ -214,8 +214,53 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
         ))}
       </div>
 
-      {/* ヒートマップテーブル */}
-      <div className="overflow-x-auto -mx-4 px-4">
+      {/* モバイル: 4列簡易ビュー */}
+      <div className="sm:hidden space-y-1">
+        {INDUSTRIES.map((industry) => {
+          const days = calcImpactDays(industry, oilDays, lngDays, powerDays);
+          const catMeta = CATEGORY_META[industry.category];
+          const isExpanded = expanded === industry.id;
+          const MOBILE_DAYS = [7, 30, 90, 180] as const;
+          return (
+            <div key={industry.id}>
+              <button
+                className="w-full text-left rounded px-2 py-2 active:bg-white/[0.04] transition-colors"
+                onClick={() => setExpanded(isExpanded ? null : industry.id)}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: catMeta.color }} />
+                  <span className="text-xs text-text flex-1 leading-tight">{industry.name}</span>
+                  <div className="flex gap-1 shrink-0">
+                    {MOBILE_DAYS.map((d) => {
+                      const phase = getPhase(d, days);
+                      const style = PHASE_STYLE[phase];
+                      return (
+                        <div key={d} className={`text-[10px] font-mono rounded px-1 py-0.5 ${style.bg} ${style.text} leading-none`}>
+                          {d}d
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                {isExpanded && (
+                  <div className="mt-2 ml-4 space-y-1 text-[10px] text-neutral-500">
+                    <p className="leading-relaxed">{industry.note}</p>
+                    <div className="flex gap-3 font-mono">
+                      <span>制約: <span className="text-[#d97706] font-bold">Day {days.constraint}</span></span>
+                      <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
+                      <span>停止: <span className="text-[#dc2626] font-bold">Day {days.halt}</span></span>
+                    </div>
+                  </div>
+                )}
+              </button>
+            </div>
+          );
+        })}
+        <p className="text-[10px] text-neutral-500 pt-1">7d / 30d / 90d / 180d 時点のフェーズ。行をタップで詳細表示。</p>
+      </div>
+
+      {/* デスクトップ: ヒートマップテーブル */}
+      <div className="hidden sm:block overflow-x-auto -mx-4 px-4">
         <table className="w-full text-[10px] font-mono border-collapse min-w-[640px]">
           <thead>
             <tr>

@@ -11,6 +11,39 @@ const PORTS = portsData as Record<string, Position>;
 
 export type RouteType = "primary" | "bypass" | "existing_alt";
 
+export type TransferHubType = "sts" | "anonymization";
+
+export interface TransferHub {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  type: TransferHubType;
+  description: string;
+  source: string;
+}
+
+export const TRANSFER_HUBS: TransferHub[] = [
+  {
+    id: "malaysia-hub",
+    name: "マレーシア沖中継ハブ",
+    lat: 4.00,
+    lon: 104.00,
+    type: "anonymization",
+    description: "イラン産原油の洋上積替・出所偽装拠点\n海上在庫の約8割がイラン産（中国向け約8割）\n代替供給ルートの実態リスク",
+    source: "ケプラー調査 2026-04-08",
+  },
+  {
+    id: "mumbai-sts",
+    name: "ムンバイ沖STS",
+    lat: 18.50,
+    lon: 70.50,
+    type: "sts",
+    description: "ENEOS GLORYがフジャイラ産アブダビ原油を\nSTS（洋上積替）転送で受け取ったポイント\n新型代替供給形態",
+    source: "Bloomberg 2026-04-01",
+  },
+];
+
 export interface RouteDefinition {
   waypoints: [number, number][];
   chokepoints: string[];
@@ -52,6 +85,8 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "Ingleside": "us-pacific",
   "Ingleside-Cape": "usgc-capehope",
   "USGC-Cape": "usgc-capehope",
+  "USGC-Drake": "usgc-drakepassage",
+  "Ain Sukhna": "ain-sukhna-babel",
 };
 
 /** 航路上のウェイポイント列に沿って t (0〜1) の位置を補間 */

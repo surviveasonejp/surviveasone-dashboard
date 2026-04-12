@@ -59,6 +59,30 @@ const RANK_ADVICE: Record<string, string[]> = {
   F: ["備蓄がほぼありません。今日できることはひとつだけ：飲料水の状況を確認してください"],
 };
 
+/** ボトルネック種別 × 残り日数 → 緊急アクション（3項目） */
+const BOTTLENECK_URGENT_ACTIONS: Record<string, string[]> = {
+  水: [
+    "浴槽・ポリタンクに今すぐ水を確保する（1人3L/日）",
+    "近隣の給水所・給水スポットの場所を今日中に調べる",
+    "飲料以外（トイレ・清拭）は雨水・生活排水で代替する準備をする",
+  ],
+  食料: [
+    "残存食料のカロリーを把握し、1日摂取量を記録する",
+    "主食（米・缶詰・乾麺）を優先して追加調達する（1人5日分目標）",
+    "地域の食料配給・フードバンク情報を自治体ウェブで確認する",
+  ],
+  燃料: [
+    "カセットボンベを今日中に補充する（1人3本/週が目安）",
+    "魔法瓶保温・電気ケトル等でガス消費量を減らす方法を確認する",
+    "近隣の給油所の在庫状況と割当制限を確認する",
+  ],
+  電力: [
+    "スマートフォン・ラジオ・モバイルバッテリーをフル充電する",
+    "充電式ランタン・ヘッドライトの電池残量を今日確認する",
+    "在宅医療機器がある場合、病院・クリニックへ電力確保方法を相談する",
+  ],
+};
+
 const STORAGE_KEY = "familyMeterInputs";
 
 const DEFAULT_INPUTS: FamilyInputs = {
@@ -136,9 +160,9 @@ export const FamilyMeter: FC = () => {
           <InputSlider label="カセットボンベ" value={inputs.gasCanisterCount} min={0} max={100} step={1} unit="本" onChange={update("gasCanisterCount")} />
           <InputSlider label="ポータブル電源" value={inputs.batteryWh} min={0} max={5000} step={50} unit="Wh" onChange={update("batteryWh")} />
           <InputSlider label="ソーラーパネル" value={inputs.solarWatts} min={0} max={500} step={10} unit="W" onChange={update("solarWatts")} />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-h-[44px]">
             <button
-              className={`w-5 h-5 rounded border flex items-center justify-center transition-colors shrink-0 ${
+              className={`w-6 h-6 rounded border flex items-center justify-center transition-colors shrink-0 ${
                 inputs.hasMedicalDevice
                   ? "bg-[#ef4444] border-[#ef4444]"
                   : "border-border hover:border-neutral-500"
@@ -157,8 +181,8 @@ export const FamilyMeter: FC = () => {
             </div>
           </div>
           <InputSlider label="現金" value={inputs.cashYen} min={0} max={1000000} step={10000} unit="円" onChange={update("cashYen")} />
-          <p className="text-[10px] text-neutral-500">※ 現金は参考情報です。生存日数の計算には含まれません（配給制移行時の購買力指標）</p>
-          <p className="text-[10px] text-neutral-600 leading-relaxed">
+          <p className="text-xs text-neutral-500">※ 現金は参考情報です。生存日数の計算には含まれません（配給制移行時の購買力指標）</p>
+          <p className="text-xs text-neutral-600 leading-relaxed">
             入力データはこのブラウザ内でのみ保存・計算されます。サーバーへの送信は行いません。
           </p>
         </div>
@@ -203,11 +227,8 @@ export const FamilyMeter: FC = () => {
               onClick={() => {
                 const days = Math.round(score.totalDays);
                 const text = [
-                  `ホルムズリスクシナリオ、わが家の備蓄を診断した。`,
-                  `ランク【${score.rank}】推定${days}日（ボトルネック: ${score.bottleneck}）`,
-                  `${inputs.members}人世帯・水${inputs.waterLiters}L・食料${inputs.foodDays}日・ガス${inputs.gasCanisterCount}本で試算。`,
-                  "",
-                  "足りないものを確認 → surviveasonejp.org/family",
+                  `我が家はあと${days}日（${score.bottleneck}がボトルネック）ランク${score.rank}`,
+                  `備蓄を確認 → surviveasonejp.org/family`,
                   "",
                   "#ホルムズ海峡 #備蓄確認",
                 ].join("\n");
@@ -244,6 +265,29 @@ export const FamilyMeter: FC = () => {
               );
             })}
           </div>
+
+          {/* ボトルネック緊急アドバイス（14日以内のみ表示） */}
+          {score.totalDays < 14 && (() => {
+            const urgentActions = BOTTLENECK_URGENT_ACTIONS[score.bottleneck];
+            const bottleneckDays = Math.round(score.totalDays);
+            return urgentActions ? (
+              <div className="border border-[#dc2626]/40 rounded-lg p-4 space-y-2 bg-[#dc2626]/05">
+                <h3 className="font-mono text-xs tracking-wider text-[#dc2626] flex items-center gap-1.5">
+                  <span>⚠</span>
+                  あと{bottleneckDays}日で「{score.bottleneck}」が限界です
+                </h3>
+                <div className="text-[10px] font-mono text-neutral-500 mb-1">今すぐやること:</div>
+                <ul className="space-y-1.5">
+                  {urgentActions.map((action) => (
+                    <li key={action} className="text-xs text-neutral-300 flex gap-2">
+                      <span className="text-[#dc2626] shrink-0">▸</span>
+                      {action}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null;
+          })()}
 
           {/* アドバイス */}
           <div
@@ -287,13 +331,13 @@ export const FamilyMeter: FC = () => {
 
             {/* 地域選択 */}
             <div className="space-y-1.5">
-              <div className="text-[10px] text-neutral-500">居住地を選択（任意）</div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="text-xs text-neutral-500">居住地を選択（任意）</div>
+              <div className="flex flex-wrap gap-2">
                 {REGION_PROFILES.map((r) => (
                   <button
                     key={r.id}
                     onClick={() => setManualRegion(regionId === r.id ? null : r.id)}
-                    className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${
+                    className={`text-xs font-mono px-3 py-2 rounded border transition-colors min-h-[36px] ${
                       regionId === r.id
                         ? "border-[#2563eb] text-[#2563eb] bg-[#2563eb]/10"
                         : "border-border text-neutral-500 hover:border-neutral-400"

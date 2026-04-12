@@ -8,6 +8,7 @@ import {
   MAP_BOUNDS,
   isInBounds,
   ALL_ROUTES,
+  TRANSFER_HUBS,
   type RouteType,
 } from "../lib/tankerPosition";
 import { DataBadge } from "./DataBadge";
@@ -153,6 +154,161 @@ function getRouteStyle(
   };
 }
 
+// ─── 西半球インセット（PCのみ: HTML カード内 SVG）────────────────
+
+const INSET_SVG_W = 200;
+const INSET_SVG_H = 131;   // ホーン岬（-56°）表示のため南端拡張
+const INSET_BOUNDS = {
+  minLon: -105, maxLon: 22,
+  minLat: -58,  maxLat: 46, // -43 → -58 に拡張
+} as const;
+
+function projectInset(lon: number, lat: number): [number, number] {
+  return [
+    ((lon - INSET_BOUNDS.minLon) / (INSET_BOUNDS.maxLon - INSET_BOUNDS.minLon)) * INSET_SVG_W,
+    ((INSET_BOUNDS.maxLat - lat)  / (INSET_BOUNDS.maxLat  - INSET_BOUNDS.minLat))  * INSET_SVG_H,
+  ];
+}
+
+// 主要点の SVG 座標（定数として事前計算）
+const [USGC_IX, USGC_IY]     = projectInset(-93, 29);
+const [PANAMA_IX, PANAMA_IY] = projectInset(-79,  9);
+const [CAPE_IX,   CAPE_IY]   = projectInset( 18, -34);
+const [HORN_IX,   HORN_IY]   = projectInset(-67, -56);
+
+// 大西洋ルート（米国ガルフ → 喜望峰）
+const INSET_ATLANTIC_D = smoothPath(
+  ([ [-93,29],[-60,20],[-30,10],[-5,-5],[10,-25],[18,-34] ] as [number,number][])
+    .map(([lon, lat]) => projectInset(lon, lat))
+);
+
+// パナマルート（米国ガルフ → パナマ運河）
+const INSET_PANAMA_D = smoothPath(
+  ([ [-93,29],[-79,9] ] as [number,number][])
+    .map(([lon, lat]) => projectInset(lon, lat))
+);
+
+// ドレーク海峡ルート（米国ガルフ → 大西洋南下 → ホーン岬）
+// 南米東海岸より常に東側（Atlantic Ocean）を通るよう設計
+const INSET_DRAKE_D = smoothPath(
+  ([ [-93,29],[-84,27],[-76,22],[-62,12],[-52,4],[-33,-8],[-36,-22],[-44,-34],[-52,-44],[-58,-52],[-65,-57],[-67,-56] ] as [number,number][])
+    .map(([lon, lat]) => projectInset(lon, lat))
+);
+
+// 大陸ポリゴン（polygon points 文字列として事前計算）
+const _toInsetPts = (pts: [number, number][]) =>
+  pts.map(([lon, lat]) => {
+    const [x, y] = projectInset(lon, lat);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
+// 北米+中米: 大西洋岸→メキシコ湾岸→ユカタン→中米カリブ岸→太平洋岸→左端で閉じる
+const N_AMERICA_PTS = _toInsetPts([
+  [-105, 46],              // 左上隅
+  [-65,  46], [-67, 43],  // ノバスコシア
+  [-70,  42],             // ケープコッド
+  [-72,  41],             // ロングアイランド
+  [-74,  39],             // ニュージャージー
+  [-76,  37],             // チェサピーク湾
+  [-77,  35],             // ケープハッテラス
+  [-79,  33],             // ノースカロライナ
+  [-80,  32],             // ジョージア
+  [-81,  30],             // フロリダ北東
+  [-81,  28],             // ケープカナベラル
+  [-80,  26],             // マイアミ
+  [-81,  25],             // フロリダ南端
+  [-82,  27],             // フロリダ西岸
+  [-84,  29],             // ビッグベンド
+  [-87,  30],             // ペンサコーラ
+  [-88,  30],             // モービル
+  [-89,  29],             // ミシシッピデルタ
+  [-90,  29],             // ニューオーリンズ
+  [-91,  29],             // ルイジアナ西部
+  [-95,  29],             // ガルベストン
+  [-97,  28],             // コーパスクリスティ
+  [-98,  22],             // タンピコ（メキシコ）
+  [-96,  19],             // ベラクルス
+  [-90,  19],             // カンペチェ
+  [-87,  21],             // カンクン（ユカタン北東）
+  [-87,  17],             // ベリーズ
+  [-87,  15],             // ホンジュラス
+  [-84,  12],             // ニカラグア（カリブ側）
+  [-83,  10],             // コスタリカ（カリブ側）
+  [-80,   9],             // パナマ（カリブ側）
+  [-79,   8],             // パナマ（太平洋側）
+  [-85,   9],             // コスタリカ（太平洋側）
+  [-87,  12],             // ニカラグア（太平洋側）
+  [-90,  13],             // エルサルバドル
+  [-92,  15],             // グアテマラ
+  [-94,  16],             // チアパス（メキシコ）
+  [-100, 18],             // ゲレロ（メキシコ太平洋岸）
+  [-105, 21],             // 左端で閉じる
+]);
+
+// 南米: パナマ太平洋岸→南端→大西洋岸→カリブ→パナマで閉じる
+const S_AMERICA_PTS = _toInsetPts([
+  [-79,   9],             // パナマ（太平洋側）
+  [-77,   3],             // コロンビア太平洋岸
+  [-80,  -2],             // エクアドル
+  [-80,  -5],             // ペルー北部
+  [-77, -12],             // リマ
+  [-70, -18],             // タクナ
+  [-70, -24],             // アントファガスタ
+  [-71, -33],             // バルパライソ
+  [-73, -41],             // プエルトモント
+  [-74, -50],             // パタゴニア南部
+  [-68, -54],             // マゼラン海峡付近
+  [-67, -56],             // ホーン岬（最南端）
+  [-63, -53],             // フォークランド方向
+  [-62, -43],             // パタゴニア大西洋側
+  [-62, -39],             // ブエノスアイレス周辺
+  [-57, -36],             // ラプラタ川河口
+  [-51, -30],             // ポルトアレグレ
+  [-48, -27],             // フロリアノポリス
+  [-46, -24],             // サントス
+  [-43, -23],             // リオデジャネイロ
+  [-40, -20],             // ビトーリア
+  [-38, -13],             // サルバドール
+  [-35,  -8],             // レシフェ
+  [-35,  -5],             // ナタル（ブラジル最東端）
+  [-38,  -3],             // フォルタレザ
+  [-48,  -1],             // ベレン
+  [-51,   0],             // マカパ
+  [-55,   4],             // スリナム
+  [-58,   7],             // ガイアナ
+  [-61,  10],             // トリニダード
+  [-62,  11],             // ベネズエラ東部
+  [-67,  11],             // カラカス
+  [-72,  11],             // マラカイボ
+  [-75,  11],             // コロンビア（カリブ側）
+  [-80,   9],             // カリブ沿岸→パナマで閉じる
+]);
+
+// アフリカ大陸西岸: モロッコ→ギニア湾→喜望峰→右端で閉じる
+const AFRICA_PTS = _toInsetPts([
+  [ -5,  46],             // 上端（モロッコ/ジブラルタル）
+  [ 22,  46], [22, -58], // 右端で外枠（ホーン岬緯度まで）
+  [ 18, -34],             // 喜望峰（ケープオブグッドホープ）
+  [ 17, -29],             // 南アフリカ南岸
+  [ 16, -23],             // ナミビア（リューデリッツ）
+  [ 13,  -9],             // アンゴラ（ルアンダ）
+  [ 12,  -5],             // コンゴ/カビンダ
+  [ 10,  -1],             // ガボン（ポルジャンティール）
+  [  9,   2],             // カメルーン
+  [  7,   5],             // ナイジェリア（ポートハーコート）
+  [  3,   6],             // ラゴス
+  [  0,   6],             // アクラ（ガーナ）
+  [ -2,   5],             // ケープスリーポインツ
+  [ -5,   5],             // コートジボワール
+  [ -8,   5],             // リベリア
+  [-11,   7],             // シエラレオネ
+  [-15,  11],             // ギニアビサウ
+  [-17,  14],             // セネガル/ガンビア
+  [-17,  21],             // 西サハラ（ダフラ）
+  [-13,  28],             // モロッコ南部（アガディール）
+  [ -5,  36],             // モロッコ北（タンジェ）
+]);
+
 // ─── チョークポイント ──────────────────────────────
 
 const CHOKEPOINTS = [
@@ -172,6 +328,16 @@ interface TankerMapProps {
   selectedId: string | null;
   onSelect: (id: string | null) => void;
   scenario?: MapScenario;
+  /** PCのみ: 西半球インセット表示 */
+  showInset?: boolean;
+  /** 非日本向け・ホルムズ封鎖時到達不可タンカーを表示するか（デフォルト: 非表示） */
+  showDimmed?: boolean;
+  /** 選択中のルートID（外部から管理） */
+  selectedRouteId?: string | null;
+  /** ルート選択コールバック */
+  onRouteSelect?: (id: string | null) => void;
+  /** ルートホバーコールバック */
+  onRouteHover?: (id: string | null) => void;
 }
 
 export const TankerMap: FC<TankerMapProps> = ({
@@ -179,15 +345,26 @@ export const TankerMap: FC<TankerMapProps> = ({
   selectedId,
   onSelect,
   scenario = "full",
+  showInset = false,
+  showDimmed = false,
+  selectedRouteId = null,
+  onRouteSelect,
+  onRouteHover,
 }) => {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [hoveredPortId, setHoveredPortId] = useState<string | null>(null);
   const [hoveredRouteId, setHoveredRouteId] = useState<string | null>(null);
+  const [hoveredHubId, setHoveredHubId] = useState<string | null>(null);
+
+  // 表示対象タンカー（showDimmed=false のとき非日本向け・ホルムズ船を除外）
+  const visibleTankers = useMemo(
+    () => (showDimmed ? tankers : tankers.filter((t) => !isDimmed(t, scenario))),
+    [tankers, showDimmed, scenario],
+  );
 
   // 各タンカーの推定位置・進行方向を算出
   const positions = useMemo(() => {
     const map = new Map<string, { x: number; y: number; pos: { lat: number; lon: number }; heading: number | null }>();
-    for (const t of tankers) {
+    for (const t of visibleTankers) {
       const pos = estimatePosition(t);
       if (pos && isInBounds(pos)) {
         const [x, y] = project(pos.lon, pos.lat);
@@ -196,17 +373,17 @@ export const TankerMap: FC<TankerMapProps> = ({
       }
     }
     return map;
-  }, [tankers]);
+  }, [visibleTankers]);
 
   // アクティブなルートID集合（タンカーがいるルート）
   const activeRouteIds = useMemo(() => {
     const ids = new Set<string>();
-    for (const t of tankers) {
+    for (const t of visibleTankers) {
       const routeId = getRouteId(t.departurePort);
       if (routeId) ids.add(routeId);
     }
     return ids;
-  }, [tankers]);
+  }, [visibleTankers]);
 
   // 全ルート基底レイヤー（sea-routes.jsonの全ルートをウェイポイントで描画）
   const allRoutePaths = useMemo(() => {
@@ -249,7 +426,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   const tankerRoutePaths = useMemo(() => {
     const seen = new Set<string>();
     const paths: { routeId: string; d: string; tankerId: string }[] = [];
-    for (const t of tankers) {
+    for (const t of visibleTankers) {
       const routeId = getRouteId(t.departurePort);
       const key = `${routeId}-${t.departurePort}-${t.destinationPort}`;
       if (seen.has(key)) continue;
@@ -263,10 +440,7 @@ export const TankerMap: FC<TankerMapProps> = ({
   }, [tankers]);
 
   const activeId = hoveredId ?? selectedId;
-  const activeTanker = tankers.find((t) => t.id === activeId);
-  const hoveredRoute = hoveredRouteId !== null
-    ? ALL_ROUTES[hoveredRouteId] ?? null
-    : null;
+  const activeTanker = visibleTankers.find((t) => t.id === activeId);
 
   return (
     <div className="bg-[#0c1018] border border-border rounded-lg overflow-hidden relative">
@@ -276,7 +450,7 @@ export const TankerMap: FC<TankerMapProps> = ({
         className="w-full h-auto"
         role="img"
         aria-label="タンカー推定航跡マップ"
-        onClick={() => onSelect(null)}
+        onClick={() => { onSelect(null); onRouteSelect?.(null); }}
       >
         <defs>
           <clipPath id="map-clip">
@@ -308,18 +482,25 @@ export const TankerMap: FC<TankerMapProps> = ({
             const isHovered = hoveredRouteId === routeId;
             const style = getRouteStyle(route_type, scenario, isActive);
             const sw = getCapacityStrokeWidth(capacity_mbpd, isActive || isHovered);
+            const isSelected = selectedRouteId === routeId;
             return (
               <path
                 key={`base-${routeId}`}
                 d={d}
                 fill="none"
-                stroke={style.stroke}
-                strokeWidth={sw}
-                strokeDasharray={style.strokeDasharray}
-                opacity={isHovered ? Math.min(style.opacity + 0.25, 0.95) : style.opacity}
+                stroke={isSelected ? "#e2e8f0" : style.stroke}
+                strokeWidth={isSelected ? sw * 1.6 : sw}
+                strokeDasharray={isSelected ? "none" : style.strokeDasharray}
+                opacity={isSelected ? 0.9 : isHovered ? Math.min(style.opacity + 0.25, 0.95) : style.opacity}
                 className="cursor-pointer"
-                onMouseEnter={() => setHoveredRouteId(routeId)}
-                onMouseLeave={() => setHoveredRouteId(null)}
+                style={{ transition: "opacity 350ms ease-out, stroke 350ms ease-out, stroke-width 200ms ease-out" }}
+                onMouseEnter={() => { setHoveredRouteId(routeId); onRouteHover?.(routeId); }}
+                onMouseLeave={() => { setHoveredRouteId(null); onRouteHover?.(null); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const next = selectedRouteId === routeId ? null : routeId;
+                  onRouteSelect?.(next);
+                }}
               />
             );
           })}
@@ -352,22 +533,30 @@ export const TankerMap: FC<TankerMapProps> = ({
           })}
         </g>
 
-        {/* ── 完全封鎖時: ホルムズ×マーク ── */}
+        {/* ── 完全封鎖時: ホルムズ×マーク（ポップインアニメーション）── */}
         {scenario === "full" && (() => {
           const [cx, cy] = project(56.25, 26.567);
           const s = 14;
           return (
-            <g style={{ pointerEvents: "none" }}>
-              <line x1={cx - s} y1={cy - s} x2={cx + s} y2={cy + s} stroke="#ef4444" strokeWidth={2.5} opacity={0.7} />
-              <line x1={cx + s} y1={cy - s} x2={cx - s} y2={cy + s} stroke="#ef4444" strokeWidth={2.5} opacity={0.7} />
+            <g style={{ pointerEvents: "none" }} transform={`translate(${cx},${cy})`}>
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                values={`${cx},${cy}`}
+                dur="0s"
+              />
+              <g style={{ animation: "tanker-x-pop 300ms cubic-bezier(0.34,1.56,0.64,1) forwards" }}>
+                <line x1={-s} y1={-s} x2={s} y2={s} stroke="#ef4444" strokeWidth={2.5} opacity={0.7} />
+                <line x1={s} y1={-s} x2={-s} y2={s} stroke="#ef4444" strokeWidth={2.5} opacity={0.7} />
+              </g>
             </g>
           );
         })()}
 
-        {/* ── ルート所要日数ラベル（部分/完全封鎖時）── */}
-        {(scenario === "full" || scenario === "partial") && (
+        {/* ── ルート所要日数ラベル（ホバー中ルートのみ）── */}
+        {hoveredRouteId !== null && (
           <g clipPath="url(#map-clip)" style={{ pointerEvents: "none" }}>
-            {routeMidpoints.map(({ routeId, x, y, transit_days, route_type }) => {
+            {routeMidpoints.filter(({ routeId }) => routeId === hoveredRouteId).map(({ routeId, x, y, transit_days, route_type }) => {
               // primaryは「XX日」、bypass/existing_altは「約XX日」で表示
               const isBypass = route_type === "bypass";
               const isExisting = route_type === "existing_alt";
@@ -411,10 +600,12 @@ export const TankerMap: FC<TankerMapProps> = ({
           </g>
         )}
 
-        {/* チョークポイント */}
-        {CHOKEPOINTS.filter((cp) => isInBounds(cp)).map((cp) => {
+        {/* チョークポイント: ホルムズは常時表示。他は封鎖シナリオ時のみ */}
+        {CHOKEPOINTS
+          .filter((cp) => isInBounds(cp))
+          .filter((cp) => cp.id === "hormuz" || scenario !== "normal")
+          .map((cp) => {
           const [cx, cy] = project(cp.lon, cp.lat);
-          // malaccaとbabelは封鎖シナリオで代替ルートが通過するため重要度が上がる
           const isCritical = cp.critical
             || ((cp.id === "babel" || cp.id === "malacca") && (scenario === "partial" || scenario === "full"));
           const size = isCritical ? 8 : 5;
@@ -457,65 +648,120 @@ export const TankerMap: FC<TankerMapProps> = ({
           );
         })}
 
-        {/* 日本の到着港マーカー */}
-        {JAPAN_PORTS.filter((p) => isInBounds(p)).map((port) => {
-          const [px, py] = project(port.lon, port.lat);
-          const isDestination = activeTanker?.destinationPort === port.id;
-          const isPortHovered = hoveredPortId === port.id;
-          const showLabel = isDestination || isPortHovered;
+        {/* ── TransferHub（STS積替 / 匿名化ハブ）: 完全封鎖時のみ表示 ── */}
+        {scenario === "full" && TRANSFER_HUBS.filter((h) => isInBounds(h)).map((hub) => {
+          const [hx, hy] = project(hub.lon, hub.lat);
+          const isAnon = hub.type === "anonymization";
+          const isHovered = hoveredHubId === hub.id;
+          // full封鎖時にアノニマイゼーションハブを強調
+          const isHighlighted = isAnon && scenario === "full";
+          const baseColor = isAnon ? "#a855f7" : "#f97316";
+          const opacity = isHighlighted ? 0.95 : isHovered ? 0.85 : 0.55;
+          const r = 7;
+          // 正六角形の頂点（半径r）
+          const hexPoints = Array.from({ length: 6 }, (_, i) => {
+            const angle = (Math.PI / 3) * i - Math.PI / 6;
+            return `${(hx + r * Math.cos(angle)).toFixed(1)},${(hy + r * Math.sin(angle)).toFixed(1)}`;
+          }).join(" ");
           return (
             <g
-              key={port.id}
+              key={hub.id}
               className="cursor-pointer"
-              onMouseEnter={() => setHoveredPortId(port.id)}
-              onMouseLeave={() => setHoveredPortId(null)}
+              style={{ animation: "tanker-fade-in 400ms ease-out forwards" }}
+              onMouseEnter={() => setHoveredHubId(hub.id)}
+              onMouseLeave={() => setHoveredHubId(null)}
             >
-              <circle cx={px} cy={py} r={12} fill="transparent" />
-              <circle
-                cx={px}
-                cy={py}
-                r={showLabel ? 5 : 3}
-                fill={isDestination ? "#ef4444" : isPortHovered ? "#fff" : "#94a3b8"}
-                stroke={showLabel ? "#fff" : "#0f1419"}
-                strokeWidth={showLabel ? 1.5 : 0.5}
-                opacity={showLabel ? 1 : 0.5}
-              />
-              {isDestination && (
-                <circle cx={px} cy={py} r={12} fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.4">
-                  <animate attributeName="r" values="8;16" dur="1.5s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />
+              {/* 強調時の外側リング */}
+              {isHighlighted && (
+                <circle
+                  cx={hx}
+                  cy={hy}
+                  r={r + 8}
+                  fill="none"
+                  stroke={baseColor}
+                  strokeWidth={1}
+                  opacity={0.35}
+                >
+                  <animate attributeName="r" values={`${r + 5};${r + 14}`} dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.4;0" dur="2s" repeatCount="indefinite" />
                 </circle>
               )}
-              {showLabel && (
-                <>
-                  <rect
-                    x={px - port.name.length * 7}
-                    y={py - 21}
-                    width={port.name.length * 14}
-                    height={16}
-                    rx={3}
-                    fill="#0f1419"
-                    opacity={0.85}
-                  />
-                  <text
-                    x={px}
-                    y={py - 9}
-                    fill={isDestination ? "#ef4444" : "#fff"}
-                    fontSize="12"
-                    fontFamily="monospace"
-                    textAnchor="middle"
-                    fontWeight="bold"
-                  >
-                    {port.name}
-                  </text>
-                </>
+              <polygon
+                points={hexPoints}
+                fill={baseColor}
+                stroke={isHovered || isHighlighted ? "#fff" : "#0f1419"}
+                strokeWidth={isHovered || isHighlighted ? 1.5 : 0.8}
+                opacity={opacity}
+              />
+              {/* 匿名化ハブは「?」アイコン、STSは「⇄」 */}
+              <text
+                x={hx}
+                y={hy + 4}
+                textAnchor="middle"
+                fill="#fff"
+                fontSize="8"
+                fontFamily="monospace"
+                fontWeight="bold"
+                style={{ pointerEvents: "none" }}
+              >
+                {isAnon ? "?" : "⇄"}
+              </text>
+              {/* ラベル（ホバー時 or 強調時） */}
+              {(isHovered || isHighlighted) && (
+                <text
+                  x={hx + r + 6}
+                  y={hy + 4}
+                  fill={baseColor}
+                  fontSize="11"
+                  fontFamily="monospace"
+                  fontWeight="bold"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {hub.name}
+                </text>
               )}
             </g>
           );
         })}
 
+        {/* 日本の到着港マーカー: タンカー選択時に目的港のみ表示 */}
+        {activeTanker !== undefined && JAPAN_PORTS.filter(
+          (p) => isInBounds(p) && p.id === activeTanker.destinationPort
+        ).map((port) => {
+          const [px, py] = project(port.lon, port.lat);
+          return (
+            <g key={port.id} style={{ pointerEvents: "none" }}>
+              <circle cx={px} cy={py} r={5} fill="#ef4444" stroke="#fff" strokeWidth={1.5} />
+              <circle cx={px} cy={py} r={12} fill="none" stroke="#ef4444" strokeWidth="1" opacity="0.4">
+                <animate attributeName="r" values="8;16" dur="1.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.5;0" dur="1.5s" repeatCount="indefinite" />
+              </circle>
+              <rect
+                x={px - port.name.length * 7}
+                y={py - 21}
+                width={port.name.length * 14}
+                height={16}
+                rx={3}
+                fill="#0f1419"
+                opacity={0.85}
+              />
+              <text
+                x={px}
+                y={py - 9}
+                fill="#ef4444"
+                fontSize="12"
+                fontFamily="monospace"
+                textAnchor="middle"
+                fontWeight="bold"
+              >
+                {port.name}
+              </text>
+            </g>
+          );
+        })}
+
         {/* 船舶マーカー */}
-        {tankers.map((t) => {
+        {visibleTankers.map((t) => {
           const p = positions.get(t.id);
           if (!p) return null;
           const dimmed2 = isDimmed(t, scenario);
@@ -595,6 +841,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           );
         })}
 
+
         {/* 赤道ラベル */}
         {(() => {
           const [, eqY] = project(0, 0);
@@ -606,70 +853,81 @@ export const TankerMap: FC<TankerMapProps> = ({
         })()}
       </svg>
 
-      {/* ルートホバートゥールチップ */}
-      {hoveredRoute !== null && hoveredRouteId !== null && activeTanker === undefined && (
-        <div className="absolute top-3 left-3 bg-[#0f1419]/95 border border-[#263545] rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
-          <div className="text-neutral-200 font-bold">{hoveredRoute.label}</div>
-          <div className="flex gap-3">
-            <span className="text-neutral-500">
-              容量 <span className="text-neutral-300">{hoveredRoute.capacity_mbpd.toFixed(1)} mbpd</span>
-            </span>
-            <span className="text-neutral-500">
-              所要 <span className="text-neutral-300">約{hoveredRoute.transit_days}日</span>
-            </span>
+      {/* 西半球インセット（PCのみ: HTML カード・テーマ自動対応）*/}
+      {showInset && (
+        <div className="absolute top-2 left-2 bg-panel/95 border border-border rounded-lg shadow-sm pointer-events-none z-10">
+          <div className="px-2 pt-1.5 pb-0 text-[9px] font-mono text-neutral-400 font-bold tracking-wider">
+            西半球ルート（地図外）
           </div>
-          {hoveredRoute.risk_note !== undefined && (
-            <div className="text-amber-400">⚠ {hoveredRoute.risk_note}</div>
-          )}
+          <svg viewBox={`0 0 ${INSET_SVG_W} ${INSET_SVG_H}`} width={INSET_SVG_W} height={INSET_SVG_H}>
+            {/* ─ 海（背景）─ */}
+            <rect x={0} y={0} width={INSET_SVG_W} height={INSET_SVG_H} className="inset-ocean" />
+            {/* ─ 大陸ポリゴン（CSS で海陸の色をテーマ別制御）─ */}
+            <polygon className="inset-land" points={N_AMERICA_PTS} />
+            <polygon className="inset-land" points={S_AMERICA_PTS} />
+            <polygon className="inset-land" points={AFRICA_PTS} />
+
+            {/* ─ 航路線 ─ */}
+            {/* 大西洋ルート（喜望峰経由）*/}
+            <path d={INSET_ATLANTIC_D} fill="none" stroke="#94a3b8" strokeWidth={1.4} strokeDasharray="4 3" opacity={0.85} />
+            {/* パナマルート（米国ガルフ→パナマ運河）*/}
+            <path d={INSET_PANAMA_D}   fill="none" stroke="#16a34a" strokeWidth={1.4} strokeDasharray="4 3" opacity={0.85} />
+            {/* ドレーク海峡ルート（米国ガルフ→ホーン岬・VLCC専用）*/}
+            <path d={INSET_DRAKE_D}    fill="none" stroke="#a78bfa" strokeWidth={1.4} strokeDasharray="4 3" opacity={0.85} />
+            {/* パナマ → 太平洋（左端へ続く：パナマ運河通過後の太平洋航行）*/}
+            <line
+              x1={PANAMA_IX} y1={PANAMA_IY} x2={1} y2={PANAMA_IY}
+              stroke="#16a34a" strokeWidth={1.8} strokeDasharray="3 2" opacity={0.95}
+            />
+            {/* 太平洋方向の矢印（左端・パナマ）*/}
+            <polygon
+              points={`3,${PANAMA_IY - 5} 3,${PANAMA_IY + 5} -5,${PANAMA_IY}`}
+              fill="#16a34a" opacity={0.95}
+            />
+            {/* ホーン岬 → 太平洋（左端へ続く）*/}
+            <line
+              x1={HORN_IX} y1={HORN_IY} x2={1} y2={HORN_IY}
+              stroke="#a78bfa" strokeWidth={1.5} strokeDasharray="3 2" opacity={0.9}
+            />
+            {/* 太平洋方向の矢印（左端・ホーン岬）*/}
+            <polygon
+              points={`2,${HORN_IY - 4} 2,${HORN_IY + 4} -4,${HORN_IY}`}
+              fill="#a78bfa" opacity={0.9}
+            />
+
+            {/* ─ マーカー ─ */}
+            {/* 米国ガルフ */}
+            <circle cx={USGC_IX} cy={USGC_IY} r={3} fill="#94a3b8" opacity={0.9} />
+            <text x={USGC_IX + 4} y={USGC_IY + 4} fill="#94a3b8" fontSize="7" fontFamily="monospace">米国ガルフ</text>
+            {/* パナマ運河 */}
+            <rect
+              x={PANAMA_IX - 3} y={PANAMA_IY - 3} width={6} height={6}
+              transform={`rotate(45 ${PANAMA_IX} ${PANAMA_IY})`}
+              fill="#d97706" opacity={0.95}
+            />
+            <text x={PANAMA_IX + 5} y={PANAMA_IY - 1} fill="#d97706" fontSize="7" fontFamily="monospace" fontWeight="bold">パナマ運河</text>
+            {/* 喜望峰 */}
+            <circle cx={CAPE_IX} cy={CAPE_IY} r={2.5} fill="#94a3b8" opacity={0.8} />
+            <text x={CAPE_IX - 34} y={CAPE_IY - 5} fill="#94a3b8" fontSize="7" fontFamily="monospace">喜望峰</text>
+            {/* ホーン岬 */}
+            <circle cx={HORN_IX} cy={HORN_IY} r={2.5} fill="#a78bfa" opacity={0.9} />
+            <text x={HORN_IX + 4} y={HORN_IY - 4} fill="#a78bfa" fontSize="7" fontFamily="monospace">ホーン岬</text>
+
+            {/* ─ 方向ラベル ─ */}
+            {/* 太平洋（左端・緑）: パナマ経由の太平洋航行を明示 */}
+            <text x={3} y={PANAMA_IY - 9} fill="#16a34a" fontSize="8" fontFamily="monospace" fontWeight="bold">← 太平洋</text>
+            <text x={3} y={PANAMA_IY + 14} fill="#16a34a" fontSize="6.5" fontFamily="monospace" opacity={0.8}>経由→日本</text>
+            {/* 太平洋（左端・紫）: ホーン岬経由 */}
+            <text x={3} y={HORN_IY - 7} fill="#a78bfa" fontSize="7" fontFamily="monospace" fontWeight="bold">← 太平洋</text>
+            <text x={3} y={HORN_IY + 10} fill="#a78bfa" fontSize="6" fontFamily="monospace" opacity={0.8}>(55日・VLCC)</text>
+            {/* インド洋（喜望峰から右へ）*/}
+            <text x={CAPE_IX - 38} y={CAPE_IY + 10} fill="#94a3b8" fontSize="6.5" fontFamily="monospace" opacity={0.8}>→インド洋</text>
+            {/* 大西洋（中央）*/}
+            <text x={125} y={55} fill="#94a3b8" fontSize="8" fontFamily="monospace">大西洋</text>
+          </svg>
         </div>
       )}
 
-      {/* 船舶ツールチップ（選択/ホバー時） */}
-      {activeTanker !== undefined && positions.has(activeTanker.id) && (
-        <div className="absolute bottom-12 left-3 bg-panel/95 border border-border rounded px-3 py-2 text-xs font-mono space-y-1 pointer-events-none">
-          <div className="flex items-center gap-2">
-            <span
-              className="px-1 py-0.5 rounded text-[10px]"
-              style={{
-                backgroundColor: activeTanker.type === "VLCC" ? "#f59e0b20" : "#22c55e20",
-                color: activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
-              }}
-            >
-              {activeTanker.type}
-            </span>
-            <span className="text-neutral-200 font-bold">{activeTanker.name}</span>
-          </div>
-          <div className="text-neutral-500">
-            {activeTanker.departure} → {activeTanker.destination}
-          </div>
-          <div className="text-neutral-500">
-            積載量{" "}
-            <span className="text-neutral-300">
-              {new Intl.NumberFormat("ja-JP").format(activeTanker.cargo_t)}t
-            </span>
-            <span className="ml-1.5 text-neutral-600">
-              ({getSizeLabel(activeTanker.cargo_t)})
-            </span>
-          </div>
-          {HORMUZ_PORTS.has(activeTanker.departurePort) ? (
-            <div className="text-red-400 font-bold">封鎖時到達不可</div>
-          ) : !JAPAN_DEST_PORTS.has(activeTanker.destinationPort) ? (
-            <div className="text-neutral-400 font-bold badge-not-japan-text">日本向けでない</div>
-          ) : (
-            <div className="text-neutral-400">
-              到着まで{" "}
-              <span
-                className="font-bold"
-                style={{
-                  color: activeTanker.type === "VLCC" ? "#f59e0b" : "#22c55e",
-                }}
-              >
-                {activeTanker.eta_days.toFixed(1)}日
-              </span>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* 凡例 + 精度バッジ */}
       <div className="absolute bottom-2 left-3 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] font-mono text-neutral-600">
@@ -685,10 +943,24 @@ export const TankerMap: FC<TankerMapProps> = ({
           <span className="inline-block w-1.5 h-1.5 bg-[#ef4444] rotate-45" />
           封鎖点
         </span>
-        <span className="flex items-center gap-1 text-[#3b82f6]">
-          <span className="inline-block w-5 border-t-2 border-[#3b82f6] border-dashed" />
-          代替
-        </span>
+        {(scenario === "partial" || scenario === "full") && (
+          <span className="flex items-center gap-1 text-[#3b82f6]">
+            <span className="inline-block w-5 border-t-2 border-[#3b82f6] border-dashed" />
+            代替
+          </span>
+        )}
+        {scenario === "full" && (
+          <>
+            <span className="flex items-center gap-1 text-[#f97316]">
+              <svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#f97316" /></svg>
+              STS積替
+            </span>
+            <span className="flex items-center gap-1 text-[#a855f7]">
+              <svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#a855f7" /></svg>
+              匿名化ハブ
+            </span>
+          </>
+        )}
         <span className="text-neutral-700">線幅∝輸送容量</span>
       </div>
       <div className="absolute bottom-2 right-3">

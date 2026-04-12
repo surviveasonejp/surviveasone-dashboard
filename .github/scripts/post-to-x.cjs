@@ -101,7 +101,7 @@ async function postTweet(mediaId) {
     'シミュレーションを更新しました →',
     'surviveasonejp.org',
     '',
-    '棚を空にする前に、わが家に何が足りないかを確認 → surviveasonejp.org/family',
+    '公的推奨水準（3日分）と比べてわが家の過不足を確認 → surviveasonejp.org/prepare',
     '',
     '#surviveasonejp #ホルムズ海峡 #備蓄確認',
   ].join('\n');

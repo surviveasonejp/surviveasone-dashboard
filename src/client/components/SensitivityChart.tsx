@@ -191,12 +191,12 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
         })}
       </div>
 
-      <div className="flex items-center justify-between text-[9px] font-mono text-neutral-600">
+      <div className="flex items-center justify-between text-[10px] font-mono text-neutral-600">
         <span>← 日数短縮（悪化）</span>
         <span>基準値</span>
         <span>日数延長（改善）→</span>
       </div>
-      <p className="text-[9px] font-mono text-neutral-700">
+      <p className="text-[10px] font-mono text-neutral-700">
         各仮定を±20%変動させた場合の枯渇/崩壊日数への影響。影響度順にソート。強調表示（左黄線）は上位3因子。
       </p>
     </div>

@@ -434,7 +434,7 @@ const StockChart: FC<StockChartProps> = ({
               className="text-[4px] font-mono font-bold"
               fill="#0f1419"
             >
-              {ev.day}
+              D{ev.day}
             </text>
           </g>
         );
@@ -510,14 +510,14 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
     event.resource === "logistics" ? "物流" : "";
 
   return (
-    <div role="listitem" aria-label={`${event.day}日目: ${event.label}（${resourceLabel}）`}>
+    <div role="listitem" aria-label={`Day ${event.day}: ${event.label}（${resourceLabel}）`}>
       <div
         className={`flex items-center gap-2 ${actions ? "cursor-pointer" : ""}`}
         onClick={() => actions && setExpanded(!expanded)}
       >
-        {/* 日数 */}
-        <div className="w-10 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
-          {event.day}<span className="text-[9px] font-normal text-neutral-600">日</span>
+        {/* 日数（Day N 形式）*/}
+        <div className="w-12 text-right font-mono text-xs font-bold shrink-0" style={{ color: resourceColor }}>
+          <span className="text-[9px] font-normal" style={{ color: resourceColor }}>Day </span>{event.day}
         </div>
         {/* アイコン + バー */}
         <div className="relative flex-1 h-6 bg-[#0c1018] rounded overflow-hidden">
@@ -529,14 +529,14 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
             }}
           />
           <div className="absolute inset-0 flex items-center px-2 gap-1.5">
-            <span className="text-[9px] shrink-0" style={{ color: resourceColor }}>{icon}</span>
-            <span className="text-[10px] font-mono text-neutral-300 truncate">
+            <span className="text-[10px] shrink-0" style={{ color: resourceColor }}>{icon}</span>
+            <span className="text-xs font-mono text-neutral-300 truncate">
               {event.label}
             </span>
           </div>
           {/* リソースタグ */}
           <div
-            className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1 py-0.5 rounded"
             style={{ backgroundColor: `${resourceColor}18`, color: resourceColor }}
           >
             {resourceLabel}
@@ -544,7 +544,7 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
         </div>
         {/* 展開トグル */}
         {actions && (
-          <div className="shrink-0 text-[9px] font-mono text-neutral-600 w-4 text-center">
+          <div className="shrink-0 text-[10px] font-mono text-neutral-600 w-4 text-center">
             {expanded ? "▼" : "▶"}
           </div>
         )}
@@ -552,11 +552,11 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
       {/* アクションパネル */}
       {expanded && actions && (
         <div className="ml-12 mt-1 mb-1 bg-[#0c1018] border border-border rounded p-2.5 space-y-1">
-          <div className="text-[9px] font-mono tracking-wider mb-1.5" style={{ color: resourceColor }}>
+          <div className="text-[10px] font-mono tracking-wider mb-1.5" style={{ color: resourceColor }}>
             このフェーズで確認すること
           </div>
           {actions.map((action) => (
-            <div key={action} className="flex gap-1.5 text-[10px] text-neutral-400 leading-relaxed">
+            <div key={action} className="flex gap-1.5 text-xs text-neutral-400 leading-relaxed">
               <span style={{ color: resourceColor }} className="shrink-0">▸</span>
               <span>{action}</span>
             </div>
@@ -756,15 +756,15 @@ const NaphthaChain: FC<NaphthaChainProps> = ({ thresholds, totalDays }) => {
                 />
                 <div className="relative px-2 py-1.5 space-y-0.5">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-mono text-neutral-300 leading-snug">{ev.label}</span>
+                    <span className="text-xs font-mono text-neutral-300 leading-snug">{ev.label}</span>
                     <span
-                      className="text-[8px] font-mono px-1 py-0.5 rounded shrink-0"
+                      className="text-[10px] font-mono px-1 py-0.5 rounded shrink-0"
                       style={{ backgroundColor: `${NAPHTHA_COLOR}18`, color: NAPHTHA_COLOR }}
                     >
                       {ev.yenPerKl}
                     </span>
                   </div>
-                  <div className="text-[9px] text-neutral-600 leading-relaxed">{ev.note}</div>
+                  <div className="text-[10px] text-neutral-600 leading-relaxed">{ev.note}</div>
                 </div>
               </div>
             </div>
@@ -882,13 +882,13 @@ const PolicyEvents: FC<PolicyEventsProps> = ({ policyEffects }) => {
             </div>
             <div className="flex-1 bg-[#0c1018] border rounded p-2 space-y-0.5" style={{ borderColor: `${color}30` }}>
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] font-mono text-neutral-300">{ev.label}</span>
-                <span className="text-[8px] font-mono px-1 py-0.5 rounded shrink-0" style={{ backgroundColor: `${color}18`, color }}>
+                <span className="text-xs font-mono text-neutral-300">{ev.label}</span>
+                <span className="text-[10px] font-mono px-1 py-0.5 rounded shrink-0" style={{ backgroundColor: `${color}18`, color }}>
                   {catLabel}
                 </span>
               </div>
-              <div className="text-[9px] font-mono" style={{ color }}>{effectText}</div>
-              <div className="text-[9px] text-neutral-600">{ev.note}</div>
+              <div className="text-[10px] font-mono" style={{ color }}>{effectText}</div>
+              <div className="text-[10px] text-neutral-600">{ev.note}</div>
             </div>
           </div>
         );
@@ -953,13 +953,13 @@ const RealEvents: FC<RealEventsProps> = ({ totalDays, scenarioId }) => {
                 }}
               />
               <div className="absolute inset-0 flex items-center px-2 gap-1.5">
-                <span className="text-[9px] shrink-0" style={{ color }}>◉</span>
-                <span className="text-[10px] font-mono text-neutral-300 truncate">
+                <span className="text-[10px] shrink-0" style={{ color }}>◉</span>
+                <span className="text-xs font-mono text-neutral-300 truncate">
                   {ev.label}
                 </span>
               </div>
               <div
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[8px] font-mono px-1 py-0.5 rounded"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1 py-0.5 rounded"
                 style={{ backgroundColor: `${color}18`, color }}
               >
                 {catLabel}

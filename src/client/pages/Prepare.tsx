@@ -396,7 +396,7 @@ export const Prepare: FC = () => {
             <span className="text-[#ef4444] font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
           </div>
         </div>
-        <p className="text-[10px] text-neutral-500 leading-relaxed">
+        <p className="text-xs text-neutral-500 leading-relaxed">
           食料は国内在庫があるが、ナフサ不足で「包めない・運べない」状態が先に来る。
           おむつ・生理用品・ゴミ袋・ラップ・ニトリル手袋は食料より先に店頭在庫が薄くなる。
           水道水は比較的長く維持されるが、衛生用品・容器は代替が効かない。
@@ -408,7 +408,7 @@ export const Prepare: FC = () => {
       <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
         <div>
           <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">あなたの状況を選んでください</h2>
-          <p className="text-[10px] text-neutral-500 mt-1">該当するセクションだけを展開表示します。選択内容はこのブラウザ内のみで処理され、サーバーへの送信は一切行いません。</p>
+          <p className="text-xs text-neutral-500 mt-1">該当するセクションだけを展開表示します。選択内容はこのブラウザ内のみで処理され、サーバーへの送信は一切行いません。</p>
         </div>
 
         {/* 住居形態 */}
@@ -538,7 +538,7 @@ export const Prepare: FC = () => {
             </div>
           ))}
         </div>
-        <p className="text-[10px] text-neutral-600">
+        <p className="text-xs text-neutral-600">
           ※ 72時間後から徐々に自治体の支援が立ち上がります。フェーズ別行動指針（下記）はその後の計画です。
         </p>
       </div>
@@ -550,7 +550,7 @@ export const Prepare: FC = () => {
             <div className="font-mono text-xs tracking-widest text-neutral-500">
               SCENARIO — シナリオ別フェーズ判定
             </div>
-            <p className="text-[10px] text-neutral-400">
+            <p className="text-xs text-neutral-400">
               シナリオを選ぶと、最初に備えるべきフェーズが自動で強調表示されます
             </p>
           </div>
@@ -607,7 +607,7 @@ export const Prepare: FC = () => {
                   </span>
                   <span className="font-mono text-sm font-bold" style={{ color: phase.color }}>{phase.phase}</span>
                   {isNext && (
-                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded-full ml-auto" style={{ backgroundColor: `${phase.color}20`, color: phase.color, border: `1px solid ${phase.color}40` }}>
+                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded-full ml-auto" style={{ backgroundColor: `${phase.color}20`, color: phase.color, border: `1px solid ${phase.color}40` }}>
                       ◉ 今から準備
                     </span>
                   )}

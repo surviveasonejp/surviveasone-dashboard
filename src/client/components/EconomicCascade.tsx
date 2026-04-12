@@ -150,15 +150,15 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
           <span className="w-2 h-2 rounded-sm inline-block bg-[#f59e0b]" />
           <span className="text-neutral-500">ナフサ民間在庫</span>
           <span className="text-[#f59e0b] font-bold">{NAPHTHA_STOCK_DAYS}日</span>
-          <span className="text-[9px] text-neutral-600">（法的備蓄義務なし）</span>
+          <span className="text-[10px] text-neutral-600">（法的備蓄義務なし）</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-sm inline-block bg-[#22c55e]" />
           <span className="text-neutral-500">石油国家備蓄</span>
           <span className="text-[#22c55e] font-bold">241日</span>
-          <span className="text-[9px] text-neutral-600">（石油備蓄法）</span>
+          <span className="text-[10px] text-neutral-600">（石油備蓄法）</span>
         </div>
-        <p className="w-full text-[9px] text-[#f59e0b]/70">
+        <p className="w-full text-[10px] text-[#f59e0b]/70">
           ⚠ ナフサは石油より約4倍早く枯渇する。減産ライン: ¥10万/kL | 停止ライン: ¥11〜13万/kL | 崩壊ライン: ¥13万/kL超
         </p>
       </div>
@@ -189,7 +189,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
                   <td className="px-2 py-1.5 text-right" style={{ color: naphthaColor }}>
                     ¥{(s.naphthaYen / 10_000).toFixed(1)}万
                     {naphthaStatus && (
-                      <span className="text-[8px] ml-0.5 opacity-80">{naphthaStatus}</span>
+                      <span className="text-[10px] ml-0.5 opacity-80">{naphthaStatus}</span>
                     )}
                   </td>
                   <td className="px-2 py-1.5 text-right" style={{ color }}>¥{s.gasolinePrice}</td>
@@ -197,7 +197,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
                   <td className="px-2 py-1.5 text-right" style={{ color }}>×{s.foodPrice.toFixed(2)}</td>
                   <td className="px-2 py-1.5 text-center">
                     <span
-                      className="px-1.5 py-0.5 rounded text-[9px]"
+                      className="px-1.5 py-0.5 rounded text-[10px]"
                       style={{ backgroundColor: `${color}20`, color }}
                     >
                       {PHASE_LABELS[s.phase]}
@@ -211,7 +211,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
       </div>
 
       {/* 凡例 */}
-      <div className="text-[9px] font-mono text-neutral-600 space-y-0.5">
+      <div className="text-[10px] font-mono text-neutral-600 space-y-0.5">
         <p>ナフサ基準: ¥{(baseNaphthaYen / 10_000).toFixed(1)}万/kL
           {wtiPriceUsd != null
             ? `（WTI $${wtiPriceUsd.toFixed(1)}/バレル実測値より算出）`
@@ -232,7 +232,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
         <div className="text-xs font-mono text-neutral-500 tracking-wider">
           NAPHTHA SUPPLY BALANCE — ナフサ月別需給シミュレーション
         </div>
-        <div className="text-[9px] font-mono text-neutral-600 mb-1">
+        <div className="text-[10px] font-mono text-neutral-600 mb-1">
           前提: 中東輸入ゼロ・中東以外2倍（90万kL/月）・精製110万kL/月継続（単位: 万kL/月）
         </div>
         <div className="overflow-x-auto">
@@ -271,7 +271,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
             </tbody>
           </table>
         </div>
-        <p className="text-[9px] font-mono text-neutral-600">
+        <p className="text-[10px] font-mono text-neutral-600">
           6月時点で需要の69%（200/290）しか調達不可 → 石化クラッカー停止・製造業の大量停止
         </p>
       </div>
@@ -282,7 +282,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
           <div className="text-xs font-mono text-[#ef4444] tracking-wider">
             産業配給 — ナフサ割当の優先順位
           </div>
-          <p className="text-[9px] font-mono text-neutral-600">
+          <p className="text-[10px] font-mono text-neutral-600">
             ナフサ配給は「国民」ではなく「産業」が対象。既存法（石油需給適正化法）の段階発動による。
           </p>
           <div className="space-y-1">
@@ -296,23 +296,23 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
             ] as const).map((item) => (
               <div key={item.rank} className="flex items-start gap-2 text-xs font-mono">
                 <span
-                  className="shrink-0 w-12 text-right text-[9px] pt-0.5"
+                  className="shrink-0 w-12 text-right text-[10px] pt-0.5"
                   style={{ color: item.color }}
                 >
                   {item.rank}
                 </span>
                 <span className="text-neutral-300">{item.label}</span>
-                <span className="text-neutral-600 text-[9px] pt-0.5">— {item.desc}</span>
+                <span className="text-neutral-600 text-[10px] pt-0.5">— {item.desc}</span>
               </div>
             ))}
           </div>
           <div className="space-y-1">
-            <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[9px] font-mono text-neutral-600">
+            <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] font-mono text-neutral-600">
               <span><span className="text-[#f59e0b]">在庫50%↓</span> → 石油備蓄法（国家備蓄放出）</span>
               <span><span className="text-[#ef4444]">在庫30%↓</span> → 石油需給適正化法（用途別優先配分）</span>
               <span><span className="text-[#dc2626]">在庫10%↓</span> → 国民生活安定緊急措置法（正式配給制）</span>
             </div>
-            <p className="text-[9px] font-mono text-[#ef4444]/70">
+            <p className="text-[10px] font-mono text-[#ef4444]/70">
               ⚠ ナフサ法的空白: 3法は「燃料危機」設計。ナフサ用途別配分・包装材統制の法的根拠なし。
               食料があっても「包めない・運べない」シナリオへの法的対応は未整備。
             </p>

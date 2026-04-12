@@ -35,6 +35,9 @@ import {
   getLatestElectricityDemand,
   getElectricityHistory,
   getLatestOilPrice,
+  getLatestPowerOutages,
+  getPowerOutagesByFuelType,
+  getPowerOutageSummary,
 } from "./db";
 import {
   getFromCache,
@@ -356,6 +359,8 @@ async function handleApiRoute(
       return handlePetrochemTree(env);
     case "/api/petrochemtree/risk":
       return handlePetrochemRisk(url, env);
+    case "/api/power-outages":
+      return handlePowerOutages(url, env);
     case "/api/sources":
       return handleSources();
     case "/api/docs":
@@ -515,6 +520,58 @@ async function handleOilPrice(env: Env): Promise<Response> {
     { expirationTtl: CACHE_TTL.OIL_PRICE },
   );
   return jsonResponse(payload);
+}
+
+// ─── /api/power-outages ───────────────────────────────
+
+/**
+ * HJKS 発電機停止情報（出典: 日本卸電力取引所）
+ * ?fuel=lng|nuclear|coal|oil でフィルタ可能
+ * ?summary=true でサマリのみ返す
+ */
+async function handlePowerOutages(url: URL, env: Env): Promise<Response> {
+  const summaryOnly = url.searchParams.get("summary") === "true";
+  const fuel = url.searchParams.get("fuel") ?? "";
+
+  // KVキャッシュ確認（サマリのみ）
+  if (summaryOnly) {
+    const cached = await env.CACHE.get("hjks:summary", "text");
+    if (cached) {
+      try {
+        const parsed: unknown = JSON.parse(cached);
+        return jsonResponse({ data: parsed, cache: "hit" });
+      } catch {
+        // KVキャッシュ破損時はD1フォールバックへ
+      }
+    }
+    const summary = await getPowerOutageSummary(env.DB);
+    if (!summary) {
+      return jsonResponse({ error: "no_data", message: "発電機停止情報はまだ取得されていません（毎週月曜更新）" }, 404);
+    }
+    return jsonResponse({
+      data: summary,
+      source: "HJKS（日本卸電力取引所 発電情報公開システム）",
+      note: "認可出力100万kW以上のユニットが対象。毎週月曜更新。",
+      cache: "miss",
+    });
+  }
+
+  // 全件または燃料種フィルタ
+  const rows = fuel
+    ? await getPowerOutagesByFuelType(env.DB, fuel)
+    : await getLatestPowerOutages(env.DB);
+
+  if (rows.length === 0) {
+    return jsonResponse({ error: "no_data", message: "発電機停止情報はまだ取得されていません（毎週月曜更新）" }, 404);
+  }
+
+  return jsonResponse({
+    data: rows,
+    total: rows.length,
+    source: "HJKS（日本卸電力取引所 発電情報公開システム）",
+    note: "認可出力100万kW以上のユニットが対象。毎週月曜更新。",
+    fetchedAt: rows[0]?.fetched_at ?? null,
+  });
 }
 
 // ─── /api/electricity ─────────────────────────────────

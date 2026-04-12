@@ -1,4 +1,4 @@
-import { type FC, useState, useRef, useEffect } from "react";
+import { type FC, useState, useRef, useEffect, useCallback } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
@@ -9,6 +9,12 @@ import { AlternativeRoutePanel } from "../components/AlternativeRoutePanel";
 import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
+import { ALL_ROUTES } from "../lib/tankerPosition";
+
+/** 米国産原油の出発港 */
+const US_ORIGIN_PORTS = new Set([
+  "USGC", "Ingleside", "Ingleside-Cape", "USGC-Cape", "Cameron", "Sabine Pass",
+]);
 
 /** ホルムズ海峡内側の出発港 — 封鎖時に日本到達不可 */
 const HORMUZ_PORTS = new Set([
@@ -23,6 +29,13 @@ const JAPAN_DEST_PORTS = new Set([
   "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
   "Yokohama", "Hitachi", "Sakai/Izumiotsu",
 ]);
+
+/** 米国産ルート種別 */
+function getUsRoute(departurePort: string): string {
+  return ["Ingleside-Cape", "USGC-Cape"].includes(departurePort)
+    ? "喜望峰経由"
+    : "パナマ運河経由";
+}
 
 /** データセット内の最大積載量（TAKASAGO 313,989t） */
 const MAX_CARGO_T = 314000;
@@ -41,9 +54,25 @@ export const TankerTracker: FC = () => {
   const isDimmed = (t: { departurePort: string; destinationPort: string }) => isBlocked(t) || isNotJapanBound(t);
   const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isDimmed(t));
   const lngTankers = tankers.filter((t) => t.type === "LNG" && !isDimmed(t));
+  const usTankers = tankers.filter((t) => US_ORIGIN_PORTS.has(t.departurePort));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [mapScenario, setMapScenario] = useState<MapScenario>("full");
+  const [showInset, setShowInset] = useState(false);
+  const [showDimmed, setShowDimmed] = useState(false);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [hoveredRouteId, setHoveredRouteId] = useState<string | null>(null);
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
+
+  // PCのみインセット表示（md: 768px以上）
+  const updateInset = useCallback(() => {
+    setShowInset(window.innerWidth >= 768);
+  }, []);
+
+  useEffect(() => {
+    updateInset();
+    window.addEventListener("resize", updateInset);
+    return () => window.removeEventListener("resize", updateInset);
+  }, [updateInset]);
 
   // マップで船舶選択時、テーブルの該当行にスクロール
   useEffect(() => {
@@ -52,6 +81,17 @@ export const TankerTracker: FC = () => {
       row?.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [selectedId]);
+
+  // ルート・タンカー選択時は互いにクリア
+  const handleTankerSelect = useCallback((id: string | null) => {
+    setSelectedId(id);
+    if (id !== null) setSelectedRouteId(null);
+  }, []);
+
+  const handleRouteSelect = useCallback((id: string | null) => {
+    setSelectedRouteId(id);
+    if (id !== null) setSelectedId(null);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -83,102 +123,336 @@ export const TankerTracker: FC = () => {
 
       <SimulationBanner />
 
-      {/* タンカー到着カウントダウン */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CountdownTimer
-          label="代替ルートVLCC 最遠入港予測"
-          totalSeconds={(vlccTankers[vlccTankers.length - 1]?.eta_days ?? 0) * 86400}
-        />
-        {(() => {
-          const nextLng = lngTankers.find((t) => t.eta_days >= 1);
-          const arrivingToday = !nextLng && lngTankers.some((t) => t.eta_days > 0);
-          if (nextLng) {
-            return (
-              <CountdownTimer
-                label="次のLNG船到着（非ホルムズ）"
-                totalSeconds={nextLng.eta_days * 86400}
-                noAlert
-              />
-            );
-          }
-          return (
-            <div className="bg-panel border border-border rounded-lg p-6 text-center">
-              <div className="text-sm font-mono text-neutral-500 tracking-wider mb-4">
-                次のLNG船到着（非ホルムズ）
-              </div>
-              {arrivingToday ? (
-                <>
-                  <div className="font-mono font-bold text-4xl mb-2 text-[#2563eb]">本日入港予定</div>
-                  <div className="text-neutral-500 font-mono text-sm mt-3">
-                    追跡中の1便が本日到着見込み
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="font-mono font-bold text-4xl mb-2 text-[#16a34a]">入港済み</div>
-                  <div className="text-neutral-500 font-mono text-sm mt-3">
-                    追跡中の全便が到着済み
-                  </div>
-                  <div className="text-xs font-mono text-neutral-400 mt-1">
-                    次便のAISデータ待ち
-                  </div>
-                </>
-              )}
+      {/* ── PC: マップ(左) + サイドパネル(右) / モバイル: 縦積み ── */}
+      <div className="grid md:grid-cols-[3fr_2fr] gap-4 items-start">
+
+        {/* 左カラム: シナリオセレクター + マップ */}
+        <div className="space-y-2">
+          {/* シナリオセレクター + フィルター */}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex rounded-md overflow-hidden border border-border text-[11px] font-mono">
+              {(
+                [
+                  { key: "normal" as MapScenario, label: "通常時" },
+                  { key: "partial" as MapScenario, label: "部分封鎖" },
+                  { key: "full" as MapScenario, label: "完全封鎖" },
+                ] as const
+              ).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setMapScenario(key)}
+                  className={`px-3 py-1 transition-colors ${
+                    mapScenario === key
+                      ? "bg-neutral-700 text-neutral-100"
+                      : "bg-transparent text-neutral-500 hover:bg-neutral-800 hover:text-neutral-300"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
-          );
-        })()}
+            <button
+              onClick={() => setShowDimmed((v) => !v)}
+              className={`px-3 py-1 rounded-md border text-[11px] font-mono transition-colors ${
+                showDimmed
+                  ? "border-neutral-500 bg-neutral-700 text-neutral-200"
+                  : "border-border text-neutral-500 hover:text-neutral-300"
+              }`}
+            >
+              {showDimmed ? "全船表示" : "日本向けのみ"}
+            </button>
+            <span className="text-[10px] text-neutral-600 font-mono hidden sm:inline">
+              {mapScenario === "normal" && "全ルート通常稼働"}
+              {mapScenario === "partial" && "ホルムズ50%制限"}
+              {mapScenario === "full" && "完全封鎖 — 代替ルート強調"}
+            </span>
+          </div>
+
+          <TankerMap
+            tankers={tankers}
+            selectedId={selectedId}
+            onSelect={handleTankerSelect}
+            scenario={mapScenario}
+            showInset={showInset}
+            showDimmed={showDimmed}
+            selectedRouteId={selectedRouteId}
+            onRouteSelect={handleRouteSelect}
+            onRouteHover={setHoveredRouteId}
+          />
+        </div>
+
+        {/* 右カラム: サイドパネル（PCのみ sticky） */}
+        <div className="md:sticky md:top-20 space-y-3">
+          {/* ── ルート詳細（ホバー/選択時） ── */}
+          {(() => {
+            const activeRouteId = selectedRouteId ?? hoveredRouteId;
+            const route = activeRouteId ? (ALL_ROUTES[activeRouteId] ?? null) : null;
+            if (!route) return null;
+            const routeTypeLabel: Record<string, string> = {
+              primary: "主要航路", bypass: "代替迂回路", existing_alt: "既存代替源",
+            };
+            const routeTypeColor: Record<string, string> = {
+              primary: "#f59e0b", bypass: "#3b82f6", existing_alt: "#22c55e",
+            };
+            const chopkLabels: Record<string, string> = {
+              hormuz: "ホルムズ海峡", malacca: "マラッカ海峡", lombok: "ロンボク海峡",
+              tsugaru: "津軽海峡", panama: "パナマ運河", babel: "バベルマンデブ海峡",
+              "good-hope": "喜望峰",
+            };
+            const color = routeTypeColor[route.route_type] ?? "#94a3b8";
+            return (
+              <div className="bg-panel border rounded-lg p-4 space-y-3 text-xs font-mono" style={{ borderColor: color }}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="font-bold text-text leading-tight">{route.label}</div>
+                  <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: `${color}22`, color }}>
+                    {routeTypeLabel[route.route_type] ?? route.route_type}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <span className="text-text-muted">輸送容量</span>
+                  <span className="text-text font-bold">{route.capacity_mbpd.toFixed(2)} mbpd</span>
+                  <span className="text-text-muted">所要日数</span>
+                  <span className="text-text font-bold">約{route.transit_days}日</span>
+                </div>
+                {route.chokepoints.length > 0 ? (
+                  <div className="space-y-1">
+                    <div className="text-text-muted">通過チョークポイント</div>
+                    {route.chokepoints.map((cp) => (
+                      <div key={cp} className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444] shrink-0" />
+                        <span className="text-text">{chopkLabels[cp] ?? cp}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-[#16a34a]">✓ チョークポイントなし</div>
+                )}
+                {route.risk_note !== undefined && (
+                  <div className="text-[#d97706]">⚠ {route.risk_note}</div>
+                )}
+                {selectedRouteId && (
+                  <button
+                    onClick={() => handleRouteSelect(null)}
+                    className="text-[10px] text-text-muted hover:text-text transition-colors"
+                  >
+                    × 閉じる
+                  </button>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* ── タンカー詳細（選択時） ── */}
+          {(() => {
+            if (!selectedId) return null;
+            const t = tankers.find((v) => v.id === selectedId);
+            if (!t) return null;
+            const blocked = HORMUZ_PORTS.has(t.departurePort);
+            const notJapan = !JAPAN_DEST_PORTS.has(t.destinationPort);
+            const typeColor = t.type === "VLCC" ? "#f59e0b" : "#22c55e";
+            const level = getAlertLevel(t.eta_days);
+            const etaColor = blocked || notJapan ? "#525252" : getAlertColor(level);
+            return (
+              <div className="bg-panel border border-border rounded-lg p-4 space-y-3 text-xs font-mono">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold" style={{ backgroundColor: `${typeColor}20`, color: typeColor }}>
+                      {t.type}
+                    </span>
+                    <span className="font-bold text-text">{t.name}</span>
+                    {t.aisTracked && (
+                      <span className="text-[8px] px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">AIS</span>
+                    )}
+                  </div>
+                  <button onClick={() => handleTankerSelect(null)} className="text-text-muted hover:text-text transition-colors text-[10px]">×</button>
+                </div>
+                <div className="text-text-muted">{t.departure} → {t.destination}</div>
+                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                  <span className="text-text-muted">到着まで</span>
+                  <span className="font-bold" style={{ color: etaColor }}>
+                    {blocked || notJapan ? "—" : `${t.eta_days.toFixed(1)}日`}
+                  </span>
+                  <span className="text-text-muted">到着予定</span>
+                  <span className="text-text">{blocked || notJapan ? "—" : formatDepletionDate(t.eta_days)}</span>
+                  <span className="text-text-muted">積載量</span>
+                  <span className="text-text">{formatNumber(t.cargo_t)}t</span>
+                  <span className="text-text-muted">速度</span>
+                  <span className="text-text">{formatDecimal(t.speed_knots)}kn</span>
+                  <span className="text-text-muted">距離</span>
+                  <span className="text-text">{formatDistance(t.distanceToJapan_nm)}</span>
+                </div>
+                {blocked && <div className="text-[#ef4444] font-bold">封鎖時到達不可</div>}
+                {!blocked && notJapan && <div className="text-text-muted">日本向けでない</div>}
+              </div>
+            );
+          })()}
+
+          {/* ── デフォルト: カウントダウン ── */}
+          {!selectedId && !selectedRouteId && !hoveredRouteId && (
+            <div className="space-y-3">
+              <CountdownTimer
+                label="代替ルートVLCC 最遠入港予測"
+                totalSeconds={(vlccTankers[vlccTankers.length - 1]?.eta_days ?? 0) * 86400}
+              />
+              {(() => {
+                const nextLng = lngTankers.find((t) => t.eta_days >= 1);
+                const arrivingToday = !nextLng && lngTankers.some((t) => t.eta_days > 0);
+                if (nextLng) {
+                  return (
+                    <CountdownTimer label="次のLNG船到着（非ホルムズ）" totalSeconds={nextLng.eta_days * 86400} noAlert />
+                  );
+                }
+                return (
+                  <div className="bg-panel border border-border rounded-lg p-4 text-center">
+                    <div className="text-xs font-mono text-text-muted tracking-wider mb-2">次のLNG船到着（非ホルムズ）</div>
+                    <div className={`font-mono font-bold text-2xl ${arrivingToday ? "text-[#2563eb]" : "text-[#16a34a]"}`}>
+                      {arrivingToday ? "本日入港予定" : "入港済み"}
+                    </div>
+                  </div>
+                );
+              })()}
+              <p className="text-[10px] text-text-muted font-mono">
+                LNG: 豪州・サハリン・マレーシア産は継続入港。カタール産（ホルムズ経由）停止中。
+              </p>
+            </div>
+          )}
+
+          {/* ── コンパクトタンカーリスト ── */}
+          <div className="bg-panel border border-border rounded-lg overflow-hidden">
+            <div className="px-3 py-2 border-b border-border flex items-center justify-between">
+              <span className="text-[10px] font-mono text-text-muted tracking-wider">
+                {showDimmed ? `全タンカー ${tankers.length}隻` : `日本向け ${tankers.filter((t) => !isDimmed(t)).length}隻`}
+              </span>
+              <span className="text-[9px] font-mono text-text-muted">タップで選択</span>
+            </div>
+            <div className="divide-y divide-border max-h-64 overflow-y-auto">
+              {(showDimmed ? tankers : tankers.filter((t) => !isDimmed(t))).map((t) => {
+                const typeColor = t.type === "VLCC" ? "#f59e0b" : "#22c55e";
+                const dimmed = isDimmed(t);
+                const level = getAlertLevel(t.eta_days);
+                const etaColor = dimmed ? "#525252" : getAlertColor(level);
+                return (
+                  <button
+                    key={t.id}
+                    ref={(el) => { if (el) rowRefs.current.set(t.id, el as unknown as HTMLTableRowElement); }}
+                    onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
+                    className={`w-full flex items-center justify-between px-3 py-2 text-[11px] font-mono transition-colors text-left ${
+                      selectedId === t.id ? "bg-[#2563eb]/10" : "hover:bg-white/[0.03]"
+                    } ${dimmed ? "opacity-50" : ""}`}
+                  >
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
+                      <span className={`text-text-muted truncate ${dimmed ? "line-through" : ""}`}>{t.name}</span>
+                      {t.aisTracked && <span className="text-[8px] text-[#22c55e] shrink-0">AIS</span>}
+                      {t.status === "引き返し" && <span className="text-[8px] text-[#f59e0b] shrink-0">引返</span>}
+                    </div>
+                    <span className="font-bold shrink-0 ml-2" style={{ color: etaColor }}>
+                      {dimmed ? "—" : `${t.eta_days.toFixed(1)}日`}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
-      <p className="text-[10px] text-neutral-500 font-mono -mt-2">
-        LNG: 豪州・サハリン・マレーシア産は封鎖の影響なく継続入港。カタール産（ホルムズ経由）は停止中。
-      </p>
+
+      {/* ── 以下: 全幅セクション ── */}
 
       {/* 到着タイムライン */}
       <ArrivalTimeline
         tankers={tankers}
         selectedId={selectedId}
-        onSelect={setSelectedId}
+        onSelect={handleTankerSelect}
       />
 
-      {/* 推定航跡マップ + シナリオセレクター */}
-      <div className="space-y-2">
-        {/* シナリオセレクター */}
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono text-neutral-500 shrink-0">マップ表示:</span>
-          <div className="flex rounded-md overflow-hidden border border-border text-[11px] font-mono">
-            {(
-              [
-                { key: "normal" as MapScenario, label: "通常時" },
-                { key: "partial" as MapScenario, label: "部分封鎖" },
-                { key: "full" as MapScenario, label: "完全封鎖" },
-              ] as const
-            ).map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setMapScenario(key)}
-                className={`px-3 py-1 transition-colors ${
-                  mapScenario === key
-                    ? "bg-neutral-700 text-neutral-100"
-                    : "bg-transparent text-neutral-500 hover:bg-neutral-800 hover:text-neutral-300"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+      {/* 米国産原油パネル（D案: PC/Mobile両対応 HTML） */}
+      {usTankers.length > 0 && (
+        <div className="bg-panel border border-border rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-border">
+            <h2 className="font-mono text-sm tracking-wider text-neutral-300">
+              米国産原油 — ホルムズ・バベルマンデブ完全回避ルート
+            </h2>
+            <p className="text-[11px] text-neutral-600 mt-0.5 font-mono">
+              パナマ運河経由（約30日）・喜望峰経由（約35日）。地図右端から出現する理由はこの航路にある。
+            </p>
           </div>
-          <span className="text-[10px] text-neutral-600 font-mono hidden sm:inline">
-            {mapScenario === "normal" && "全ルート通常稼働 — 参考表示"}
-            {mapScenario === "partial" && "ホルムズ50%制限 — フジャイラ迂回一部稼働"}
-            {mapScenario === "full" && "ホルムズ完全封鎖 — 代替ルートを強調表示"}
-          </span>
-        </div>
+          <div className="p-4 flex flex-col md:flex-row gap-5">
+            {/* 航路模式図 */}
+            <div className="md:w-2/5 space-y-3 shrink-0">
+              <div className="text-[10px] font-mono text-neutral-600 uppercase tracking-wider">航路</div>
+              <div className="space-y-2">
+                <div>
+                  <div className="flex items-center gap-1 flex-wrap text-[11px] font-mono">
+                    <span className="text-neutral-400">米国ガルフ</span>
+                    <span className="text-neutral-700">→</span>
+                    <span className="text-[#f59e0b]">パナマ運河</span>
+                    <span className="text-neutral-700">→ 太平洋北上 →</span>
+                    <span className="text-[#2563eb]">日本</span>
+                  </div>
+                  <div className="text-[10px] text-neutral-700 font-mono mt-0.5 ml-0">
+                    地図右端（東経170度）から現れ左へ進む。約30日・ホルムズ非経由
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-1 flex-wrap text-[11px] font-mono">
+                    <span className="text-neutral-400">米国ガルフ</span>
+                    <span className="text-neutral-700">→</span>
+                    <span className="text-neutral-400">大西洋南下</span>
+                    <span className="text-neutral-700">→</span>
+                    <span className="text-neutral-500">喜望峰</span>
+                    <span className="text-neutral-700">→ インド洋 →</span>
+                    <span className="text-[#2563eb]">日本</span>
+                  </div>
+                  <div className="text-[10px] text-neutral-700 font-mono mt-0.5">
+                    地図左端（喜望峰付近）から現れ右へ進む。約35日・ホルムズ非経由
+                  </div>
+                </div>
+              </div>
+              <div className="text-[10px] text-neutral-700 font-mono pt-1 border-t border-border">
+                計 約1,200万バレル（Bloomberg 2026-04-08）
+              </div>
+            </div>
 
-        <TankerMap
-          tankers={tankers}
-          selectedId={selectedId}
-          onSelect={setSelectedId}
-          scenario={mapScenario}
-        />
-      </div>
+            {/* タンカー一覧 */}
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] font-mono text-neutral-600 uppercase tracking-wider mb-2">追跡中</div>
+              <div className="space-y-1.5">
+                {usTankers.map((t) => {
+                  const route = getUsRoute(t.departurePort);
+                  const isArrived = t.status === "入港済";
+                  const etaColor = isArrived ? "#16a34a" : "#2563eb";
+                  return (
+                    <div
+                      key={t.id}
+                      className={`flex items-center justify-between gap-2 px-3 py-2 rounded border text-[11px] font-mono cursor-pointer transition-colors ${
+                        selectedId === t.id
+                          ? "border-[#2563eb]/50 bg-[#2563eb]/5"
+                          : "border-border bg-white/[0.02] hover:bg-white/[0.04]"
+                      }`}
+                      onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-neutral-200 truncate">{t.name}</span>
+                        <span className="text-[9px] text-neutral-600 shrink-0 hidden sm:inline">{route}</span>
+                        <span className="text-[9px] text-neutral-700 shrink-0 hidden md:inline truncate">
+                          {t.cargoType.split('（')[0]}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[9px] text-neutral-600 hidden sm:inline">{t.type}</span>
+                        <span className="font-bold" style={{ color: etaColor }}>
+                          {isArrived ? "入港済" : `${t.eta_days.toFixed(1)}日`}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 供給ギャップチャート */}
       <SupplyGapChart scenario={mapScenario} />
@@ -226,7 +500,7 @@ export const TankerTracker: FC = () => {
                     className={`border-b border-border cursor-pointer transition-colors ${
                       isSelected ? "bg-white/[0.06]" : "hover:bg-white/[0.02]"
                     } ${dimClass}`}
-                    onClick={() => setSelectedId(isSelected ? null : tanker.id)}
+                    onClick={() => handleTankerSelect(isSelected ? null : tanker.id)}
                   >
                     <td className="px-4 py-2 font-mono text-neutral-500">{index + 1}</td>
                     <td className="px-4 py-2 font-bold text-neutral-200">
@@ -321,18 +595,18 @@ export const TankerTracker: FC = () => {
                 className={`px-4 py-3 cursor-pointer transition-colors ${
                   isSelected ? "bg-white/[0.06]" : "active:bg-white/[0.03]"
                 } ${dimmed ? "opacity-45" : ""}`}
-                onClick={() => setSelectedId(isSelected ? null : tanker.id)}
+                onClick={() => handleTankerSelect(isSelected ? null : tanker.id)}
               >
                 {/* 1行目: 順位 + 船名 + バッジ */}
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
                   <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
                   {tanker.aisTracked ? (
-                    <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shrink-0">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shrink-0">
                       AIS
                     </span>
                   ) : (
-                    <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700 shrink-0">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700 shrink-0">
                       推定
                     </span>
                   )}
@@ -343,7 +617,7 @@ export const TankerTracker: FC = () => {
                     {tanker.type}
                   </span>
                   <span
-                    className="font-mono text-[9px] shrink-0"
+                    className="font-mono text-[10px] shrink-0"
                     style={{ color: getSizeClass(tanker.cargo_t).color }}
                   >
                     {getSizeClass(tanker.cargo_t).label}
