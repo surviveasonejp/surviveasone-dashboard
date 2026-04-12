@@ -122,6 +122,10 @@ async function postTweet(mediaId) {
       'Authorization': auth,
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(tweetBody),
+      'User-Agent': 'TwitterBot/1.0',
+      'Accept': '*/*',
+      'Accept-Encoding': 'gzip, deflate',
+      'Connection': 'keep-alive',
     },
   }, tweetBody);
 
