@@ -26,8 +26,8 @@ const PanelCard: FC<PanelCardProps> = ({ to, title, subtitle, description, color
     <div className="font-mono text-xs font-bold tracking-wider mb-1" style={{ color }}>
       {title}
     </div>
-    <div className="text-sm font-bold text-neutral-200 mb-1">{subtitle}</div>
-    <div className="text-xs text-neutral-500 group-hover:text-neutral-400 transition-colors leading-relaxed">
+    <div className="text-sm font-bold text-text mb-1">{subtitle}</div>
+    <div className="text-xs text-text-muted group-hover:text-text transition-colors leading-relaxed">
       {description}
     </div>
   </Link>
@@ -71,7 +71,7 @@ export const Landing: FC = () => {
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
           ホルムズ封鎖シナリオで、<br className="md:hidden" /><span className="text-[#ef4444]">エネルギー供給</span>はどう変化するか
         </h1>
-        <p className="text-neutral-400 text-sm leading-relaxed max-w-lg mx-auto">
+        <p className="text-text-muted text-sm leading-relaxed max-w-lg mx-auto">
           石油の94%は中東から届く。その全量がホルムズ海峡を通る。<br />
           封鎖シナリオ下で、供給制約はいつ、どのように進むのか。
         </p>
@@ -87,7 +87,7 @@ export const Landing: FC = () => {
           <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="#16a34a" />
           <Stat value="3" unit="ルート" label="代替調達稼働中" color="#2563eb" />
         </div>
-        <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
+        <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           {getReservesSummaryText()}（放出中・計45日分放出済み）。3/11 IEA史上最大の協調放出（4億バレル）実施済み。4/10 高市首相が追加20日分放出（5月開始）を発表。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
         </p>
       </div>
@@ -102,7 +102,7 @@ export const Landing: FC = () => {
           <Stat value="65" unit="%" label="火力発電比率" color="#f59e0b" />
           <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
         </div>
-        <p className="text-xs text-neutral-600 text-center mt-4 leading-relaxed">
+        <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
         </p>
       </div>
@@ -147,23 +147,26 @@ export const Landing: FC = () => {
       </div>
 
       {/* メインCTA */}
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-2">
         <Link
           to="/dashboard"
           className="px-8 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-mono text-sm tracking-wider rounded transition-colors"
         >
           DASHBOARD を見る →
         </Link>
+        <p className="text-[10px] text-text-muted font-mono">
+          今確認すべき事項 · 政策介入効果比較 · 業種別影響 · 都道府県選択
+        </p>
       </div>
 
       {/* 要配慮者導線 */}
       <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4">
         <div className="text-center space-y-2">
           <div className="font-mono text-3xl font-bold text-[#f59e0b]">5人に1人</div>
-          <p className="text-sm text-neutral-300">
+          <p className="text-sm text-text">
             乳幼児・子育て・透析・在宅医療・介護のある家庭。供給制約が生じたとき、通常の家庭より早く追加確認が必要になるのはこの層です。
           </p>
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-text-muted leading-relaxed">
             備蓄は、公的支援が届くまでの時間を稼ぐ手段。「わが家に何が不足しているか」を確認することから始めましょう。
           </p>
         </div>
@@ -176,10 +179,10 @@ export const Landing: FC = () => {
             <Link
               key={seg.to}
               to={seg.to}
-              className="block px-3 py-2.5 rounded border text-center transition-colors hover:bg-white/5"
+              className="block px-3 py-2.5 rounded border text-center transition-colors hover:bg-[#f59e0b]/5"
               style={{ borderColor: `${seg.color}40` }}
             >
-              <div className="text-xs font-bold text-neutral-200">{seg.label}</div>
+              <div className="text-xs font-bold text-text">{seg.label}</div>
               <div className="text-[10px] font-mono mt-0.5" style={{ color: seg.color }}>{seg.sub}</div>
             </Link>
           ))}
@@ -237,7 +240,7 @@ export const Landing: FC = () => {
 
       {/* フッター注記 */}
       <div className="text-center space-y-2 pt-2">
-        <p className="text-xs text-neutral-600 font-mono max-w-lg mx-auto leading-relaxed">
+        <p className="text-xs text-text-muted font-mono max-w-lg mx-auto leading-relaxed">
           本シミュレーションは公開統計データに基づくシナリオの推定値です。
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
           日本の石油備蓄はIEA基準で国際的に充実した水準にあります。

@@ -1,6 +1,6 @@
 import { type FC, useMemo, useState } from "react";
 import { type ScenarioId } from "../../shared/scenarios";
-import type { FlowSimulationResult, PolicyEffects, ThresholdEvent } from "../../shared/types";
+import type { FlowSimulationResult, PolicyEffects, ThresholdEvent, ThresholdType } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 import realEventsData from "../../worker/data/realEvents.json";
 
@@ -261,6 +261,11 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
         <SummaryBox label="LNG枯渇" days={result.lngDepletionDay} color={RESOURCE_COLORS.lng} totalDays={totalDays} />
         <SummaryBox label="電力崩壊" days={result.powerCollapseDay} color={RESOURCE_COLORS.power} totalDays={totalDays} />
       </div>
+
+      {/* フェーズストーリーライン — 全体の流れをナラティブで把握 */}
+      {sortedEvents.length > 0 && (
+        <PhaseStoryLine thresholds={sortedEvents} />
+      )}
 
       {/* イベントタイムライン（縦リスト） */}
       {sortedEvents.length > 0 && (
@@ -562,6 +567,100 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
   );
 };
 
+// ─── フェーズストーリーライン ─────────────────────────
+
+const STORY_PHASES: Partial<Record<ThresholdType, { title: string; subtitle: string; color: string }>> = {
+  price_spike:       { title: "価格急騰",   subtitle: "燃料・食料費上昇",   color: "#d97706" },
+  logistics_limit:   { title: "物流制限",   subtitle: "配送遅延・縮小",     color: "#8b5cf6" },
+  rationing:         { title: "供給制限",   subtitle: "奇数偶数制発動",     color: "#f59e0b" },
+  distribution:      { title: "配給制",     subtitle: "法的割当・転売禁止", color: "#ef4444" },
+  stop:              { title: "供給停止",   subtitle: "完全制限",           color: "#dc2626" },
+  water_cutoff:      { title: "断水",       subtitle: "給水所利用開始",     color: "#3b82f6" },
+};
+
+// 表示するフェーズの優先順（重要度高い代表イベントのみ）
+const STORY_ORDER: ThresholdType[] = [
+  "price_spike", "logistics_limit", "rationing", "distribution", "stop", "water_cutoff",
+];
+
+interface PhaseStoryLineProps {
+  thresholds: ThresholdEvent[];
+}
+
+const PhaseStoryLine: FC<PhaseStoryLineProps> = ({ thresholds }) => {
+  // STORY_ORDER順で重複排除しつつ最大5フェーズを抽出
+  const seen = new Set<ThresholdType>();
+  const storyNodes: Array<{ type: ThresholdType; day: number; phase: { title: string; subtitle: string; color: string } }> = [];
+
+  // 日付順ソート済みthresholdsから該当フェーズを抽出
+  const sorted = [...thresholds].sort((a, b) => a.day - b.day);
+  for (const ev of sorted) {
+    if (storyNodes.length >= 5) break;
+    const phase = STORY_PHASES[ev.type];
+    if (!phase || seen.has(ev.type)) continue;
+    // STORY_ORDERに含まれるものだけ
+    if (!STORY_ORDER.includes(ev.type)) continue;
+    seen.add(ev.type);
+    storyNodes.push({ type: ev.type, day: ev.day, phase });
+  }
+
+  if (storyNodes.length === 0) return null;
+
+  return (
+    <div className="space-y-2">
+      <div className="text-[10px] font-mono text-neutral-600 tracking-wider">
+        PHASE STORY — 封鎖からの流れ
+      </div>
+      {/* 水平ストーリー */}
+      <div className="relative flex items-start" style={{ minHeight: "64px" }}>
+        {/* Day 0: 封鎖宣言 */}
+        <div className="flex flex-col items-center" style={{ width: `${100 / (storyNodes.length + 1)}%` }}>
+          <div className="w-3 h-3 rounded-full bg-[#22c55e] border-2 border-[#0c1018] z-10 mb-1 shrink-0" />
+          <div className="text-center px-0.5">
+            <div className="font-mono font-bold text-[8px] text-[#22c55e]">Day 0</div>
+            <div className="text-[9px] font-mono text-neutral-300 leading-tight">封鎖宣言</div>
+            <div className="text-[8px] text-neutral-600 leading-tight hidden sm:block">供給余力維持</div>
+          </div>
+        </div>
+
+        {/* 接続ライン */}
+        <div
+          className="absolute top-1.5 left-0 right-0 h-px"
+          style={{ background: "linear-gradient(90deg, #22c55e40, #dc262640)" }}
+        />
+
+        {/* 各フェーズノード */}
+        {storyNodes.map(({ day, phase }) => (
+          <div
+            key={day}
+            className="flex flex-col items-center z-10"
+            style={{ width: `${100 / (storyNodes.length + 1)}%` }}
+          >
+            <div
+              className="w-3 h-3 rounded-full border-2 border-[#0c1018] mb-1 shrink-0"
+              style={{ backgroundColor: phase.color }}
+            />
+            <div className="text-center px-0.5">
+              <div className="font-mono font-bold text-[8px]" style={{ color: phase.color }}>
+                Day {day}
+              </div>
+              <div className="text-[9px] font-mono text-neutral-300 leading-tight">
+                {phase.title}
+              </div>
+              <div className="text-[8px] text-neutral-600 leading-tight hidden sm:block">
+                {phase.subtitle}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-[9px] font-mono text-neutral-700 leading-relaxed">
+        このシナリオでは封鎖後 {storyNodes[0]?.day ?? "—"} 日で最初の制約フェーズへ移行します。政策介入により各フェーズの到達日は延長されます。
+      </p>
+    </div>
+  );
+};
+
 // ─── サマリーボックス ────────────────────────────────
 
 interface SummaryBoxProps {
@@ -818,10 +917,17 @@ interface RealEventsProps {
 }
 
 const RealEvents: FC<RealEventsProps> = ({ totalDays, scenarioId }) => {
-  // シナリオ固有イベントはそのシナリオ選択時のみ表示。scenario未指定のイベントは常時表示
-  const events = realEventsData.events.filter(
-    (ev) => !("scenario" in ev) || ev.scenario === scenarioId,
-  );
+  // フィルタ:
+  //   scenario/scenarios フィールドなし → 全シナリオで表示
+  //   scenario: "X"        → シナリオXのみ
+  //   scenarios: ["X","Y"] → X または Y のみ
+  const events = realEventsData.events.filter((ev) => {
+    if ("scenarios" in ev && Array.isArray(ev.scenarios)) {
+      return (ev.scenarios as string[]).includes(scenarioId);
+    }
+    if ("scenario" in ev) return ev.scenario === scenarioId;
+    return true;
+  });
   if (events.length === 0) return null;
 
   return (

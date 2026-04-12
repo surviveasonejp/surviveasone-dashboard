@@ -1,12 +1,12 @@
 /**
- * 政策介入効果比較カード
+ * 政策介入効果比較カード（インタラクティブ版）
  *
  * /api/simulation の policyEffects を使い、
- * 4つの政策オプションの延命効果を比較表示する。
- * 「可視化」→「意思決定支援」へのブリッジコンポーネント。
+ * 4つの政策オプションをトグルして組み合わせ効果を確認できる。
+ * 加算モデルによる近似計算（相乗効果は含まない）。
  */
 
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { useApiData } from "../hooks/useApiData";
 import type { FlowSimulationResult } from "../../shared/types";
 import type { ScenarioId } from "../../shared/scenarios";
@@ -65,12 +65,12 @@ const RESOURCE_LABELS: Record<"oil" | "lng" | "power", string> = {
   power: "電力",
 };
 
-function GainBar({ days, max }: { days: number; max: number }) {
+function GainBar({ days, max, highlight }: { days: number; max: number; highlight?: boolean }) {
   const pct = max > 0 ? Math.min((days / max) * 100, 100) : 0;
   return (
     <div className="h-1.5 bg-[#e2e8f0] rounded-full overflow-hidden">
       <div
-        className="h-full bg-[#2563eb] rounded-full transition-all duration-500"
+        className={`h-full rounded-full transition-all duration-500 ${highlight ? "bg-[#22c55e]" : "bg-[#2563eb]"}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -78,6 +78,8 @@ function GainBar({ days, max }: { days: number; max: number }) {
 }
 
 export const PolicyIntervention: FC<Props> = ({ scenario }) => {
+  const [selected, setSelected] = useState<Set<PolicyCard["key"]>>(new Set());
+
   const { data: simResult } = useApiData<FlowSimulationResult>(
     `/api/simulation?scenario=${scenario}&maxDays=365`,
     null as unknown as FlowSimulationResult,
@@ -118,19 +120,43 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
     return maxPowerGain;
   }
 
+  // 選択された政策の合算効果（加算近似）
+  const combinedGains = [...selected].reduce(
+    (acc, key) => {
+      const g = getGains(key);
+      return { oil: acc.oil + g.oil, lng: acc.lng + g.lng, power: acc.power + g.power };
+    },
+    { oil: 0, lng: 0, power: 0 },
+  );
+
+  const hasSelection = selected.size > 0;
+  const combinedMaxGain = Math.max(combinedGains.oil, combinedGains.lng, combinedGains.power, 1);
+
+  function toggleCard(key: PolicyCard["key"]) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  }
+
   return (
     <div className="bg-panel border border-border rounded-lg p-4 space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="font-mono text-xs tracking-widest text-neutral-500">
           POLICY INTERVENTION — 政策介入の延命効果
         </div>
         <div className="text-[10px] text-neutral-400 font-mono">
-          ベースライン（政策なし）との差分
+          カードを選択して組み合わせ効果を確認
         </div>
       </div>
 
       {pe && (
-        <div className="flex gap-3 text-[11px] text-neutral-500 bg-[#f1f5f9] rounded px-3 py-2 font-mono">
+        <div className="flex gap-3 text-[11px] text-neutral-500 bg-[#f1f5f9] rounded px-3 py-2 font-mono flex-wrap">
           <span>政策なし:</span>
           <span>石油 Day {pe.baseline.oilDay}</span>
           <span className="text-neutral-300">|</span>
@@ -150,20 +176,45 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                 ? gains.lng
                 : gains.power;
           const maxGain = getMaxForResource(card.primaryResource);
+          const isSelected = selected.has(card.key);
 
           return (
-            <div
+            <button
               key={card.key}
-              className="border border-border rounded-lg p-3 space-y-2.5 hover:border-[#2563eb]/40 transition-colors"
+              type="button"
+              onClick={() => toggleCard(card.key)}
+              className={[
+                "border rounded-lg p-3 space-y-2.5 text-left transition-all cursor-pointer w-full",
+                isSelected
+                  ? "border-[#2563eb]/60 bg-[#2563eb]/6 shadow-sm"
+                  : "border-border hover:border-[#2563eb]/40",
+              ].join(" ")}
             >
               {/* ヘッダー */}
               <div className="flex items-start justify-between gap-2">
-                <div className="space-y-0.5">
-                  <div className="font-mono text-xs font-bold text-text">
-                    {card.title}
+                <div className="flex items-start gap-2">
+                  {/* チェックボックス */}
+                  <div
+                    className={[
+                      "mt-0.5 w-3.5 h-3.5 shrink-0 rounded border transition-colors",
+                      isSelected
+                        ? "bg-[#2563eb] border-[#2563eb]"
+                        : "border-neutral-300 bg-white",
+                    ].join(" ")}
+                  >
+                    {isSelected && (
+                      <svg viewBox="0 0 10 10" className="w-full h-full text-white" fill="none">
+                        <path d="M2 5l2.5 2.5L8 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                   </div>
-                  <div className="text-[10px] font-mono text-[#2563eb]">
-                    発動: {card.triggerDay}
+                  <div className="space-y-0.5">
+                    <div className="font-mono text-xs font-bold text-text">
+                      {card.title}
+                    </div>
+                    <div className="text-[10px] font-mono text-[#2563eb]">
+                      発動: {card.triggerDay}
+                    </div>
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
@@ -207,10 +258,49 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                   ⚠ {card.sideEffect}
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
+
+      {/* 組み合わせ効果サマリー */}
+      {hasSelection && pe && (
+        <div className="border border-[#22c55e]/40 rounded-lg p-3 bg-[#22c55e]/6 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-xs font-bold text-[#22c55e]">
+              組み合わせ効果（{selected.size}政策）
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelected(new Set())}
+              className="text-[10px] font-mono text-neutral-400 hover:text-neutral-600 transition-colors"
+            >
+              クリア
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            {(["oil", "lng", "power"] as const).map((res) => {
+              const val = combinedGains[res];
+              const baseline = res === "oil" ? pe.baseline.oilDay : res === "lng" ? pe.baseline.lngDay : pe.baseline.powerDay;
+              return (
+                <div key={res} className="bg-panel rounded p-2 border border-[#22c55e]/20">
+                  <div className="font-mono text-xs text-neutral-500">{RESOURCE_LABELS[res]}</div>
+                  <div className="font-mono font-bold text-sm text-[#22c55e]">
+                    {val > 0 ? `+${val}日` : "—"}
+                  </div>
+                  <div className="text-[9px] text-neutral-400">
+                    → Day {baseline + val}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <GainBar days={combinedGains.oil + combinedGains.lng + combinedGains.power} max={combinedMaxGain * 3} highlight />
+          <p className="text-[10px] text-neutral-400 leading-relaxed">
+            加算近似による推定です。実際の相乗効果・干渉はモデルに含まれていません。
+          </p>
+        </div>
+      )}
 
       {!pe && (
         <div className="text-center text-xs text-neutral-400 py-4 font-mono animate-pulse">
@@ -220,7 +310,6 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
 
       <p className="text-[10px] text-neutral-400 border-t border-border pt-2 leading-relaxed">
         各政策の効果はシミュレーションモデルによる推定値です。実際の発動タイミング・規模は政策決定に依存します。
-        複数の政策を同時に発動した場合の相乗効果はモデルに含まれていません。
       </p>
     </div>
   );

@@ -1,6 +1,15 @@
-import { type FC } from "react";
+import { type FC, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
+import { ScenarioSelector } from "../components/ScenarioSelector";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+
+const SCENARIO_LABELS: Record<ScenarioId, string> = {
+  optimistic: "楽観シナリオ",
+  realistic:  "現実シナリオ",
+  pessimistic: "悲観シナリオ",
+  ceasefire:  "停戦シナリオ",
+};
 
 interface ExternalLink {
   label: string;
@@ -15,6 +24,8 @@ interface Segment {
   heroUnit: string;
   heroLabel: string;
   heroColor: string;
+  /** シナリオ別のheroStatを上書きする場合に指定 */
+  scenarioStats?: Partial<Record<ScenarioId, { stat: string; label?: string }>>;
   alertMessage: string;
   risks: { label: string; days: string; detail: string }[];
   actions: string[];
@@ -37,8 +48,14 @@ const SEGMENTS: Record<string, Segment> = {
     subtitle: "乳幼児・子ども・高校生までのお子さんがいるご家庭",
     heroStat: "3",
     heroUnit: "日",
-    heroLabel: "液体ミルクの店頭在庫（現実シナリオ）",
+    heroLabel: "液体ミルクの推定店頭在庫",
     heroColor: "#ef4444",
+    scenarioStats: {
+      optimistic:  { stat: "5",   label: "物流制限の遅延で補充猶予が長め" },
+      realistic:   { stat: "3",   label: "物流制限Day15〜で補充停止" },
+      pessimistic: { stat: "1-2", label: "物流停止の急速進行で早期枯渇" },
+      ceasefire:   { stat: "7+",  label: "停戦回復フェーズ・物流正常化中" },
+    },
     alertMessage: "日本人の5人に1人がインフラ停止時に特別な備えが必要な家庭に該当します。子育て世帯はその中核です。",
     risks: [
       { label: "液体ミルク", days: "3日", detail: "冷蔵チェーン停止+物流制限により店頭への補充が停止する見込み（シナリオに基づく推定）" },
@@ -68,8 +85,14 @@ const SEGMENTS: Record<string, Segment> = {
     subtitle: "血液透析・腹膜透析を受けている方がいるご家庭",
     heroStat: "3-4",
     heroUnit: "日",
-    heroLabel: "透析を受けられない場合の猶予",
+    heroLabel: "透析を受けられない場合の猶予（医学的上限）",
     heroColor: "#ef4444",
+    scenarioStats: {
+      optimistic:  { stat: "3-4", label: "優先電力確保により施設稼働を維持" },
+      realistic:   { stat: "3-4", label: "停電時は施設の自家発電3日分が限界" },
+      pessimistic: { stat: "3-4", label: "複数施設停止で受入先確保が困難に" },
+      ceasefire:   { stat: "3-4", label: "医学的限界値は変わらない。施設確認を継続" },
+    },
     alertMessage: "日本の透析患者は約34.7万人。停電+断水で透析施設が稼働停止するシナリオでは、猶予は3-4日です。",
     risks: [
       { label: "血液透析", days: "3-4日", detail: "電力と大量の水（1回約120L）が必要。停電で即座に影響" },
@@ -101,6 +124,12 @@ const SEGMENTS: Record<string, Segment> = {
     heroUnit: "日",
     heroLabel: "現在の石油備蓄（国家+民間+産油国共同、2026年3月経産省推計）",
     heroColor: "#2563eb",
+    scenarioStats: {
+      optimistic:  { stat: "241+", label: "SPR放出+IEA協調で実効備蓄が延伸" },
+      realistic:   { stat: "241",  label: "経産省2026年3月推計（代替供給込み）" },
+      pessimistic: { stat: "~180", label: "需要超過・備蓄消耗加速の悲観推計" },
+      ceasefire:   { stat: "241+", label: "停戦後SPR再充填で備蓄水準回復中" },
+    },
     alertMessage: "政策介入の効果はシナリオにより大きく異なります。SPR早期放出・IEA協調・配給制の組み合わせが鍵です。",
     risks: [
       { label: "SPR放出リードタイム", days: "14日", detail: "国家備蓄は放出決定から実際の供給まで約14日のリードタイムが必要（輸送・精製工程）" },
@@ -210,8 +239,14 @@ const SEGMENTS: Record<string, Segment> = {
     subtitle: "要介護高齢者・在宅医療機器利用者・障害のある家族がいるご家庭",
     heroStat: "8",
     heroUnit: "時間",
-    heroLabel: "人工呼吸器の内部バッテリー限界",
+    heroLabel: "人工呼吸器の内部バッテリー限界（機種依存）",
     heroColor: "#ef4444",
+    scenarioStats: {
+      optimistic:  { stat: "8",   label: "機器のバッテリー限界値（シナリオ非依存）" },
+      realistic:   { stat: "8",   label: "機器のバッテリー限界値（シナリオ非依存）" },
+      pessimistic: { stat: "8",   label: "停電長期化でポータブル電源の継続充電が困難に" },
+      ceasefire:   { stat: "8",   label: "機器のバッテリー限界値（停戦後も備えは継続）" },
+    },
     alertMessage: "在宅人工呼吸器の内部バッテリーは3-8時間。停電時にはポータブル電源の備えが重要です。",
     risks: [
       { label: "人工呼吸器", days: "3-8時間", detail: "内部バッテリーのみ。1000Wh以上のポータブル電源が生死を分ける" },
@@ -240,52 +275,66 @@ const SEGMENTS: Record<string, Segment> = {
 export const ForSegment: FC = () => {
   const { segment } = useParams<{ segment: string }>();
   const seg = segment ? SEGMENTS[segment] : undefined;
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
 
   if (!seg) return <Navigate to="/" replace />;
+
+  // シナリオ別 heroStat の解決
+  const scenarioOverride = seg.scenarioStats?.[scenario];
+  const displayStat  = scenarioOverride?.stat  ?? seg.heroStat;
+  const displayLabel = scenarioOverride?.label ?? seg.heroLabel;
 
   return (
     <div className="space-y-6 max-w-2xl">
       {/* ヒーロー */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span style={{ color: seg.heroColor }}>{seg.title}</span>
-        </h1>
-        <p className="text-neutral-500 text-sm">{seg.subtitle}</p>
+      <div className="flex items-start justify-between flex-wrap gap-3">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold font-mono">
+            <span style={{ color: seg.heroColor }}>{seg.title}</span>
+          </h1>
+          <p className="text-text-muted text-sm">{seg.subtitle}</p>
+        </div>
+        <ScenarioSelector selected={scenario} onChange={setScenario} />
       </div>
 
       <AlertBanner level="warning" message={seg.alertMessage} />
 
-      {/* 危機の数字 */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1">
-        <div className="font-mono text-4xl font-bold" style={{ color: seg.heroColor }}>
-          {seg.heroStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
+      {/* 供給制約の基準値 */}
+      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1.5">
+        <div className="font-mono text-[10px] tracking-widest text-text-muted mb-1">
+          {SCENARIO_LABELS[scenario]} — 推定値
         </div>
-        <div className="text-sm text-neutral-400">{seg.heroLabel}</div>
-        <div className="text-[10px] text-neutral-600">シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します</div>
+        <div className="font-mono text-4xl font-bold" style={{ color: seg.heroColor }}>
+          {displayStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
+        </div>
+        <div className="text-sm text-text-muted">{displayLabel}</div>
+        <div className="text-[10px] text-text-muted border-t border-[#ef4444]/15 pt-1.5 mt-0.5">
+          シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します
+        </div>
       </div>
 
-      {/* 崩壊タイムライン */}
+      {/* 供給制約タイムライン */}
       <div className="space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-neutral-400">あなたの家庭に起きること</h2>
+        <h2 className="font-mono text-xs tracking-wider text-text-muted">供給制約タイムライン</h2>
         <div className="space-y-2">
           {seg.risks.map((risk) => (
             <div key={risk.label} className="bg-panel border border-border rounded-lg px-4 py-3 flex gap-4">
               <div className="shrink-0 w-20">
                 <div className="font-mono text-sm font-bold text-[#ef4444]">{risk.days}</div>
-                <div className="text-[10px] text-neutral-500">{risk.label}</div>
+                <div className="text-[10px] text-text-muted">{risk.label}</div>
               </div>
-              <div className="text-xs text-neutral-400 leading-relaxed">{risk.detail}</div>
+              <div className="text-xs text-text-muted leading-relaxed">{risk.detail}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 今すぐやるべきこと */}
+      {/* 今確認すべきこと */}
       <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-5 space-y-3">
         <h2 className="font-mono text-xs tracking-wider text-[#22c55e]">優先して確認すべき5つのこと</h2>
         <ol className="space-y-2">
           {seg.actions.map((action, i) => (
-            <li key={i} className="flex gap-3 text-sm text-neutral-300">
+            <li key={i} className="flex gap-3 text-sm text-text">
               <span className="font-mono text-[#22c55e] font-bold shrink-0">{i + 1}.</span>
               <span>{action}</span>
             </li>
@@ -294,8 +343,8 @@ export const ForSegment: FC = () => {
       </div>
 
       {/* 公的支援・情報源 */}
-      <div className="bg-[#0c1018] border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-neutral-500">公的支援・情報源</h2>
+      <div className="bg-bg border border-border rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-text-muted">公的支援・情報源</h2>
         <ul className="space-y-1.5">
           {seg.officialLinks.map((link) => (
             <li key={link.href}>
@@ -363,14 +412,14 @@ export const ForSegment: FC = () => {
         className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
         onClick={() => {
           const text = [
-            `【${seg.title}】ホルムズリスクシナリオ`,
-            `${seg.heroLabel}: ${seg.heroStat}${seg.heroUnit}（現実シナリオ推定）`,
+            `【${seg.title}】ホルムズリスクシナリオ（${SCENARIO_LABELS[scenario]}）`,
+            `${displayLabel}: ${displayStat}${seg.heroUnit}`,
             "",
             seg.actions[0] ?? "今のうちに備えを確認してください。",
             "",
             `surviveasonejp.org/for/${seg.id}`,
             "",
-            "#ホルムズ海峡 #備蓄確認",
+            "#ホルムズ海峡 #エネルギー安全保障",
           ].join("\n");
           window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}

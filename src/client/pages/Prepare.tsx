@@ -1,5 +1,9 @@
-import { type FC, useState, useCallback, useEffect } from "react";
+import { type FC, useState, useCallback, useEffect, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
+import { ScenarioSelector } from "../components/ScenarioSelector";
+import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import type { FlowSimulationResult } from "../../shared/types";
+import { useApiData } from "../hooks/useApiData";
 
 // ─── データ定義（既存と同一） ─────────────────────────
 
@@ -244,7 +248,8 @@ const PHASE_GUIDE = [
   { phase: "発生後0〜3日", color: "#22c55e", label: "SAFE", actions: ["備蓄確認・補充", "現金引き出し", "車に満タン給油", "情報収集態勢確立", "家族の役割分担を確認", "緊急連絡先リストを紙に書き出す"] },
   { phase: "発生後4〜14日", color: "#f59e0b", label: "WARNING", actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携・要配慮者の声かけ", "給油制限（奇数偶数制）に備え車両の燃料を満タンに", "自転車の整備・移動手段の確保"] },
   { phase: "発生後15〜60日", color: "#ef4444", label: "CRITICAL — 配給制開始", actions: ["政府配給の受取拠点（自治体窓口・給水所）を事前確認", "燃料使用を暖房・調理のみに限定", "配給外の食料確保（家庭菜園・物々交換）", "医薬品の優先確保・処方薬の残量管理", "ゴミ収集停止に備え生ゴミの減量・密封保管（衛生対策）", "医療施設への自転車・徒歩ルートで通院", "農地・食料生産拠点に近づく判断"] },
-  { phase: "発生後60日〜", color: "#ef4444", label: "COLLAPSE — 配給縮小", actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討（事前選定した避難先へ）", "食料自給率の高い地域へ移動", "コミュニティ単位での生存戦略", "長期サバイバル体制へ移行"] },
+  { phase: "発生後60日〜", color: "#ef4444", label: "COLLAPSE — 配給縮小", actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討（事前選定した避難先へ）", "食料自給率の高い地域へ移動", "コミュニティ単位での対応体制を構築", "長期制約局面への移行準備"] },
+  { phase: "停戦後 Day45〜180", color: "#0d9488", label: "RECOVERY — 供給正常化局面", actions: ["備蓄品のローリングストック消費を再開（反動買いはしない）", "価格正常化は段階的（Day120〜）— 焦らず補充ペースを維持", "医薬品・医療機器消耗品の補充（流通回復は段階的で遅い）", "燃料補給制限の解除スケジュールを自治体・行政で確認", "停戦後も封鎖率8%程度が構造的に残存する点を念頭に計画を立てる", "買い溜め需要の集中でパニック再発リスクあり — SNS情報を過信しない"] },
 ];
 
 // ─── フィルタの型定義 ─────────────────────────────
@@ -291,11 +296,54 @@ const Accordion: FC<AccordionProps> = ({ title, forceOpen = false, highlight = f
 
 // ─── メインコンポーネント ─────────────────────────
 
+// シナリオ→PHASE_GUIDEインデックスのマッピング（0〜4）
+// 最初に到達する閾値イベントで「準備すべきフェーズ」を判定する
+function detectNextPhase(simResult: FlowSimulationResult | null, scenario: ScenarioId): number | null {
+  if (scenario === "ceasefire") return 4; // RECOVERY
+  if (!simResult?.thresholds?.length) return null;
+
+  const first = [...simResult.thresholds]
+    .filter((t) => t.stockPercent >= 0)
+    .sort((a, b) => a.day - b.day)[0];
+
+  if (!first) return null;
+
+  if (first.type === "price_spike" && first.day <= 14) return 1;          // WARNING
+  if (first.type === "logistics_limit" || first.type === "rationing") return 2; // CRITICAL
+  if (first.type === "distribution" || first.type === "stop") return 3;    // COLLAPSE
+  return 1; // デフォルトは WARNING
+}
+
+const EMPTY_SIM: FlowSimulationResult = {
+  timeline: [], oilDepletionDay: 365, lngDepletionDay: 365, powerCollapseDay: 365, thresholds: [],
+};
+
 export const Prepare: FC = () => {
+  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
   const [housing, setHousing] = useState<HousingType>("");
   const [familyTags, setFamilyTags] = useState<Set<FamilyTag>>(new Set());
   const [hasCar, setHasCar] = useState<boolean | null>(null);
   const [filterApplied, setFilterApplied] = useState(false);
+
+  const { data: simResult } = useApiData<FlowSimulationResult>(
+    `/api/simulation?scenario=${scenario}`,
+    EMPTY_SIM,
+  );
+
+  // 「次に準備すべきフェーズ」インデックス
+  const nextPhaseIndex = useMemo(
+    () => detectNextPhase(simResult, scenario),
+    [simResult, scenario],
+  );
+
+  // 最初の閾値イベントの日数（「あとX日」表示用）
+  const nextEventDay = useMemo(() => {
+    if (!simResult?.thresholds?.length || scenario === "ceasefire") return null;
+    const first = [...simResult.thresholds]
+      .filter((t) => t.stockPercent >= 0)
+      .sort((a, b) => a.day - b.day)[0];
+    return first?.day ?? null;
+  }, [simResult, scenario]);
 
   const toggleFamily = useCallback((tag: FamilyTag) => {
     setFamilyTags((prev) => {
@@ -323,10 +371,10 @@ export const Prepare: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#22c55e]">SURVIVAL</span> GUIDE
+          <span className="text-[#22c55e]">PREPARATION</span> GUIDE
         </h1>
         <p className="text-neutral-500 text-sm">
-          エネルギー供給危機シナリオに備えるための備蓄・行動ガイド
+          公的推奨水準と照らし合わせ、わが家の過不足を確認する
         </p>
       </div>
 
@@ -350,9 +398,9 @@ export const Prepare: FC = () => {
         </div>
         <p className="text-[10px] text-neutral-500 leading-relaxed">
           食料は国内在庫があるが、ナフサ不足で「包めない・運べない」状態が先に来る。
-          おむつ・生理用品・ゴミ袋・ラップ・ニトリル手袋は食料より先に店頭から消える。
+          おむつ・生理用品・ゴミ袋・ラップ・ニトリル手袋は食料より先に店頭在庫が薄くなる。
           水道水は比較的長く維持されるが、衛生用品・容器は代替が効かない。
-          <span className="text-[#f59e0b]"> 今すぐ確保すべきはプラスチック容器・衛生用品から。</span>
+          <span className="text-[#f59e0b]"> プラスチック容器・衛生用品の過不足を優先的に確認しよう。</span>
         </p>
       </div>
 
@@ -484,7 +532,7 @@ export const Prepare: FC = () => {
             <div key={item.label} className="flex gap-3 items-start">
               <span className="text-[#ef4444] font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
               <div>
-                <span className="text-sm text-neutral-300 font-bold">{item.label}</span>
+                <span className="text-sm text-slate-800 font-bold">{item.label}</span>
                 <span className="text-xs text-neutral-500 ml-2">{item.detail}</span>
               </div>
             </div>
@@ -495,26 +543,85 @@ export const Prepare: FC = () => {
         </p>
       </div>
 
+      {/* ── シナリオ連動フェーズ判定 ── */}
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="space-y-0.5">
+            <div className="font-mono text-xs tracking-widest text-neutral-500">
+              SCENARIO — シナリオ別フェーズ判定
+            </div>
+            <p className="text-[10px] text-neutral-400">
+              シナリオを選ぶと、最初に備えるべきフェーズが自動で強調表示されます
+            </p>
+          </div>
+          <ScenarioSelector selected={scenario} onChange={setScenario} />
+        </div>
+
+        {nextPhaseIndex !== null && (
+          <div
+            className="rounded-lg px-3 py-2.5 flex items-center gap-2 flex-wrap"
+            style={{
+              backgroundColor: `${PHASE_GUIDE[nextPhaseIndex]?.color ?? "#22c55e"}12`,
+              border: `1px solid ${PHASE_GUIDE[nextPhaseIndex]?.color ?? "#22c55e"}35`,
+            }}
+          >
+            <span
+              className="font-mono text-xs font-bold px-2 py-0.5 rounded shrink-0"
+              style={{
+                color: PHASE_GUIDE[nextPhaseIndex]?.color,
+                backgroundColor: `${PHASE_GUIDE[nextPhaseIndex]?.color}20`,
+                border: `1px solid ${PHASE_GUIDE[nextPhaseIndex]?.color}40`,
+              }}
+            >
+              {scenario === "ceasefire" ? "RECOVERY" : "次フェーズ"}
+            </span>
+            <span className="text-xs text-text font-mono">
+              {scenario === "ceasefire"
+                ? "停戦回復局面 — 段階的正常化に向けた確認事項"
+                : nextEventDay !== null
+                  ? `封鎖後 Day ${nextEventDay} 頃に「${PHASE_GUIDE[nextPhaseIndex]?.phase ?? ""}」へ移行（${PHASE_GUIDE[nextPhaseIndex]?.label ?? ""}）`
+                  : `「${PHASE_GUIDE[nextPhaseIndex]?.phase ?? ""}」フェーズへの備えを優先確認`
+              }
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* ── フェーズ別行動指針（常に表示） ── */}
       <Accordion title="フェーズ別行動指針" forceOpen>
         <div data-screenshot="prepare-guide" className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {PHASE_GUIDE.map((phase) => (
-            <div key={phase.phase} className="bg-panel border rounded-lg p-4 space-y-2" style={{ borderColor: `${phase.color}40` }}>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-xs font-bold px-2 py-0.5 rounded" style={{ color: phase.color, backgroundColor: `${phase.color}15`, border: `1px solid ${phase.color}40` }}>
-                  {phase.label}
-                </span>
-                <span className="font-mono text-sm font-bold" style={{ color: phase.color }}>{phase.phase}</span>
+          {PHASE_GUIDE.map((phase, index) => {
+            const isNext = nextPhaseIndex === index;
+            return (
+              <div
+                key={phase.phase}
+                className="bg-panel border rounded-lg p-4 space-y-2 transition-all"
+                style={{
+                  borderColor: isNext ? `${phase.color}70` : `${phase.color}40`,
+                  boxShadow: isNext ? `0 0 0 1px ${phase.color}30` : undefined,
+                }}
+              >
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded" style={{ color: phase.color, backgroundColor: `${phase.color}15`, border: `1px solid ${phase.color}40` }}>
+                    {phase.label}
+                  </span>
+                  <span className="font-mono text-sm font-bold" style={{ color: phase.color }}>{phase.phase}</span>
+                  {isNext && (
+                    <span className="font-mono text-[9px] px-1.5 py-0.5 rounded-full ml-auto" style={{ backgroundColor: `${phase.color}20`, color: phase.color, border: `1px solid ${phase.color}40` }}>
+                      ◉ 今から準備
+                    </span>
+                  )}
+                </div>
+                <ul className="space-y-1">
+                  {phase.actions.map((action) => (
+                    <li key={action} className={`text-xs flex gap-2 ${isNext ? "text-text" : "text-neutral-400"}`}>
+                      <span style={{ color: phase.color }}>▸</span>{action}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-1">
-                {phase.actions.map((action) => (
-                  <li key={action} className="text-xs text-neutral-400 flex gap-2">
-                    <span style={{ color: phase.color }}>▸</span>{action}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Accordion>
 
@@ -523,13 +630,13 @@ export const Prepare: FC = () => {
         <div className="space-y-4">
           {PREPARE_LIST.map((section) => (
             <div key={section.category} className="bg-panel border border-border rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-border bg-[#162029]">
-                <h3 className="font-mono text-sm font-bold text-neutral-300">{section.category}</h3>
+              <div className="px-4 py-2.5 border-b border-border bg-slate-50">
+                <h3 className="font-mono text-sm font-bold text-slate-700">{section.category}</h3>
               </div>
               <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                    <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
+                    <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
                     <div className="sm:w-52 shrink-0"><span className="text-xs font-mono text-[#f59e0b]">{item.amount}</span></div>
                     <div><span className="text-xs text-neutral-500">{item.note}</span></div>
                   </div>
@@ -568,7 +675,7 @@ export const Prepare: FC = () => {
             <div className="divide-y divide-border">
               {section.items.map((item) => (
                 <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                  <div className="sm:w-48 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
+                  <div className="sm:w-48 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
                   <div><span className="text-xs text-neutral-400">{item.note}</span></div>
                 </div>
               ))}
@@ -579,19 +686,19 @@ export const Prepare: FC = () => {
 
       {/* ── 行動チェックリスト（折りたたみ） ── */}
       <Accordion title="今日からできる行動チェックリスト">
-        <p className="text-xs text-neutral-500 mb-3">物資の備蓄だけでは生き残れない。情報・連絡体制・移動手段・コミュニティが生死を分ける。</p>
+        <p className="text-xs text-neutral-500 mb-3">物資の備蓄だけでは供給制約を乗り越えられない。情報・連絡体制・移動手段・コミュニティが対応力を左右する。</p>
         <div className="space-y-4">
           {ACTION_LIST.map((section) => (
             <div key={section.category} className="bg-panel border border-[#3b82f640] rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-[#3b82f620] bg-[#101820]">
-                <h3 className="font-mono text-sm font-bold text-blue-300">
+              <div className="px-4 py-2.5 border-b border-[#3b82f630] bg-blue-50">
+                <h3 className="font-mono text-sm font-bold text-blue-700">
                   <span className="mr-1.5">{section.icon}</span>{section.category}
                 </h3>
               </div>
               <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                    <div className="sm:w-56 shrink-0"><span className="text-sm font-bold text-neutral-200">{item.name}</span></div>
+                    <div className="sm:w-56 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
                     <div><span className="text-xs text-neutral-400">{item.note}</span></div>
                   </div>
                 ))}
@@ -674,8 +781,8 @@ export const Prepare: FC = () => {
       </Accordion>
 
       {/* ── 公式防災ガイドライン ── */}
-      <div className="bg-[#0c1018] border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-neutral-500">公式防災ガイドライン</h2>
+      <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-slate-500">公式防災ガイドライン</h2>
         <ul className="space-y-1.5">
           {[
             { label: "内閣府｜災害の備え（家庭における食料・水の備蓄）", href: "https://www.bousai.go.jp/kohou/kouhoubousai/h22/09/special_01.html" },
@@ -697,7 +804,7 @@ export const Prepare: FC = () => {
       </div>
 
       <p className="text-xs text-neutral-600 font-mono text-center">
-        備蓄は自給自足のためではなく、配給や相互支援が届くまでの橋渡し。物資だけでなく、情報・つながり・行動力を備えよう。
+        備蓄は自給自足のためではなく、配給や相互支援が届くまでの橋渡し。物資だけでなく、情報・つながり・対応力を備えよう。
       </p>
     </div>
   );

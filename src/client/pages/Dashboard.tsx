@@ -10,7 +10,10 @@ import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
 import { PolicyIntervention } from "../components/PolicyIntervention";
+import { SituationActionPanel } from "../components/SituationActionPanel";
 import { IndustryImpactMatrix } from "../components/IndustryImpactMatrix";
+import { WorkImpactSelector } from "../components/WorkImpactSelector";
+import { PrefectureSelector } from "../components/PrefectureSelector";
 import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
@@ -110,6 +113,9 @@ export const Dashboard: FC = () => {
         ))}
       </div>
 
+      {/* 今確認すべき事項 — シナリオの最初の閾値イベントから行動を提示 */}
+      <SituationActionPanel scenario={scenario} />
+
       {/* 停戦・回復タイムライン（ceasefire時のみ表示） */}
       {scenario === "ceasefire" && <RecoveryTimelineSlider />}
 
@@ -118,6 +124,9 @@ export const Dashboard: FC = () => {
 
       {/* 産業別ダメージヒートマップ */}
       <IndustryImpactMatrix scenario={scenario} />
+
+      {/* 業種別「あなたの仕事への影響」 */}
+      <WorkImpactSelector scenario={scenario} />
 
       {/* 下段: 地図 + 詳細 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -131,8 +140,13 @@ export const Dashboard: FC = () => {
             selectedId={selectedRegion?.id ?? null}
           />
         </div>
-        <div>
+        <div className="space-y-4">
           <RegionDetail region={selectedRegion} />
+          <PrefectureSelector
+            regions={regions}
+            onSelectRegion={setSelectedRegion}
+            selectedRegionId={selectedRegion?.id ?? null}
+          />
         </div>
       </div>
 
