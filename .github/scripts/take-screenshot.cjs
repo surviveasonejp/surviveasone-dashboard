@@ -12,7 +12,7 @@ const screenshotMatch = rawBody.match(/<!--\s*screenshot:\s*(\/[^\s]*)\s*-->/);
 const bodyForKeywords = rawBody.replace(/<!--\s*tweet:[\s\S]*?-->/g, '').toLowerCase();
 
 const targets = [
-  { match: ['タンカー', 'tanker', 'ais', '航跡', '港', '到着タイムライン', '船団'], page: '/last-tanker', selector: '[data-screenshot="arrival-timeline"]', fallback: '[data-screenshot="tanker-map"]' },
+  { match: ['タンカー', 'tanker', 'ais', '航跡', '港', '到着タイムライン', '船団'], page: '/tanker-tracker', selector: '[data-screenshot="tanker-map"]', fallback: null },
   { match: ['地図', 'map', '崩壊順', 'collapse map', 'エリア', '地域', '備蓄基地', '物流'], page: '/collapse-map', selector: '[data-screenshot="collapse-map"]' },
   { match: ['食料', 'food', 'サプライチェーン'], page: '/food-collapse', selector: '[data-screenshot="food-collapse"]' },
   { match: ['family', '家庭', 'サバイバル'], page: '/family', selector: '[data-screenshot="family-rank"]' },
@@ -54,7 +54,7 @@ async function findAndScroll(page, selector, label) {
   const el = await page.$(selector);
   if (el) {
     await el.evaluate(node => node.scrollIntoView({ block: 'start', behavior: 'instant' }));
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     console.log('Scrolled to element (' + label + '):', selector);
     return true;
   }
