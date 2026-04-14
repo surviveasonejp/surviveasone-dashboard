@@ -146,6 +146,14 @@ function getRouteStyle(
     return { stroke: "#94a3b8", opacity: 0.18, strokeDasharray: "3 6" };
   }
 
+  // anonymization（イラン→マレーシア沖の出所偽装ルート）
+  if (routeType === "anonymization") {
+    if (scenario === "normal") return { stroke: "#a855f7", opacity: 0, strokeDasharray: "3 5" };
+    if (scenario === "full") return { stroke: "#a855f7", opacity: isActiveRoute ? 0.70 : 0.55, strokeDasharray: "5 3" };
+    // partial
+    return { stroke: "#a855f7", opacity: 0.32, strokeDasharray: "4 5" };
+  }
+
   // existing_alt
   return {
     stroke: "#22c55e",
@@ -557,15 +565,16 @@ export const TankerMap: FC<TankerMapProps> = ({
         {hoveredRouteId !== null && (
           <g clipPath="url(#map-clip)" style={{ pointerEvents: "none" }}>
             {routeMidpoints.filter(({ routeId }) => routeId === hoveredRouteId).map(({ routeId, x, y, transit_days, route_type }) => {
-              // primaryは「XX日」、bypass/existing_altは「約XX日」で表示
+              // primaryは「XX日」、bypass/existing_alt/anonymizationは「約XX日」で表示
               const isBypass = route_type === "bypass";
               const isExisting = route_type === "existing_alt";
               const isPrimary = route_type === "primary";
-              if (!isBypass && !isExisting && !isPrimary) return null;
+              const isAnonymization = route_type === "anonymization";
+              if (!isBypass && !isExisting && !isPrimary && !isAnonymization) return null;
               // 画面外はスキップ
               if (x < 20 || x > W - 20 || y < 20 || y > H - 20) return null;
 
-              const color = isPrimary ? "#ef4444" : isBypass ? "#60a5fa" : "#4ade80";
+              const color = isPrimary ? "#ef4444" : isBypass ? "#60a5fa" : isAnonymization ? "#a855f7" : "#4ade80";
               const text = isPrimary ? `${transit_days}日` : `約${transit_days}日`;
               const fontSize = isBypass ? "12" : "10";
               const bgOpacity = isBypass ? 0.75 : 0.55;
@@ -648,15 +657,15 @@ export const TankerMap: FC<TankerMapProps> = ({
           );
         })}
 
-        {/* ── TransferHub（STS積替 / 匿名化ハブ）: 完全封鎖時のみ表示 ── */}
-        {scenario === "full" && TRANSFER_HUBS.filter((h) => isInBounds(h)).map((hub) => {
+        {/* ── TransferHub（STS積替 / 匿名化ハブ）: partial/full封鎖時に表示 ── */}
+        {(scenario === "full" || scenario === "partial") && TRANSFER_HUBS.filter((h) => isInBounds(h)).map((hub) => {
           const [hx, hy] = project(hub.lon, hub.lat);
           const isAnon = hub.type === "anonymization";
           const isHovered = hoveredHubId === hub.id;
-          // full封鎖時にアノニマイゼーションハブを強調
+          // full封鎖時にアノニマイゼーションハブを強調（partial時は控えめ）
           const isHighlighted = isAnon && scenario === "full";
           const baseColor = isAnon ? "#a855f7" : "#f97316";
-          const opacity = isHighlighted ? 0.95 : isHovered ? 0.85 : 0.55;
+          const opacity = isHighlighted ? 0.95 : isHovered ? 0.85 : scenario === "partial" ? 0.38 : 0.55;
           const r = 7;
           // 正六角形の頂点（半径r）
           const hexPoints = Array.from({ length: 6 }, (_, i) => {
@@ -853,6 +862,34 @@ export const TankerMap: FC<TankerMapProps> = ({
         })()}
       </svg>
 
+      {/* TransferHub ホバーツールチップ（SVG外HTMLオーバーレイ） */}
+      {hoveredHubId !== null && (() => {
+        const hub = TRANSFER_HUBS.find((h) => h.id === hoveredHubId);
+        if (!hub) return null;
+        const [hx, hy] = project(hub.lon, hub.lat);
+        const leftPct = (hx / W) * 100;
+        const topPct = (hy / H) * 100;
+        const accentColor = hub.type === "anonymization" ? "#a855f7" : "#f97316";
+        return (
+          <div
+            className="absolute z-20 bg-panel border border-border rounded-lg shadow-lg px-3 py-2 pointer-events-none"
+            style={{
+              left: `${Math.min(leftPct + 3, 60)}%`,
+              top: `${Math.max(topPct - 12, 5)}%`,
+              maxWidth: "230px",
+            }}
+          >
+            <div className="text-[11px] font-mono font-bold mb-1" style={{ color: accentColor }}>
+              {hub.name}
+            </div>
+            {hub.description.split("\n").map((line, i) => (
+              <div key={i} className="text-[10px] font-mono text-text-muted leading-snug">{line}</div>
+            ))}
+            <div className="text-[9px] font-mono text-neutral-500 mt-1.5">出典: {hub.source}</div>
+          </div>
+        );
+      })()}
+
       {/* 西半球インセット（PCのみ: HTML カード・テーマ自動対応）*/}
       {showInset && (
         <div className="absolute top-2 left-2 bg-panel/95 border border-border rounded-lg shadow-sm pointer-events-none z-10">
@@ -947,6 +984,12 @@ export const TankerMap: FC<TankerMapProps> = ({
           <span className="flex items-center gap-1 text-[#3b82f6]">
             <span className="inline-block w-5 border-t-2 border-[#3b82f6] border-dashed" />
             代替
+          </span>
+        )}
+        {(scenario === "partial" || scenario === "full") && (
+          <span className="flex items-center gap-1 text-[#a855f7]">
+            <span className="inline-block w-5 border-t-2 border-[#a855f7] border-dashed" />
+            匿名化
           </span>
         )}
         {scenario === "full" && (

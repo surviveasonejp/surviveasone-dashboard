@@ -9,7 +9,7 @@ interface Position {
 
 const PORTS = portsData as Record<string, Position>;
 
-export type RouteType = "primary" | "bypass" | "existing_alt";
+export type RouteType = "primary" | "bypass" | "existing_alt" | "anonymization";
 
 export type TransferHubType = "sts" | "anonymization";
 
