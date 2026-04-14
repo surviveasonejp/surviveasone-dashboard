@@ -238,7 +238,7 @@ export const FlowTimeline: FC<FlowTimelineProps> = ({ scenarioId }) => {
           </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block w-3 h-0.5 rounded" style={{ backgroundColor: RESOURCE_COLORS.lng }} />
-            LNG在庫
+            LNG供給余力
           </span>
         </div>
       </div>

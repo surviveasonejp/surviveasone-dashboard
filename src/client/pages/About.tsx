@@ -109,7 +109,13 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 16",
     label: "外部評価対応・意思決定インターフェース化",
     status: "completed" as const,
-    items: ["封鎖Day Nカウンター（BlockadeDayCounter・Day 0=IRGC停止命令）", "シナリオ連動プログレスバー（解除推定Day表示）", "FamilyMeterボトルネック連動緊急アドバイス（あとN日でX→今すぐやること3項目）", "Xシェア文言リデザイン（短く・個人化・即理解）", "FlowTimeline Day N表示統一（EventItem・チャートマーカー・PolicyEventsと表記統一）"],
+    items: ["封鎖Day Nカウンター（BlockadeDayCounter・Day 0=IRGC停止命令）", "シナリオ連動プログレスバー（解除推定Day表示）", "FamilyMeterボトルネック連動アドバイス（供給余力N日分・確認フレーム）", "Xシェア文言リデザイン（短く・個人化・即理解）", "FlowTimeline Day N表示統一（EventItem・チャートマーカー・PolicyEventsと表記統一）"],
+  },
+  {
+    phase: "Phase 17",
+    label: "確認フレームリライト・ページ整合",
+    status: "completed" as const,
+    items: ["PREPAREページ確認フレームリライト（内閣府3日分→出発点バッジ・ceasefire優先順位カード非表示・シナリオバッジ・CSS変数統一）", "FAMILYページ確認フレームリライト（HOUSEHOLD SUPPLY CHECK・供給余力N日分・CSS変数統一）", "X投稿テンプレート確認フレーム統一（ハッシュタグ統一・HOUSEHOLD SUPPLY CHECK CTA）"],
   },
 ];
 

@@ -203,7 +203,7 @@ export const Landing: FC = () => {
             <div className="font-mono text-xs tracking-widest text-[#f59e0b]">HOUSEHOLD SUPPLY CHECK</div>
             <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目から「今すぐやること」を提示。計算はブラウザ内で完結、サーバーへの送信なし
+              備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目を把握できる。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
           <span className="text-[#f59e0b] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -236,8 +236,8 @@ export const Landing: FC = () => {
         <PanelCard
           to="/prepare"
           title="PREPARE"
-          subtitle="備え確認ガイド"
-          description="住居形態・家族構成で絞り込み。マンション高層/ワンルーム/車なし世帯にも対応"
+          subtitle="公的推奨水準との比較ガイド"
+          description="内閣府推奨3日分と照らし合わせ、わが家の過不足を確認。シナリオ連動フェーズ判定・住居形態別・要配慮者5カテゴリ対応"
           color="#22c55e"
         />
       </div>

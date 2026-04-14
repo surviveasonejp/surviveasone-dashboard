@@ -170,7 +170,7 @@ export const Dashboard: FC = () => {
             ].join("\n");
           } else {
             const oil = countdowns.find((c) => c.label === "石油備蓄");
-            const lng = countdowns.find((c) => c.label === "LNG在庫");
+            const lng = countdowns.find((c) => c.label === "LNG供給余力");
             const power = countdowns.find((c) => c.label === "電力供給");
             text = [
               "ホルムズリスクシナリオ（現実シナリオ）:",

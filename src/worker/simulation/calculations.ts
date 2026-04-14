@@ -137,7 +137,7 @@ export function getAllCountdowns(
       alertLevel: getAlertLevel(oilDays),
     },
     {
-      label: "LNG在庫",
+      label: "LNG供給余力",
       totalDays: lngDays,
       totalSeconds: lngDays * 86400,
       alertLevel: getAlertLevel(lngDays),

@@ -30,7 +30,7 @@ function calcFallback(): ResourceCountdown[] {
 
   return [
     { label: "石油備蓄", totalDays: Math.round(oilDays * 10) / 10, totalSeconds: oilDays * 86400, alertLevel: oilDays <= 30 ? "critical" : oilDays <= 60 ? "warning" : oilDays <= 90 ? "caution" : "safe" },
-    { label: "LNG在庫", totalDays: Math.round(lngDays * 10) / 10, totalSeconds: lngDays * 86400, alertLevel: lngDays <= 30 ? "critical" : lngDays <= 60 ? "warning" : lngDays <= 90 ? "caution" : "safe" },
+    { label: "LNG供給余力", totalDays: Math.round(lngDays * 10) / 10, totalSeconds: lngDays * 86400, alertLevel: lngDays <= 30 ? "critical" : lngDays <= 60 ? "warning" : lngDays <= 90 ? "caution" : "safe" },
     { label: "電力供給", totalDays: Math.round(powerDays * 10) / 10, totalSeconds: powerDays * 86400, alertLevel: powerDays <= 30 ? "critical" : powerDays <= 60 ? "warning" : powerDays <= 90 ? "caution" : "safe" },
   ];
 }

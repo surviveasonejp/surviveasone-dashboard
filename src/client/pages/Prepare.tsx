@@ -1,7 +1,7 @@
 import { type FC, useState, useCallback, useEffect, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { type ScenarioId, DEFAULT_SCENARIO, SCENARIOS } from "../../shared/scenarios";
 import type { FlowSimulationResult } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 
@@ -248,7 +248,7 @@ const PHASE_GUIDE = [
   { phase: "発生後0〜3日", color: "#22c55e", label: "SAFE", actions: ["備蓄確認・補充", "現金引き出し", "車に満タン給油", "情報収集態勢確立", "家族の役割分担を確認", "緊急連絡先リストを紙に書き出す"] },
   { phase: "発生後4〜14日", color: "#f59e0b", label: "WARNING", actions: ["不要不急の外出削減", "節水・節電開始", "食料消費ペース管理", "近隣コミュニティと連携・要配慮者の声かけ", "給油制限（奇数偶数制）に備え車両の燃料を満タンに", "自転車の整備・移動手段の確保"] },
   { phase: "発生後15〜60日", color: "#ef4444", label: "CRITICAL — 配給制開始", actions: ["政府配給の受取拠点（自治体窓口・給水所）を事前確認", "燃料使用を暖房・調理のみに限定", "配給外の食料確保（家庭菜園・物々交換）", "医薬品の優先確保・処方薬の残量管理", "ゴミ収集停止に備え生ゴミの減量・密封保管（衛生対策）", "医療施設への自転車・徒歩ルートで通院", "農地・食料生産拠点に近づく判断"] },
-  { phase: "発生後60日〜", color: "#ef4444", label: "COLLAPSE — 配給縮小", actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討（事前選定した避難先へ）", "食料自給率の高い地域へ移動", "コミュニティ単位での対応体制を構築", "長期制約局面への移行準備"] },
+  { phase: "発生後60日〜", color: "#ef4444", label: "配給縮小", actions: ["配給量の減少に備え自給体制を確立", "都市部からの退避を検討（事前選定した避難先へ）", "食料自給率の高い地域へ移動", "コミュニティ単位での対応体制を構築", "長期制約局面への移行準備"] },
   { phase: "停戦後 Day45〜180", color: "#0d9488", label: "RECOVERY — 供給正常化局面", actions: ["備蓄品のローリングストック消費を再開（反動買いはしない）", "価格正常化は段階的（Day120〜）— 焦らず補充ペースを維持", "医薬品・医療機器消耗品の補充（流通回復は段階的で遅い）", "燃料補給制限の解除スケジュールを自治体・行政で確認", "停戦後も封鎖率8%程度が構造的に残存する点を念頭に計画を立てる", "買い溜め需要の集中でパニック再発リスクあり — SNS情報を過信しない"] },
 ];
 
@@ -373,8 +373,8 @@ export const Prepare: FC = () => {
         <h1 className="text-2xl font-bold font-mono">
           <span className="text-[#22c55e]">PREPARATION</span> GUIDE
         </h1>
-        <p className="text-neutral-500 text-sm">
-          公的推奨水準と照らし合わせ、わが家の過不足を確認する
+        <p className="text-text-muted text-sm">
+          公的推奨水準（内閣府: 3日分）と照らし合わせ、わが家の過不足を確認する
         </p>
       </div>
 
@@ -383,17 +383,17 @@ export const Prepare: FC = () => {
         message="備蓄は配給や相互支援が届くまでの時間を稼ぐ手段 — わが家に足りないものを確認しよう"
       />
 
-      {/* 備蓄優先順位の逆転 */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
-        <h2 className="font-mono text-xs tracking-wider text-[#ef4444]">このシナリオでは備蓄の優先順位が逆転する</h2>
+      {/* 備蓄優先順位の変化（ceasefire時は非表示） */}
+      {scenario !== "ceasefire" && <div className="bg-panel border border-[#d97706]/30 rounded-lg p-4 space-y-3">
+        <h2 className="font-mono text-xs tracking-wider text-[#d97706]">このシナリオでは備蓄の優先順位が変わる</h2>
         <div className="space-y-1.5">
           <div className="flex items-center gap-3 text-xs font-mono">
             <span className="text-neutral-600 shrink-0 w-10">通常:</span>
             <span className="text-neutral-500">水 → 食料 → 燃料</span>
           </div>
           <div className="flex items-center gap-3 text-xs font-mono">
-            <span className="text-[#ef4444] shrink-0 w-10">今回:</span>
-            <span className="text-[#ef4444] font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
+            <span className="text-[#d97706] shrink-0 w-10">今回:</span>
+            <span className="text-[#d97706] font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
           </div>
         </div>
         <p className="text-xs text-neutral-500 leading-relaxed">
@@ -402,7 +402,7 @@ export const Prepare: FC = () => {
           水道水は比較的長く維持されるが、衛生用品・容器は代替が効かない。
           <span className="text-[#f59e0b]"> プラスチック容器・衛生用品の過不足を優先的に確認しよう。</span>
         </p>
-      </div>
+      </div>}
 
       {/* ── パーソナライズフィルタ ── */}
       <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
@@ -506,22 +506,22 @@ export const Prepare: FC = () => {
 
       {/* 印刷ボタン */}
       <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-white/5 text-neutral-400 border border-border hover:bg-white/10 transition-colors print:hidden"
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-panel text-text-muted border border-border hover:opacity-80 transition-opacity print:hidden"
         onClick={() => window.print()}
       >
         このページを印刷する（紙で配布用）
       </button>
 
-      {/* ── 初動72時間：行政支援空白期間 ── */}
-      <div className="bg-panel border border-[#ef4444]/40 rounded-lg p-5 space-y-3">
+      {/* ── 最低ラインの確認（内閣府推奨3日分） ── */}
+      <div className="bg-panel border border-[#16a34a]/30 rounded-lg p-5 space-y-3">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-[#ef4444] bg-[#ef4444]/15 border border-[#ef4444]/40">
-            最優先
+          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-[#16a34a] bg-[#16a34a]/15 border border-[#16a34a]/40">
+            出発点
           </span>
-          <h2 className="font-mono text-sm font-bold text-[#ef4444]">初動72時間：行政支援が届かない「空白期間」</h2>
+          <h2 className="font-mono text-sm font-bold text-[#16a34a]">まず確認する最低ライン — 内閣府推奨3日分</h2>
         </div>
-        <p className="text-xs text-neutral-400 leading-relaxed">
-          危機発生直後〜72時間は、自治体・配給・救援のいずれも機能しません。この期間を乗り越えるのは、今手元にあるものだけです。
+        <p className="text-xs text-text-muted leading-relaxed">
+          ホルムズ封鎖で石油・ガスが実際に不足し始めるのは数か月後です。ただし地震・台風など他の災害は今日でも起こり得ます。内閣府が推奨する3日分は、すべてのシナリオに共通する備えの出発点です。
         </p>
         <div className="space-y-2">
           {[
@@ -530,16 +530,16 @@ export const Prepare: FC = () => {
             { label: "現金", detail: "ATM停止・カード決済停止に備え5万円以上（小銭含む）" },
           ].map((item) => (
             <div key={item.label} className="flex gap-3 items-start">
-              <span className="text-[#ef4444] font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
+              <span className="text-[#16a34a] font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
               <div>
-                <span className="text-sm text-slate-800 font-bold">{item.label}</span>
-                <span className="text-xs text-neutral-500 ml-2">{item.detail}</span>
+                <span className="text-sm text-text font-bold">{item.label}</span>
+                <span className="text-xs text-text-muted ml-2">{item.detail}</span>
               </div>
             </div>
           ))}
         </div>
-        <p className="text-xs text-neutral-600">
-          ※ 72時間後から徐々に自治体の支援が立ち上がります。フェーズ別行動指針（下記）はその後の計画です。
+        <p className="text-xs text-text-muted">
+          ※ ホルムズ封鎖固有の備えはフェーズ別行動指針（下記）で確認してください。
         </p>
       </div>
 
@@ -628,15 +628,29 @@ export const Prepare: FC = () => {
       {/* ── 備蓄チェックリスト（常に表示） ── */}
       <Accordion title="備蓄チェックリスト" forceOpen>
         <div className="space-y-4">
+          <div className="flex items-center gap-2 px-1">
+            <span className="text-xs text-text-muted font-mono">シナリオ:</span>
+            <span
+              className="font-mono text-[11px] font-bold px-2 py-0.5 rounded border"
+              style={{
+                color: scenario === "ceasefire" ? "#0d9488" : scenario === "optimistic" ? "#16a34a" : scenario === "pessimistic" ? "#dc2626" : "#d97706",
+                backgroundColor: scenario === "ceasefire" ? "#0d948812" : scenario === "optimistic" ? "#16a34a12" : scenario === "pessimistic" ? "#dc262612" : "#d9770612",
+                borderColor: scenario === "ceasefire" ? "#0d948840" : scenario === "optimistic" ? "#16a34a40" : scenario === "pessimistic" ? "#dc262640" : "#d9770640",
+              }}
+            >
+              {SCENARIOS[scenario].label}
+            </span>
+            <span className="text-xs text-text-muted">条件下のシミュレーション推定値。備蓄放出・代替供給により変動します。</span>
+          </div>
           {PREPARE_LIST.map((section) => (
             <div key={section.category} className="bg-panel border border-border rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-border bg-slate-50">
-                <h3 className="font-mono text-sm font-bold text-slate-700">{section.category}</h3>
+              <div className="px-4 py-2.5 border-b border-border bg-bg">
+                <h3 className="font-mono text-sm font-bold text-text-muted">{section.category}</h3>
               </div>
               <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                    <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
+                    <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-text">{item.name}</span></div>
                     <div className="sm:w-52 shrink-0"><span className="text-xs font-mono text-[#f59e0b]">{item.amount}</span></div>
                     <div><span className="text-xs text-neutral-500">{item.note}</span></div>
                   </div>
@@ -675,7 +689,7 @@ export const Prepare: FC = () => {
             <div className="divide-y divide-border">
               {section.items.map((item) => (
                 <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                  <div className="sm:w-48 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
+                  <div className="sm:w-48 shrink-0"><span className="text-sm font-bold text-text">{item.name}</span></div>
                   <div><span className="text-xs text-neutral-400">{item.note}</span></div>
                 </div>
               ))}
@@ -690,15 +704,15 @@ export const Prepare: FC = () => {
         <div className="space-y-4">
           {ACTION_LIST.map((section) => (
             <div key={section.category} className="bg-panel border border-[#3b82f640] rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-[#3b82f630] bg-blue-50">
-                <h3 className="font-mono text-sm font-bold text-blue-700">
+              <div className="px-4 py-2.5 border-b border-[#3b82f630] bg-bg">
+                <h3 className="font-mono text-sm font-bold text-accent">
                   <span className="mr-1.5">{section.icon}</span>{section.category}
                 </h3>
               </div>
               <div className="divide-y divide-border">
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
-                    <div className="sm:w-56 shrink-0"><span className="text-sm font-bold text-slate-900">{item.name}</span></div>
+                    <div className="sm:w-56 shrink-0"><span className="text-sm font-bold text-text">{item.name}</span></div>
                     <div><span className="text-xs text-neutral-400">{item.note}</span></div>
                   </div>
                 ))}
@@ -716,7 +730,7 @@ export const Prepare: FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
             {
-              label: "今すぐ（平常時）",
+              label: "平常時の確認",
               pct: "備蓄 > 50%",
               color: "#22c55e",
               items: [
@@ -781,8 +795,8 @@ export const Prepare: FC = () => {
       </Accordion>
 
       {/* ── 公式防災ガイドライン ── */}
-      <div className="bg-slate-50 border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-slate-500">公式防災ガイドライン</h2>
+      <div className="bg-bg border border-border rounded-lg p-4 space-y-2">
+        <h2 className="font-mono text-xs tracking-wider text-text-muted">公式防災ガイドライン</h2>
         <ul className="space-y-1.5">
           {[
             { label: "内閣府｜災害の備え（家庭における食料・水の備蓄）", href: "https://www.bousai.go.jp/kohou/kouhoubousai/h22/09/special_01.html" },

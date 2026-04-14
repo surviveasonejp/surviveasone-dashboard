@@ -106,6 +106,19 @@ export const SurvivalClock: FC = () => {
         ))}
       </div>
 
+      {/* LNG供給余力モデル説明 */}
+      <div className="bg-panel border border-[#2563eb]/20 rounded-lg p-4 space-y-2">
+        <p className="font-mono text-xs font-bold text-accent">LNG供給余力について</p>
+        <p className="text-xs text-text-muted leading-relaxed">
+          日本のLNG輸入のホルムズ海峡依存は<span className="font-mono font-bold text-text">{(lngHormuz * 100).toFixed(1)}%</span>（カタール・UAE）のみ。
+          豪州39.7%・マレーシア14.8%・ロシア8.9%等の非ホルムズルートは封鎖下でも継続供給します。
+          表示値は在庫（約{Math.round(lngInv / 10000)}万t、物理貯蔵量 <span className="font-mono font-bold text-text">約{Math.round(lngInv / lngDaily)}日分</span>）が毎日の{(lngHormuz * 100).toFixed(1)}%不足分を補填できる日数です。
+        </p>
+        <p className="text-xs text-text-muted leading-relaxed">
+          ※ LNGの実際のリスクは供給量よりも価格高騰・保険料急騰・船舶退避による非ホルムズルートへの波及です。封鎖下でも電力用LNG供給は当面維持されますが、コスト上昇は電気代に転嫁されます。
+        </p>
+      </div>
+
       <SimulationBanner />
       <BlockadeContext />
 
@@ -125,9 +138,10 @@ export const SurvivalClock: FC = () => {
         </div>
         <p className="text-neutral-600 text-xs">出典: 経産省 石油備蓄推計量({staticReserves.meta.baselineDate}) / OWID energy-data</p>
         <div className="flex items-center gap-2">
-          <p>LNG: {formatNumber(lngInv)}t ÷ ({formatNumber(lngDaily)}t/日 × {(lngHormuz * 100).toFixed(1)}%) ≈ {lngDays.toFixed(1)}日</p>
+          <p>LNG供給余力: 在庫{formatNumber(lngInv)}t ÷ ({formatNumber(lngDaily)}t/日 × ホルムズ依存{(lngHormuz * 100).toFixed(1)}%) ≈ {lngDays.toFixed(1)}日（非ホルムズ{Math.round((1 - lngHormuz) * 100)}%継続前提）</p>
           {DATA_SOURCES.lngInventory && <DataBadge confidence={DATA_SOURCES.lngInventory.confidence} />}
         </div>
+        <p className="text-neutral-600 text-xs">物理貯蔵量: 在庫{formatNumber(lngInv)}t ÷ 日量{formatNumber(lngDaily)}t ≈ {Math.round(lngInv / lngDaily)}日（完全途絶時）</p>
         <p className="text-neutral-600 text-xs">出典: 経産省ガス事業統計 / JETRO貿易統計(2025年)</p>
         <div className="flex items-center gap-2">
           <p>電力: LNG枯渇 × 火力依存率{Math.round(thermalShare * 100)}% ≈ {powerDays.toFixed(1)}日</p>
@@ -149,7 +163,7 @@ export const SurvivalClock: FC = () => {
           const blockadeStart = new Date("2026-03-01");
           const dayOffset = Math.floor((Date.now() - blockadeStart.getTime()) / 86400000);
           const oil = displayCountdowns.find((c) => c.label === "石油備蓄");
-          const lng = displayCountdowns.find((c) => c.label === "LNG在庫");
+          const lng = displayCountdowns.find((c) => c.label === "LNG供給余力");
           const power = displayCountdowns.find((c) => c.label === "電力供給");
           const oilRange = SCENARIO_RANGES[0];
           const powerRange = SCENARIO_RANGES[2];

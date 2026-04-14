@@ -184,7 +184,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
   const countdowns = countdownData ?? FALLBACK_COUNTDOWNS;
 
   const oilDays   = Math.round(countdowns.find((c) => c.label === "石油備蓄")?.totalDays ?? 241);
-  const lngDays   = Math.round(countdowns.find((c) => c.label === "LNG在庫")?.totalDays ?? 135);
+  const lngDays   = Math.round(countdowns.find((c) => c.label === "LNG供給余力")?.totalDays ?? 135);
   const powerDays = Math.round(countdowns.find((c) => c.label === "電力供給")?.totalDays ?? 83);
 
   const [expanded, setExpanded] = useState<string | null>(null);

@@ -25,7 +25,7 @@ export const DATA_SOURCES: Record<string, DataSourceInfo> = {
     source: "2025年貿易統計 中東原油輸入比率94%",
   },
   lngInventory: {
-    label: "LNG在庫",
+    label: "LNG供給余力",
     confidence: "estimated",
     source: "経産省ガス事業統計+電力調査統計(2025年平均)",
     note: "季節変動あり(冬季高・夏季低)。450万t=ガス事業用+発電用の合算推計。経産省公表の発電用在庫(約230万t)とは集計範囲が異なる",

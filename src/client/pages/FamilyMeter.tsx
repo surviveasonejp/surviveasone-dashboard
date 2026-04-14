@@ -1,4 +1,5 @@
 import { type FC, useState } from "react";
+import { Link } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
@@ -30,8 +31,8 @@ interface SliderProps {
 const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onChange }) => (
   <div className="space-y-1">
     <div className="flex justify-between text-sm">
-      <span className="text-neutral-400">{label}</span>
-      <span className="font-mono font-bold text-neutral-200">{value}{unit}</span>
+      <span className="text-text-muted">{label}</span>
+      <span className="font-mono font-bold text-text">{value}{unit}</span>
     </div>
     <input
       type="range"
@@ -51,35 +52,35 @@ const InputSlider: FC<SliderProps> = ({ label, value, min, max, step, unit, onCh
 );
 
 const RANK_ADVICE: Record<string, string[]> = {
-  S: ["十分な備えがあります。近隣への支援も検討できるレベルです"],
+  S: ["十分な供給余力があります。近隣への支援も検討できるレベルです"],
   A: ["良好な備蓄状況です。水の補充サイクルを維持してください"],
-  B: ["最低限の備えはありますが、2週間以上の危機には不十分。カセットボンベと水を増やしましょう"],
-  C: ["1週間程度で限界に達する見込みです。水と食料の過不足を優先的に確認してください"],
-  D: ["備蓄が不足しています。一度に全部揃える必要はありません。まず「水だけ」を確認するところから始めましょう"],
-  F: ["備蓄がほぼありません。今日できることはひとつだけ：飲料水の状況を確認してください"],
+  B: ["基本的な備えはありますが、2週間超の制約局面には不十分。カセットボンベと水の過不足を確認してください"],
+  C: ["1週間程度で供給余力が尽きる見込みです。水と食料の過不足を優先的に確認してください"],
+  D: ["備蓄が不足しています。一度に全部揃える必要はありません。まず「水の残量」を確認するところから始めましょう"],
+  F: ["備蓄がほぼありません。まず飲料水の状況を確認してください"],
 };
 
 /** ボトルネック種別 × 残り日数 → 緊急アクション（3項目） */
 const BOTTLENECK_URGENT_ACTIONS: Record<string, string[]> = {
   水: [
-    "浴槽・ポリタンクに今すぐ水を確保する（1人3L/日）",
-    "近隣の給水所・給水スポットの場所を今日中に調べる",
-    "飲料以外（トイレ・清拭）は雨水・生活排水で代替する準備をする",
+    "水の備蓄量を確認し、不足分を把握する（目安: 1人3L/日）",
+    "近隣の給水所・給水スポットの場所を事前に確認しておく",
+    "飲料以外（トイレ・清拭）は雨水・生活排水で代替する手段を調べておく",
   ],
   食料: [
     "残存食料のカロリーを把握し、1日摂取量を記録する",
-    "主食（米・缶詰・乾麺）を優先して追加調達する（1人5日分目標）",
+    "主食（米・缶詰・乾麺）の過不足を確認する（目安: 1人5日分）",
     "地域の食料配給・フードバンク情報を自治体ウェブで確認する",
   ],
   燃料: [
-    "カセットボンベを今日中に補充する（1人3本/週が目安）",
+    "カセットボンベの残量を確認する（目安: 1人3本/週）",
     "魔法瓶保温・電気ケトル等でガス消費量を減らす方法を確認する",
     "近隣の給油所の在庫状況と割当制限を確認する",
   ],
   電力: [
-    "スマートフォン・ラジオ・モバイルバッテリーをフル充電する",
-    "充電式ランタン・ヘッドライトの電池残量を今日確認する",
-    "在宅医療機器がある場合、病院・クリニックへ電力確保方法を相談する",
+    "スマートフォン・ラジオ・モバイルバッテリーの残量を確認する",
+    "充電式ランタン・ヘッドライトの電池残量を確認する",
+    "在宅医療機器がある場合、病院・クリニックへ電力確保方法を事前に相談する",
   ],
 };
 
@@ -135,16 +136,16 @@ export const FamilyMeter: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#f59e0b]">FAMILY SURVIVAL</span> METER
+          <span className="text-[#f59e0b]">HOUSEHOLD</span> SUPPLY CHECK
         </h1>
-        <p className="text-neutral-500 text-sm">
-          配給や相互支援が届くまで、あなたの家庭はどれだけ持ちこたえられるか
+        <p className="text-text-muted text-sm">
+          公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）
         </p>
       </div>
 
       <AlertBanner
         level={getAlertLevel(score.totalDays)}
-        message={`現在の備蓄で${formatDecimal(score.totalDays)}日生存可能 — ボトルネック: ${score.bottleneck}`}
+        message={`供給余力: ${formatDecimal(score.totalDays)}日分（目安） — 最短項目: ${score.bottleneck}`}
       />
 
       <SimulationBanner />
@@ -153,7 +154,7 @@ export const FamilyMeter: FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
         <div className="bg-panel border border-border rounded-lg p-6 space-y-5">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄入力</h2>
+          <h2 className="font-mono text-sm tracking-wider text-text-muted">備蓄入力</h2>
           <InputSlider label="世帯人数" value={inputs.members} min={1} max={10} step={1} unit="人" onChange={update("members")} />
           <InputSlider label="水備蓄" value={inputs.waterLiters} min={0} max={500} step={5} unit="L" onChange={update("waterLiters")} />
           <InputSlider label="食料備蓄" value={inputs.foodDays} min={0} max={90} step={1} unit="日分" onChange={update("foodDays")} />
@@ -176,13 +177,13 @@ export const FamilyMeter: FC = () => {
               {inputs.hasMedicalDevice && <span className="text-white text-xs font-bold">✓</span>}
             </button>
             <div>
-              <span className="text-sm text-neutral-300">在宅医療機器を使用</span>
-              <span className="text-[10px] text-neutral-500 ml-2">（人工呼吸器・吸引器等 → 電力消費10倍で計算）</span>
+              <span className="text-sm text-text">在宅医療機器を使用</span>
+              <span className="text-[10px] text-text-muted ml-2">（人工呼吸器・吸引器等 → 電力消費10倍で計算）</span>
             </div>
           </div>
           <InputSlider label="現金" value={inputs.cashYen} min={0} max={1000000} step={10000} unit="円" onChange={update("cashYen")} />
-          <p className="text-xs text-neutral-500">※ 現金は参考情報です。生存日数の計算には含まれません（配給制移行時の購買力指標）</p>
-          <p className="text-xs text-neutral-600 leading-relaxed">
+          <p className="text-xs text-text-muted">※ 現金は参考情報です。供給余力の計算には含まれません（配給制移行時の購買力指標）</p>
+          <p className="text-xs text-text-muted leading-relaxed">
             入力データはこのブラウザ内でのみ保存・計算されます。サーバーへの送信は行いません。
           </p>
         </div>
@@ -194,13 +195,13 @@ export const FamilyMeter: FC = () => {
             className="bg-panel border rounded-lg p-6 text-center space-y-3"
             style={{ borderColor: `${rankColor}40` }}
           >
-            <div className="text-xs font-mono text-neutral-500 tracking-wider" id="rank-label" data-screenshot="family-rank">SURVIVAL RANK</div>
+            <div className="text-xs font-mono text-text-muted tracking-wider" id="rank-label" data-screenshot="family-rank">SUPPLY RANK</div>
             <div
               className="font-mono font-bold text-8xl"
               style={{ color: rankColor }}
               role="status"
               aria-labelledby="rank-label"
-              aria-label={`生存ランク${score.rank}、${rankLabel}、${formatDecimal(score.totalDays)}日生存可能`}
+              aria-label={`供給ランク${score.rank}、${rankLabel}、供給余力${formatDecimal(score.totalDays)}日分`}
             >
               {score.rank}
             </div>
@@ -208,18 +209,18 @@ export const FamilyMeter: FC = () => {
               {rankLabel}
             </div>
             <div className="flex items-center justify-center gap-2 mt-2">
-              <span className="font-mono font-bold text-3xl text-neutral-200">
+              <span className="font-mono font-bold text-3xl text-text">
                 {formatDecimal(score.totalDays)}
               </span>
-              <span className="text-neutral-500 font-mono text-sm">日生存可能</span>
+              <span className="text-text-muted font-mono text-sm">日分（目安）</span>
             </div>
-            <div className="text-xs font-mono text-neutral-400">
-              限界日: {formatDepletionDate(score.totalDays)}
+            <div className="text-xs font-mono text-text-muted">
+              目安日: {formatDepletionDate(score.totalDays)}
             </div>
-            <div className="text-[10px] text-neutral-600 mt-2">
+            <div className="text-[10px] text-text-muted mt-2">
               {inputs.members}人世帯 / 水{inputs.waterLiters}L / 食料{inputs.foodDays}日 / ボンベ{inputs.gasCanisterCount}本
             </div>
-            <div className="text-[9px] text-neutral-700 font-mono mt-1">
+            <div className="text-[9px] text-text-muted font-mono mt-1">
               surviveasonejp.org/family
             </div>
             <button
@@ -227,10 +228,11 @@ export const FamilyMeter: FC = () => {
               onClick={() => {
                 const days = Math.round(score.totalDays);
                 const text = [
-                  `我が家はあと${days}日（${score.bottleneck}がボトルネック）ランク${score.rank}`,
-                  `備蓄を確認 → surviveasonejp.org/family`,
+                  `わが家の${score.bottleneck}は${days}日分（シミュレーション推定値・ランク${score.rank}）`,
+                  `買い占めは最も脆弱な人から物資を奪います。まず過不足を確認。`,
+                  `surviveasonejp.org/family`,
                   "",
-                  "#ホルムズ海峡 #備蓄確認",
+                  "#surviveasonejp #ホルムズ海峡 #供給リスク分析",
                 ].join("\n");
                 window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
               }}
@@ -241,14 +243,14 @@ export const FamilyMeter: FC = () => {
 
           {/* 内訳バー */}
           <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-            <h3 className="font-mono text-xs text-neutral-500 tracking-wider">リソース別限界日数</h3>
+            <h3 className="font-mono text-xs text-text-muted tracking-wider">リソース別供給余力</h3>
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
               const isBottleneck = b.label === score.bottleneck;
               return (
                 <div key={b.label} className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className={isBottleneck ? "text-[#ef4444] font-bold" : "text-neutral-400"}>
+                    <span className={isBottleneck ? "text-[#ef4444] font-bold" : "text-text-muted"}>
                       {b.label} {isBottleneck && "← ボトルネック"}
                     </span>
                     <span className="font-mono" style={{ color: b.color }}>
@@ -274,12 +276,12 @@ export const FamilyMeter: FC = () => {
               <div className="border border-[#dc2626]/40 rounded-lg p-4 space-y-2 bg-[#dc2626]/05">
                 <h3 className="font-mono text-xs tracking-wider text-[#dc2626] flex items-center gap-1.5">
                   <span>⚠</span>
-                  あと{bottleneckDays}日で「{score.bottleneck}」が限界です
+                  {score.bottleneck}の供給余力: {bottleneckDays}日分（確認を推奨）
                 </h3>
-                <div className="text-[10px] font-mono text-neutral-500 mb-1">今すぐやること:</div>
+                <div className="text-[10px] font-mono text-text-muted mb-1">確認・対応事項:</div>
                 <ul className="space-y-1.5">
                   {urgentActions.map((action) => (
-                    <li key={action} className="text-xs text-neutral-300 flex gap-2">
+                    <li key={action} className="text-xs text-text flex gap-2">
                       <span className="text-[#dc2626] shrink-0">▸</span>
                       {action}
                     </li>
@@ -299,7 +301,7 @@ export const FamilyMeter: FC = () => {
             </h3>
             <ul className="space-y-1">
               {(RANK_ADVICE[score.rank] ?? []).map((advice) => (
-                <li key={advice} className="text-xs text-neutral-400 flex gap-2">
+                <li key={advice} className="text-xs text-text-muted flex gap-2">
                   <span style={{ color: rankColor }}>▸</span>
                   {advice}
                 </li>
@@ -316,7 +318,7 @@ export const FamilyMeter: FC = () => {
         return (
           <div className="bg-panel border border-border rounded-lg p-5 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <h2 className="font-mono text-sm tracking-wider text-neutral-500">
+              <h2 className="font-mono text-sm tracking-wider text-text-muted">
                 居住地タイプ別 備蓄優先事項
               </h2>
               {profile && advice && (
@@ -449,8 +451,8 @@ export const FamilyMeter: FC = () => {
 
       {/* 要配慮者向け注意喚起 */}
       <div className="bg-panel border border-[#ef4444]/20 rounded-lg p-5 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-red-400">要配慮者がいる家庭へ</h2>
-        <p className="text-xs text-neutral-400">
+        <h2 className="font-mono text-sm tracking-wider text-[#dc2626]">要配慮者がいる家庭へ</h2>
+        <p className="text-xs text-text-muted">
           上記の計算は健常な成人を前提としています。以下に該当する家族がいる場合、必要な備蓄量は大幅に増えます。
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -461,17 +463,17 @@ export const FamilyMeter: FC = () => {
             { label: "要介護者", note: "処方薬90日分・介護用品14日分・電動機器の電源" },
           ].map((item) => (
             <div key={item.label} className="bg-bg rounded p-3 space-y-1">
-              <div className="text-xs font-bold text-red-300">{item.label}</div>
-              <div className="text-[10px] text-neutral-500">{item.note}</div>
+              <div className="text-xs font-bold text-[#dc2626]">{item.label}</div>
+              <div className="text-[10px] text-text-muted">{item.note}</div>
             </div>
           ))}
         </div>
-        <a
-          href="/prepare"
-          className="block text-center text-xs font-mono text-[#ef4444] hover:text-red-300 transition-colors mt-2"
+        <Link
+          to="/prepare"
+          className="block text-center text-xs font-mono text-[#ef4444] hover:text-[#b91c1c] transition-colors mt-2"
         >
           詳細な要配慮者チェックリスト →
-        </a>
+        </Link>
       </div>
 
       {/* 行動エンジン: 不足量+購入リスト */}
@@ -494,26 +496,26 @@ export const FamilyMeter: FC = () => {
         return (
           <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
             <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">
-              30日生存に必要な追加備蓄
+              30日分に向けた不足確認
             </h2>
-            <p className="text-xs text-neutral-400">
-              現在{formatDecimal(score.totalDays)}日 → 目標30日に到達するための不足分
+            <p className="text-xs text-text-muted">
+              現在{formatDecimal(score.totalDays)}日分 → 目標30日分までの不足量
             </p>
             <div className="space-y-2">
               {neededItems.map((item) => (
                 <div key={item.name} className="flex items-center justify-between text-sm">
                   <div>
-                    <span className="text-neutral-300">{item.name}</span>
-                    <span className="text-neutral-500 ml-2 text-xs">{item.amount}</span>
+                    <span className="text-text">{item.name}</span>
+                    <span className="text-text-muted ml-2 text-xs">{item.amount}</span>
                   </div>
-                  <span className="font-mono text-neutral-400 text-xs">
+                  <span className="font-mono text-text-muted text-xs">
                     ¥{item.price.toLocaleString()}
                   </span>
                 </div>
               ))}
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
-              <span className="text-sm text-neutral-400">概算合計</span>
+              <span className="text-sm text-text-muted">概算合計</span>
               <span className="font-mono font-bold text-lg text-[#ef4444]">
                 ¥{totalCost.toLocaleString()}
               </span>
@@ -521,7 +523,7 @@ export const FamilyMeter: FC = () => {
             {totalCost > 10000 && (
               <p className="text-xs text-neutral-500 bg-bg rounded p-3 leading-relaxed">
                 一度に全部揃える必要はありません。<br />
-                優先順位：<span className="text-neutral-300">水 → 食料 → ガス → 電源</span>。まず水だけでも確認してください。
+                優先順位：<span className="text-text">水 → 食料 → ガス → 電源</span>。まず水の残量を確認するところから始めましょう。
               </p>
             )}
             <p className="text-[10px] text-neutral-600">
