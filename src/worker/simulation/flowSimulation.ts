@@ -238,7 +238,13 @@ interface AlternativeSupplyProfile {
    * この係数は「到着した非中東原油のうち既存設備で即処理できる割合」を表す。
    * 残りは設備改造（6〜18ヶ月）が完了するまで製品化できない。
    *
+   * 米国産シェールオイル（WTI: API比重40〜50°超）は超軽質であり日本製油所との
+   * ミスマッチが大きい。また米国NGL（エタン・プロパン等）は石油精製原料ではなく
+   * 石化フィードや燃料ガスであるため、このモデルの代替供給量には含まない。
+   * 米国製油所自体も70%が重質油向け設計（AFPM 2025）のため代替増産に上限がある。
+   *
    * 出典: 石油連盟「製油所設備能力調査」+ 資源エネルギー庁「原油調達多様化報告」
+   *       + EIA Natural Gas Plant Liquids Report / AFPM Refining Capacity Report 2025
    */
   nonMideastCompatibilityFactor: number;
   /** 初期調達成功率 (0-1) */

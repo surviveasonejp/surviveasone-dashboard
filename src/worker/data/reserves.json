@@ -1,7 +1,7 @@
 {
   "meta": {
-    "source": "資源エネルギー庁 石油備蓄推計量速報(2026年4月8日公表・4月5日時点) + IEA(2026年3月) + ISEP電力調査統計(2024年暦年) + METI(2026年)",
-    "updatedAt": "2026-04-12",
+    "source": "資源エネルギー庁 石油備蓄推計量速報(2026年4月8日公表・4月5日時点) + IEA(2026年3月) + ISEP電力調査統計(2024年暦年) + METI(2026年) + 官報告示(2026年4月15日・民間備蓄延長)",
+    "updatedAt": "2026-04-15",
     "baselineDate": "2026-04-05"
   },
   "oil": {
@@ -15,13 +15,13 @@
     "totalReserveDays": 229,
     "hormuzDependencyRate": 0.94,
     "unit": "kL",
-    "note": "資源エネルギー庁2026年4月8日公表速報(4/5時点推計)。国家備蓄143日(42,330千kL、3/26から放出中)、民間備蓄82日(24,270千kL、3/16から義務量70日→55日引下げによる放出中)、産油国共同備蓄4日(1,180千kL、放出中)。合計229日。放出規模: 国家30日分(8,500千kL)・民間15日分・産油国共同5日分＝計45日分（日本史上最大、IEA400MB協調放出の一環）。さらに4月10日高市首相が国家備蓄からの追加20日分放出（5月開始）を発表。全計画完了後は国家約102日・民間約75日・産油国共同ほぼ0日・合計約177日見込み。中東依存率94%（95%との報道も）、うちホルムズ経由93%。5月以降は喜望峰ルート代替供給が本格化"
+    "note": "資源エネルギー庁2026年4月8日公表速報(4/5時点推計)。国家備蓄143日(42,330千kL、3/26から放出中)、民間備蓄82日(24,270千kL、3/16から義務量70日→55日引下げによる放出中)、産油国共同備蓄4日(1,180千kL、放出中)。合計229日。▼放出計画: 国家30日分(8,500千kL)・民間15日分・産油国共同5日分＝計45日分（日本史上最大、IEA400MB協調放出の一環）。さらに4月10日高市首相が国家備蓄からの追加20日分放出（5月開始）を発表。▼2026-04-15告示: 民間石油備蓄義務量引き下げ（70日→55日）を2026年5月15日まで1カ月延長（石油備蓄法に基づく官報告示）。ホルムズ海峡通航の見通し不透明を理由とする。延長前後を通算した全計画完了後の推定残存: 国家約102日・民間約63〜75日・産油国共同ほぼ0日・合計約163〜177日見込み（延長措置の実績進行次第）。中東依存率94%（95%との報道も）、うちホルムズ経由93%。5月以降は喜望峰ルート代替供給が本格化"
   },
   "effectiveEstimate": {
-    "comment": "法ベース日数（制度コンプライアンス指標）に放出制約・精製能力制約を適用した実効推定値。予測ではなくリスクシナリオ評価用の参考値。放出プログラム進行中のため民間の実効利用率は義務量引下げにより上昇。",
+    "comment": "法ベース日数（制度コンプライアンス指標）に放出制約・精製能力制約を適用した実効推定値。予測ではなくリスクシナリオ評価用の参考値。放出プログラム進行中のため民間の実効利用率は義務量引下げにより上昇。▼2026-04-15更新: 民間備蓄義務引き下げの1カ月延長（〜5/15）により全放出計画完了後の法ベース残存は約163〜177日に縮小見込み。実効推定も連動して下方修正（現行min:120→106〜114、max:160→141〜150程度）。ただし代替供給本格化が同期間に進むため、実質的な供給可能日数は備蓄単体の数値より長くなる可能性がある。",
     "legalBasisDays": 229,
-    "effectiveDays": { "min": 120, "max": 160 },
-    "livelihoodDays": { "min": 85, "max": 110 },
+    "effectiveDays": { "min": 110, "max": 150 },
+    "livelihoodDays": { "min": 78, "max": 104 },
     "adjustments": {
       "privateUsableRatio": 0.40,
       "privateUsableRatioNote": "製油所ワーキングストック・底部残液・タンカーバラスト等を考慮した実効利用可能率（公式推定70%から補正）",
@@ -31,6 +31,71 @@
       "jointUsableRatioNote": "産油国共同備蓄の実効利用率。外交不確実性・契約遅延をシナリオ別に反映"
     },
     "source": "資源エネルギー庁「石油備蓄の現況」速報 + IEA Emergency Response Mechanism分析に基づく補正推計"
+  },
+  "globalContext": {
+    "updatedAt": "2026-04-15",
+    "note": "IEA協調放出（4億バレル）参加主要国の備蓄水準比較。各国の対応速度・温存方針の差が今後のアジア代替調達競合に影響する。",
+    "ieaCoordinatedRelease": {
+      "totalMb": 400,
+      "decisionDate": "2026-03-11",
+      "participatingCountries": 32,
+      "source": "IEA Press Release 2026-03-11",
+      "releaseRateMbpd": 4.4,
+      "durationDays": 90,
+      "note": "史上最大規模。ただし放出速度4.4MB/dはホルムズ消失分（8〜9MB/d）の約50%に相当。「時間を買う措置」であり恒久的な代替にはならない"
+    },
+    "countries": {
+      "US": {
+        "reserveMb": 413.3,
+        "baselineDate": "2026-04-03",
+        "releaseCommittedMb": 172,
+        "releaseStartDate": "2026-03-20",
+        "releaseDurationDays": 120,
+        "releaseRateMbpd": 1.43,
+        "shareOfIeaRelease": 0.43,
+        "source": "EIA Weekly Petroleum Status Report 2026-04-08 / DOE 2026-03-16",
+        "note": "IEA全体の43%を単独担当。放出前水準は約4.36億バレル（バイデン政権期の補充で2022年低水準から回復）。完了予定2026年7月中旬"
+      },
+      "Korea": {
+        "reserveMbBeforeRelease": 100.1,
+        "releaseCommittedMb": 22.46,
+        "reserveMbAfterRelease": 77.64,
+        "baselineDate": "2026-03-12",
+        "swapAdditionalMb": 20,
+        "alternativeSecuredMb": 273,
+        "alternativeSecuredDate": "2026-04-15",
+        "additionalReleaseNeededByMay": false,
+        "alternativeSupplySecuredPct": 0.80,
+        "source": "S&P Global / Seoul Economic Daily / Voice of Emirates 2026-03-12〜04-15",
+        "note": "史上最大の2,246万バレル放出後、残高7,764万バレルを温存。4/15時点でホルムズ外代替2.73億バレル確保（3カ月超）。5月まで追加放出不要と通商産業相が表明"
+      },
+      "India": {
+        "reserveMb": 160,
+        "capacityMmt": 5.33,
+        "importCoverDays": 30,
+        "releaseCommittedMb": 0,
+        "source": "Domain-b / CNBC 2026-03〜04",
+        "note": "「より深刻な危機に備えて温存」方針。容量5.33 MMT（満杯）、約30日分。ただし中東依存を55%→30%に転換（北米・ロシア・アフリカへ多様化）。3/26イランがインド船の通過を許可（パキスタン仲介5カ国）"
+      },
+      "China": {
+        "reserveMb_estimated": null,
+        "reserveMb_note": "非公表。Kpler等の推計では商業+戦略の合計約9〜14億バレル（年間輸入量の約50〜70日分相当）",
+        "hormuzDependencyRate": 0.56,
+        "releaseCommittedMb": 0,
+        "source": "Nikkei Business / JOGMEC Journal 2026-03",
+        "note": "中国政府は備蓄水準・放出計画を非公表。ホルムズ依存は原油輸入の約56%（イラン経由迂回分含む推計）。対応は北米・南米・ロシアへの調達多様化。ロシア産を「バックストップ供給」として位置づけ"
+      },
+      "Japan": {
+        "reserveMb_equivalent": 430,
+        "legalBasisDays": 229,
+        "baselineDate": "2026-04-05",
+        "releaseCommittedMb_equivalent": 80,
+        "releaseStartDate": "2026-03-16",
+        "extendedUntil": "2026-05-15",
+        "source": "資源エネルギー庁 2026-04-08速報 / 官報告示 2026-04-15",
+        "note": "IEA全体の20%担当（8,000万バレル相当）。2026年1月末248日分から延長措置完了後は163〜177日分に縮小見込み。備蓄水準は主要国中最大水準だが延長告示で放出継続中"
+      }
+    }
   },
   "lng": {
     "inventory_t": 4500000,

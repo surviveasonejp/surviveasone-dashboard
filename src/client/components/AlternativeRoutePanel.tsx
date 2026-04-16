@@ -234,9 +234,14 @@ export const AlternativeRoutePanel: FC = () => {
       </div>
 
       {/* 補足 */}
-      <p className="text-[10px] text-text-muted border-t border-border pt-2 leading-relaxed">
-        供給能力は参考値。実際の転換には輸送契約の組み替え・港湾受け入れ能力・タンカー不足により数週間のラグが生じます。日本の石油輸入中東依存率は約92%ですが、LNG は非ホルムズ調達が93.7%を占めます。
-      </p>
+      <div className="border-t border-border pt-2 space-y-1.5">
+        <p className="text-[10px] text-text-muted leading-relaxed">
+          供給能力は参考値。実際の転換には輸送契約の組み替え・港湾受け入れ能力・タンカー不足により数週間のラグが生じます。日本の石油輸入中東依存率は約92%ですが、LNG は非ホルムズ調達が93.7%を占めます。
+        </p>
+        <p className="text-[10px] text-text-muted leading-relaxed">
+          <span className="font-bold">品質的制約:</span> 米国産シェールオイル（超軽質・API比重45超）や天然ガス液（NGL: エタン・プロパン等）は体積上の代替増産が可能でも、道路舗装用アスファルト・船舶用重油・一部石化原料（芳香族）の製造には適さない。日本の製油所は中質・重質原油（API比重30前後）向け設計が主体であり、品質ミスマッチによる稼働制約が残る（EIA / AFPM 2025年データ）。
+        </p>
+      </div>
     </div>
   );
 };

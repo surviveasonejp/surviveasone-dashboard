@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-04-14",
+    "updatedAt": "2026-04-17",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-14時点でAIS位置を最新化",
-    "note": "32隻の追跡船舶（米国発Aframax新規追加1隻+米国発VLCC新規追加1隻含む） + 7チョークポイント監視。2026-04-14更新: 【最重大4/12】トランプ大統領がホルムズ海峡「逆封鎖」を表明し日本時間4/14 00:00（米東部時間4/13 10:00）から米海軍がイランの港への出入り船舶を対象に封鎖措置開始。「イラン管理通航フェーズ」から「米・イラン双方向封鎖フェーズ」へ移行。【4/14②】Reuters/Bloomberg: 米封鎖開始後初のホルムズ通過確認。Rich Starry（中国籍・米制裁対象・UAEハムリヤ→中国向けメタノール約25万バレル積載）・Peace Gulf（パナマ籍・UAE向け）・Murlukishan（制裁対象ハンディタンカー・イラク向け燃料油）の計3隻が通過。いずれもイラン港向けでなく米封鎖対象外。CENTCOM声明「非イラン港向け船舶は通過妨げない」→日本向け船舶にとって米封鎖は直接障壁にならない可能性。【4/13】MAYASAN・YAKUMOSANがイラン沿岸寄りルートでホルムズ海峡通過を試み（Bloomberg 4/13）。通過成否は4/14時点も未確認継続。【4/12】Agios Fanourios I（イラク向け）・Shalamar（UAE向け・パキスタン籍）の2隻がホルムズ通過断念しUターン（Bloomberg 4/12）。【4/11】中国VLCCs2隻+ギリシャ船籍1隻がホルムズ海峡通航（いずれも日本向けでない）。【新規追加】米国発VLCC「CASPAR」（IMO 9926661・喜入5/23）・米国発アフラマックス「Seaways Yosemite」（IMO 9394959・千葉5/9）を追加（Bloomberg 4/8報道の8隻のうち）。NCC HUDA・DIAMOND GAS ROSE入港済みに更新。ETA（4/14基準）: TATESHINA→5/10(26日)・NISSHO MARU→4/17(3日)・KHURAIS→4/16(2日)・ENEOS GLORY→4/16(2日)・PACIFIC NOTUS→4/16(2日)・ENERGY FRONTIER→4/21(7日)・非中東調達便→4/25(11日)・OTIS→4/29(15日)・FRONT SINGAPORE→5/8(24日)・Seaways Yosemite→5/9(25日)・CASPAR→5/23(39日)。日本向け航行中11隻・入港済13隻・回航中2隻・引き返し2隻"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-17時点でAIS位置を最新化",
+    "note": "32隻の追跡船舶（米国発Aframax新規追加1隻+米国発VLCC新規追加1隻含む） + 7チョークポイント監視。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
   },
   "chokepoints": [
     {
@@ -13,7 +13,7 @@
       "name": "ホルムズ海峡",
       "lat": 26.567,
       "lon": 56.25,
-      "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。4/14更新: 【最重大4/12】米イラン和平協議（イスラマバード）決裂。トランプが即日ホルムズ海峡「逆封鎖」宣言→日本時間4/14 00:00（米東部時間4/13 10:00）から米海軍がイラン港出入り全船舶を封鎖措置開始。「直ちに発効する」と投稿。「イラン管理通航フェーズ」から「米・イラン双方向封鎖フェーズ」へ移行。【4/14②】米封鎖開始後初の通過確認: Rich Starry（中国制裁タンカー、UAEハムリヤ→中国向けメタノール）・Peace Gulf（パナマ、UAE向け）・Murlukishan（制裁対象ハンディ、イラク向け）の計3隻がホルムズ通過。CENTCOM「非イラン港向けは妨げない」声明。日本向け船舶にとって米封鎖は直接障壁とならない可能性。【4/13】MAYASAN・YAKUMOSANがイラン沿岸寄りルートで通過試み→結果4/14時点も未確認。【4/11】中国2隻+ギリシャ1隻VLCCが通航（日本向けでない）。【4/12】Agios Fanourios I（イラク向け）・Shalamar（パキスタン籍・UAE向け）がUターン断念。湾内約40隻継続停留。AL DAAYEN/RASHEEDA引き返し継続"
+      "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。4/17更新: 【米イラン停戦延長検討中・期限4/21-22頃】Bloomberg 4/15: 米国とイランが停戦2週間延長を検討。停戦中も米軍によるイラン港湾封鎖は継続（4/13 00:00 JST発動）。通航数は平時の約90%減（1日10隻前後 vs 平時135隻）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【4/15】Agios Fanourios I（マルタVLCC）が2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【最重大4/13】米イラン逆封鎖: CENTCOM「非イラン港向けは妨げない」声明→日本向け船舶には直接障壁とならない。【状況】MAYASAN/YAKUMOSANはペルシャ湾内で停泊/錨泊継続中（ホルムズ未通過）。AL DAAYEN/RASHEEDA引き返し継続。停戦期限前後のホルムズ再開が焦点"
     },
     {
       "id": "malacca",
@@ -71,7 +71,7 @@
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 19000,
       "speed_knots": 13.5,
-      "eta_days": 26,
+      "eta_days": 23,
       "cargo_t": 312000,
       "cargoType": "原油（米国産WTI系・喜望峰回り）",
       "status": "航行中",
@@ -140,19 +140,19 @@
       "departurePort": "Kharg Island",
       "destination": "四日市",
       "destinationPort": "Yokkaichi",
-      "distanceToJapan_nm": 5800,
-      "speed_knots": 12.0,
-      "eta_days": 3,
+      "distanceToJapan_nm": 0,
+      "speed_knots": 0.0,
+      "eta_days": 0,
       "cargo_t": 300000,
       "cargoType": "原油（イラニアンヘビー）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.2,
         "route": 0.3,
         "military": 0.3,
         "combined": 0.018
       },
-      "note": "出光タンカー系VLCC。「日章丸」は出光興産の歴史的船名(1953年日章丸事件)。4/8時点: 東アジア海域で航行中。ハルグ島はペルシャ湾奥のためホルムズ依存度最大。4/7カタールLNG引き返し事象を踏まえると到着確率は低下傾向。ETA 4/17（変更なし）"
+      "note": "出光タンカー系VLCC。「日章丸」は出光興産の歴史的船名(1953年日章丸事件)。4/17四日市入港確認（ETA達成）。ハルグ島はペルシャ湾奥のためホルムズ依存度最大。封鎖中のホルムズを通過して到達した稀な事例（AIS追跡外のため詳細不明）"
     },
     {
       "id": "vlcc-05",
@@ -355,7 +355,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 4500,
       "speed_knots": 12.0,
-      "eta_days": 11,
+      "eta_days": 8,
       "cargo_t": 300000,
       "cargoType": "原油（非中東調達）",
       "status": "航行中",
@@ -375,21 +375,21 @@
       "type": "VLCC",
       "departure": "アインスフナ（エジプト・スエズ湾）",
       "departurePort": "Ain Sukhna",
-      "destination": "四日市",
-      "destinationPort": "Yokkaichi",
-      "distanceToJapan_nm": 4300,
-      "speed_knots": 11.2,
-      "eta_days": 2,
+      "destination": "名古屋",
+      "destinationPort": "Nagoya",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 0.0,
+      "eta_days": 0,
       "cargo_t": 300000,
       "cargoType": "原油（サウジ産・紅海/スエズ経由）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.8,
         "route": 0.9,
         "military": 0.85,
         "combined": 0.612
       },
-      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。298,706DWT。2018年建造（現代三湖重工業）。4/8時点: マラッカ海峡通過後・東アジア海域航行中（AIS）。速度11.2kn。3/20アインスフナ出港→スエズ→紅海→バベルマンデブ→インド洋→マラッカ経由。ETA 4/16 06:00（変更なし）。渡邉英徳教授(東大)のOSINT分析で確認。喫水20.1m（満載）。サウジ国営による代替供給。ホルムズ非経由確認"
+      "note": "Bahri（サウジ国営海運）VLCC。IMO 9783679。298,706DWT。2018年建造（現代三湖重工業）。4/17名古屋入港確認（AIS 4/17 06:00 ETA達成・5時間前AIS・speed 0.1kn）。目的地は当初四日市だったがAIS上は名古屋港に変更。3/20アインスフナ出港→スエズ→紅海→バベルマンデブ→インド洋→マラッカ経由。渡邉英徳教授(東大)のOSINT分析で確認。喫水20.1m（満載）。サウジ国営による代替供給。ホルムズ非経由確認"
     },
     {
       "id": "tanker-alt-05",
@@ -497,19 +497,19 @@
       "departurePort": "Bintulu",
       "destination": "袖ケ浦（東電袖ケ浦LNG基地）",
       "destinationPort": "Sodegaura",
-      "distanceToJapan_nm": 3200,
-      "speed_knots": 18.5,
-      "eta_days": 2,
+      "distanceToJapan_nm": 0,
+      "speed_knots": 0.0,
+      "eta_days": 0,
       "cargo_t": 155000,
       "cargoType": "LNG（マレーシアMLNG産）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.95,
         "route": 0.97,
         "military": 0.95,
         "combined": 0.876
       },
-      "note": "日本郵船(NYK)保有LNG船。MLNG（マレーシアLNG）専属配船。4/1ビントゥル出港→マラッカ海峡→袖ケ浦向け。ETA 4/16。マレーシアは日本のLNG輸入先2位（約15%シェア）。ホルムズ封鎖の影響なし"
+      "note": "日本郵船(NYK)保有LNG船。MLNG（マレーシアLNG）専属配船。4/16袖ケ浦（東電袖ケ浦LNG基地）入港確認（ETA達成・AIS「Japan/Korea Range」確認済み）。4/1ビントゥル出港→マラッカ海峡→袖ケ浦着。マレーシアは日本のLNG輸入先2位（約15%シェア）。ホルムズ封鎖の影響なし"
     },
     {
       "id": "lng-12",
@@ -523,7 +523,7 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 5100,
       "speed_knots": 18.0,
-      "eta_days": 7,
+      "eta_days": 4,
       "cargo_t": 155000,
       "cargoType": "LNG（豪州APLNG産）",
       "status": "航行中",
@@ -543,21 +543,21 @@
       "type": "VLCC",
       "departure": "フジャイラ→ムンバイ沖（インド）STS積み替え",
       "departurePort": "Fujairah",
-      "destination": "大分",
-      "destinationPort": "Oita",
-      "distanceToJapan_nm": 4500,
-      "speed_knots": 13.3,
-      "eta_days": 2,
+      "destination": "喜入（鹿児島・ENEOS喜入基地）",
+      "destinationPort": "Kiire",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 0.0,
+      "eta_days": 0,
       "cargo_t": 300000,
       "cargoType": "原油（マーバンブレンド・アブダビ産）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.85,
         "route": 0.95,
         "military": 0.9,
         "combined": 0.727
       },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9851608。312,217DWT。パナマ籍。2019年建造。LOA 339.5m。Bloomberg 4/1報道: フジャイラで原油を積んだOlympic Luck（ギリシャVLCC・IMO 9424211）からインド西海岸ムンバイ沖でSTS（Ship-to-Ship）転送で約180万バレルのマーバン原油を受け取り。3/30 16:23 UTCムンバイ沖出港。4/8 AIS: マラッカ海峡通過後・南シナ海北上中。速度13.3kn。喫水19.6m（満載）。ETA 4/16 11:30（変更なし）。ホルムズを経由しない初のSTS転送ルートを確立した代替供給の新形態"
+      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9851608。312,217DWT。パナマ籍。2019年建造。LOA 339.5m。4/16 喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・速度11.1kn・喫水18.9m）。目的地は大分ではなく喜入に変更判明。Bloomberg 4/1報道: フジャイラで原油を積んだOlympic Luck（ギリシャVLCC・IMO 9424211）からインド西海岸ムンバイ沖でSTS（Ship-to-Ship）転送で約180万バレルのマーバン原油を受け取り。3/30 16:23 UTCムンバイ沖出港→マラッカ海峡→喜入。ホルムズを経由しない初のSTS転送ルートを確立した代替供給の新形態。ENEOS喜入基地は日本最大の国家石油備蓄基地"
     },
     {
       "id": "lng-09",
@@ -690,7 +690,7 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 9200,
       "speed_knots": 13.0,
-      "eta_days": 15,
+      "eta_days": 12,
       "cargo_t": 135000,
       "cargoType": "原油（米国産WTI系・パナマ運河経由）",
       "status": "航行中",
@@ -714,7 +714,7 @@
       "destinationPort": "Japan",
       "distanceToJapan_nm": 9200,
       "speed_knots": 13.0,
-      "eta_days": 24,
+      "eta_days": 21,
       "cargo_t": 135000,
       "cargoType": "原油（米国産WTI系・パナマ運河経由）",
       "status": "航行中",
@@ -724,7 +724,7 @@
         "military": 0.99,
         "combined": 0.961
       },
-      "note": "香港籍Suezmaxタンカー。IMO 9832248。MMSI 477539200。2019年建造。150,000DWT。275m。チャーター料1,400万ドル（封鎖前の約2倍）。4/9時点: 米国ガルフ→パナマ運河→太平洋経由で日本向け航行中（Bloomberg 4/8-9報道）。ETA 5月上旬。日本に向かう3隻の中型タンカーのうちの1隻（Kpler/Bloomberg分析）。米国産原油計約1,200万バレルのうち約100万バレル担当。ホルムズ・バベルマンデブ海峡を完全回避。Front Line（フロントライン）傘下"
+      "note": "香港籍Suezmaxタンカー。IMO 9832248。MMSI 477539200。2019年建造。150,000DWT。275m。チャーター料1,400万ドル（封鎖前の約2倍）。4/9時点: 米国ガルフ→パナマ運河→太平洋経由で日本向け航行中（Bloomberg 4/8-9報道）。ETA 5/8頃。日本に向かう3隻の中型タンカーのうちの1隻（Kpler/Bloomberg分析）。米国産原油計約1,200万バレルのうち約100万バレル担当。ホルムズ・バベルマンデブ海峡を完全回避。Front Line（フロントライン）傘下"
     },
     {
       "id": "vlcc-jap-01",
@@ -737,8 +737,8 @@
       "destination": "苫小牧（北海道）",
       "destinationPort": "Tomakomai",
       "distanceToJapan_nm": 6800,
-      "speed_knots": 12.5,
-      "eta_days": 19,
+      "speed_knots": 0.1,
+      "eta_days": 16,
       "cargo_t": 274000,
       "cargoType": "原油（UAE/サウジ産・約200万バレル）",
       "status": "航行中",
@@ -748,7 +748,7 @@
         "military": 0.5,
         "combined": 0.14
       },
-      "note": "商船三井管理VLCC。IMO 9839856。MMSI 431618000。312,006DWT。LOA 340m。日本船籍。2018年建造。【重大4/13】YAKUMOSANとともにイラン沿岸寄りルートでホルムズ通過を試みた（Bloomberg 4/13）。通過成否は4/14時点も未確認継続。【4/14②】CENTCOM「非イラン港向けは通過妨げない」→苫小牧向けなら米封鎖対象外の可能性だが、IRGC側封鎖は継続中。【4/12】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。4/9夜東進開始（Bloomberg 4/10）。ホルムズ通過成功すればETA 5/3頃（4/14から19日）"
+      "note": "商船三井管理VLCC。IMO 9839856。MMSI 431618000。312,006DWT。LOA 340m。日本船籍。2018年建造。【4/17時点】AIS 4/16 13:57 UTC確認: ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラ（湾外）に変更。ホルムズ未通過。MOL田村社長「停戦内容精査後にホルムズ通過判断」（4/15前後）。米国とイランは停戦2週間延長を検討中（期限4/21-22頃）。CENTCOM「非イラン港向けは通過妨げない」→苫小牧向けなら米封鎖対象外の可能性だが、IRGC側封鎖は継続中。4/9夜東進開始→4/13ホルムズ通過試み（YAKUMOSAN共）→以後ペルシャ湾内停泊継続。ホルムズ通過成功すればETA 5/3頃（4/17から16日）"
     },
     {
       "id": "vlcc-jap-02",
@@ -761,8 +761,8 @@
       "destination": "日本（港未公表）",
       "destinationPort": "Japan",
       "distanceToJapan_nm": 6800,
-      "speed_knots": 12.5,
-      "eta_days": 19,
+      "speed_knots": 0.0,
+      "eta_days": 16,
       "cargo_t": 274000,
       "cargoType": "原油（カタール産・約200万バレル）",
       "status": "航行中",
@@ -772,7 +772,7 @@
         "military": 0.5,
         "combined": 0.14
       },
-      "note": "Phoenix Ocean Corp.（商船三井同一住所）保有VLCC。IMO 9362877。MMSI 538003428。302,165DWT。LOA 333m。マーシャル諸島籍。2008年建造。【重大4/13】MAYASANとともにイラン沿岸寄りルートでホルムズ通過を試みた（Bloomberg 4/13）。通過成否は4/14時点も未確認継続。【4/14②】CENTCOM「非イラン港向けは通過妨げない」→日本向けなら米封鎖対象外の可能性だが、IRGC側封鎖は継続中。【4/12】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。4/9夜MAYASANとともに東進開始。ホルムズ通過成功すればETA 5/3頃（4/14から19日）"
+      "note": "Phoenix Ocean Corp.（商船三井同一住所）保有VLCC。IMO 9362877。MMSI 538003428。302,165DWT。LOA 333m。マーシャル諸島籍。2008年建造。【4/17時点】AIS確認: ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖・UAE）・喫水20.2m（満載）・At anchor。ホルムズ未通過。MAYASANとともに4/9夜東進開始→4/13ホルムズ通過試み→以後ペルシャ湾内錨泊継続。CENTCOM「非イラン港向けは通過妨げない」→日本向けなら米封鎖対象外の可能性だが、IRGC側封鎖継続。米国とイランは停戦2週間延長を検討中（期限4/21-22頃）。ホルムズ通過成功すればETA 5/3頃（4/17から16日）"
     },
     {
       "id": "aframax-us-01",
@@ -786,7 +786,7 @@
       "destinationPort": "Chiba",
       "distanceToJapan_nm": 8000,
       "speed_knots": 13.0,
-      "eta_days": 25,
+      "eta_days": 22,
       "cargo_t": 100000,
       "cargoType": "原油（米国産WTI系・パナマ運河経由）",
       "status": "航行中",
@@ -810,7 +810,7 @@
       "destinationPort": "Kirin",
       "distanceToJapan_nm": 17000,
       "speed_knots": 13.0,
-      "eta_days": 39,
+      "eta_days": 36,
       "cargo_t": 299847,
       "cargoType": "原油（米国産WTI系・喜望峰回り）",
       "status": "航行中",
