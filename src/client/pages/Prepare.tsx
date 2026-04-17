@@ -4,6 +4,7 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { type ScenarioId, DEFAULT_SCENARIO, SCENARIOS } from "../../shared/scenarios";
 import type { FlowSimulationResult } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 // ─── データ定義（既存と同一） ─────────────────────────
@@ -370,14 +371,10 @@ export const Prepare: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-success-soft">PREPARATION</span> GUIDE
-        </h1>
-        <p className="text-text-muted text-sm">
-          公的推奨水準（内閣府: 3日分）と照らし合わせ、わが家の過不足を確認する
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-success-soft">PREPARATION</span> GUIDE</>}
+        subtitle="公的推奨水準（内閣府: 3日分）と照らし合わせ、わが家の過不足を確認する"
+      />
 
       <AlertBanner
         level="warning"

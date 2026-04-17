@@ -16,6 +16,7 @@ import { WorkImpactSelector } from "../components/WorkImpactSelector";
 import { PrefectureSelector } from "../components/PrefectureSelector";
 import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
 import { Badge } from "../components/Badge";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
@@ -44,20 +45,16 @@ export const Dashboard: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold font-mono">
-            <span className="text-primary-soft">SAO</span>
-          </h1>
+      <PageHero
+        title={<span className="text-primary-soft">SAO</span>}
+        right={<>
           {isFromApi && <Badge tone="success">LIVE</Badge>}
-        </div>
-        <div className="flex items-center gap-3">
           <ScenarioSelector selected={scenario} onChange={setScenario} />
           <span className="text-xs font-mono text-neutral-500 tracking-wider hidden sm:inline">
             INTEGRATED DASHBOARD
           </span>
-        </div>
-      </div>
+        </>}
+      />
 
       <AlertBanner
         level="warning"

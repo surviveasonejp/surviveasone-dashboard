@@ -17,6 +17,7 @@ import {
   getRegionProfile,
   getAreaAdvice,
 } from "../lib/regionAdvice";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 interface SliderProps {
@@ -135,14 +136,10 @@ export const FamilyMeter: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-warning-soft">HOUSEHOLD</span> SUPPLY CHECK
-        </h1>
-        <p className="text-text-muted text-sm">
-          公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-warning-soft">HOUSEHOLD</span> SUPPLY CHECK</>}
+        subtitle="公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）"
+      />
 
       <AlertBanner
         level={getAlertLevel(score.totalDays)}

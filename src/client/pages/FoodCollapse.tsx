@@ -13,6 +13,7 @@ import type { RegionCollapse, FlowSimulationResult } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber } from "../lib/formatters";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 const EMPTY_SIM: FlowSimulationResult = {
@@ -116,17 +117,11 @@ export const FoodCollapse: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <h1 className="text-2xl font-bold font-mono">
-            <span className="text-primary-soft">FOOD CHAIN</span> COLLAPSE
-          </h1>
-          <ScenarioSelector selected={scenario} onChange={setScenario} />
-        </div>
-        <p className="text-neutral-500 text-sm">
-          何から備えるべきか — 商品カテゴリ別の店頭在庫リスク
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-primary-soft">FOOD CHAIN</span> COLLAPSE</>}
+        subtitle="何から備えるべきか — 商品カテゴリ別の店頭在庫リスク"
+        right={<ScenarioSelector selected={scenario} onChange={setScenario} />}
+      />
 
       <AlertBanner
         level="warning"

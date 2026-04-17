@@ -1,6 +1,7 @@
 import { type FC, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
+import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SectionHeading } from "../components/SectionHeading";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
@@ -288,15 +289,11 @@ export const ForSegment: FC = () => {
   return (
     <div className="space-y-6 max-w-2xl">
       {/* ヒーロー */}
-      <div className="flex items-start justify-between flex-wrap gap-3">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold font-mono">
-            <span style={{ color: seg.heroColor }}>{seg.title}</span>
-          </h1>
-          <p className="text-text-muted text-sm">{seg.subtitle}</p>
-        </div>
-        <ScenarioSelector selected={scenario} onChange={setScenario} />
-      </div>
+      <PageHero
+        title={<span style={{ color: seg.heroColor }}>{seg.title}</span>}
+        subtitle={seg.subtitle}
+        right={<ScenarioSelector selected={scenario} onChange={setScenario} />}
+      />
 
       <AlertBanner level="warning" message={seg.alertMessage} />
 

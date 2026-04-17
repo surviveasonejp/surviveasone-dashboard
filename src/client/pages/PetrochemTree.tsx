@@ -14,6 +14,7 @@
 import { type FC, useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
+import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { useApiData } from "../hooks/useApiData";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
@@ -755,17 +756,11 @@ export const PetrochemTree: FC = () => {
   return (
     <div className="space-y-6">
       {/* ヘッダー */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <h1 className="text-2xl font-bold font-mono">
-            <span className="text-warning-soft">PETROCHEM</span> CHAIN
-          </h1>
-          <ScenarioSelector selected={scenario} onChange={setScenario} />
-        </div>
-        <p className="text-text-muted text-sm">
-          原油→ナフサ→石化製品→社会インフラの連鎖依存構造
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-warning-soft">PETROCHEM</span> CHAIN</>}
+        subtitle="原油→ナフサ→石化製品→社会インフラの連鎖依存構造"
+        right={<ScenarioSelector selected={scenario} onChange={setScenario} />}
+      />
 
       <AlertBanner
         level="warning"

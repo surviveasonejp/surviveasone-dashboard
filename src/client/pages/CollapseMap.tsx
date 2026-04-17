@@ -10,6 +10,7 @@ import type { RegionCollapse } from "../../shared/types";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 import staticRegions from "../../worker/data/regions.json";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 // 再エネ自立率計算（RegionDetail.tsxと同一定数）
@@ -50,14 +51,10 @@ export const CollapseMap: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-warning-soft">COLLAPSE</span> MAP
-        </h1>
-        <p className="text-neutral-500 text-sm">
-          全国10電力エリアの崩壊予測順序 — どのエリアが最初に機能停止するか
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-warning-soft">COLLAPSE</span> MAP</>}
+        subtitle="全国10電力エリアの崩壊予測順序 — どのエリアが最初に機能停止するか"
+      />
 
       <AlertBanner
         level="warning"

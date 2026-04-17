@@ -11,6 +11,7 @@ import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
 import { ALL_ROUTES } from "../lib/tankerPosition";
 import { Badge } from "../components/Badge";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 /** 米国産原油の出発港 */
@@ -97,26 +98,24 @@ export const TankerTracker: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#94a3b8]">LAST TANKER</span> TRACKER
-        </h1>
-        <p className="text-neutral-500 text-sm">
-          ホルムズ封鎖シナリオ下での日本向けタンカー入港追跡 — 代替ルート・非ホルムズ便の到着見通しと封鎖影響を航路別に可視化
-        </p>
-        <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[11px] font-mono text-neutral-500">
-          <span>データ基準日: {meta.updatedAt}</span>
-          {meta.lastAisFetch ? (
-            <span>AIS最終取得: {new Intl.DateTimeFormat("ja-JP", {
-              timeZone: "Asia/Tokyo",
-              month: "numeric", day: "numeric",
-              hour: "2-digit", minute: "2-digit",
-            }).format(new Date(meta.lastAisFetch))} JST</span>
-          ) : (
-            <span className="text-neutral-600">AIS: 未取得</span>
-          )}
-        </div>
-      </div>
+      <PageHero
+        title={<><span className="text-[#94a3b8]">LAST TANKER</span> TRACKER</>}
+        subtitle="ホルムズ封鎖シナリオ下での日本向けタンカー入港追跡 — 代替ルート・非ホルムズ便の到着見通しと封鎖影響を航路別に可視化"
+        right={
+          <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[11px] font-mono text-neutral-500">
+            <span>データ基準日: {meta.updatedAt}</span>
+            {meta.lastAisFetch ? (
+              <span>AIS最終取得: {new Intl.DateTimeFormat("ja-JP", {
+                timeZone: "Asia/Tokyo",
+                month: "numeric", day: "numeric",
+                hour: "2-digit", minute: "2-digit",
+              }).format(new Date(meta.lastAisFetch))} JST</span>
+            ) : (
+              <span className="text-neutral-600">AIS: 未取得</span>
+            )}
+          </div>
+        }
+      />
 
       <AlertBanner
         level="warning"

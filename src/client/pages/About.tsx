@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import staticReserves from "../data/reserves.json";
 import { usePwaInstall } from "../hooks/usePwaInstall";
 import { Badge } from "../components/Badge";
+import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 
 const DATA_SOURCES_LIST = [
@@ -144,14 +145,10 @@ export const About: FC = () => {
   const { canInstall, install, platform, isInstalled } = usePwaInstall();
   return (
     <div className="space-y-8 max-w-3xl">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-primary-soft">ABOUT</span> THIS PROJECT
-        </h1>
-        <p className="text-neutral-500 text-sm">
-          SAO – Situation Awareness Observatory | プロジェクト概要
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-primary-soft">ABOUT</span> THIS PROJECT</>}
+        subtitle="SAO – Situation Awareness Observatory | プロジェクト概要"
+      />
 
       {/* ミッション */}
       <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">

@@ -2,6 +2,7 @@ import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
 import staticReserves from "../data/reserves.json";
 import { SensitivityChart } from "../components/SensitivityChart";
+import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SectionHeading } from "../components/SectionHeading";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
@@ -86,14 +87,10 @@ export const Methodology: FC = () => {
   const [sensitivityScenario, setSensitivityScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
   return (
     <div className="space-y-8 max-w-3xl">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-warning-soft">METHODOLOGY</span>
-        </h1>
-        <p className="text-neutral-500 text-sm">
-          シミュレーションモデルの前提・計算式・データソース・制約
-        </p>
-      </div>
+      <PageHero
+        title={<span className="text-warning-soft">METHODOLOGY</span>}
+        subtitle="シミュレーションモデルの前提・計算式・データソース・制約"
+      />
 
       {/* シミュレーション宣言 */}
       <div className="bg-panel border border-warning-soft/30 rounded-lg p-6 space-y-3">

@@ -4,6 +4,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
 import { Badge } from "../components/Badge";
+import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
 import { EconomicCascade } from "../components/EconomicCascade";
@@ -71,20 +72,14 @@ export const SurvivalClock: FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold font-mono">
-              <span className="text-primary-soft">SURVIVAL</span> CLOCK
-            </h1>
-            {isLive && <Badge tone="success">LIVE</Badge>}
-          </div>
+      <PageHero
+        title={<><span className="text-primary-soft">SURVIVAL</span> CLOCK</>}
+        subtitle="ホルムズ海峡リスクシナリオにおける日本のエネルギー残存日数をリアルタイムでカウントダウン"
+        right={<>
+          {isLive && <Badge tone="success">LIVE</Badge>}
           <ScenarioSelector selected={scenario} onChange={setScenario} />
-        </div>
-        <p className="text-neutral-500 text-sm">
-          ホルムズ海峡リスクシナリオにおける日本のエネルギー残存日数をリアルタイムでカウントダウン
-        </p>
-      </div>
+        </>}
+      />
 
       <AlertBanner
         level={worstLevel}

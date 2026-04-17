@@ -1,4 +1,5 @@
 import { type FC } from "react";
+import { PageHero } from "../components/PageHero";
 
 const API_BASE = "https://surviveasonejp.net";
 
@@ -317,14 +318,10 @@ LNG在庫: 750.4日
 export const ApiDocs: FC = () => {
   return (
     <div className="space-y-8 max-w-3xl">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#94a3b8]">API</span> DOCUMENTATION
-        </h1>
-        <p className="text-neutral-500 text-sm">
-          SAO – Situation Awareness Observatory API — {API_BASE}/api
-        </p>
-      </div>
+      <PageHero
+        title={<><span className="text-[#94a3b8]">API</span> DOCUMENTATION</>}
+        subtitle={`SAO – Situation Awareness Observatory API — ${API_BASE}/api`}
+      />
 
       <div className="bg-panel border border-border rounded-lg p-4 text-sm text-neutral-400 space-y-2">
         <p><span className="text-neutral-200 font-bold">Base URL:</span> <code className="font-mono text-warning-soft">{API_BASE}/api</code></p>
