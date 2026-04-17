@@ -97,7 +97,7 @@ export const SupplyGapChart: FC<SupplyGapChartProps> = ({ scenario }) => {
             {SCENARIO_LABELS[scenario]}の原油輸入能力
           </div>
           {isConstrained && (
-            <div className="font-mono text-xs font-bold" style={{ color: "#dc2626" }}>
+            <div className="font-mono text-xs font-bold" style={{ color: "var(--color-primary)" }}>
               不足: {activeDeficit.toFixed(1)} mbpd — 備蓄放出・需要抑制で対応
             </div>
           )}
@@ -261,7 +261,7 @@ export const SupplyGapChart: FC<SupplyGapChartProps> = ({ scenario }) => {
           ホルムズ経由
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-2.5 rounded-sm bg-[#3b82f6] opacity-80" />
+          <span className="inline-block w-3 h-2.5 rounded-sm bg-info-soft opacity-80" />
           パイプライン迂回（フジャイラ・ヤンブー）
         </span>
         <span className="flex items-center gap-1.5">

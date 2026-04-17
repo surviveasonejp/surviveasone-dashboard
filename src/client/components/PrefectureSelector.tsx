@@ -185,7 +185,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
               </span>
             )}
             {selectedPref.majorPort && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#3b82f6]/12 text-[#3b82f6] border border-[#3b82f6]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-info-soft/12 text-info-soft border border-info-soft/20">
                 主要港あり
               </span>
             )}

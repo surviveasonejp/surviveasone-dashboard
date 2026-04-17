@@ -21,7 +21,7 @@ export const Layout: FC = () => {
   const contentStyle = getContentStyle(dragX, transitionEnabled);
 
   return (
-    <div className="min-h-screen bg-bg text-white overflow-x-hidden">
+    <div className="min-h-screen bg-bg text-text overflow-x-hidden">
       <Header onNavigate={navigateTo} />
       <main {...bind()} className="max-w-7xl mx-auto px-4 py-6 touch-pan-y">
         <div
@@ -79,7 +79,7 @@ export const Layout: FC = () => {
                       width: i === currentIndex ? "14px" : "4px",
                       height: "4px",
                       background:
-                        i === currentIndex ? "#ef4444" : "#cbd5e1",
+                        i === currentIndex ? "var(--color-primary-soft)" : "var(--color-border)",
                     }}
                   />
                 ))}

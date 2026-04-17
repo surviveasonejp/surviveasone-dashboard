@@ -981,8 +981,8 @@ export const TankerMap: FC<TankerMapProps> = ({
           封鎖点
         </span>
         {(scenario === "partial" || scenario === "full") && (
-          <span className="flex items-center gap-1 text-[#3b82f6]">
-            <span className="inline-block w-5 border-t-2 border-[#3b82f6] border-dashed" />
+          <span className="flex items-center gap-1 text-info-soft">
+            <span className="inline-block w-5 border-t-2 border-info-soft border-dashed" />
             代替
           </span>
         )}

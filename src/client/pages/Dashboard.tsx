@@ -15,6 +15,8 @@ import { IndustryImpactMatrix } from "../components/IndustryImpactMatrix";
 import { WorkImpactSelector } from "../components/WorkImpactSelector";
 import { PrefectureSelector } from "../components/PrefectureSelector";
 import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
+import { Badge } from "../components/Badge";
+import { SectionHeading } from "../components/SectionHeading";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
 import { useApiData } from "../hooks/useApiData";
@@ -47,11 +49,7 @@ export const Dashboard: FC = () => {
           <h1 className="text-2xl font-bold font-mono">
             <span className="text-primary-soft">SAO</span>
           </h1>
-          {isFromApi && (
-            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
-              LIVE
-            </span>
-          )}
+          {isFromApi && <Badge tone="success">LIVE</Badge>}
         </div>
         <div className="flex items-center gap-3">
           <ScenarioSelector selected={scenario} onChange={setScenario} />
@@ -72,9 +70,9 @@ export const Dashboard: FC = () => {
 
       {/* 供給余力サマリー — 安心情報ファーストビュー */}
       <div className="bg-success-soft/10 border border-success-soft/25 rounded-lg p-4 space-y-3">
-        <div className="font-mono text-xs tracking-widest text-success-soft">
+        <SectionHeading tone="success">
           SUPPLY BUFFER — 現在の供給余力
-        </div>
+        </SectionHeading>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
             <div className="font-mono font-bold text-2xl text-success-soft">{staticReserves.oil.totalReserveDays}</div>
@@ -131,9 +129,9 @@ export const Dashboard: FC = () => {
       {/* 下段: 地図 + 詳細 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-panel border border-border rounded-lg p-4">
-          <div className="text-xs font-mono text-neutral-500 tracking-wider mb-2">
+          <SectionHeading tracking="wider" className="mb-2">
             IMPACT MAP — 全国10エリア供給影響
-          </div>
+          </SectionHeading>
           <RegionMap
             regions={regions}
             onSelectRegion={setSelectedRegion}

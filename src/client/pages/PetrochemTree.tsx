@@ -1034,7 +1034,7 @@ export const PetrochemTree: FC = () => {
                     <span className="text-[9px] font-mono bg-primary text-white px-1 rounded ml-auto">危機</span>
                   )}
                   {isAffected && !isCritical && (
-                    <span className="text-[9px] font-mono bg-[#d97706] text-white px-1 rounded ml-auto">影響</span>
+                    <span className="text-[9px] font-mono bg-warning text-white px-1 rounded ml-auto">影響</span>
                   )}
                 </div>
                 <p className="text-[10px] text-text-muted leading-relaxed">{impact.detail}</p>
@@ -1096,7 +1096,7 @@ export const PetrochemTree: FC = () => {
               </div>
               <div className="flex gap-4 text-[10px] font-mono flex-wrap">
                 <span className="text-text-muted">
-                  影響顕在化: <span className="text-[#d97706] font-bold">Day {detail.risk.impactDay}</span>〜
+                  影響顕在化: <span className="text-warning font-bold">Day {detail.risk.impactDay}</span>〜
                 </span>
                 <span className="text-text-muted">{detail.risk.riskReason}</span>
               </div>

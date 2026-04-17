@@ -4,6 +4,7 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { type ScenarioId, DEFAULT_SCENARIO, SCENARIOS } from "../../shared/scenarios";
 import type { FlowSimulationResult } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
+import { SectionHeading } from "../components/SectionHeading";
 
 // ─── データ定義（既存と同一） ─────────────────────────
 
@@ -384,16 +385,16 @@ export const Prepare: FC = () => {
       />
 
       {/* 備蓄優先順位の変化（ceasefire時は非表示） */}
-      {scenario !== "ceasefire" && <div className="bg-panel border border-[#d97706]/30 rounded-lg p-4 space-y-3">
-        <h2 className="font-mono text-xs tracking-wider text-[#d97706]">このシナリオでは備蓄の優先順位が変わる</h2>
+      {scenario !== "ceasefire" && <div className="bg-panel border border-warning/30 rounded-lg p-4 space-y-3">
+        <h2 className="font-mono text-xs tracking-wider text-warning">このシナリオでは備蓄の優先順位が変わる</h2>
         <div className="space-y-1.5">
           <div className="flex items-center gap-3 text-xs font-mono">
             <span className="text-neutral-600 shrink-0 w-10">通常:</span>
             <span className="text-neutral-500">水 → 食料 → 燃料</span>
           </div>
           <div className="flex items-center gap-3 text-xs font-mono">
-            <span className="text-[#d97706] shrink-0 w-10">今回:</span>
-            <span className="text-[#d97706] font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
+            <span className="text-warning shrink-0 w-10">今回:</span>
+            <span className="text-warning font-bold">衛生・容器 → 食料 → 熱源 → 水</span>
           </div>
         </div>
         <p className="text-xs text-neutral-500 leading-relaxed">
@@ -407,7 +408,7 @@ export const Prepare: FC = () => {
       {/* ── パーソナライズフィルタ ── */}
       <div className="bg-panel border border-warning-soft/30 rounded-lg p-5 space-y-4 print:hidden">
         <div>
-          <h2 className="font-mono text-sm tracking-wider text-warning-soft">あなたの状況を選んでください</h2>
+          <SectionHeading as="h2" tone="warning" size="sm" tracking="wider">あなたの状況を選んでください</SectionHeading>
           <p className="text-xs text-neutral-500 mt-1">該当するセクションだけを展開表示します。選択内容はこのブラウザ内のみで処理され、サーバーへの送信は一切行いません。</p>
         </div>
 
@@ -547,9 +548,9 @@ export const Prepare: FC = () => {
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="space-y-0.5">
-            <div className="font-mono text-xs tracking-widest text-neutral-500">
+            <SectionHeading>
               SCENARIO — シナリオ別フェーズ判定
-            </div>
+            </SectionHeading>
             <p className="text-xs text-neutral-400">
               シナリオを選ぶと、最初に備えるべきフェーズが自動で強調表示されます
             </p>
@@ -683,9 +684,9 @@ export const Prepare: FC = () => {
           title={section.category}
           forceOpen={showVulnerable(section.id)}
           highlight={showVulnerable(section.id)}
-          color="#ef4444"
+          color="var(--color-primary-soft)"
         >
-          <div id={`sec-${section.id}`} className="bg-panel border border-[#ef444440] rounded-lg overflow-hidden scroll-mt-20">
+          <div id={`sec-${section.id}`} className="bg-panel border border-primary-soft/25 rounded-lg overflow-hidden scroll-mt-20">
             <div className="divide-y divide-border">
               {section.items.map((item) => (
                 <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
@@ -703,8 +704,8 @@ export const Prepare: FC = () => {
         <p className="text-xs text-neutral-500 mb-3">物資の備蓄だけでは供給制約を乗り越えられない。情報・連絡体制・移動手段・コミュニティが対応力を左右する。</p>
         <div className="space-y-4">
           {ACTION_LIST.map((section) => (
-            <div key={section.category} className="bg-panel border border-[#3b82f640] rounded-lg overflow-hidden">
-              <div className="px-4 py-2.5 border-b border-[#3b82f630] bg-bg">
+            <div key={section.category} className="bg-panel border border-info-soft/25 rounded-lg overflow-hidden">
+              <div className="px-4 py-2.5 border-b border-info-soft/20 bg-bg">
                 <h3 className="font-mono text-sm font-bold text-accent">
                   <span className="mr-1.5">{section.icon}</span>{section.category}
                 </h3>
@@ -796,7 +797,7 @@ export const Prepare: FC = () => {
 
       {/* ── 公式防災ガイドライン ── */}
       <div className="bg-bg border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-text-muted">公式防災ガイドライン</h2>
+        <SectionHeading as="h2" tone="text-muted" tracking="wider">公式防災ガイドライン</SectionHeading>
         <ul className="space-y-1.5">
           {[
             { label: "内閣府｜災害の備え（家庭における食料・水の備蓄）", href: "https://www.bousai.go.jp/kohou/kouhoubousai/h22/09/special_01.html" },
@@ -808,7 +809,7 @@ export const Prepare: FC = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-[#3b82f6] hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+                className="text-xs text-info-soft hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
               >
                 {link.label} &rarr;
               </a>

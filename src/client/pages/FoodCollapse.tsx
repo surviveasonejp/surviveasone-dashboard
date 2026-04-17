@@ -13,6 +13,7 @@ import type { RegionCollapse, FlowSimulationResult } from "../../shared/types";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber } from "../lib/formatters";
+import { SectionHeading } from "../components/SectionHeading";
 
 const EMPTY_SIM: FlowSimulationResult = {
   timeline: [],
@@ -232,7 +233,7 @@ export const FoodCollapse: FC = () => {
 
       {/* ナフサ連鎖説明 */}
       <div className="bg-panel border border-warning-soft/30 rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-warning-soft">なぜ食品包装が消えるのか</h2>
+        <SectionHeading as="h2" tone="warning" tracking="wider">なぜ食品包装が消えるのか</SectionHeading>
         <div className="flex flex-wrap items-center gap-1 text-xs font-mono">
           {[
             { label: "原油", color: "#ef4444" },
@@ -265,7 +266,7 @@ export const FoodCollapse: FC = () => {
 
       {/* 消費財消滅タイムライン */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">消費財消滅タイムライン</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">消費財消滅タイムライン</SectionHeading>
         <p className="text-xs text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
         <div className="space-y-3">
           {([
@@ -334,7 +335,7 @@ export const FoodCollapse: FC = () => {
 
       {/* 家庭支出への価格転嫁 */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">家庭支出への価格転嫁 — ナフサ価格段階別</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">家庭支出への価格転嫁 — ナフサ価格段階別</SectionHeading>
         <p className="text-xs text-neutral-600">
           ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫枯渇後のシナリオ。
         </p>
@@ -343,9 +344,9 @@ export const FoodCollapse: FC = () => {
             <thead>
               <tr className="text-neutral-600 border-b border-border">
                 <th className="px-2 py-1.5 text-left">支出カテゴリ</th>
-                <th className="px-2 py-1.5 text-right" style={{ color: "#f59e0b" }}>+40%</th>
-                <th className="px-2 py-1.5 text-right" style={{ color: "#ef4444" }}>+80%</th>
-                <th className="px-2 py-1.5 text-right" style={{ color: "#dc2626" }}>+120%</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "var(--color-warning-soft)" }}>+40%</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "var(--color-primary-soft)" }}>+80%</th>
+                <th className="px-2 py-1.5 text-right" style={{ color: "var(--color-primary)" }}>+120%</th>
               </tr>
             </thead>
             <tbody>
@@ -359,9 +360,9 @@ export const FoodCollapse: FC = () => {
               ] satisfies Array<{ category: string; p40: string; p80: string; p120: string; bold: boolean }>).map((row) => (
                 <tr key={row.category} className="border-b border-[#0c1018]">
                   <td className={`px-2 py-1.5 ${row.bold ? "text-neutral-200 font-bold" : "text-neutral-400"}`}>{row.category}</td>
-                  <td className="px-2 py-1.5 text-right" style={{ color: "#f59e0b" }}>{row.p40}</td>
-                  <td className="px-2 py-1.5 text-right" style={{ color: "#ef4444" }}>{row.p80}</td>
-                  <td className="px-2 py-1.5 text-right" style={{ color: "#dc2626" }}>{row.p120}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "var(--color-warning-soft)" }}>{row.p40}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "var(--color-primary-soft)" }}>{row.p80}</td>
+                  <td className="px-2 py-1.5 text-right" style={{ color: "var(--color-primary)" }}>{row.p120}</td>
                 </tr>
               ))}
             </tbody>
@@ -377,7 +378,7 @@ export const FoodCollapse: FC = () => {
 
       {/* サプライチェーン連鎖図 */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">サプライチェーン崩壊フロー</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">サプライチェーン崩壊フロー</SectionHeading>
         <div className="flex flex-col gap-1">
           {chainSteps.map((step, i) => (
             <div key={i} className="flex items-center gap-3">
@@ -409,9 +410,9 @@ export const FoodCollapse: FC = () => {
       {/* エリア別食料自給率 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">
             エリア別食料自給率 — 自給率が高いほど持ちこたえる
-          </h2>
+          </SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

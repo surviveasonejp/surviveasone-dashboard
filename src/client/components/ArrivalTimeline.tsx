@@ -2,6 +2,7 @@ import { type FC } from "react";
 import type { TankerInfo, FlowSimulationResult, FlowState } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 import { useTheme } from "../hooks/useTheme";
+import { SectionHeading } from "./SectionHeading";
 
 // ─── 定数 ─────────────────────────────────────────────
 
@@ -223,7 +224,7 @@ export const ArrivalTimeline: FC<Props> = ({ tankers, selectedId, onSelect }) =>
       <div className="px-4 py-3 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-mono text-sm tracking-wider text-neutral-400">ARRIVAL TIMELINE</h2>
+            <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">ARRIVAL TIMELINE</SectionHeading>
             <p className="text-[10px] text-neutral-600 mt-0.5">日本向け船団の到着予測</p>
           </div>
           <div className="hidden md:flex items-center gap-4">

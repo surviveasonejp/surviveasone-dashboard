@@ -17,6 +17,7 @@ import {
   getRegionProfile,
   getAreaAdvice,
 } from "../lib/regionAdvice";
+import { SectionHeading } from "../components/SectionHeading";
 
 interface SliderProps {
   label: string;
@@ -154,7 +155,7 @@ export const FamilyMeter: FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}
         <div className="bg-panel border border-border rounded-lg p-6 space-y-5">
-          <h2 className="font-mono text-sm tracking-wider text-text-muted">備蓄入力</h2>
+          <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">備蓄入力</SectionHeading>
           <InputSlider label="世帯人数" value={inputs.members} min={1} max={10} step={1} unit="人" onChange={update("members")} />
           <InputSlider label="水備蓄" value={inputs.waterLiters} min={0} max={500} step={5} unit="L" onChange={update("waterLiters")} />
           <InputSlider label="食料備蓄" value={inputs.foodDays} min={0} max={90} step={1} unit="日分" onChange={update("foodDays")} />
@@ -243,7 +244,7 @@ export const FamilyMeter: FC = () => {
 
           {/* 内訳バー */}
           <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-            <h3 className="font-mono text-xs text-text-muted tracking-wider">リソース別供給余力</h3>
+            <SectionHeading as="h3" tone="text-muted" tracking="wider">リソース別供給余力</SectionHeading>
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
               const isBottleneck = b.label === score.bottleneck;
@@ -318,9 +319,9 @@ export const FamilyMeter: FC = () => {
         return (
           <div className="bg-panel border border-border rounded-lg p-5 space-y-4">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <h2 className="font-mono text-sm tracking-wider text-text-muted">
+              <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">
                 居住地タイプ別 備蓄優先事項
-              </h2>
+              </SectionHeading>
               {profile && advice && (
                 <span
                   className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold"
@@ -495,9 +496,9 @@ export const FamilyMeter: FC = () => {
         if (neededItems.length === 0) return null;
         return (
           <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-4">
-            <h2 className="font-mono text-sm tracking-wider text-primary-soft">
+            <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">
               30日分に向けた不足確認
-            </h2>
+            </SectionHeading>
             <p className="text-xs text-text-muted">
               現在{formatDecimal(score.totalDays)}日分 → 目標30日分までの不足量
             </p>

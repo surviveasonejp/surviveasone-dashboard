@@ -254,7 +254,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
 
               {/* 副作用 */}
               {card.sideEffect && (
-                <div className="text-xs text-[#d97706] font-mono">
+                <div className="text-xs text-warning font-mono">
                   ⚠ {card.sideEffect}
                 </div>
               )}

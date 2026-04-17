@@ -2,6 +2,7 @@ import { type FC, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
+import { SectionHeading } from "../components/SectionHeading";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 
 const SCENARIO_LABELS: Record<ScenarioId, string> = {
@@ -301,9 +302,9 @@ export const ForSegment: FC = () => {
 
       {/* 供給制約の基準値 */}
       <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 text-center space-y-1.5">
-        <div className="font-mono text-xs tracking-widest text-text-muted mb-1">
+        <SectionHeading tone="text-muted" className="mb-1">
           {SCENARIO_LABELS[scenario]} — 推定値
-        </div>
+        </SectionHeading>
         <div className="font-mono text-4xl font-bold" style={{ color: seg.heroColor }}>
           {displayStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
         </div>
@@ -315,7 +316,7 @@ export const ForSegment: FC = () => {
 
       {/* 供給制約タイムライン */}
       <div className="space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-text-muted">供給制約タイムライン</h2>
+        <SectionHeading as="h2" tone="text-muted" tracking="wider">供給制約タイムライン</SectionHeading>
         <div className="space-y-2">
           {seg.risks.map((risk) => (
             <div key={risk.label} className="bg-panel border border-border rounded-lg px-4 py-3 flex gap-4">
@@ -331,7 +332,7 @@ export const ForSegment: FC = () => {
 
       {/* 今確認すべきこと */}
       <div className="bg-panel border border-success-soft/30 rounded-lg p-5 space-y-3">
-        <h2 className="font-mono text-xs tracking-wider text-success-soft">優先して確認すべき5つのこと</h2>
+        <SectionHeading as="h2" tone="success" tracking="wider">優先して確認すべき5つのこと</SectionHeading>
         <ol className="space-y-2">
           {seg.actions.map((action, i) => (
             <li key={i} className="flex gap-3 text-sm text-text">
@@ -344,7 +345,7 @@ export const ForSegment: FC = () => {
 
       {/* 公的支援・情報源 */}
       <div className="bg-bg border border-border rounded-lg p-4 space-y-2">
-        <h2 className="font-mono text-xs tracking-wider text-text-muted">公的支援・情報源</h2>
+        <SectionHeading as="h2" tone="text-muted" tracking="wider">公的支援・情報源</SectionHeading>
         <ul className="space-y-1.5">
           {seg.officialLinks.map((link) => (
             <li key={link.href}>
@@ -352,7 +353,7 @@ export const ForSegment: FC = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-[#3b82f6] hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+                className="text-xs text-info-soft hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
               >
                 {link.label} &rarr;
               </a>
@@ -369,7 +370,7 @@ export const ForSegment: FC = () => {
         >
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="font-mono text-xs tracking-widest text-info">{seg.ctaTag ?? "NEXT STEP"}</div>
+              <SectionHeading tone="info">{seg.ctaTag ?? "NEXT STEP"}</SectionHeading>
               <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
             </div>
             <span className="text-info font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -384,7 +385,7 @@ export const ForSegment: FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <div className="font-mono text-xs tracking-widest text-warning-soft">FAMILY SURVIVAL METER</div>
+                <SectionHeading tone="warning">FAMILY SURVIVAL METER</SectionHeading>
                 <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
               </div>
               <span className="text-warning-soft font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -398,7 +399,7 @@ export const ForSegment: FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <div className="font-mono text-xs tracking-widest text-neutral-500">SURVIVAL GUIDE</div>
+                <SectionHeading>SURVIVAL GUIDE</SectionHeading>
                 <p className="text-sm font-bold">詳細な備蓄チェックリストを見る</p>
               </div>
               <span className="text-neutral-500 font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>

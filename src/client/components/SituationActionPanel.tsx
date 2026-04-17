@@ -42,9 +42,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   price_spike: {
     label: "価格上昇フェーズ",
     urgency: "normal",
-    colorClass: "text-[#d97706]",
-    borderClass: "border-[#d97706]/30",
-    bgClass: "bg-[#d97706]/8",
+    colorClass: "text-warning",
+    borderClass: "border-warning/30",
+    bgClass: "bg-warning/8",
     actions: [
       "処方薬の残量を確認し、2ヶ月分への補充を主治医に相談する",
       "通勤・通学の代替手段（公共交通・自転車ルート）を今のうちに確認する",
@@ -114,9 +114,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   water_pressure: {
     label: "水圧低下フェーズ",
     urgency: "high",
-    colorClass: "text-[#3b82f6]",
-    borderClass: "border-[#3b82f6]/30",
-    bgClass: "bg-[#3b82f6]/8",
+    colorClass: "text-info-soft",
+    borderClass: "border-info-soft/30",
+    bgClass: "bg-info-soft/8",
     actions: [
       "浴槽・容器に水を確保する（1人3L/日 × 最低7日分）",
       "近隣の給水所・給水車の場所を事前確認する",
@@ -126,9 +126,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   water_cutoff: {
     label: "断水フェーズ",
     urgency: "critical",
-    colorClass: "text-[#3b82f6]",
-    borderClass: "border-[#3b82f6]/30",
-    bgClass: "bg-[#3b82f6]/8",
+    colorClass: "text-info-soft",
+    borderClass: "border-info-soft/30",
+    bgClass: "bg-info-soft/8",
     actions: [
       "浴槽・ポリタンクに確保した水を節約して使う",
       "携帯浄水フィルター・浄水タブレットを準備する",
@@ -138,9 +138,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   water_sanitation: {
     label: "衛生悪化フェーズ",
     urgency: "critical",
-    colorClass: "text-[#3b82f6]",
-    borderClass: "border-[#3b82f6]/30",
-    bgClass: "bg-[#3b82f6]/8",
+    colorClass: "text-info-soft",
+    borderClass: "border-info-soft/30",
+    bgClass: "bg-info-soft/8",
     actions: [
       "手洗い・食器洗いに消毒液（次亜塩素酸水・アルコール）を代用する",
       "生水の飲用を避け必ず煮沸する",
@@ -183,7 +183,7 @@ const EMPTY_RESULT: FlowSimulationResult = {
 
 const URGENCY_BADGE: Record<PhaseData["urgency"], { label: string; className: string }> = {
   normal:   { label: "確認推奨",   className: "bg-success-soft/15 text-success-soft" },
-  high:     { label: "事前準備",   className: "bg-[#d97706]/15 text-[#d97706]" },
+  high:     { label: "事前準備",   className: "bg-warning/15 text-warning" },
   critical: { label: "重要確認",   className: "bg-primary-soft/15 text-primary-soft" },
 };
 

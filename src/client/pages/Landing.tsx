@@ -8,6 +8,7 @@ import { useApiData } from "../hooks/useApiData";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
 import { IeaComparison } from "../components/IeaComparison";
 import { BlockadeDayCounter } from "../components/BlockadeDayCounter";
+import { SectionHeading } from "../components/SectionHeading";
 import type { ResourceCountdown } from "../../shared/types";
 import staticReserves from "../data/reserves.json";
 
@@ -87,9 +88,9 @@ export const Landing: FC = () => {
           CURRENT RESILIENCE STATUS
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Stat value={String(staticReserves.oil.totalReserveDays)} unit="日" label="石油備蓄（国家+民間+産油国共同）" color="#16a34a" />
-          <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="#16a34a" />
-          <Stat value="3" unit="ルート" label="代替調達稼働中" color="#2563eb" />
+          <Stat value={String(staticReserves.oil.totalReserveDays)} unit="日" label="石油備蓄（国家+民間+産油国共同）" color="var(--color-success)" />
+          <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="var(--color-success)" />
+          <Stat value="3" unit="ルート" label="代替調達稼働中" color="var(--color-info)" />
         </div>
         <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           {getReservesSummaryText()}（放出中・計45日分放出済み）。3/11 IEA史上最大の協調放出（4億バレル）実施済み。4/10 高市首相が追加20日分放出（5月開始）を発表。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
@@ -98,13 +99,13 @@ export const Landing: FC = () => {
 
       {/* 依存構造 — リスクの文脈 */}
       <div className="bg-panel border border-border rounded-lg p-5">
-        <div className="font-mono text-xs tracking-widest text-neutral-500 mb-4 text-center">
+        <SectionHeading align="center" className="mb-4">
           JAPAN ENERGY DEPENDENCY
-        </div>
+        </SectionHeading>
         <div className="grid grid-cols-3 gap-4">
-          <Stat value="94" unit="%" label="中東石油依存" color="#f59e0b" />
-          <Stat value="65" unit="%" label="火力発電比率" color="#f59e0b" />
-          <Stat value="25" unit="日" label="LNG全量在庫" color="#ef4444" />
+          <Stat value="94" unit="%" label="中東石油依存" color="var(--color-warning-soft)" />
+          <Stat value="65" unit="%" label="火力発電比率" color="var(--color-warning-soft)" />
+          <Stat value="25" unit="日" label="LNG全量在庫" color="var(--color-primary-soft)" />
         </div>
         <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
@@ -200,7 +201,7 @@ export const Landing: FC = () => {
       >
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="font-mono text-xs tracking-widest text-warning-soft">HOUSEHOLD SUPPLY CHECK</div>
+            <SectionHeading tone="warning">HOUSEHOLD SUPPLY CHECK</SectionHeading>
             <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
               備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目を把握できる。計算はブラウザ内で完結、サーバーへの送信なし
@@ -217,7 +218,7 @@ export const Landing: FC = () => {
           title="SUPPLY TIMELINE"
           subtitle="供給制約タイムライン"
           description="石油・LNG・電力の供給可能日数。封鎖Day Nカウンター・365日フロータイムライン・代替ルートパネル・回復タイムラインスライダー・政策マイルストーンタイムライン搭載"
-          color="#ef4444"
+          color="var(--color-primary-soft)"
         />
         <PanelCard
           to="/last-tanker"
@@ -231,14 +232,14 @@ export const Landing: FC = () => {
           title="FOOD SUPPLY"
           subtitle="食料サプライチェーン影響"
           description="衛生・包装への供給制約が食料より先に進む。ナフサ→石化→包装材の連鎖的影響。商品カテゴリ別の店頭在庫日数を確認"
-          color="#ef4444"
+          color="var(--color-primary-soft)"
         />
         <PanelCard
           to="/prepare"
           title="PREPARE"
           subtitle="公的推奨水準との比較ガイド"
           description="内閣府推奨3日分と照らし合わせ、わが家の過不足を確認。シナリオ連動フェーズ判定・住居形態別・要配慮者5カテゴリ対応"
-          color="#22c55e"
+          color="var(--color-success-soft)"
         />
       </div>
 

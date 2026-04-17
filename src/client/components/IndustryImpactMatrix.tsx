@@ -246,7 +246,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                   <div className="mt-2 ml-4 space-y-1 text-[10px] text-neutral-500">
                     <p className="leading-relaxed">{industry.note}</p>
                     <div className="flex gap-3 font-mono">
-                      <span>制約: <span className="text-[#d97706] font-bold">Day {days.constraint}</span></span>
+                      <span>制約: <span className="text-warning font-bold">Day {days.constraint}</span></span>
                       <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
                       <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                     </div>
@@ -313,7 +313,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                         <div className="ml-4 bg-[#f8fafc] border border-border rounded p-2.5 space-y-1.5 text-[10px]">
                           <div className="text-neutral-600">{industry.note}</div>
                           <div className="flex gap-4 text-neutral-500">
-                            <span>制約開始: <span className="text-[#d97706] font-bold">Day {days.constraint}</span></span>
+                            <span>制約開始: <span className="text-warning font-bold">Day {days.constraint}</span></span>
                             <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
                             <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                           </div>

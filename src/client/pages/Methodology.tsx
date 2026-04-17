@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import staticReserves from "../data/reserves.json";
 import { SensitivityChart } from "../components/SensitivityChart";
 import { ScenarioSelector } from "../components/ScenarioSelector";
+import { SectionHeading } from "../components/SectionHeading";
 import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
 
 const r = staticReserves.oil;
@@ -96,7 +97,7 @@ export const Methodology: FC = () => {
 
       {/* シミュレーション宣言 */}
       <div className="bg-panel border border-warning-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-warning-soft">重要な前提</h2>
+        <SectionHeading as="h2" tone="warning" size="sm" tracking="wider">重要な前提</SectionHeading>
         <p className="text-neutral-300 text-sm leading-relaxed">
           本シミュレーションは<span className="text-neutral-200 font-bold">予測ではなく、リスクシナリオの可視化</span>です。
           国際協調・標準対応・需要超過の3シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
@@ -110,7 +111,7 @@ export const Methodology: FC = () => {
       {/* 備蓄日数の3段階解釈 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">備蓄日数の解釈（3段階）</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">備蓄日数の解釈（3段階）</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -151,7 +152,7 @@ export const Methodology: FC = () => {
       {/* 3シナリオ */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">3シナリオ</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">3シナリオ</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -194,7 +195,7 @@ export const Methodology: FC = () => {
       {/* 国際対応パターン */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">各国の対応パターン（2026年4月時点）</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">各国の対応パターン（2026年4月時点）</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
@@ -244,7 +245,7 @@ export const Methodology: FC = () => {
 
       {/* 計算式 */}
       <div className="space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">計算モデル（全11式）</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">計算モデル（全11式）</SectionHeading>
         {MODEL_EQUATIONS.map((eq) => (
           <div key={eq.title} className="bg-panel border border-border rounded-lg p-4 space-y-2">
             <h3 className="text-sm font-bold text-neutral-200">{eq.title}</h3>
@@ -258,12 +259,12 @@ export const Methodology: FC = () => {
 
       {/* 法的フレームワークと限界 */}
       <div className="space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">法的フレームワークと限界</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">法的フレームワークと限界</SectionHeading>
 
         {/* 3法の発動トリガー */}
         <div className="bg-panel border border-border rounded-lg overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
-            <h3 className="font-mono text-xs tracking-wider text-neutral-400">3法の段階発動トリガー</h3>
+            <SectionHeading as="h3" tone="neutral-muted" tracking="wider">3法の段階発動トリガー</SectionHeading>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
@@ -307,7 +308,7 @@ export const Methodology: FC = () => {
 
         {/* 法的空白領域 — ナフサ起点の危機 */}
         <div className="bg-panel border border-primary-soft/30 rounded-lg p-4 space-y-3">
-          <h3 className="font-mono text-xs tracking-wider text-primary-soft">法的空白領域 — ナフサ起点の危機は3法の範囲外</h3>
+          <SectionHeading as="h3" tone="primary" tracking="wider">法的空白領域 — ナフサ起点の危機は3法の範囲外</SectionHeading>
           <p className="text-xs text-neutral-500 leading-relaxed">
             3法は「石油（燃料）の流れ」を制御する設計。ナフサ起点の石化産業崩壊は適用外または権限が脆弱。
           </p>
@@ -356,7 +357,7 @@ export const Methodology: FC = () => {
 
         {/* 追加法整備が必要なシナリオ */}
         <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-          <h3 className="font-mono text-xs tracking-wider text-neutral-400">追加法整備が必要なシナリオ</h3>
+          <SectionHeading as="h3" tone="neutral-muted" tracking="wider">追加法整備が必要なシナリオ</SectionHeading>
           <div className="space-y-2 text-xs">
             {([
               { id: "A", label: "ナフサ産業選別", desc: "「重要化学製品指定制度」が未整備。医療・食品優先のナフサ強制割当に法的根拠なし。（準戦時経済法・化学版が必要）" },
@@ -378,7 +379,7 @@ export const Methodology: FC = () => {
         {/* 省庁別責任マップ */}
         <div className="bg-panel border border-border rounded-lg overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
-            <h3 className="font-mono text-xs tracking-wider text-neutral-400">省庁別責任マップ（理想構造）</h3>
+            <SectionHeading as="h3" tone="neutral-muted" tracking="wider">省庁別責任マップ（理想構造）</SectionHeading>
           </div>
           <div className="divide-y divide-[#0c1018] text-xs">
             {([
@@ -411,7 +412,7 @@ export const Methodology: FC = () => {
       {/* データソース */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">データソース（全て公開データ）</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">データソース（全て公開データ）</SectionHeading>
         </div>
         <div className="divide-y divide-border">
           {DATA_SOURCES.map((ds) => (
@@ -428,7 +429,7 @@ export const Methodology: FC = () => {
 
       {/* このシミュレーションが外れる主な条件 */}
       <div className="space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">このシミュレーションが外れる主な条件</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">このシミュレーションが外れる主な条件</SectionHeading>
         <p className="text-xs text-neutral-600">以下のいずれかが発動した場合、崩壊タイムラインは大幅に変わります。楽観シナリオはこれらの一部を織り込んでいます。</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
@@ -477,7 +478,7 @@ export const Methodology: FC = () => {
       {/* 感度分析 */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">感度分析</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">感度分析</SectionHeading>
           <ScenarioSelector selected={sensitivityScenario} onChange={setSensitivityScenario} />
         </div>
         <SensitivityChart scenarioId={sensitivityScenario} />
@@ -485,7 +486,7 @@ export const Methodology: FC = () => {
 
       {/* 制約と不確実性 */}
       <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-primary-soft">制約と不確実性</h2>
+        <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">制約と不確実性</SectionHeading>
         <ul className="space-y-2 text-xs text-neutral-400 leading-relaxed">
           <li>・石炭火力（28%）はホルムズ非依存（豪州・インドネシア主体）。短期的な直接影響は限定的だが、エネルギー価格全般への波及は考慮</li>
           <li>・LNG在庫25日分は全量在庫。ホルムズ直接依存は6.3%だが、封鎖による保険料高騰・船舶退避は豪州(39.7%)・マレーシア(14.8%)等にも波及し得る</li>
@@ -500,7 +501,7 @@ export const Methodology: FC = () => {
 
       {/* 引用フォーマット */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">引用・参照</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">引用・参照</SectionHeading>
         <p className="text-neutral-500 text-xs">
           本シミュレーションを論文・レポート・記事等で参照する場合、以下のフォーマットを使用してください。
         </p>
@@ -535,7 +536,7 @@ export const Methodology: FC = () => {
 
       {/* 検証への招待 */}
       <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-success-soft">検証と貢献</h2>
+        <SectionHeading as="h2" tone="success" size="sm" tracking="wider">検証と貢献</SectionHeading>
         <p className="text-neutral-400 text-sm leading-relaxed">
           ソースコードはAGPL-3.0で全量公開されています。計算ロジックは誰でも検証可能です。
         </p>

@@ -157,12 +157,12 @@ export const AlternativeRoutePanel: FC = () => {
             <div className="text-[10px] text-info">確保可能</div>
           </div>
           <div>
-            <div className="font-bold text-lg text-[#d97706]">
+            <div className="font-bold text-lg text-warning">
               {gapMbpd.toFixed(2)}
               <span className="text-xs font-normal text-text-muted"> Mbpd</span>
             </div>
             <div className="text-text-muted">供給ギャップ</div>
-            <div className="text-[10px] text-[#d97706]">需要削減で補完</div>
+            <div className="text-[10px] text-warning">需要削減で補完</div>
           </div>
         </div>
 
@@ -205,7 +205,7 @@ export const AlternativeRoutePanel: FC = () => {
         {/* 代替・迂回ルート */}
         <div className="space-y-1">
           <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#d97706] inline-block" />
+            <span className="w-2 h-2 rounded-full bg-warning inline-block" />
             代替・迂回ルート（封鎖時に転換）
           </div>
           {bypassRoutes.map((cfg) => {

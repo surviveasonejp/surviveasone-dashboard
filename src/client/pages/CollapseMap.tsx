@@ -10,6 +10,7 @@ import type { RegionCollapse } from "../../shared/types";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 import staticRegions from "../../worker/data/regions.json";
+import { SectionHeading } from "../components/SectionHeading";
 
 // 再エネ自立率計算（RegionDetail.tsxと同一定数）
 const NATIONAL_AVG_MW = 115_000;
@@ -103,7 +104,7 @@ export const CollapseMap: FC = () => {
       {/* 崩壊順ランキングテーブル */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">崩壊順ランキング</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">崩壊順ランキング</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -175,7 +176,7 @@ export const CollapseMap: FC = () => {
       {/* 再エネ自立率ランキング（マイクログリッド指標） */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border space-y-1">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">再エネ自立率ランキング</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">再エネ自立率ランキング</SectionHeading>
           <p className="text-[10px] text-neutral-600">
             電力供給停止時に再生可能エネルギーのみで生活必需需要（通常の30%）を賄える割合。
             設備利用率: 太陽光15% / 風力22% / 水力35%

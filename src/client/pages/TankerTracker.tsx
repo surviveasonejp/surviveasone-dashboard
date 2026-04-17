@@ -10,6 +10,8 @@ import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
 import { ALL_ROUTES } from "../lib/tankerPosition";
+import { Badge } from "../components/Badge";
+import { SectionHeading } from "../components/SectionHeading";
 
 /** 米国産原油の出発港 */
 const US_ORIGIN_PORTS = new Set([
@@ -228,7 +230,7 @@ export const TankerTracker: FC = () => {
                   <div className="text-success">✓ チョークポイントなし</div>
                 )}
                 {route.risk_note !== undefined && (
-                  <div className="text-[#d97706]">⚠ {route.risk_note}</div>
+                  <div className="text-warning">⚠ {route.risk_note}</div>
                 )}
                 {selectedRouteId && (
                   <button
@@ -261,7 +263,7 @@ export const TankerTracker: FC = () => {
                     </span>
                     <span className="font-bold text-text">{t.name}</span>
                     {t.aisTracked && (
-                      <span className="text-[8px] px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">AIS</span>
+                      <Badge tone="success" className="text-[8px] px-1">AIS</Badge>
                     )}
                   </div>
                   <button onClick={() => handleTankerSelect(null)} className="text-text-muted hover:text-text transition-colors text-[10px]">×</button>
@@ -463,7 +465,7 @@ export const TankerTracker: FC = () => {
       {/* 到着順ランキング */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">到着順ランキング</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">到着順ランキング</SectionHeading>
         </div>
 
         {/* デスクトップ: テーブル */}
@@ -506,9 +508,9 @@ export const TankerTracker: FC = () => {
                     <td className="px-4 py-2 font-bold text-neutral-200">
                       <span className={dimmed ? "line-through" : ""}>{tanker.name}</span>
                       {tanker.aisTracked ? (
-                        <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
+                        <Badge tone="success" className="ml-1.5 text-[8px] font-normal px-1">
                           AIS
-                        </span>
+                        </Badge>
                       ) : (
                         <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700">
                           推定
@@ -602,9 +604,9 @@ export const TankerTracker: FC = () => {
                   <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
                   <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
                   {tanker.aisTracked ? (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30 shrink-0">
+                    <Badge tone="success" className="text-[10px] shrink-0">
                       AIS
-                    </span>
+                    </Badge>
                   ) : (
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-500 border border-neutral-700 shrink-0">
                       推定

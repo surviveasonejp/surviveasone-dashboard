@@ -3,6 +3,7 @@ import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
+import { Badge } from "../components/Badge";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { FlowTimeline } from "../components/FlowTimeline";
 import { EconomicCascade } from "../components/EconomicCascade";
@@ -76,11 +77,7 @@ export const SurvivalClock: FC = () => {
             <h1 className="text-2xl font-bold font-mono">
               <span className="text-primary-soft">SURVIVAL</span> CLOCK
             </h1>
-            {isLive && (
-              <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
-                LIVE
-              </span>
-            )}
+            {isLive && <Badge tone="success">LIVE</Badge>}
           </div>
           <ScenarioSelector selected={scenario} onChange={setScenario} />
         </div>

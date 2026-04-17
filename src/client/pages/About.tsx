@@ -2,6 +2,8 @@ import { type FC } from "react";
 import { Link } from "react-router-dom";
 import staticReserves from "../data/reserves.json";
 import { usePwaInstall } from "../hooks/usePwaInstall";
+import { Badge } from "../components/Badge";
+import { SectionHeading } from "../components/SectionHeading";
 
 const DATA_SOURCES_LIST = [
   { name: "経産省 石油備蓄推計量", note: `国家・民間・産油国共同備蓄日数(${staticReserves.meta.baselineDate}時点)`, auto: true },
@@ -153,7 +155,7 @@ export const About: FC = () => {
 
       {/* ミッション */}
       <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-primary-soft">MISSION</h2>
+        <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">MISSION</SectionHeading>
         <p className="text-neutral-300 leading-relaxed">
           ホルムズ海峡封鎖シナリオ下で日本のエネルギー・食料・物流への供給制約がどう波及するかを多角的に可視化し、市民・政策立案者・研究者の理解と意思決定を支援するデータツール。
         </p>
@@ -170,7 +172,7 @@ export const About: FC = () => {
 
       {/* なぜホルムズ海峡か */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">なぜホルムズ海峡か</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">なぜホルムズ海峡か</SectionHeading>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>日本の原油輸入の<span className="text-warning-soft font-mono font-bold">94%</span>が中東依存。うち<span className="text-warning-soft font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
           <p>供給危機が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に制約される。</p>
@@ -180,7 +182,7 @@ export const About: FC = () => {
 
       {/* データの信頼性 */}
       <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-success-soft">データの信頼性</h2>
+        <SectionHeading as="h2" tone="success" size="sm" tracking="wider">データの信頼性</SectionHeading>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>全ての入力データは<span className="text-neutral-200 font-bold">政府統計・公開データ</span>に基づいています。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
@@ -200,7 +202,7 @@ export const About: FC = () => {
       {/* シミュレーション仕様 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">シミュレーション仕様（全16モデル）</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">シミュレーション仕様（全16モデル）</SectionHeading>
         </div>
         <div className="divide-y divide-border">
           {SIMULATION_FEATURES.map((f) => (
@@ -222,7 +224,7 @@ export const About: FC = () => {
 
       {/* 前提条件と制約 */}
       <div className="bg-panel border border-warning-soft/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-warning-soft">制約と不確実性</h2>
+        <SectionHeading as="h2" tone="warning" size="sm" tracking="wider">制約と不確実性</SectionHeading>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>本シミュレーションは<span className="text-neutral-200 font-bold">リスクシナリオの可視化</span>であり、予測ではありません。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
@@ -238,7 +240,7 @@ export const About: FC = () => {
 
       {/* 精度検証レポート */}
       <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-success-soft">精度検証レポート（2026年4月3日時点）</h2>
+        <SectionHeading as="h2" tone="success" size="sm" tracking="wider">精度検証レポート（2026年4月3日時点）</SectionHeading>
         <p className="text-neutral-400 text-sm leading-relaxed">
           シナリオ発生（3月1日）から33日間の実データとシミュレーション予測の照合。
           詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-success-soft underline underline-offset-2">/api/validation</a>で取得可能。
@@ -310,7 +312,7 @@ export const About: FC = () => {
       {/* データソース */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">データソース</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">データソース</SectionHeading>
         </div>
         <div className="divide-y divide-border">
           {DATA_SOURCES_LIST.map((ds) => (
@@ -318,9 +320,9 @@ export const About: FC = () => {
               <span className="text-sm text-neutral-300 sm:w-56 shrink-0 flex items-center gap-1.5">
                 {ds.name}
                 {ds.auto && (
-                  <span className="text-[10px] font-mono px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
+                  <Badge tone="success" className="text-[10px] px-1">
                     AUTO
-                  </span>
+                  </Badge>
                 )}
               </span>
               <span className="text-xs text-neutral-500">{ds.note}</span>
@@ -331,7 +333,7 @@ export const About: FC = () => {
 
       {/* 開発フェーズ */}
       <div className="space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">開発ロードマップ</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">開発ロードマップ</SectionHeading>
         <div className="space-y-3">
           {PHASE_STATUS.map((p) => (
             <div
@@ -353,12 +355,8 @@ export const About: FC = () => {
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-mono text-sm font-bold text-neutral-300">{p.phase}</span>
                   <span className="text-xs text-neutral-500">{p.label}</span>
-                  {p.status === "completed" && (
-                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">LIVE</span>
-                  )}
-                  {p.status === "active" && (
-                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-warning-soft/15 text-warning-soft border border-warning-soft/30">IN PROGRESS</span>
-                  )}
+                  {p.status === "completed" && <Badge tone="success">LIVE</Badge>}
+                  {p.status === "active" && <Badge tone="warning">IN PROGRESS</Badge>}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {p.items.map((item) => (
@@ -396,7 +394,7 @@ export const About: FC = () => {
 
       {/* 技術スタック */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">TECH STACK</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">TECH STACK</SectionHeading>
         <div className="flex flex-wrap gap-2">
           {["Cloudflare Workers", "Workers AI", "D1", "KV", "R2", "Cron Triggers", "React 19", "TypeScript", "Vite", "Tailwind CSS 4", "PWA"].map((t) => (
             <span key={t} className="text-xs px-2 py-0.5 rounded font-mono bg-border text-neutral-500 border border-border">
@@ -413,7 +411,7 @@ export const About: FC = () => {
 
       {/* 支援 */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">SUPPORT THIS PROJECT</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">SUPPORT THIS PROJECT</SectionHeading>
         <p className="text-neutral-300 text-sm leading-relaxed">
           広告なし・トラッキングなし・個人情報収集なしのオープンソースプロジェクトです。
           全てのデータ・シミュレーション・APIはスポンサーの有無にかかわらず完全に無料で公開されています。
@@ -435,7 +433,7 @@ export const About: FC = () => {
       {/* PWAインストール */}
       {!isInstalled && (
         <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
-          <h2 className="font-mono text-sm tracking-wider text-neutral-400">INSTALL AS APP</h2>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">INSTALL AS APP</SectionHeading>
           <p className="text-neutral-300 text-sm leading-relaxed">
             ホーム画面に追加するとオフラインでも閲覧できます。停電・通信障害時に備えて事前にインストールしておくことを推奨します。
           </p>
@@ -462,7 +460,7 @@ export const About: FC = () => {
 
       {/* リンク */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">LINKS</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">LINKS</SectionHeading>
         <div className="space-y-2 text-sm">
           <div className="flex gap-3">
             <span className="text-neutral-500 font-mono w-24 shrink-0">GitHub</span>
@@ -506,7 +504,7 @@ export const About: FC = () => {
 
       {/* プロジェクトの原点 */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-neutral-400">プロジェクトの背景</h2>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">プロジェクトの背景</SectionHeading>
         <p className="text-sm text-neutral-400 leading-relaxed">
           SAO（Survive as One）は「個人の生存」ではなく「社会としての連帯」を意味します。
           バラバラに備えるのではなく、正確な情報の共有が危機耐性を高めます。
