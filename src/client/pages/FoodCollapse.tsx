@@ -74,11 +74,11 @@ function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollap
 
   steps.push(
     { label: "ナフサ供給制約 → エチレン減産開始", color: "#f59e0b", days: naphthaConstraintDay },
-    { label: `物流制限 — 長距離輸送停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "#8b5cf6", days: logisticsLimitDay },
+    { label: `物流制限 — 長距離輸送停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "var(--color-logistics)", days: logisticsLimitDay },
     { label: "包装材・容器・食品トレーの品薄", color: "#f59e0b", days: packagingShortageDay },
     { label: "石化製品の供給停止（塩ビ・PE・PP）", color: "#ef4444", days: petrochemStopDay },
     { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
-    { label: `物流停止 — 店頭補充停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "#8b5cf6", days: logisticsStopDay },
+    { label: `物流停止 — 店頭補充停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "var(--color-logistics)", days: logisticsStopDay },
   );
 
   steps.sort((a, b) => a.days - b.days);
@@ -302,7 +302,7 @@ export const FoodCollapse: FC = () => {
             },
             {
               period: "3ヶ月以降",
-              color: "#991b1b",
+              color: "var(--color-state-halt-text)",
               items: [
                 { name: "点滴バッグ・注射器", reason: "国家優先配給対象だが逼迫。産業配給の最優先品目" },
                 { name: "水処理薬品", reason: "ポリマー系凝集剤が不足→浄水場に影響" },

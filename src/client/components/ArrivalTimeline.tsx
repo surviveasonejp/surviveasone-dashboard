@@ -31,7 +31,7 @@ const CATEGORY_ORDER: Category[] = ["hormuz", "alternative", "nonmideast", "lng"
 const CATEGORY_DEFS: Record<Category, { label: string; color: string }> = {
   hormuz:      { label: "ホルムズ経由（封鎖時到達不可）", color: "#525252" },
   alternative: { label: "代替ルート（中東発・迂回）",    color: "#f59e0b" },
-  nonmideast:  { label: "非中東調達（米国ガルフ等）",     color: "#60a5fa" },
+  nonmideast:  { label: "非中東調達（米国ガルフ等）",     color: "var(--color-info-lighter)" },
   lng:         { label: "LNG船団",                       color: "#22c55e" },
 };
 
@@ -119,7 +119,7 @@ export const ArrivalTimeline: FC<Props> = ({ tankers, selectedId, onSelect }) =>
   const theme = useTheme();
   const thresholds = [
     { pct: 50, label: "パニック買い", color: theme === "light" ? "#b45309" : "#f59e0b" },
-    { pct: 30, label: "供給制限",     color: theme === "light" ? "#c2410c" : "#f97316" },
+    { pct: 30, label: "供給制限",     color: theme === "light" ? "#c2410c" : "var(--color-constraint)" },
     { pct: 10, label: "配給制",       color: theme === "light" ? "#b91c1c" : "#ef4444" },
   ];
 

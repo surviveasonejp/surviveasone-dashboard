@@ -28,6 +28,23 @@
   --color-info-soft: #3b82f6;        /* 情報パネル・淡い青ボーダー向け */
   --color-teal: #0d9488;             /* ceasefire シナリオ専用色 */
   --color-x-brand: #1d9bf0;          /* X/Twitter 公式ブランド色（シェアボタン用） */
+
+  /* Phase B: ドメイン特化セマンティックカラー */
+  --color-logistics: #8b5cf6;        /* 物流制約・製造業・中期影響（violet-500） */
+  --color-anonymization: #a855f7;    /* 匿名化ハブ・特殊ルート（purple-500） */
+  --color-constraint: #f97316;       /* 供給制限・中間段階警告（orange-500） */
+  --color-reduction: #ea580c;        /* 減産フェーズ強調（orange-600） */
+  --color-info-lighter: #60a5fa;     /* info より淡い情報色（bypass/polymer/hover等） */
+
+  /* Phase B: 4段階ステータス色セット（IndustryImpactMatrix等で使用） */
+  --color-state-ok-bg: #dcfce7;      /* 正常・緑系ペール背景 */
+  --color-state-ok-text: #166534;    /* 正常・緑系濃色テキスト */
+  --color-state-caution-bg: #fef9c3; /* 制約・黄系ペール背景 */
+  --color-state-caution-text: #854d0e; /* 制約・黄系濃色テキスト */
+  --color-state-warn-bg: #fed7aa;    /* 減産・橙系ペール背景 */
+  --color-state-warn-text: #9a3412;  /* 減産・橙系濃色テキスト */
+  --color-state-halt-bg: #fecaca;    /* 停止・赤系ペール背景 */
+  --color-state-halt-text: #991b1b;  /* 停止・赤系濃色テキスト */
 }
 
 /* ダークモード上書き */

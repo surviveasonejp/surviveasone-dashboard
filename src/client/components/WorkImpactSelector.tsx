@@ -156,7 +156,7 @@ const OCCUPATIONS: OccupationData[] = [
 const PRIORITY_META: Record<OccupationData["priority"], { label: string; color: string; bg: string }> = {
   protected: { label: "法的優先確保",    color: "#22c55e", bg: "bg-success-soft/10" },
   high:      { label: "早期影響・要対応", color: "#f59e0b", bg: "bg-warning-soft/10" },
-  medium:    { label: "中期影響",         color: "#8b5cf6", bg: "bg-[#8b5cf6]/10" },
+  medium:    { label: "中期影響",         color: "var(--color-logistics)", bg: "bg-logistics/10" },
   low:       { label: "段階的影響",        color: "#64748b", bg: "bg-[#64748b]/10" },
 };
 

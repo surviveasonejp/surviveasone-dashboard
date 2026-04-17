@@ -31,7 +31,7 @@ const CATEGORY_COLORS: Record<PetrochemCategory, string> = {
   refinery:  "#64748b",
   cracker:   "#f59e0b",
   monomer:   "#a78bfa",
-  polymer:   "#60a5fa",
+  polymer:   "var(--color-info-lighter)",
   product:   "#34d399",
   end_use:   "#fb923c",
 };

@@ -54,9 +54,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   logistics_limit: {
     label: "物流制限フェーズ",
     urgency: "high",
-    colorClass: "text-[#8b5cf6]",
-    borderClass: "border-[#8b5cf6]/30",
-    bgClass: "bg-[#8b5cf6]/8",
+    colorClass: "text-logistics",
+    borderClass: "border-logistics/30",
+    bgClass: "bg-logistics/8",
     actions: [
       "食料・日用品の2〜4週間備蓄量を確認する",
       "処方薬を1〜2ヶ月分まとめて調剤してもらう相談をする",

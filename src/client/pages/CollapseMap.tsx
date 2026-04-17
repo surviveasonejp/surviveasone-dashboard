@@ -81,7 +81,7 @@ export const CollapseMap: FC = () => {
               onClick={() => setShowLogistics(!showLogistics)}
               className={`text-[10px] font-mono px-2 py-1 rounded border transition-colors ${
                 showLogistics
-                  ? "border-[#8b5cf6] text-[#8b5cf6] bg-[#8b5cf6]/10"
+                  ? "border-logistics text-logistics bg-logistics/10"
                   : "border-border text-neutral-500 hover:text-neutral-400"
               }`}
             >
@@ -162,7 +162,7 @@ export const CollapseMap: FC = () => {
                       <div>{formatDecimal(region.powerCollapseDays)}日</div>
                       <div className="text-xs text-neutral-400">{formatDepletionDate(region.powerCollapseDays)}</div>
                     </td>
-                    <td className="px-4 py-2 text-right font-mono text-[#8b5cf6]">
+                    <td className="px-4 py-2 text-right font-mono text-logistics">
                       <div>{formatDecimal(region.logisticsCollapseDays)}日</div>
                       <div className="text-xs text-neutral-400">{formatDepletionDate(region.logisticsCollapseDays)}</div>
                     </td>

@@ -13,7 +13,7 @@ const RESOURCE_COLORS = {
   lng: "#94a3b8",
   power: "#ef4444",
   water: "#3b82f6",
-  logistics: "#8b5cf6",
+  logistics: "var(--color-logistics)",
 };
 
 const EVENT_ICON: Record<string, string> = {
@@ -571,7 +571,7 @@ const EventItem: FC<EventItemProps> = ({ event, totalDays }) => {
 
 const STORY_PHASES: Partial<Record<ThresholdType, { title: string; subtitle: string; color: string }>> = {
   price_spike:       { title: "価格急騰",   subtitle: "燃料・食料費上昇",   color: "#d97706" },
-  logistics_limit:   { title: "物流制限",   subtitle: "配送遅延・縮小",     color: "#8b5cf6" },
+  logistics_limit:   { title: "物流制限",   subtitle: "配送遅延・縮小",     color: "var(--color-logistics)" },
   rationing:         { title: "供給制限",   subtitle: "奇数偶数制発動",     color: "#f59e0b" },
   distribution:      { title: "配給制",     subtitle: "法的割当・転売禁止", color: "#ef4444" },
   stop:              { title: "供給停止",   subtitle: "完全制限",           color: "#dc2626" },

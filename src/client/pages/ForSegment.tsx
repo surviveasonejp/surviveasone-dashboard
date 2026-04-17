@@ -167,7 +167,7 @@ const SEGMENTS: Record<string, Segment> = {
     heroStat: "16",
     heroUnit: "式",
     heroLabel: "シミュレーションモデル数（3シナリオ・全データ公開）",
-    heroColor: "#8b5cf6",
+    heroColor: "var(--color-logistics)",
     alertMessage: "全データ・シミュレーション結果・ソースコードはAGPL-3.0で公開しています。引用・報道に自由にご利用ください。",
     risks: [
       { label: "引用推奨表記", days: "—", detail: "「SAO – Situation Awareness Observatory（surviveasonejp.org）によるシミュレーション」" },
@@ -353,7 +353,7 @@ export const ForSegment: FC = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-info-soft hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+                className="text-xs text-info-soft hover:text-info-lighter underline underline-offset-2 transition-colors"
               >
                 {link.label} &rarr;
               </a>

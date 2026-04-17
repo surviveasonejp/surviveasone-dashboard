@@ -809,7 +809,7 @@ export const Prepare: FC = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-info-soft hover:text-[#60a5fa] underline underline-offset-2 transition-colors"
+                className="text-xs text-info-soft hover:text-info-lighter underline underline-offset-2 transition-colors"
               >
                 {link.label} &rarr;
               </a>

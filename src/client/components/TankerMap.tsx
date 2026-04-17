@@ -134,24 +134,24 @@ function getRouteStyle(
   if (routeType === "primary") {
     // 封鎖時も太さを見せるためopacityを高めに維持（「これだけ太い管が止まった」を視覚化）
     if (scenario === "full") return { stroke: "#ef4444", opacity: 0.42, strokeDasharray: "6 6" };
-    if (scenario === "partial") return { stroke: "#f97316", opacity: 0.50, strokeDasharray: "5 4" };
+    if (scenario === "partial") return { stroke: "var(--color-constraint)", opacity: 0.50, strokeDasharray: "5 4" };
     // normal: Hormuzルートはアクティブ
     return { stroke: "#f59e0b", opacity: isActiveRoute ? 0.55 : 0.35, strokeDasharray: isActiveRoute ? "8 4" : "4 5" };
   }
 
   if (routeType === "bypass") {
     if (scenario === "full") return { stroke: "#3b82f6", opacity: isActiveRoute ? 0.72 : 0.45, strokeDasharray: isActiveRoute ? "8 3" : "6 4" };
-    if (scenario === "partial") return { stroke: "#60a5fa", opacity: isActiveRoute ? 0.55 : 0.32, strokeDasharray: "6 4" };
+    if (scenario === "partial") return { stroke: "var(--color-info-lighter)", opacity: isActiveRoute ? 0.55 : 0.32, strokeDasharray: "6 4" };
     // normal: バイパスルートは背景扱い
     return { stroke: "#94a3b8", opacity: 0.18, strokeDasharray: "3 6" };
   }
 
   // anonymization（イラン→マレーシア沖の出所偽装ルート）
   if (routeType === "anonymization") {
-    if (scenario === "normal") return { stroke: "#a855f7", opacity: 0, strokeDasharray: "3 5" };
-    if (scenario === "full") return { stroke: "#a855f7", opacity: isActiveRoute ? 0.70 : 0.55, strokeDasharray: "5 3" };
+    if (scenario === "normal") return { stroke: "var(--color-anonymization)", opacity: 0, strokeDasharray: "3 5" };
+    if (scenario === "full") return { stroke: "var(--color-anonymization)", opacity: isActiveRoute ? 0.70 : 0.55, strokeDasharray: "5 3" };
     // partial
-    return { stroke: "#a855f7", opacity: 0.32, strokeDasharray: "4 5" };
+    return { stroke: "var(--color-anonymization)", opacity: 0.32, strokeDasharray: "4 5" };
   }
 
   // existing_alt
@@ -574,7 +574,7 @@ export const TankerMap: FC<TankerMapProps> = ({
               // 画面外はスキップ
               if (x < 20 || x > W - 20 || y < 20 || y > H - 20) return null;
 
-              const color = isPrimary ? "#ef4444" : isBypass ? "#60a5fa" : isAnonymization ? "#a855f7" : "#4ade80";
+              const color = isPrimary ? "#ef4444" : isBypass ? "var(--color-info-lighter)" : isAnonymization ? "var(--color-anonymization)" : "#4ade80";
               const text = isPrimary ? `${transit_days}日` : `約${transit_days}日`;
               const fontSize = isBypass ? "12" : "10";
               const bgOpacity = isBypass ? 0.75 : 0.55;
@@ -664,7 +664,7 @@ export const TankerMap: FC<TankerMapProps> = ({
           const isHovered = hoveredHubId === hub.id;
           // full封鎖時にアノニマイゼーションハブを強調（partial時は控えめ）
           const isHighlighted = isAnon && scenario === "full";
-          const baseColor = isAnon ? "#a855f7" : "#f97316";
+          const baseColor = isAnon ? "var(--color-anonymization)" : "var(--color-constraint)";
           const opacity = isHighlighted ? 0.95 : isHovered ? 0.85 : scenario === "partial" ? 0.38 : 0.55;
           const r = 7;
           // 正六角形の頂点（半径r）
@@ -869,7 +869,7 @@ export const TankerMap: FC<TankerMapProps> = ({
         const [hx, hy] = project(hub.lon, hub.lat);
         const leftPct = (hx / W) * 100;
         const topPct = (hy / H) * 100;
-        const accentColor = hub.type === "anonymization" ? "#a855f7" : "#f97316";
+        const accentColor = hub.type === "anonymization" ? "var(--color-anonymization)" : "var(--color-constraint)";
         return (
           <div
             className="absolute z-20 bg-panel border border-border rounded-lg shadow-lg px-3 py-2 pointer-events-none"
@@ -987,19 +987,19 @@ export const TankerMap: FC<TankerMapProps> = ({
           </span>
         )}
         {(scenario === "partial" || scenario === "full") && (
-          <span className="flex items-center gap-1 text-[#a855f7]">
-            <span className="inline-block w-5 border-t-2 border-[#a855f7] border-dashed" />
+          <span className="flex items-center gap-1 text-anonymization">
+            <span className="inline-block w-5 border-t-2 border-anonymization border-dashed" />
             匿名化
           </span>
         )}
         {scenario === "full" && (
           <>
-            <span className="flex items-center gap-1 text-[#f97316]">
+            <span className="flex items-center gap-1 text-constraint">
               <svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#f97316" /></svg>
               STS積替
             </span>
-            <span className="flex items-center gap-1 text-[#a855f7]">
-              <svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="#a855f7" /></svg>
+            <span className="flex items-center gap-1 text-anonymization">
+              <svg width="10" height="10" viewBox="-5 -5 10 10"><polygon points="0,-5 4.3,-2.5 4.3,2.5 0,5 -4.3,2.5 -4.3,-2.5" fill="var(--color-anonymization)" /></svg>
               匿名化ハブ
             </span>
           </>

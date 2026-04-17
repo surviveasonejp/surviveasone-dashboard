@@ -56,7 +56,7 @@ const ROUTE_CONFIGS: RouteDisplayConfig[] = [
     key: "usgc-capehope",
     status: "bypass",
     statusLabel: "緊急代替",
-    statusColor: "#f97316",
+    statusColor: "var(--color-constraint)",
     note: "欧州→喜望峰→日本。通常ルート+約15日",
   },
   {

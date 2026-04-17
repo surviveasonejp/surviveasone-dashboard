@@ -128,7 +128,7 @@ const CATEGORY_META: Record<Industry["category"], { label: string; color: string
   medical:       { label: "医療", color: "#22c55e" },
   food:          { label: "食料", color: "#f59e0b" },
   infra:         { label: "インフラ", color: "#2563eb" },
-  manufacturing: { label: "製造", color: "#8b5cf6" },
+  manufacturing: { label: "製造", color: "var(--color-logistics)" },
   export:        { label: "輸出", color: "#ef4444" },
 };
 
@@ -168,10 +168,10 @@ function getPhase(
 }
 
 const PHASE_STYLE: Record<Phase, { bg: string; text: string; label: string }> = {
-  normal:     { bg: "bg-[#dcfce7]",      text: "text-[#166534]",  label: "正常" },
-  constraint: { bg: "bg-[#fef9c3]",      text: "text-[#854d0e]",  label: "制約" },
-  reduction:  { bg: "bg-[#fed7aa]",      text: "text-[#9a3412]",  label: "減産" },
-  halt:       { bg: "bg-[#fecaca]",      text: "text-[#991b1b]",  label: "停止" },
+  normal:     { bg: "bg-state-ok-bg",      text: "text-state-ok-text",      label: "正常" },
+  constraint: { bg: "bg-state-caution-bg", text: "text-state-caution-text", label: "制約" },
+  reduction:  { bg: "bg-state-warn-bg",    text: "text-state-warn-text",    label: "減産" },
+  halt:       { bg: "bg-state-halt-bg",    text: "text-state-halt-text",    label: "停止" },
 };
 
 const TIMELINE_DAYS = [7, 14, 30, 60, 90, 120, 180, 240];
@@ -247,7 +247,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                     <p className="leading-relaxed">{industry.note}</p>
                     <div className="flex gap-3 font-mono">
                       <span>制約: <span className="text-warning font-bold">Day {days.constraint}</span></span>
-                      <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
+                      <span>減産: <span className="text-reduction font-bold">Day {days.reduction}</span></span>
                       <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                     </div>
                   </div>
@@ -314,7 +314,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                           <div className="text-neutral-600">{industry.note}</div>
                           <div className="flex gap-4 text-neutral-500">
                             <span>制約開始: <span className="text-warning font-bold">Day {days.constraint}</span></span>
-                            <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
+                            <span>減産: <span className="text-reduction font-bold">Day {days.reduction}</span></span>
                             <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                           </div>
                           <div className="flex gap-3 text-neutral-400">

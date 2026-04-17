@@ -200,7 +200,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {[
               { label: "電力制約", days: regionData.powerCollapseDays, color: "#ef4444" },
-              { label: "物流制約", days: regionData.logisticsCollapseDays, color: "#8b5cf6" },
+              { label: "物流制約", days: regionData.logisticsCollapseDays, color: "var(--color-logistics)" },
               { label: "食料影響", days: regionData.collapseDays, color: "#f59e0b" },
               { label: "石油枯渇", days: regionData.oilDepletionDays, color: "#d97706" },
             ].map(({ label, days, color }) => (

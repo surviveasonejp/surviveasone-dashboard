@@ -46,7 +46,7 @@ const MAX_CARGO_T = 314000;
 function getSizeClass(cargo_t: number): { label: string; color: string } {
   if (cargo_t >= 200000) return { label: "超大型", color: "#78716c" };
   if (cargo_t >= 80000) return { label: "大型", color: "#94a3b8" };
-  return { label: "中型", color: "#60a5fa" };
+  return { label: "中型", color: "var(--color-info-lighter)" };
 }
 
 export const TankerTracker: FC = () => {
