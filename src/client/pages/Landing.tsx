@@ -12,20 +12,32 @@ import { SectionHeading } from "../components/SectionHeading";
 import type { ResourceCountdown } from "../../shared/types";
 import staticReserves from "../data/reserves.json";
 
+type Tone = "success" | "success-soft" | "warning-soft" | "primary-soft" | "info" | "info-lighter" | "neutral";
+
+const TONE_COLOR: Record<Tone, string> = {
+  success: "var(--color-success)",
+  "success-soft": "var(--color-success-soft)",
+  "warning-soft": "var(--color-warning-soft)",
+  "primary-soft": "var(--color-primary-soft)",
+  info: "var(--color-info)",
+  "info-lighter": "var(--color-info-lighter)",
+  neutral: "var(--color-text-muted)",
+};
+
 interface PanelCardProps {
   to: string;
   title: string;
   subtitle: string;
   description: string;
-  color: string;
+  tone: Tone;
 }
 
-const PanelCard: FC<PanelCardProps> = ({ to, title, subtitle, description, color }) => (
+const PanelCard: FC<PanelCardProps> = ({ to, title, subtitle, description, tone }) => (
   <Link
     to={to}
     className="bg-panel border border-border hover:border-opacity-60 rounded-lg p-4 transition-colors group"
   >
-    <div className="font-mono text-xs font-bold tracking-wider mb-1" style={{ color }}>
+    <div className="font-mono text-xs font-bold tracking-wider mb-1" style={{ color: TONE_COLOR[tone] }}>
       {title}
     </div>
     <div className="text-sm font-bold text-text mb-1">{subtitle}</div>
@@ -39,13 +51,13 @@ interface StatProps {
   value: string;
   unit: string;
   label: string;
-  color: string;
+  tone: Tone;
 }
 
-const Stat: FC<StatProps> = ({ value, unit, label, color }) => (
+const Stat: FC<StatProps> = ({ value, unit, label, tone }) => (
   <div className="text-center">
     <div className="flex items-baseline justify-center gap-0.5">
-      <span className="font-mono font-bold text-2xl md:text-3xl" style={{ color }}>{value}</span>
+      <span className="font-mono font-bold text-2xl md:text-3xl" style={{ color: TONE_COLOR[tone] }}>{value}</span>
       <span className="font-mono text-sm text-neutral-500">{unit}</span>
     </div>
     <div className="text-xs text-neutral-500 mt-1">{label}</div>
@@ -88,9 +100,9 @@ export const Landing: FC = () => {
           CURRENT RESILIENCE STATUS
         </div>
         <div className="grid grid-cols-3 gap-4">
-          <Stat value={String(staticReserves.oil.totalReserveDays)} unit="日" label="石油備蓄（国家+民間+産油国共同）" color="var(--color-success)" />
-          <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" color="var(--color-success)" />
-          <Stat value="3" unit="ルート" label="代替調達稼働中" color="var(--color-info)" />
+          <Stat value={String(staticReserves.oil.totalReserveDays)} unit="日" label="石油備蓄（国家+民間+産油国共同）" tone="success" />
+          <Stat value="32" unit="カ国" label="IEA協調備蓄放出済み" tone="success" />
+          <Stat value="3" unit="ルート" label="代替調達稼働中" tone="info" />
         </div>
         <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           {getReservesSummaryText()}（放出中・計45日分放出済み）。3/11 IEA史上最大の協調放出（4億バレル）実施済み。4/10 高市首相が追加20日分放出（5月開始）を発表。フジャイラ・ヤンブー・非中東経由の代替供給ルート稼働中
@@ -103,9 +115,9 @@ export const Landing: FC = () => {
           JAPAN ENERGY DEPENDENCY
         </SectionHeading>
         <div className="grid grid-cols-3 gap-4">
-          <Stat value="94" unit="%" label="中東石油依存" color="var(--color-warning-soft)" />
-          <Stat value="65" unit="%" label="火力発電比率" color="var(--color-warning-soft)" />
-          <Stat value="25" unit="日" label="LNG全量在庫" color="var(--color-primary-soft)" />
+          <Stat value="94" unit="%" label="中東石油依存" tone="warning-soft" />
+          <Stat value="65" unit="%" label="火力発電比率" tone="warning-soft" />
+          <Stat value="25" unit="日" label="LNG全量在庫" tone="primary-soft" />
         </div>
         <p className="text-xs text-text-muted text-center mt-4 leading-relaxed">
           火力内訳: LNG29.1%+石炭28.2%+石油1.4%+他6.3%(ISEP 2024年暦年速報)。原子力8.2%(15基稼働)。LNG在庫25日分(経産省ガス事業統計)
@@ -218,28 +230,28 @@ export const Landing: FC = () => {
           title="SUPPLY TIMELINE"
           subtitle="供給制約タイムライン"
           description="石油・LNG・電力の供給可能日数。封鎖Day Nカウンター・365日フロータイムライン・代替ルートパネル・回復タイムラインスライダー・政策マイルストーンタイムライン搭載"
-          color="var(--color-primary-soft)"
+          tone="primary-soft"
         />
         <PanelCard
           to="/last-tanker"
           title="TANKER TRACKER"
           subtitle="タンカー追跡"
           description="実在30隻（VLCC13+LNG14+Chemical1+Suezmax2）のAIS追跡。供給元カテゴリ別タイムライン（代替ルート/米国ガルフ/LNG）+ 備蓄カーブ重ね表示。シナリオ連動代替ルート可視化"
-          color="#94a3b8"
+          tone="neutral"
         />
         <PanelCard
           to="/food-collapse"
           title="FOOD SUPPLY"
           subtitle="食料サプライチェーン影響"
           description="衛生・包装への供給制約が食料より先に進む。ナフサ→石化→包装材の連鎖的影響。商品カテゴリ別の店頭在庫日数を確認"
-          color="var(--color-primary-soft)"
+          tone="primary-soft"
         />
         <PanelCard
           to="/prepare"
           title="PREPARE"
           subtitle="公的推奨水準との比較ガイド"
           description="内閣府推奨3日分と照らし合わせ、わが家の過不足を確認。シナリオ連動フェーズ判定・住居形態別・要配慮者5カテゴリ対応"
-          color="var(--color-success-soft)"
+          tone="success-soft"
         />
       </div>
 
