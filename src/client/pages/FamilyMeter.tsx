@@ -136,7 +136,7 @@ export const FamilyMeter: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#f59e0b]">HOUSEHOLD</span> SUPPLY CHECK
+          <span className="text-warning-soft">HOUSEHOLD</span> SUPPLY CHECK
         </h1>
         <p className="text-text-muted text-sm">
           公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）
@@ -165,7 +165,7 @@ export const FamilyMeter: FC = () => {
             <button
               className={`w-6 h-6 rounded border flex items-center justify-center transition-colors shrink-0 ${
                 inputs.hasMedicalDevice
-                  ? "bg-[#ef4444] border-[#ef4444]"
+                  ? "bg-primary-soft border-primary-soft"
                   : "border-border hover:border-neutral-500"
               }`}
               onClick={() => {
@@ -224,7 +224,7 @@ export const FamilyMeter: FC = () => {
               surviveasonejp.org/family
             </div>
             <button
-              className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+              className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
               onClick={() => {
                 const days = Math.round(score.totalDays);
                 const text = [
@@ -250,7 +250,7 @@ export const FamilyMeter: FC = () => {
               return (
                 <div key={b.label} className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className={isBottleneck ? "text-[#ef4444] font-bold" : "text-text-muted"}>
+                    <span className={isBottleneck ? "text-primary-soft font-bold" : "text-text-muted"}>
                       {b.label} {isBottleneck && "← ボトルネック"}
                     </span>
                     <span className="font-mono" style={{ color: b.color }}>
@@ -273,8 +273,8 @@ export const FamilyMeter: FC = () => {
             const urgentActions = BOTTLENECK_URGENT_ACTIONS[score.bottleneck];
             const bottleneckDays = Math.round(score.totalDays);
             return urgentActions ? (
-              <div className="border border-[#dc2626]/40 rounded-lg p-4 space-y-2 bg-[#dc2626]/05">
-                <h3 className="font-mono text-xs tracking-wider text-[#dc2626] flex items-center gap-1.5">
+              <div className="border border-primary/40 rounded-lg p-4 space-y-2 bg-primary/05">
+                <h3 className="font-mono text-xs tracking-wider text-primary flex items-center gap-1.5">
                   <span>⚠</span>
                   {score.bottleneck}の供給余力: {bottleneckDays}日分（確認を推奨）
                 </h3>
@@ -282,7 +282,7 @@ export const FamilyMeter: FC = () => {
                 <ul className="space-y-1.5">
                   {urgentActions.map((action) => (
                     <li key={action} className="text-xs text-text flex gap-2">
-                      <span className="text-[#dc2626] shrink-0">▸</span>
+                      <span className="text-primary shrink-0">▸</span>
                       {action}
                     </li>
                   ))}
@@ -341,7 +341,7 @@ export const FamilyMeter: FC = () => {
                     onClick={() => setManualRegion(regionId === r.id ? null : r.id)}
                     className={`text-xs font-mono px-3 py-2 rounded border transition-colors min-h-[36px] ${
                       regionId === r.id
-                        ? "border-[#2563eb] text-[#2563eb] bg-[#2563eb]/10"
+                        ? "border-info text-info bg-info/10"
                         : "border-border text-neutral-500 hover:border-neutral-400"
                     }`}
                   >
@@ -369,7 +369,7 @@ export const FamilyMeter: FC = () => {
                     </div>
                     <div className="text-[10px] text-neutral-500">推奨食料備蓄</div>
                     {inputs.foodDays < advice.recommendedDays.food && (
-                      <div className="text-[9px] text-[#dc2626] font-mono">
+                      <div className="text-[9px] text-primary font-mono">
                         現在{inputs.foodDays}日 — {advice.recommendedDays.food - inputs.foodDays}日不足
                       </div>
                     )}
@@ -382,7 +382,7 @@ export const FamilyMeter: FC = () => {
                     {(() => {
                       const waterDays = inputs.members > 0 ? inputs.waterLiters / (inputs.members * 3) : 0;
                       return waterDays < advice.recommendedDays.water ? (
-                        <div className="text-[9px] text-[#dc2626] font-mono">
+                        <div className="text-[9px] text-primary font-mono">
                           現在{Math.round(waterDays)}日 — 不足
                         </div>
                       ) : null;
@@ -414,21 +414,21 @@ export const FamilyMeter: FC = () => {
                 {/* リスク・強み */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[10px]">
                   <div className="space-y-1">
-                    <div className="font-mono text-[#dc2626]">このエリアのリスク</div>
+                    <div className="font-mono text-primary">このエリアのリスク</div>
                     <ul className="space-y-0.5 text-neutral-500">
                       {advice.risks.map((r) => (
                         <li key={r} className="flex gap-1">
-                          <span className="text-[#dc2626] shrink-0">×</span>{r}
+                          <span className="text-primary shrink-0">×</span>{r}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div className="space-y-1">
-                    <div className="font-mono text-[#16a34a]">このエリアの強み</div>
+                    <div className="font-mono text-success">このエリアの強み</div>
                     <ul className="space-y-0.5 text-neutral-500">
                       {advice.positives.map((p) => (
                         <li key={p} className="flex gap-1">
-                          <span className="text-[#16a34a] shrink-0">✓</span>{p}
+                          <span className="text-success shrink-0">✓</span>{p}
                         </li>
                       ))}
                     </ul>
@@ -450,8 +450,8 @@ export const FamilyMeter: FC = () => {
       })()}
 
       {/* 要配慮者向け注意喚起 */}
-      <div className="bg-panel border border-[#ef4444]/20 rounded-lg p-5 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#dc2626]">要配慮者がいる家庭へ</h2>
+      <div className="bg-panel border border-primary-soft/20 rounded-lg p-5 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-primary">要配慮者がいる家庭へ</h2>
         <p className="text-xs text-text-muted">
           上記の計算は健常な成人を前提としています。以下に該当する家族がいる場合、必要な備蓄量は大幅に増えます。
         </p>
@@ -463,14 +463,14 @@ export const FamilyMeter: FC = () => {
             { label: "要介護者", note: "処方薬90日分・介護用品14日分・電動機器の電源" },
           ].map((item) => (
             <div key={item.label} className="bg-bg rounded p-3 space-y-1">
-              <div className="text-xs font-bold text-[#dc2626]">{item.label}</div>
+              <div className="text-xs font-bold text-primary">{item.label}</div>
               <div className="text-[10px] text-text-muted">{item.note}</div>
             </div>
           ))}
         </div>
         <Link
           to="/prepare"
-          className="block text-center text-xs font-mono text-[#ef4444] hover:text-[#b91c1c] transition-colors mt-2"
+          className="block text-center text-xs font-mono text-primary-soft hover:text-primary-dark transition-colors mt-2"
         >
           詳細な要配慮者チェックリスト →
         </Link>
@@ -494,8 +494,8 @@ export const FamilyMeter: FC = () => {
         const totalCost = neededItems.reduce((sum, i) => sum + i.price, 0);
         if (neededItems.length === 0) return null;
         return (
-          <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-4">
-            <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">
+          <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-4">
+            <h2 className="font-mono text-sm tracking-wider text-primary-soft">
               30日分に向けた不足確認
             </h2>
             <p className="text-xs text-text-muted">
@@ -516,7 +516,7 @@ export const FamilyMeter: FC = () => {
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-text-muted">概算合計</span>
-              <span className="font-mono font-bold text-lg text-[#ef4444]">
+              <span className="font-mono font-bold text-lg text-primary-soft">
                 ¥{totalCost.toLocaleString()}
               </span>
             </div>

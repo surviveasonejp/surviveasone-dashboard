@@ -219,13 +219,13 @@ export const TankerTracker: FC = () => {
                     <div className="text-text-muted">通過チョークポイント</div>
                     {route.chokepoints.map((cp) => (
                       <div key={cp} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444] shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary-soft shrink-0" />
                         <span className="text-text">{chopkLabels[cp] ?? cp}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-[#16a34a]">✓ チョークポイントなし</div>
+                  <div className="text-success">✓ チョークポイントなし</div>
                 )}
                 {route.risk_note !== undefined && (
                   <div className="text-[#d97706]">⚠ {route.risk_note}</div>
@@ -261,7 +261,7 @@ export const TankerTracker: FC = () => {
                     </span>
                     <span className="font-bold text-text">{t.name}</span>
                     {t.aisTracked && (
-                      <span className="text-[8px] px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">AIS</span>
+                      <span className="text-[8px] px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">AIS</span>
                     )}
                   </div>
                   <button onClick={() => handleTankerSelect(null)} className="text-text-muted hover:text-text transition-colors text-[10px]">×</button>
@@ -281,7 +281,7 @@ export const TankerTracker: FC = () => {
                   <span className="text-text-muted">距離</span>
                   <span className="text-text">{formatDistance(t.distanceToJapan_nm)}</span>
                 </div>
-                {blocked && <div className="text-[#ef4444] font-bold">封鎖時到達不可</div>}
+                {blocked && <div className="text-primary-soft font-bold">封鎖時到達不可</div>}
                 {!blocked && notJapan && <div className="text-text-muted">日本向けでない</div>}
               </div>
             );
@@ -305,7 +305,7 @@ export const TankerTracker: FC = () => {
                 return (
                   <div className="bg-panel border border-border rounded-lg p-4 text-center">
                     <div className="text-xs font-mono text-text-muted tracking-wider mb-2">次のLNG船到着（非ホルムズ）</div>
-                    <div className={`font-mono font-bold text-2xl ${arrivingToday ? "text-[#2563eb]" : "text-[#16a34a]"}`}>
+                    <div className={`font-mono font-bold text-2xl ${arrivingToday ? "text-info" : "text-success"}`}>
                       {arrivingToday ? "本日入港予定" : "入港済み"}
                     </div>
                   </div>
@@ -337,14 +337,14 @@ export const TankerTracker: FC = () => {
                     ref={(el) => { if (el) rowRefs.current.set(t.id, el as unknown as HTMLTableRowElement); }}
                     onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
                     className={`w-full flex items-center justify-between px-3 py-2 text-[11px] font-mono transition-colors text-left ${
-                      selectedId === t.id ? "bg-[#2563eb]/10" : "hover:bg-white/[0.03]"
+                      selectedId === t.id ? "bg-info/10" : "hover:bg-white/[0.03]"
                     } ${dimmed ? "opacity-50" : ""}`}
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
                       <span className={`text-text-muted truncate ${dimmed ? "line-through" : ""}`}>{t.name}</span>
-                      {t.aisTracked && <span className="text-[8px] text-[#22c55e] shrink-0">AIS</span>}
-                      {t.status === "引き返し" && <span className="text-[8px] text-[#f59e0b] shrink-0">引返</span>}
+                      {t.aisTracked && <span className="text-[8px] text-success-soft shrink-0">AIS</span>}
+                      {t.status === "引き返し" && <span className="text-[8px] text-warning-soft shrink-0">引返</span>}
                     </div>
                     <span className="font-bold shrink-0 ml-2" style={{ color: etaColor }}>
                       {dimmed ? "—" : `${t.eta_days.toFixed(1)}日`}
@@ -386,9 +386,9 @@ export const TankerTracker: FC = () => {
                   <div className="flex items-center gap-1 flex-wrap text-[11px] font-mono">
                     <span className="text-neutral-400">米国ガルフ</span>
                     <span className="text-neutral-700">→</span>
-                    <span className="text-[#f59e0b]">パナマ運河</span>
+                    <span className="text-warning-soft">パナマ運河</span>
                     <span className="text-neutral-700">→ 太平洋北上 →</span>
-                    <span className="text-[#2563eb]">日本</span>
+                    <span className="text-info">日本</span>
                   </div>
                   <div className="text-[10px] text-neutral-700 font-mono mt-0.5 ml-0">
                     地図右端（東経170度）から現れ左へ進む。約30日・ホルムズ非経由
@@ -402,7 +402,7 @@ export const TankerTracker: FC = () => {
                     <span className="text-neutral-700">→</span>
                     <span className="text-neutral-500">喜望峰</span>
                     <span className="text-neutral-700">→ インド洋 →</span>
-                    <span className="text-[#2563eb]">日本</span>
+                    <span className="text-info">日本</span>
                   </div>
                   <div className="text-[10px] text-neutral-700 font-mono mt-0.5">
                     地図左端（喜望峰付近）から現れ右へ進む。約35日・ホルムズ非経由
@@ -427,7 +427,7 @@ export const TankerTracker: FC = () => {
                       key={t.id}
                       className={`flex items-center justify-between gap-2 px-3 py-2 rounded border text-[11px] font-mono cursor-pointer transition-colors ${
                         selectedId === t.id
-                          ? "border-[#2563eb]/50 bg-[#2563eb]/5"
+                          ? "border-info/50 bg-info/5"
                           : "border-border bg-white/[0.02] hover:bg-white/[0.04]"
                       }`}
                       onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
@@ -506,7 +506,7 @@ export const TankerTracker: FC = () => {
                     <td className="px-4 py-2 font-bold text-neutral-200">
                       <span className={dimmed ? "line-through" : ""}>{tanker.name}</span>
                       {tanker.aisTracked ? (
-                        <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+                        <span className="ml-1.5 text-[8px] font-mono font-normal px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
                           AIS
                         </span>
                       ) : (
@@ -602,7 +602,7 @@ export const TankerTracker: FC = () => {
                   <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
                   <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
                   {tanker.aisTracked ? (
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 shrink-0">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30 shrink-0">
                       AIS
                     </span>
                   ) : (

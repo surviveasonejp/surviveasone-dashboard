@@ -758,7 +758,7 @@ export const PetrochemTree: FC = () => {
       <div className="space-y-2">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h1 className="text-2xl font-bold font-mono">
-            <span className="text-[#f59e0b]">PETROCHEM</span> CHAIN
+            <span className="text-warning-soft">PETROCHEM</span> CHAIN
           </h1>
           <ScenarioSelector selected={scenario} onChange={setScenario} />
         </div>
@@ -789,7 +789,7 @@ export const PetrochemTree: FC = () => {
           step={1}
           value={day}
           onChange={(e) => setDay(parseInt(e.target.value, 10))}
-          className="w-full accent-[#f59e0b]"
+          className="w-full accent-warning-soft"
           data-no-swipe
         />
         <div className="flex justify-between text-[9px] font-mono text-[#94a3b8] relative">
@@ -848,7 +848,7 @@ export const PetrochemTree: FC = () => {
           {focusedNodeId && (
             <button
               onClick={() => { setFocusedNodeId(null); setDetail(null); }}
-              className="text-[10px] font-mono px-2 py-1 rounded border border-[#2563eb] text-[#2563eb] hover:bg-[#eff6ff] transition-colors"
+              className="text-[10px] font-mono px-2 py-1 rounded border border-info text-info hover:bg-[#eff6ff] transition-colors"
             >
               ハイライト解除
             </button>
@@ -1031,7 +1031,7 @@ export const PetrochemTree: FC = () => {
                     {impact.label}
                   </span>
                   {isCritical && (
-                    <span className="text-[9px] font-mono bg-[#dc2626] text-white px-1 rounded ml-auto">危機</span>
+                    <span className="text-[9px] font-mono bg-primary text-white px-1 rounded ml-auto">危機</span>
                   )}
                   {isAffected && !isCritical && (
                     <span className="text-[9px] font-mono bg-[#d97706] text-white px-1 rounded ml-auto">影響</span>

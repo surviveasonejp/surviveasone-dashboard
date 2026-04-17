@@ -87,7 +87,7 @@ export const Methodology: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#f59e0b]">METHODOLOGY</span>
+          <span className="text-warning-soft">METHODOLOGY</span>
         </h1>
         <p className="text-neutral-500 text-sm">
           シミュレーションモデルの前提・計算式・データソース・制約
@@ -95,8 +95,8 @@ export const Methodology: FC = () => {
       </div>
 
       {/* シミュレーション宣言 */}
-      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">重要な前提</h2>
+      <div className="bg-panel border border-warning-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-warning-soft">重要な前提</h2>
         <p className="text-neutral-300 text-sm leading-relaxed">
           本シミュレーションは<span className="text-neutral-200 font-bold">予測ではなく、リスクシナリオの可視化</span>です。
           国際協調・標準対応・需要超過の3シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
@@ -128,13 +128,13 @@ export const Methodology: FC = () => {
                 <td className="px-4 py-2 text-xs text-neutral-500 pl-6">石油備蓄法に基づく公式日数。国家+民間+共同備蓄を全量即時利用可能とみなして計算。IEA報告・政策立案の基準値。</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-4 py-2 text-[#f59e0b] font-bold whitespace-nowrap">実効備蓄<br /><span className="text-[10px] text-[#f59e0b]/60 font-normal">放出・精製制約を考慮</span></td>
-                <td className="px-4 py-2 text-right font-mono text-[#f59e0b]">約130〜170日</td>
+                <td className="px-4 py-2 text-warning-soft font-bold whitespace-nowrap">実効備蓄<br /><span className="text-[10px] text-warning-soft/60 font-normal">放出・精製制約を考慮</span></td>
+                <td className="px-4 py-2 text-right font-mono text-warning-soft">約130〜170日</td>
                 <td className="px-4 py-2 text-xs text-neutral-500 pl-6">民間備蓄の実効利用率40%（ワーキングストック・底部残液等）、国家備蓄の精製変換効率82%、共同備蓄の外交不確実性を適用した推計値。本シミュレーションが採用する値。</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 text-[#ef4444] font-bold whitespace-nowrap">生活維持ベース<br /><span className="text-[10px] text-[#ef4444]/60 font-normal">物流・電力崩壊を考慮</span></td>
-                <td className="px-4 py-2 text-right font-mono text-[#ef4444]">約90〜120日</td>
+                <td className="px-4 py-2 text-primary-soft font-bold whitespace-nowrap">生活維持ベース<br /><span className="text-[10px] text-primary-soft/60 font-normal">物流・電力崩壊を考慮</span></td>
+                <td className="px-4 py-2 text-right font-mono text-primary-soft">約90〜120日</td>
                 <td className="px-4 py-2 text-xs text-neutral-500 pl-6">精製所停電・物流混乱・タンクローリー不足等で供給が制約される場合の実物流ベースの推計値。備蓄が存在しても市民に届かない可能性を反映。</td>
               </tr>
             </tbody>
@@ -166,21 +166,21 @@ export const Methodology: FC = () => {
             </thead>
             <tbody>
               <tr className="border-b border-border">
-                <td className="px-4 py-2 text-[#22c55e] font-bold">楽観</td>
+                <td className="px-4 py-2 text-success-soft font-bold">楽観</td>
                 <td className="px-4 py-2 text-right font-mono">50%</td>
                 <td className="px-4 py-2 text-right font-mono">3%</td>
                 <td className="px-4 py-2 text-right font-mono">-15%</td>
                 <td className="px-4 py-2 text-right text-neutral-400 text-xs">7日→30日で解除</td>
               </tr>
               <tr className="border-b border-border">
-                <td className="px-4 py-2 text-[#f59e0b] font-bold">現実</td>
+                <td className="px-4 py-2 text-warning-soft font-bold">現実</td>
                 <td className="px-4 py-2 text-right font-mono">94%</td>
                 <td className="px-4 py-2 text-right font-mono">6.3%</td>
                 <td className="px-4 py-2 text-right font-mono">-5%</td>
                 <td className="px-4 py-2 text-right text-neutral-400 text-xs">30日→120日で段階的</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 text-[#ef4444] font-bold">悲観</td>
+                <td className="px-4 py-2 text-primary-soft font-bold">悲観</td>
                 <td className="px-4 py-2 text-right font-mono">100%</td>
                 <td className="px-4 py-2 text-right font-mono">15%</td>
                 <td className="px-4 py-2 text-right font-mono">+10%</td>
@@ -248,7 +248,7 @@ export const Methodology: FC = () => {
         {MODEL_EQUATIONS.map((eq) => (
           <div key={eq.title} className="bg-panel border border-border rounded-lg p-4 space-y-2">
             <h3 className="text-sm font-bold text-neutral-200">{eq.title}</h3>
-            <code className="block text-xs font-mono text-[#f59e0b] bg-bg rounded px-3 py-2 overflow-x-auto">
+            <code className="block text-xs font-mono text-warning-soft bg-bg rounded px-3 py-2 overflow-x-auto">
               {eq.equation}
             </code>
             <p className="text-xs text-neutral-500 leading-relaxed">{eq.description}</p>
@@ -277,19 +277,19 @@ export const Methodology: FC = () => {
               </thead>
               <tbody className="divide-y divide-[#0c1018]">
                 <tr>
-                  <td className="px-4 py-2 font-mono text-[#f59e0b]">50%以下</td>
+                  <td className="px-4 py-2 font-mono text-warning-soft">50%以下</td>
                   <td className="px-4 py-2 text-neutral-300">石油備蓄法</td>
                   <td className="px-4 py-2 text-neutral-500">国家備蓄放出・IEA協調・行政指導</td>
                   <td className="px-4 py-2 font-mono text-neutral-600">price_spike閾値（高騰フェーズ）</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 font-mono text-[#ef4444]">30%以下</td>
+                  <td className="px-4 py-2 font-mono text-primary-soft">30%以下</td>
                   <td className="px-4 py-2 text-neutral-300">石油需給適正化法</td>
                   <td className="px-4 py-2 text-neutral-500">用途別優先配分（医療・食料・物流優先）/ 奇数偶数制</td>
                   <td className="px-4 py-2 font-mono text-neutral-600">rationing閾値（配給前夜フェーズ）</td>
                 </tr>
                 <tr>
-                  <td className="px-4 py-2 font-mono text-[#dc2626]">10%以下</td>
+                  <td className="px-4 py-2 font-mono text-primary">10%以下</td>
                   <td className="px-4 py-2 text-neutral-300">国民生活安定緊急措置法</td>
                   <td className="px-4 py-2 text-neutral-500">正式配給制（企業割当・購入許可制・転売禁止）</td>
                   <td className="px-4 py-2 font-mono text-neutral-600">distribution閾値（配給制フェーズ）</td>
@@ -306,8 +306,8 @@ export const Methodology: FC = () => {
         </div>
 
         {/* 法的空白領域 — ナフサ起点の危機 */}
-        <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-4 space-y-3">
-          <h3 className="font-mono text-xs tracking-wider text-[#ef4444]">法的空白領域 — ナフサ起点の危機は3法の範囲外</h3>
+        <div className="bg-panel border border-primary-soft/30 rounded-lg p-4 space-y-3">
+          <h3 className="font-mono text-xs tracking-wider text-primary-soft">法的空白領域 — ナフサ起点の危機は3法の範囲外</h3>
           <p className="text-xs text-neutral-500 leading-relaxed">
             3法は「石油（燃料）の流れ」を制御する設計。ナフサ起点の石化産業崩壊は適用外または権限が脆弱。
           </p>
@@ -484,8 +484,8 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 制約と不確実性 */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">制約と不確実性</h2>
+      <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-primary-soft">制約と不確実性</h2>
         <ul className="space-y-2 text-xs text-neutral-400 leading-relaxed">
           <li>・石炭火力（28%）はホルムズ非依存（豪州・インドネシア主体）。短期的な直接影響は限定的だが、エネルギー価格全般への波及は考慮</li>
           <li>・LNG在庫25日分は全量在庫。ホルムズ直接依存は6.3%だが、封鎖による保険料高騰・船舶退避は豪州(39.7%)・マレーシア(14.8%)等にも波及し得る</li>
@@ -534,8 +534,8 @@ export const Methodology: FC = () => {
       </div>
 
       {/* 検証への招待 */}
-      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">検証と貢献</h2>
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-success-soft">検証と貢献</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">
           ソースコードはAGPL-3.0で全量公開されています。計算ロジックは誰でも検証可能です。
         </p>
@@ -555,7 +555,7 @@ export const Methodology: FC = () => {
             href="https://github.com/surviveasonejp/surviveasone-dashboard/issues/new?template=model-verification.md"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10 font-mono text-xs tracking-wider rounded transition-colors"
+            className="px-4 py-2 border border-success-soft text-success-soft hover:bg-success-soft/10 font-mono text-xs tracking-wider rounded transition-colors"
           >
             モデル検証 Issue &rarr;
           </a>

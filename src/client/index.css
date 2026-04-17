@@ -13,6 +13,20 @@
   --color-text: #0f172a;
   --color-text-muted: #64748b;
   --color-accent: #2563eb;
+
+  /* Phase 18: Observatory UI 統一セマンティックカラー
+     既存 danger/warning/safe の「明るめシェード」版。
+     コード内で多用される #ef4444 / #f59e0b / #22c55e をクラス化し、
+     ハードコード置換の受け皿とする。 */
+  --color-primary: #dc2626;          /* = danger（CTAボタン向け） */
+  --color-primary-dark: #b91c1c;     /* CTAボタン hover 用（red-700） */
+  --color-primary-soft: #ef4444;     /* テキスト強調・ボーダー向け */
+  --color-warning-soft: #f59e0b;     /* ボーダー・小バッジ向け */
+  --color-success: #16a34a;          /* = safe（セクションヘッダ向け） */
+  --color-success-soft: #22c55e;     /* LIVEバッジ・供給余力向け */
+  --color-info: #2563eb;             /* = accent（リンク・情報向け） */
+  --color-teal: #0d9488;             /* ceasefire シナリオ専用色 */
+  --color-x-brand: #1d9bf0;          /* X/Twitter 公式ブランド色（シェアボタン用） */
 }
 
 /* ダークモード上書き */

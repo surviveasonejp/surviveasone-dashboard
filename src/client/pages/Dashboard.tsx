@@ -45,10 +45,10 @@ export const Dashboard: FC = () => {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold font-mono">
-            <span className="text-[#ef4444]">SAO</span>
+            <span className="text-primary-soft">SAO</span>
           </h1>
           {isFromApi && (
-            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+            <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
               LIVE
             </span>
           )}
@@ -71,29 +71,29 @@ export const Dashboard: FC = () => {
       <DataFreshness />
 
       {/* 供給余力サマリー — 安心情報ファーストビュー */}
-      <div className="bg-[#22c55e]/10 border border-[#22c55e]/25 rounded-lg p-4 space-y-3">
-        <div className="font-mono text-xs tracking-widest text-[#22c55e]">
+      <div className="bg-success-soft/10 border border-success-soft/25 rounded-lg p-4 space-y-3">
+        <div className="font-mono text-xs tracking-widest text-success-soft">
           SUPPLY BUFFER — 現在の供給余力
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-[#22c55e]">{staticReserves.oil.totalReserveDays}</div>
+            <div className="font-mono font-bold text-2xl text-success-soft">{staticReserves.oil.totalReserveDays}</div>
             <div className="text-xs text-neutral-500 mt-0.5 leading-tight">石油備蓄日数<br/>（法ベース・IEA上位）</div>
           </div>
           <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-[#22c55e]">6.3<span className="text-sm font-normal">%</span></div>
+            <div className="font-mono font-bold text-2xl text-success-soft">6.3<span className="text-sm font-normal">%</span></div>
             <div className="text-xs text-neutral-500 mt-0.5 leading-tight">LNG ホルムズ依存率<br/>93.7%は非ホルムズ供給</div>
           </div>
           <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-[#22c55e]">3</div>
+            <div className="font-mono font-bold text-2xl text-success-soft">3</div>
             <div className="text-xs text-neutral-500 mt-0.5 leading-tight">代替供給ルート<br/>フジャイラ/ヤンブー/非中東</div>
           </div>
           <div className="text-center">
-            <div className="font-mono font-bold text-xl text-[#22c55e]">IEA</div>
+            <div className="font-mono font-bold text-xl text-success-soft">IEA</div>
             <div className="text-xs text-neutral-500 mt-0.5 leading-tight">協調備蓄放出・需要抑制<br/>政策介入で段階的に軽減</div>
           </div>
         </div>
-        <p className="text-xs text-neutral-500 leading-relaxed border-t border-[#22c55e]/15 pt-2">
+        <p className="text-xs text-neutral-500 leading-relaxed border-t border-success-soft/15 pt-2">
           即時崩壊シナリオではありません。政策対応・代替供給・需要抑制により影響は段階的に制御可能です。
           下記シミュレーションは代替供給・備蓄放出を含んだモデルです。
         </p>
@@ -152,7 +152,7 @@ export const Dashboard: FC = () => {
 
       {/* Xシェア */}
       <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
         onClick={() => {
           let text: string;
           if (selectedRegion) {

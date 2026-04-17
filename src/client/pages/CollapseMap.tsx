@@ -51,7 +51,7 @@ export const CollapseMap: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#f59e0b]">COLLAPSE</span> MAP
+          <span className="text-warning-soft">COLLAPSE</span> MAP
         </h1>
         <p className="text-neutral-500 text-sm">
           全国10電力エリアの崩壊予測順序 — どのエリアが最初に機能停止するか

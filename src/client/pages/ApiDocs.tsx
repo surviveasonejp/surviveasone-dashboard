@@ -327,13 +327,13 @@ export const ApiDocs: FC = () => {
       </div>
 
       <div className="bg-panel border border-border rounded-lg p-4 text-sm text-neutral-400 space-y-2">
-        <p><span className="text-neutral-200 font-bold">Base URL:</span> <code className="font-mono text-[#f59e0b]">{API_BASE}/api</code></p>
+        <p><span className="text-neutral-200 font-bold">Base URL:</span> <code className="font-mono text-warning-soft">{API_BASE}/api</code></p>
         <p><span className="text-neutral-200 font-bold">形式:</span> JSON</p>
         <p><span className="text-neutral-200 font-bold">認証:</span> 不要</p>
         <p><span className="text-neutral-200 font-bold">CORS:</span> <code className="font-mono">Access-Control-Allow-Origin: *</code>（.netドメイン）</p>
         <p><span className="text-neutral-200 font-bold">レート制限:</span> 30 req/分、1,000 req/日（IP単位）。グローバル上限: 100,000 req/日</p>
         <p><span className="text-neutral-200 font-bold">シナリオID:</span> <code className="font-mono">optimistic</code>（国際協調） / <code className="font-mono">realistic</code>（標準対応） / <code className="font-mono">pessimistic</code>（需要超過） / <code className="font-mono">ceasefire</code>（停戦・回復）</p>
-        <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-[#f59e0b] hover:underline font-mono">/api/openapi.json</a></p>
+        <p><span className="text-neutral-200 font-bold">OpenAPI:</span> <a href={`${API_BASE}/api/openapi.json`} target="_blank" rel="noopener noreferrer" className="text-warning-soft hover:underline font-mono">/api/openapi.json</a></p>
         <p><span className="text-neutral-200 font-bold">ライセンス:</span> AGPL-3.0</p>
       </div>
 
@@ -342,8 +342,8 @@ export const ApiDocs: FC = () => {
           <div className="px-4 py-3 border-b border-border flex items-center gap-3">
             <span className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
               ep.method === "POST"
-                ? "bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30"
-                : "bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30"
+                ? "bg-warning-soft/15 text-warning-soft border border-warning-soft/30"
+                : "bg-success-soft/15 text-success-soft border border-success-soft/30"
             }`}>
               {ep.method}
             </span>

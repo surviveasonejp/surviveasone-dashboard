@@ -144,7 +144,7 @@ export const About: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#ef4444]">ABOUT</span> THIS PROJECT
+          <span className="text-primary-soft">ABOUT</span> THIS PROJECT
         </h1>
         <p className="text-neutral-500 text-sm">
           SAO – Situation Awareness Observatory | プロジェクト概要
@@ -152,8 +152,8 @@ export const About: FC = () => {
       </div>
 
       {/* ミッション */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#ef4444]">MISSION</h2>
+      <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-primary-soft">MISSION</h2>
         <p className="text-neutral-300 leading-relaxed">
           ホルムズ海峡封鎖シナリオ下で日本のエネルギー・食料・物流への供給制約がどう波及するかを多角的に可視化し、市民・政策立案者・研究者の理解と意思決定を支援するデータツール。
         </p>
@@ -172,19 +172,19 @@ export const About: FC = () => {
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
         <h2 className="font-mono text-sm tracking-wider text-neutral-400">なぜホルムズ海峡か</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
-          <p>日本の原油輸入の<span className="text-[#f59e0b] font-mono font-bold">94%</span>が中東依存。うち<span className="text-[#f59e0b] font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
+          <p>日本の原油輸入の<span className="text-warning-soft font-mono font-bold">94%</span>が中東依存。うち<span className="text-warning-soft font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
           <p>供給危機が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に制約される。</p>
           <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース・放出中）。放出制約・精製変換効率を考慮した実効値は約120〜160日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>
 
       {/* データの信頼性 */}
-      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">データの信頼性</h2>
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-success-soft">データの信頼性</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>全ての入力データは<span className="text-neutral-200 font-bold">政府統計・公開データ</span>に基づいています。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
-            <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-[#22c55e]">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
+            <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-success-soft">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。危機発生日数も全ページに表示</li>
             <li>・タンカー30隻（VLCC13+LNG14+Chemical1+Suezmax2）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。MAYASAN/YAKUMOSAN（4/11 東進確認）(2026年4月12日)</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート。5月以降は喜望峰ルート代替供給が本格化予定</li>
@@ -213,7 +213,7 @@ export const About: FC = () => {
         <div className="px-4 py-3 border-t border-border">
           <Link
             to="/methodology"
-            className="inline-block px-4 py-2 border border-[#f59e0b] text-[#f59e0b] hover:bg-[#f59e0b]/10 font-mono text-xs tracking-wider rounded transition-colors"
+            className="inline-block px-4 py-2 border border-warning-soft text-warning-soft hover:bg-warning-soft/10 font-mono text-xs tracking-wider rounded transition-colors"
           >
             計算式・前提条件の詳細 &rarr;
           </Link>
@@ -221,8 +221,8 @@ export const About: FC = () => {
       </div>
 
       {/* 前提条件と制約 */}
-      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-6 space-y-3">
-        <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">制約と不確実性</h2>
+      <div className="bg-panel border border-warning-soft/30 rounded-lg p-6 space-y-3">
+        <h2 className="font-mono text-sm tracking-wider text-warning-soft">制約と不確実性</h2>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
           <p>本シミュレーションは<span className="text-neutral-200 font-bold">リスクシナリオの可視化</span>であり、予測ではありません。</p>
           <ul className="space-y-1.5 text-xs text-neutral-500">
@@ -237,11 +237,11 @@ export const About: FC = () => {
       </div>
 
       {/* 精度検証レポート */}
-      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-6 space-y-4">
-        <h2 className="font-mono text-sm tracking-wider text-[#22c55e]">精度検証レポート（2026年4月3日時点）</h2>
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-4">
+        <h2 className="font-mono text-sm tracking-wider text-success-soft">精度検証レポート（2026年4月3日時点）</h2>
         <p className="text-neutral-400 text-sm leading-relaxed">
           シナリオ発生（3月1日）から33日間の実データとシミュレーション予測の照合。
-          詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-[#22c55e] underline underline-offset-2">/api/validation</a>で取得可能。
+          詳細データは<a href="https://surviveasonejp.net/api/validation" target="_blank" rel="noopener noreferrer" className="text-success-soft underline underline-offset-2">/api/validation</a>で取得可能。
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
@@ -258,43 +258,43 @@ export const About: FC = () => {
                 <td className="px-3 py-2 font-mono text-neutral-300">ナフサ枯渇</td>
                 <td className="px-3 py-2">napthaFactorベースで包装材消失を予測</td>
                 <td className="px-3 py-2">ナフサ在庫14日分（経産省令和8年1月統計）。12拠点中半数減産。出光が減産方針を公表。石化協「4月維持、5月以降焦点」</td>
-                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+                <td className="px-3 py-2 text-success-soft">整合</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="px-3 py-2 font-mono text-neutral-300">ガソリン価格</td>
                 <td className="px-3 py-2">50%閾値で価格暴騰を予測</td>
                 <td className="px-3 py-2">店頭最高値190.8円。政府が補助金48.1円/L（過去最高）で170円台に抑制。在庫50%未達のためモデル閾値未到達</td>
-                <td className="px-3 py-2 text-[#22c55e]">整合</td>
+                <td className="px-3 py-2 text-success-soft">整合</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="px-3 py-2 font-mono text-neutral-300">買い占め</td>
                 <td className="px-3 py-2">在庫50%以下でパニック買い発生と予測</td>
                 <td className="px-3 py-2">石油在庫50%未達だが、医療消耗品で先行発生。ニトリル手袋は発生後10日目に歯科卸が出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく将来の供給不安による買い溜めが主因。韓国ではごみ袋買い占め</td>
-                <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
+                <td className="px-3 py-2 text-warning-soft">想定より早期</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="px-3 py-2 font-mono text-neutral-300">医療消耗品</td>
                 <td className="px-3 py-2">ナフサ→石化製品→包装材の連鎖モデル</td>
                 <td className="px-3 py-2">発生後10日目に歯科卸がニトリルグローブ出荷制限、27日目にメーカー・通販・卸で連鎖的受注停止。原料枯渇ではなく供給不安による買い溜めが主因</td>
-                <td className="px-3 py-2 text-[#f59e0b]">想定より早期</td>
+                <td className="px-3 py-2 text-warning-soft">想定より早期</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="px-3 py-2 font-mono text-neutral-300">代替供給</td>
                 <td className="px-3 py-2">28日目で代替ルート到着を予測</td>
                 <td className="px-3 py-2">3月28日に代替第1便が今治沖に到着確認（太陽石油・サウジ産原油10万kL）</td>
-                <td className="px-3 py-2 text-[#22c55e]">一致</td>
+                <td className="px-3 py-2 text-success-soft">一致</td>
               </tr>
               <tr className="border-b border-border">
                 <td className="px-3 py-2 font-mono text-neutral-300">SPR放出</td>
                 <td className="px-3 py-2">14日目に国家備蓄放出開始</td>
                 <td className="px-3 py-2">3月16日（15日目）に民間備蓄放出開始、3月26日（25日目）に国家備蓄放出開始</td>
-                <td className="px-3 py-2 text-[#f59e0b]">やや遅延</td>
+                <td className="px-3 py-2 text-warning-soft">やや遅延</td>
               </tr>
               <tr>
                 <td className="px-3 py-2 font-mono text-neutral-300">建材・樹脂</td>
                 <td className="px-3 py-2">食品中心。建材への波及は未モデル化</td>
                 <td className="px-3 py-2">フクビ化学が4月1日から全製品供給制限を発表。モデルの範囲外で影響発生</td>
-                <td className="px-3 py-2 text-[#f59e0b]">モデル外</td>
+                <td className="px-3 py-2 text-warning-soft">モデル外</td>
               </tr>
             </tbody>
           </table>
@@ -318,7 +318,7 @@ export const About: FC = () => {
               <span className="text-sm text-neutral-300 sm:w-56 shrink-0 flex items-center gap-1.5">
                 {ds.name}
                 {ds.auto && (
-                  <span className="text-[10px] font-mono px-1 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+                  <span className="text-[10px] font-mono px-1 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
                     AUTO
                   </span>
                 )}
@@ -342,9 +342,9 @@ export const About: FC = () => {
                 <span
                   className={`inline-block w-2 h-2 rounded-full mt-1.5 ${
                     p.status === "completed"
-                      ? "bg-[#22c55e]"
+                      ? "bg-success-soft"
                       : p.status === "active"
-                        ? "bg-[#f59e0b]"
+                        ? "bg-warning-soft"
                         : "bg-border"
                   }`}
                 />
@@ -354,10 +354,10 @@ export const About: FC = () => {
                   <span className="font-mono text-sm font-bold text-neutral-300">{p.phase}</span>
                   <span className="text-xs text-neutral-500">{p.label}</span>
                   {p.status === "completed" && (
-                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">LIVE</span>
+                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">LIVE</span>
                   )}
                   {p.status === "active" && (
-                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/30">IN PROGRESS</span>
+                    <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-warning-soft/15 text-warning-soft border border-warning-soft/30">IN PROGRESS</span>
                   )}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -486,13 +486,13 @@ export const About: FC = () => {
       <div className="flex flex-wrap gap-3">
         <Link
           to="/methodology"
-          className="px-4 py-2 border border-[#f59e0b] text-[#f59e0b] hover:bg-[#f59e0b]/10 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-warning-soft text-warning-soft hover:bg-warning-soft/10 font-mono text-xs tracking-wider rounded transition-colors"
         >
           METHODOLOGY &rarr;
         </Link>
         <Link
           to="/prepare"
-          className="px-4 py-2 border border-[#22c55e] text-[#22c55e] hover:bg-[#22c55e]/10 font-mono text-xs tracking-wider rounded transition-colors"
+          className="px-4 py-2 border border-success-soft text-success-soft hover:bg-success-soft/10 font-mono text-xs tracking-wider rounded transition-colors"
         >
           PREPARE &rarr;
         </Link>

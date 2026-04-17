@@ -74,10 +74,10 @@ export const SurvivalClock: FC = () => {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold font-mono">
-              <span className="text-[#ef4444]">SURVIVAL</span> CLOCK
+              <span className="text-primary-soft">SURVIVAL</span> CLOCK
             </h1>
             {isLive && (
-              <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30">
+              <span className="text-xs font-mono px-1.5 py-0.5 rounded bg-success-soft/15 text-success-soft border border-success-soft/30">
                 LIVE
               </span>
             )}
@@ -107,7 +107,7 @@ export const SurvivalClock: FC = () => {
       </div>
 
       {/* LNG供給余力モデル説明 */}
-      <div className="bg-panel border border-[#2563eb]/20 rounded-lg p-4 space-y-2">
+      <div className="bg-panel border border-info/20 rounded-lg p-4 space-y-2">
         <p className="font-mono text-xs font-bold text-accent">LNG供給余力について</p>
         <p className="text-xs text-text-muted leading-relaxed">
           日本のLNG輸入のホルムズ海峡依存は<span className="font-mono font-bold text-text">{(lngHormuz * 100).toFixed(1)}%</span>（カタール・UAE）のみ。
@@ -158,7 +158,7 @@ export const SurvivalClock: FC = () => {
 
       {/* Xシェア */}
       <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
         onClick={() => {
           const blockadeStart = new Date("2026-03-01");
           const dayOffset = Math.floor((Date.now() - blockadeStart.getTime()) / 86400000);

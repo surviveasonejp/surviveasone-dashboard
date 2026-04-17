@@ -300,7 +300,7 @@ export const ForSegment: FC = () => {
       <AlertBanner level="warning" message={seg.alertMessage} />
 
       {/* 供給制約の基準値 */}
-      <div className="bg-panel border border-[#ef4444]/30 rounded-lg p-6 text-center space-y-1.5">
+      <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 text-center space-y-1.5">
         <div className="font-mono text-xs tracking-widest text-text-muted mb-1">
           {SCENARIO_LABELS[scenario]} — 推定値
         </div>
@@ -308,7 +308,7 @@ export const ForSegment: FC = () => {
           {displayStat}<span className="text-lg ml-1">{seg.heroUnit}</span>
         </div>
         <div className="text-sm text-text-muted">{displayLabel}</div>
-        <div className="text-xs text-text-muted border-t border-[#ef4444]/15 pt-1.5 mt-0.5">
+        <div className="text-xs text-text-muted border-t border-primary-soft/15 pt-1.5 mt-0.5">
           シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します
         </div>
       </div>
@@ -320,7 +320,7 @@ export const ForSegment: FC = () => {
           {seg.risks.map((risk) => (
             <div key={risk.label} className="bg-panel border border-border rounded-lg px-4 py-3 flex gap-4">
               <div className="shrink-0 w-20">
-                <div className="font-mono text-sm font-bold text-[#ef4444]">{risk.days}</div>
+                <div className="font-mono text-sm font-bold text-primary-soft">{risk.days}</div>
                 <div className="text-xs text-text-muted">{risk.label}</div>
               </div>
               <div className="text-xs text-text-muted leading-relaxed">{risk.detail}</div>
@@ -330,12 +330,12 @@ export const ForSegment: FC = () => {
       </div>
 
       {/* 今確認すべきこと */}
-      <div className="bg-panel border border-[#22c55e]/30 rounded-lg p-5 space-y-3">
-        <h2 className="font-mono text-xs tracking-wider text-[#22c55e]">優先して確認すべき5つのこと</h2>
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-5 space-y-3">
+        <h2 className="font-mono text-xs tracking-wider text-success-soft">優先して確認すべき5つのこと</h2>
         <ol className="space-y-2">
           {seg.actions.map((action, i) => (
             <li key={i} className="flex gap-3 text-sm text-text">
-              <span className="font-mono text-[#22c55e] font-bold shrink-0">{i + 1}.</span>
+              <span className="font-mono text-success-soft font-bold shrink-0">{i + 1}.</span>
               <span>{action}</span>
             </li>
           ))}
@@ -365,14 +365,14 @@ export const ForSegment: FC = () => {
       {seg.ctaType && seg.ctaLink ? (
         <Link
           to={seg.ctaLink}
-          className="block bg-panel border border-[#2563eb]/40 hover:border-[#2563eb]/70 rounded-lg p-5 transition-colors group"
+          className="block bg-panel border border-info/40 hover:border-info/70 rounded-lg p-5 transition-colors group"
         >
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="font-mono text-xs tracking-widest text-[#2563eb]">{seg.ctaTag ?? "NEXT STEP"}</div>
+              <div className="font-mono text-xs tracking-widest text-info">{seg.ctaTag ?? "NEXT STEP"}</div>
               <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
             </div>
-            <span className="text-[#2563eb] font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+            <span className="text-info font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
           </div>
         </Link>
       ) : (
@@ -380,14 +380,14 @@ export const ForSegment: FC = () => {
           {/* CTA: Family Meter（個人向けセグメントのみ） */}
           <Link
             to="/family"
-            className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-5 transition-colors group"
+            className="block bg-panel border border-warning-soft/40 hover:border-warning-soft/70 rounded-lg p-5 transition-colors group"
           >
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <div className="font-mono text-xs tracking-widest text-[#f59e0b]">FAMILY SURVIVAL METER</div>
+                <div className="font-mono text-xs tracking-widest text-warning-soft">FAMILY SURVIVAL METER</div>
                 <p className="text-sm font-bold">{seg.familyMeterPrompt}</p>
               </div>
-              <span className="text-[#f59e0b] font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+              <span className="text-warning-soft font-mono text-xl group-hover:translate-x-1 transition-transform">&rarr;</span>
             </div>
           </Link>
 
@@ -409,7 +409,7 @@ export const ForSegment: FC = () => {
 
       {/* シェア */}
       <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-[#1d9bf0]/15 text-[#1d9bf0] border border-[#1d9bf0]/30 hover:bg-[#1d9bf0]/25 transition-colors"
+        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
         onClick={() => {
           const text = [
             `【${seg.title}】ホルムズリスクシナリオ（${SCENARIO_LABELS[scenario]}）`,

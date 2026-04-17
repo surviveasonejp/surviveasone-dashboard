@@ -371,7 +371,7 @@ export const Prepare: FC = () => {
     <div className="space-y-6">
       <div className="space-y-2">
         <h1 className="text-2xl font-bold font-mono">
-          <span className="text-[#22c55e]">PREPARATION</span> GUIDE
+          <span className="text-success-soft">PREPARATION</span> GUIDE
         </h1>
         <p className="text-text-muted text-sm">
           公的推奨水準（内閣府: 3日分）と照らし合わせ、わが家の過不足を確認する
@@ -400,14 +400,14 @@ export const Prepare: FC = () => {
           食料は国内在庫があるが、ナフサ不足で「包めない・運べない」状態が先に来る。
           おむつ・生理用品・ゴミ袋・ラップ・ニトリル手袋は食料より先に店頭在庫が薄くなる。
           水道水は比較的長く維持されるが、衛生用品・容器は代替が効かない。
-          <span className="text-[#f59e0b]"> プラスチック容器・衛生用品の過不足を優先的に確認しよう。</span>
+          <span className="text-warning-soft"> プラスチック容器・衛生用品の過不足を優先的に確認しよう。</span>
         </p>
       </div>}
 
       {/* ── パーソナライズフィルタ ── */}
-      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4 print:hidden">
+      <div className="bg-panel border border-warning-soft/30 rounded-lg p-5 space-y-4 print:hidden">
         <div>
-          <h2 className="font-mono text-sm tracking-wider text-[#f59e0b]">あなたの状況を選んでください</h2>
+          <h2 className="font-mono text-sm tracking-wider text-warning-soft">あなたの状況を選んでください</h2>
           <p className="text-xs text-neutral-500 mt-1">該当するセクションだけを展開表示します。選択内容はこのブラウザ内のみで処理され、サーバーへの送信は一切行いません。</p>
         </div>
 
@@ -425,7 +425,7 @@ export const Prepare: FC = () => {
                 key={opt.value}
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   housing === opt.value
-                    ? "bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/50"
+                    ? "bg-warning-soft/20 text-warning-soft border-warning-soft/50"
                     : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => setHousing(housing === opt.value ? "" : opt.value)}
@@ -448,7 +448,7 @@ export const Prepare: FC = () => {
                 key={String(opt.value)}
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   hasCar === opt.value
-                    ? "bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/50"
+                    ? "bg-warning-soft/20 text-warning-soft border-warning-soft/50"
                     : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => setHasCar(hasCar === opt.value ? null : opt.value)}
@@ -475,7 +475,7 @@ export const Prepare: FC = () => {
                 key={opt.value}
                 className={`px-3 py-1.5 rounded text-xs font-mono border transition-colors ${
                   familyTags.has(opt.value)
-                    ? "bg-[#ef4444]/20 text-[#ef4444] border-[#ef4444]/50"
+                    ? "bg-primary-soft/20 text-primary-soft border-primary-soft/50"
                     : "bg-transparent text-neutral-400 border-border hover:border-neutral-500"
                 }`}
                 onClick={() => toggleFamily(opt.value)}
@@ -488,7 +488,7 @@ export const Prepare: FC = () => {
 
         <div className="flex gap-2">
           <button
-            className="px-4 py-2 rounded text-xs font-mono font-bold bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/50 hover:bg-[#f59e0b]/30 transition-colors"
+            className="px-4 py-2 rounded text-xs font-mono font-bold bg-warning-soft/20 text-warning-soft border border-warning-soft/50 hover:bg-warning-soft/30 transition-colors"
             onClick={applyFilter}
           >
             この条件で表示
@@ -513,12 +513,12 @@ export const Prepare: FC = () => {
       </button>
 
       {/* ── 最低ラインの確認（内閣府推奨3日分） ── */}
-      <div className="bg-panel border border-[#16a34a]/30 rounded-lg p-5 space-y-3">
+      <div className="bg-panel border border-success/30 rounded-lg p-5 space-y-3">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-[#16a34a] bg-[#16a34a]/15 border border-[#16a34a]/40">
+          <span className="font-mono text-xs font-bold px-2 py-0.5 rounded text-success bg-success/15 border border-success/40">
             出発点
           </span>
-          <h2 className="font-mono text-sm font-bold text-[#16a34a]">まず確認する最低ライン — 内閣府推奨3日分</h2>
+          <h2 className="font-mono text-sm font-bold text-success">まず確認する最低ライン — 内閣府推奨3日分</h2>
         </div>
         <p className="text-xs text-text-muted leading-relaxed">
           ホルムズ封鎖で石油・ガスが実際に不足し始めるのは数か月後です。ただし地震・台風など他の災害は今日でも起こり得ます。内閣府が推奨する3日分は、すべてのシナリオに共通する備えの出発点です。
@@ -530,7 +530,7 @@ export const Prepare: FC = () => {
             { label: "現金", detail: "ATM停止・カード決済停止に備え5万円以上（小銭含む）" },
           ].map((item) => (
             <div key={item.label} className="flex gap-3 items-start">
-              <span className="text-[#16a34a] font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
+              <span className="text-success font-mono text-xs font-bold shrink-0 mt-0.5">□</span>
               <div>
                 <span className="text-sm text-text font-bold">{item.label}</span>
                 <span className="text-xs text-text-muted ml-2">{item.detail}</span>
@@ -651,7 +651,7 @@ export const Prepare: FC = () => {
                 {section.items.map((item) => (
                   <div key={item.name} className="px-4 py-3 flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-4">
                     <div className="sm:w-40 shrink-0"><span className="text-sm font-bold text-text">{item.name}</span></div>
-                    <div className="sm:w-52 shrink-0"><span className="text-xs font-mono text-[#f59e0b]">{item.amount}</span></div>
+                    <div className="sm:w-52 shrink-0"><span className="text-xs font-mono text-warning-soft">{item.amount}</span></div>
                     <div><span className="text-xs text-neutral-500">{item.note}</span></div>
                   </div>
                 ))}

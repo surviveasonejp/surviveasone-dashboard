@@ -70,7 +70,7 @@ export const Landing: FC = () => {
           HORMUZ STRAIT BLOCKADE SCENARIO SIMULATION
         </span>
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-          ホルムズ封鎖シナリオで、<br className="md:hidden" /><span className="text-[#ef4444]">エネルギー供給</span>はどう変化するか
+          ホルムズ封鎖シナリオで、<br className="md:hidden" /><span className="text-primary-soft">エネルギー供給</span>はどう変化するか
         </h1>
         <p className="text-text-muted text-sm leading-relaxed max-w-lg mx-auto">
           石油の94%は中東から届く。その全量がホルムズ海峡を通る。<br />
@@ -82,8 +82,8 @@ export const Landing: FC = () => {
       <BlockadeDayCounter activeScenario={scenario} />
 
       {/* 安心情報ファースト — 現在の備え・対応状況 */}
-      <div className="bg-panel border border-[#16a34a]/30 rounded-lg p-5">
-        <div className="font-mono text-xs tracking-widest text-[#16a34a] mb-4 text-center">
+      <div className="bg-panel border border-success/30 rounded-lg p-5">
+        <div className="font-mono text-xs tracking-widest text-success mb-4 text-center">
           CURRENT RESILIENCE STATUS
         </div>
         <div className="grid grid-cols-3 gap-4">
@@ -121,16 +121,16 @@ export const Landing: FC = () => {
 
       {/* 停戦シナリオ説明バナー（ceasefire選択時のみ表示） */}
       {isCeasefire && (
-        <div className="bg-panel border border-[#0d9488]/40 rounded-lg p-4 space-y-2">
+        <div className="bg-panel border border-teal/40 rounded-lg p-4 space-y-2">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-[#0d9488]">CEASEFIRE SCENARIO</span>
+            <span className="font-mono text-xs font-bold text-teal">CEASEFIRE SCENARIO</span>
             <span className="text-xs text-neutral-500">— 供給はいつ正常化するか</span>
           </div>
           <p className="text-xs text-neutral-400 leading-relaxed">
             封鎖45日目に停戦宣言（想定）→ 保険会社「危険区域」解除（+14日）→ 港湾部分再開（+60日）→ 契約再締結（+90日）→ 構造的残存リスク8%で安定化（+120日）。
             下の数値はシナリオ推定値です。備蓄放出・代替供給により変動します。
           </p>
-          <Link to="/countdown" className="inline-block text-xs font-mono text-[#0d9488] hover:underline">
+          <Link to="/countdown" className="inline-block text-xs font-mono text-teal hover:underline">
             正常化タイムラインの詳細 → SUPPLY TIMELINE
           </Link>
         </div>
@@ -154,7 +154,7 @@ export const Landing: FC = () => {
       <div className="flex flex-col items-center gap-2">
         <Link
           to="/dashboard"
-          className="px-8 py-3 bg-[#dc2626] hover:bg-[#b91c1c] text-white font-mono text-sm tracking-wider rounded transition-colors"
+          className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-mono text-sm tracking-wider rounded transition-colors"
         >
           DASHBOARD を見る →
         </Link>
@@ -164,9 +164,9 @@ export const Landing: FC = () => {
       </div>
 
       {/* 要配慮者導線 */}
-      <div className="bg-panel border border-[#f59e0b]/30 rounded-lg p-5 space-y-4">
+      <div className="bg-panel border border-warning-soft/30 rounded-lg p-5 space-y-4">
         <div className="text-center space-y-2">
-          <div className="font-mono text-3xl font-bold text-[#f59e0b]">5人に1人</div>
+          <div className="font-mono text-3xl font-bold text-warning-soft">5人に1人</div>
           <p className="text-sm text-text">
             乳幼児・子育て・透析・在宅医療・介護のある家庭。供給制約が生じたとき、通常の家庭より早く追加確認が必要になるのはこの層です。
           </p>
@@ -183,7 +183,7 @@ export const Landing: FC = () => {
             <Link
               key={seg.to}
               to={seg.to}
-              className="block px-3 py-3 rounded border text-center transition-colors hover:bg-[#f59e0b]/5 min-h-[60px] flex flex-col justify-center"
+              className="block px-3 py-3 rounded border text-center transition-colors hover:bg-warning-soft/5 min-h-[60px] flex flex-col justify-center"
               style={{ borderColor: `${seg.color}40` }}
             >
               <div className="text-xs font-bold text-text">{seg.label}</div>
@@ -196,17 +196,17 @@ export const Landing: FC = () => {
       {/* Household Supply Check — 参考ツール */}
       <Link
         to="/family"
-        className="block bg-panel border border-[#f59e0b]/40 hover:border-[#f59e0b]/70 rounded-lg p-6 transition-colors group"
+        className="block bg-panel border border-warning-soft/40 hover:border-warning-soft/70 rounded-lg p-6 transition-colors group"
       >
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="font-mono text-xs tracking-widest text-[#f59e0b]">HOUSEHOLD SUPPLY CHECK</div>
+            <div className="font-mono text-xs tracking-widest text-warning-soft">HOUSEHOLD SUPPLY CHECK</div>
             <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
               備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目を把握できる。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
-          <span className="text-[#f59e0b] font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
+          <span className="text-warning-soft font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
         </div>
       </Link>
 
