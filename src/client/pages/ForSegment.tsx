@@ -1,10 +1,11 @@
-import { type FC, useState } from "react";
+import { type FC } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
 import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SectionHeading } from "../components/SectionHeading";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { type ScenarioId } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 
 const SCENARIO_LABELS: Record<ScenarioId, string> = {
   optimistic: "楽観シナリオ",
@@ -277,7 +278,7 @@ const SEGMENTS: Record<string, Segment> = {
 export const ForSegment: FC = () => {
   const { segment } = useParams<{ segment: string }>();
   const seg = segment ? SEGMENTS[segment] : undefined;
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
 
   if (!seg) return <Navigate to="/" replace />;
 

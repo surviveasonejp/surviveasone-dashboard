@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type FC, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { useSwipeNavigation, getContentStyle } from "../hooks/useSwipeNavigation";
@@ -19,6 +19,13 @@ export const Layout: FC = () => {
 
   const showNavBar = currentIndex >= 0;
   const contentStyle = getContentStyle(dragX, transitionEnabled);
+
+  // ページ遷移時にスクロールを最上部へリセット。hash アンカー遷移や
+  // 同一 pathname での ?scenario= 切替時はリセットしない。
+  useEffect(() => {
+    if (location.hash) return;
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-bg text-text overflow-x-hidden">

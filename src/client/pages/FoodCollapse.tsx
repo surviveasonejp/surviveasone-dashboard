@@ -10,7 +10,7 @@ import { useFoodDepletion } from "../hooks/useFoodDepletion";
 import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useApiData } from "../hooks/useApiData";
 import type { RegionCollapse, FlowSimulationResult } from "../../shared/types";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber } from "../lib/formatters";
 import { PageHero } from "../components/PageHero";
@@ -87,7 +87,7 @@ function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollap
 }
 
 export const FoodCollapse: FC = () => {
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
   const { regions } = useCollapseOrder(scenario);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const userRegion = useUserRegion();

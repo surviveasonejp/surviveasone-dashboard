@@ -6,7 +6,7 @@ import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import type { ResourceCountdown, RegionCollapse } from "../../shared/types";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
 import { PolicyIntervention } from "../components/PolicyIntervention";
@@ -25,7 +25,7 @@ import type { ReservesRow } from "../hooks/useApiData";
 import staticReserves from "../data/reserves.json";
 
 export const Dashboard: FC = () => {
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
   const { data: countdownData } = useApiData<ResourceCountdown[]>(
     `/api/countdowns?scenario=${scenario}`,
     FALLBACK_COUNTDOWNS,

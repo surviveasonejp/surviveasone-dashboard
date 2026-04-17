@@ -1,9 +1,9 @@
-import { type FC, useState } from "react";
+import { type FC } from "react";
 import { Link } from "react-router-dom";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import { useApiData } from "../hooks/useApiData";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES, getReservesSummaryText } from "../lib/fallbackCountdowns";
 import { IeaComparison } from "../components/IeaComparison";
@@ -65,7 +65,7 @@ const Stat: FC<StatProps> = ({ value, unit, label, tone }) => (
 );
 
 export const Landing: FC = () => {
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
   const { data } = useApiData<ResourceCountdown[]>(`/api/countdowns?scenario=${scenario}`, FALLBACK_COUNTDOWNS);
   const countdowns = data ?? FALLBACK_COUNTDOWNS;
   const isCeasefire = scenario === "ceasefire";

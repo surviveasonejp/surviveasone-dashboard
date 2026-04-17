@@ -17,7 +17,8 @@ import { AlertBanner } from "../components/AlertBanner";
 import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { useApiData } from "../hooks/useApiData";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { type ScenarioId } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import type {
   PetrochemNode,
   PetrochemRiskNode,
@@ -484,7 +485,7 @@ export const PetrochemTree: FC = () => {
   const highlightId = searchParams.get("highlight");
 
   // シナリオ・日数
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
   const [day, setDay] = useState(0);
 
   // 折りたたみ

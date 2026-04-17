@@ -1,7 +1,8 @@
 import { type FC, useState, useCallback, useEffect, useMemo } from "react";
 import { AlertBanner } from "../components/AlertBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import { type ScenarioId, DEFAULT_SCENARIO, SCENARIOS } from "../../shared/scenarios";
+import { type ScenarioId, SCENARIOS } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import type { FlowSimulationResult } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 import { PageHero } from "../components/PageHero";
@@ -321,7 +322,7 @@ const EMPTY_SIM: FlowSimulationResult = {
 };
 
 export const Prepare: FC = () => {
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
   const [housing, setHousing] = useState<HousingType>("");
   const [familyTags, setFamilyTags] = useState<Set<FamilyTag>>(new Set());
   const [hasCar, setHasCar] = useState<boolean | null>(null);

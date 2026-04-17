@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
@@ -10,7 +10,7 @@ import { FlowTimeline } from "../components/FlowTimeline";
 import { EconomicCascade } from "../components/EconomicCascade";
 import { BlockadeContext } from "../components/BlockadeContext";
 import type { ResourceCountdown, FlowSimulationResult } from "../../shared/types";
-import { type ScenarioId, DEFAULT_SCENARIO } from "../../shared/scenarios";
+import { useScenarioParam } from "../hooks/useScenarioParam";
 import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
 import { DATA_SOURCES } from "../lib/dataSources";
 import { DataFreshness } from "../components/DataFreshness";
@@ -22,7 +22,7 @@ import staticConsumption from "../data/consumption.json";
 import { formatNumber } from "../lib/formatters";
 
 export const SurvivalClock: FC = () => {
-  const [scenario, setScenario] = useState<ScenarioId>(DEFAULT_SCENARIO);
+  const [scenario, setScenario] = useScenarioParam();
 
   // サーバー側で計算済みのカウントダウンを取得
   const { data: countdowns, isFromApi: countdownsFromApi } = useApiData<ResourceCountdown[]>(
