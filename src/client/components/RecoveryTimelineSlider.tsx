@@ -141,10 +141,10 @@ export const RecoveryTimelineSlider: FC = () => {
   const nearbyEvent = getNearbyEvent(day);
 
   return (
-    <div className="bg-[#0d9488]/10 border border-[#0d9488]/30 rounded-lg p-4 space-y-4">
+    <div className="bg-teal/10 border border-teal/30 rounded-lg p-4 space-y-4">
       {/* ヘッダー */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="font-mono text-xs tracking-widest text-[#0d9488]">
+        <div className="font-mono text-xs tracking-widest text-teal">
           CEASEFIRE RECOVERY TIMELINE — 供給正常化ロードマップ（シミュレーション）
         </div>
         <div
@@ -237,7 +237,7 @@ export const RecoveryTimelineSlider: FC = () => {
           <div className="text-[10px] text-neutral-500">遮断率</div>
         </div>
         <div className="bg-white border border-[#e2e8f0] rounded-lg p-2 space-y-0.5">
-          <div className="font-mono font-bold text-xl text-[#16a34a]">
+          <div className="font-mono font-bold text-xl text-success">
             {supplyRestoreRate.toFixed(0)}
             <span className="text-xs font-normal text-neutral-400">%</span>
           </div>
@@ -303,7 +303,7 @@ export const RecoveryTimelineSlider: FC = () => {
       </div>
 
       {/* 時系列サマリー */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono border-t border-[#0d9488]/20 pt-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono border-t border-teal/20 pt-3">
         {KEY_EVENTS.map((ev) => {
           const isPast = day > ev.day;
           const isCurrent = Math.abs(day - ev.day) <= 3;
@@ -311,7 +311,7 @@ export const RecoveryTimelineSlider: FC = () => {
             <button
               key={ev.day}
               onClick={() => setDay(ev.day)}
-              className="text-left space-y-0.5 rounded p-1.5 transition-colors hover:bg-[#0d9488]/10"
+              className="text-left space-y-0.5 rounded p-1.5 transition-colors hover:bg-teal/10"
               style={{
                 opacity: isPast ? 0.5 : 1,
                 outline: isCurrent ? `1px solid ${ev.color}` : "none",

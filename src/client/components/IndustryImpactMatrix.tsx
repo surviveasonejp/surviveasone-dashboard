@@ -248,7 +248,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                     <div className="flex gap-3 font-mono">
                       <span>制約: <span className="text-[#d97706] font-bold">Day {days.constraint}</span></span>
                       <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
-                      <span>停止: <span className="text-[#dc2626] font-bold">Day {days.halt}</span></span>
+                      <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                     </div>
                   </div>
                 )}
@@ -303,7 +303,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                         </td>
                       );
                     })}
-                    <td className="pl-3 py-1 text-[#2563eb] whitespace-nowrap">
+                    <td className="pl-3 py-1 text-info whitespace-nowrap">
                       Day {days.constraint}〜
                     </td>
                   </tr>
@@ -315,7 +315,7 @@ export const IndustryImpactMatrix: FC<Props> = ({ scenario }) => {
                           <div className="flex gap-4 text-neutral-500">
                             <span>制約開始: <span className="text-[#d97706] font-bold">Day {days.constraint}</span></span>
                             <span>減産: <span className="text-[#ea580c] font-bold">Day {days.reduction}</span></span>
-                            <span>停止: <span className="text-[#dc2626] font-bold">Day {days.halt}</span></span>
+                            <span>停止: <span className="text-primary font-bold">Day {days.halt}</span></span>
                           </div>
                           <div className="flex gap-3 text-neutral-400">
                             <span>石油依存: {Math.round(industry.oilDep * 100)}%</span>

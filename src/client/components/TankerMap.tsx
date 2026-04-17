@@ -969,15 +969,15 @@ export const TankerMap: FC<TankerMapProps> = ({
       {/* 凡例 + 精度バッジ */}
       <div className="absolute bottom-2 left-3 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] font-mono text-neutral-600">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#f59e0b]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-warning-soft" />
           VLCC
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#22c55e]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-success-soft" />
           LNG
         </span>
-        <span className="flex items-center gap-1 text-[#ef4444]">
-          <span className="inline-block w-1.5 h-1.5 bg-[#ef4444] rotate-45" />
+        <span className="flex items-center gap-1 text-primary-soft">
+          <span className="inline-block w-1.5 h-1.5 bg-primary-soft rotate-45" />
           封鎖点
         </span>
         {(scenario === "partial" || scenario === "full") && (

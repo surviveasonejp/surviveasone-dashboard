@@ -615,9 +615,9 @@ const PhaseStoryLine: FC<PhaseStoryLineProps> = ({ thresholds }) => {
       <div className="relative flex items-start" style={{ minHeight: "64px" }}>
         {/* Day 0: 封鎖宣言 */}
         <div className="flex flex-col items-center" style={{ width: `${100 / (storyNodes.length + 1)}%` }}>
-          <div className="w-3 h-3 rounded-full bg-[#22c55e] border-2 border-[#0c1018] z-10 mb-1 shrink-0" />
+          <div className="w-3 h-3 rounded-full bg-success-soft border-2 border-[#0c1018] z-10 mb-1 shrink-0" />
           <div className="text-center px-0.5">
-            <div className="font-mono font-bold text-[8px] text-[#22c55e]">Day 0</div>
+            <div className="font-mono font-bold text-[8px] text-success-soft">Day 0</div>
             <div className="text-[9px] font-mono text-neutral-300 leading-tight">封鎖宣言</div>
             <div className="text-[8px] text-neutral-600 leading-tight hidden sm:block">供給余力維持</div>
           </div>

@@ -158,7 +158,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
 
       {/* 都道府県セレクタ */}
       <select
-        className="w-full bg-panel border border-border rounded px-3 py-2 text-sm text-text font-mono focus:outline-none focus:border-[#2563eb]/60 transition-colors"
+        className="w-full bg-panel border border-border rounded px-3 py-2 text-sm text-text font-mono focus:outline-none focus:border-info/60 transition-colors"
         value={selectedPref?.name ?? ""}
         onChange={(e) => handleSelect(e.target.value)}
       >
@@ -176,11 +176,11 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
           {/* 都道府県名 + エリア */}
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-mono font-bold text-sm text-text">{selectedPref.name}</span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#2563eb]/10 text-[#2563eb] border border-[#2563eb]/20">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-info/10 text-info border border-info/20">
               {REGION_LABELS[selectedPref.region] ?? selectedPref.region}エリア
             </span>
             {selectedPref.nuclear && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#22c55e]/12 text-[#22c55e] border border-[#22c55e]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-success-soft/12 text-success-soft border border-success-soft/20">
                 原発あり
               </span>
             )}
@@ -190,7 +190,7 @@ export const PrefectureSelector: FC<Props> = ({ regions, onSelectRegion, selecte
               </span>
             )}
             {selectedPref.island && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#f59e0b]/12 text-[#f59e0b] border border-[#f59e0b]/20">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-warning-soft/12 text-warning-soft border border-warning-soft/20">
                 離島・補給路長
               </span>
             )}

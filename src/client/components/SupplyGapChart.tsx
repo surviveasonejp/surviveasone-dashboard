@@ -257,7 +257,7 @@ export const SupplyGapChart: FC<SupplyGapChartProps> = ({ scenario }) => {
       {/* 凡例 */}
       <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[10px] font-mono text-neutral-500">
         <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-2.5 rounded-sm bg-[#f59e0b] opacity-80" />
+          <span className="inline-block w-3 h-2.5 rounded-sm bg-warning-soft opacity-80" />
           ホルムズ経由
         </span>
         <span className="flex items-center gap-1.5">
@@ -265,11 +265,11 @@ export const SupplyGapChart: FC<SupplyGapChartProps> = ({ scenario }) => {
           パイプライン迂回（フジャイラ・ヤンブー）
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-2.5 rounded-sm bg-[#22c55e] opacity-80" />
+          <span className="inline-block w-3 h-2.5 rounded-sm bg-success-soft opacity-80" />
           非中東既存供給（豪州・サハリン等）
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="inline-block w-3 h-2.5 rounded-sm bg-[#ef4444] opacity-30" />
+          <span className="inline-block w-3 h-2.5 rounded-sm bg-primary-soft opacity-30" />
           不足（備蓄放出・需要抑制で対応）
         </span>
       </div>

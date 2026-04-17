@@ -157,7 +157,7 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
           return (
             <div
               key={r.param}
-              className={`flex items-center gap-2 rounded${isTopFactor ? " border-l-2 border-[#f59e0b] pl-1.5" : ""}`}
+              className={`flex items-center gap-2 rounded${isTopFactor ? " border-l-2 border-warning-soft pl-1.5" : ""}`}
             >
               <div className="w-20 text-right text-[10px] font-mono text-neutral-400 shrink-0">
                 {r.label}
@@ -167,7 +167,7 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
                 <div className="absolute left-1/2 top-0 h-full w-px bg-neutral-600 opacity-40" />
                 {/* 左バー（パラメータ変動で日数減少方向） */}
                 <div
-                  className="absolute top-0.5 h-4 rounded-l bg-[#ef4444] opacity-60"
+                  className="absolute top-0.5 h-4 rounded-l bg-primary-soft opacity-60"
                   style={{
                     right: "50%",
                     width: `${Math.min(barLeft, 50)}%`,
@@ -175,7 +175,7 @@ export const SensitivityChart: FC<SensitivityChartProps> = ({ scenarioId }) => {
                 />
                 {/* 右バー（パラメータ変動で日数増加方向） */}
                 <div
-                  className="absolute top-0.5 h-4 rounded-r bg-[#22c55e] opacity-60"
+                  className="absolute top-0.5 h-4 rounded-r bg-success-soft opacity-60"
                   style={{
                     left: "50%",
                     width: `${Math.min(barRight, 50)}%`,

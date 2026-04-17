@@ -70,7 +70,7 @@ function GainBar({ days, max, highlight }: { days: number; max: number; highligh
   return (
     <div className="h-1.5 bg-[#e2e8f0] rounded-full overflow-hidden">
       <div
-        className={`h-full rounded-full transition-all duration-500 ${highlight ? "bg-[#22c55e]" : "bg-[#2563eb]"}`}
+        className={`h-full rounded-full transition-all duration-500 ${highlight ? "bg-success-soft" : "bg-info"}`}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -186,8 +186,8 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
               className={[
                 "border rounded-lg p-3 space-y-2.5 text-left transition-all cursor-pointer w-full",
                 isSelected
-                  ? "border-[#2563eb]/60 bg-[#2563eb]/6 shadow-sm"
-                  : "border-border hover:border-[#2563eb]/40",
+                  ? "border-info/60 bg-info/6 shadow-sm"
+                  : "border-border hover:border-info/40",
               ].join(" ")}
             >
               {/* ヘッダー */}
@@ -198,7 +198,7 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                     className={[
                       "mt-0.5 w-3.5 h-3.5 shrink-0 rounded border transition-colors",
                       isSelected
-                        ? "bg-[#2563eb] border-[#2563eb]"
+                        ? "bg-info border-info"
                         : "border-neutral-300 bg-white",
                     ].join(" ")}
                   >
@@ -212,13 +212,13 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                     <div className="font-mono text-xs font-bold text-text">
                       {card.title}
                     </div>
-                    <div className="text-xs font-mono text-[#2563eb]">
+                    <div className="text-xs font-mono text-info">
                       発動: {card.triggerDay}
                     </div>
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="font-mono font-bold text-lg text-[#2563eb]">
+                  <div className="font-mono font-bold text-lg text-info">
                     +{primaryGain}
                     <span className="text-xs font-normal text-neutral-400">日</span>
                   </div>
@@ -237,8 +237,8 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
                   const val = gains[res];
                   const isMain = res === card.primaryResource;
                   return (
-                    <div key={res} className={`rounded px-1 py-0.5 ${isMain ? "bg-[#2563eb]/8" : ""}`}>
-                      <div className={`font-mono text-xs font-bold ${val > 0 ? (isMain ? "text-[#2563eb]" : "text-neutral-500") : "text-neutral-300"}`}>
+                    <div key={res} className={`rounded px-1 py-0.5 ${isMain ? "bg-info/8" : ""}`}>
+                      <div className={`font-mono text-xs font-bold ${val > 0 ? (isMain ? "text-info" : "text-neutral-500") : "text-neutral-300"}`}>
                         {val > 0 ? `+${val}` : "—"}
                       </div>
                       <div className="text-[10px] text-neutral-400">{RESOURCE_LABELS[res]}</div>
@@ -265,9 +265,9 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
 
       {/* 組み合わせ効果サマリー */}
       {hasSelection && pe && (
-        <div className="border border-[#22c55e]/40 rounded-lg p-3 bg-[#22c55e]/6 space-y-2.5">
+        <div className="border border-success-soft/40 rounded-lg p-3 bg-success-soft/6 space-y-2.5">
           <div className="flex items-center justify-between">
-            <div className="font-mono text-xs font-bold text-[#22c55e]">
+            <div className="font-mono text-xs font-bold text-success-soft">
               組み合わせ効果（{selected.size}政策）
             </div>
             <button
@@ -283,9 +283,9 @@ export const PolicyIntervention: FC<Props> = ({ scenario }) => {
               const val = combinedGains[res];
               const baseline = res === "oil" ? pe.baseline.oilDay : res === "lng" ? pe.baseline.lngDay : pe.baseline.powerDay;
               return (
-                <div key={res} className="bg-panel rounded p-2 border border-[#22c55e]/20">
+                <div key={res} className="bg-panel rounded p-2 border border-success-soft/20">
                   <div className="font-mono text-xs text-neutral-500">{RESOURCE_LABELS[res]}</div>
-                  <div className="font-mono font-bold text-sm text-[#22c55e]">
+                  <div className="font-mono font-bold text-sm text-success-soft">
                     {val > 0 ? `+${val}日` : "—"}
                   </div>
                   <div className="text-[10px] text-neutral-400">

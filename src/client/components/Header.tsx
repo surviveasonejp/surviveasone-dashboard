@@ -54,7 +54,7 @@ export const Header: FC<HeaderProps> = ({ onNavigate }) => {
               onClick={() => onNavigate(item.path)}
               className={`px-3 py-1.5 text-xs font-mono tracking-wider transition-colors rounded ${
                 location.pathname === item.path
-                  ? "text-[#ef4444] bg-[#ef4444]/10"
+                  ? "text-primary-soft bg-primary-soft/10"
                   : "text-neutral-400 hover:text-white hover:bg-white/5"
               }`}
             >

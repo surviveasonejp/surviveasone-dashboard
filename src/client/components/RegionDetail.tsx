@@ -174,12 +174,12 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
       <div className="text-[10px] font-mono text-neutral-600 flex items-center gap-1.5">
         {region.hasLiveData ? (
           <>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-success-soft" />
             電力需給: 実測データ
           </>
         ) : (
           <>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-warning-soft" />
             電力需給: 推定値（静的パラメータ）
           </>
         )}

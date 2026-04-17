@@ -74,7 +74,7 @@ const StockBars: FC<StockBarProps> = ({ countries, maxDays, ieaLine }) => (
 
       return (
         <div key={c.country} className="flex items-center gap-2" title={c.note}>
-          <span className={`text-[10px] font-mono w-20 text-right shrink-0 ${isJapan ? "text-[#f59e0b] font-bold" : "text-neutral-400"}`}>
+          <span className={`text-[10px] font-mono w-20 text-right shrink-0 ${isJapan ? "text-warning-soft font-bold" : "text-neutral-400"}`}>
             {c.country}
           </span>
           <div className="flex-1 h-3.5 bg-[#0c1018] rounded overflow-hidden relative">
@@ -94,8 +94,8 @@ const StockBars: FC<StockBarProps> = ({ countries, maxDays, ieaLine }) => (
             )}
           </div>
           <span className={`text-[10px] font-mono w-8 text-right shrink-0 ${
-            isJapan ? "text-[#f59e0b] font-bold"
-            : c.days < 30 ? "text-[#ef4444]"
+            isJapan ? "text-warning-soft font-bold"
+            : c.days < 30 ? "text-primary-soft"
             : "text-neutral-500"
           }`}>
             {c.days}日
@@ -134,15 +134,15 @@ export const IeaComparison: FC = () => {
 
       <div className="flex flex-wrap items-center justify-center gap-3 text-[8px] font-mono text-neutral-700 pt-1">
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-sm bg-[#22c55e] opacity-40" />
+          <span className="inline-block w-2 h-2 rounded-sm bg-success-soft opacity-40" />
           90日以上
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-sm bg-[#f59e0b] opacity-40" />
+          <span className="inline-block w-2 h-2 rounded-sm bg-warning-soft opacity-40" />
           30-90日
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block w-2 h-2 rounded-sm bg-[#ef4444] opacity-70" />
+          <span className="inline-block w-2 h-2 rounded-sm bg-primary-soft opacity-70" />
           30日未満
         </span>
         <span>|</span>

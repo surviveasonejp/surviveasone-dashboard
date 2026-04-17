@@ -141,20 +141,20 @@ export const AlternativeRoutePanel: FC = () => {
       <div className="bg-bg border border-border rounded-lg p-3 space-y-2">
         <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
           <div>
-            <div className="font-bold text-lg text-[#dc2626]">
+            <div className="font-bold text-lg text-primary">
               {hormuzCapacity.toFixed(1)}
               <span className="text-xs font-normal text-neutral-400"> Mbpd</span>
             </div>
             <div className="text-text-muted">ホルムズ経由</div>
-            <div className="text-[10px] text-[#dc2626]">封鎖時停止</div>
+            <div className="text-[10px] text-primary">封鎖時停止</div>
           </div>
           <div>
-            <div className="font-bold text-lg text-[#2563eb]">
+            <div className="font-bold text-lg text-info">
               {altCapacity.toFixed(2)}
               <span className="text-xs font-normal text-text-muted"> Mbpd</span>
             </div>
             <div className="text-text-muted">代替ルート合計</div>
-            <div className="text-[10px] text-[#2563eb]">確保可能</div>
+            <div className="text-[10px] text-info">確保可能</div>
           </div>
           <div>
             <div className="font-bold text-lg text-[#d97706]">
@@ -170,7 +170,7 @@ export const AlternativeRoutePanel: FC = () => {
         <div className="space-y-1">
           <div className="flex justify-between text-[10px] font-mono text-text-muted">
             <span>代替ルートカバー率</span>
-            <span className="font-bold text-[#2563eb]">{coverageRate.toFixed(0)}%</span>
+            <span className="font-bold text-info">{coverageRate.toFixed(0)}%</span>
           </div>
           <div className="h-2 bg-border rounded-full overflow-hidden">
             <div
@@ -190,7 +190,7 @@ export const AlternativeRoutePanel: FC = () => {
         {/* 封鎖停止ルート */}
         <div className="space-y-1">
           <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#dc2626] inline-block" />
+            <span className="w-2 h-2 rounded-full bg-primary inline-block" />
             封鎖時停止ルート
           </div>
           {blockedRoute.map((cfg) => {
@@ -220,7 +220,7 @@ export const AlternativeRoutePanel: FC = () => {
         {/* 継続中（非ホルムズ） */}
         <div className="space-y-1">
           <div className="text-[10px] font-mono text-text-muted tracking-wider flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#16a34a] inline-block" />
+            <span className="w-2 h-2 rounded-full bg-success inline-block" />
             継続中（非ホルムズ・封鎖影響なし）
           </div>
           {activeRoutes.map((cfg) => {

@@ -66,9 +66,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   rationing: {
     label: "供給制限フェーズ",
     urgency: "high",
-    colorClass: "text-[#ef4444]",
-    borderClass: "border-[#ef4444]/30",
-    bgClass: "bg-[#ef4444]/8",
+    colorClass: "text-primary-soft",
+    borderClass: "border-primary-soft/30",
+    bgClass: "bg-primary-soft/8",
     actions: [
       "公共交通・自転車・徒歩での代替通勤ルートを確認・実走する",
       "現金5万円以上を手元に確保する（電子決済停止リスク対応）",
@@ -78,9 +78,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   logistics_stop: {
     label: "物流停止フェーズ",
     urgency: "critical",
-    colorClass: "text-[#dc2626]",
-    borderClass: "border-[#dc2626]/30",
-    bgClass: "bg-[#dc2626]/8",
+    colorClass: "text-primary",
+    borderClass: "border-primary/30",
+    bgClass: "bg-primary/8",
     actions: [
       "残存備蓄量を把握し、1日の消費量を管理する",
       "地域の食料配給・物資支援の情報を自治体から入手する",
@@ -90,9 +90,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   distribution: {
     label: "配給制フェーズ",
     urgency: "critical",
-    colorClass: "text-[#dc2626]",
-    borderClass: "border-[#dc2626]/30",
-    bgClass: "bg-[#dc2626]/8",
+    colorClass: "text-primary",
+    borderClass: "border-primary/30",
+    bgClass: "bg-primary/8",
     actions: [
       "マイナンバーカード・本人確認書類の保管場所を確認する",
       "近隣の要配慮者（高齢者・透析患者）の状況を把握しておく",
@@ -102,9 +102,9 @@ const PHASE_DATA: Record<ThresholdType, PhaseData> = {
   stop: {
     label: "供給停止フェーズ",
     urgency: "critical",
-    colorClass: "text-[#dc2626]",
-    borderClass: "border-[#dc2626]/30",
-    bgClass: "bg-[#dc2626]/8",
+    colorClass: "text-primary",
+    borderClass: "border-primary/30",
+    bgClass: "bg-primary/8",
     actions: [
       "徒歩・自転車圏内での生活に切り替える",
       "水・食料の厳格な管理・記録を開始する（1日分ずつ把握）",
@@ -182,9 +182,9 @@ const EMPTY_RESULT: FlowSimulationResult = {
 };
 
 const URGENCY_BADGE: Record<PhaseData["urgency"], { label: string; className: string }> = {
-  normal:   { label: "確認推奨",   className: "bg-[#22c55e]/15 text-[#22c55e]" },
+  normal:   { label: "確認推奨",   className: "bg-success-soft/15 text-success-soft" },
   high:     { label: "事前準備",   className: "bg-[#d97706]/15 text-[#d97706]" },
-  critical: { label: "重要確認",   className: "bg-[#ef4444]/15 text-[#ef4444]" },
+  critical: { label: "重要確認",   className: "bg-primary-soft/15 text-primary-soft" },
 };
 
 export const SituationActionPanel: FC<Props> = ({ scenario }) => {
@@ -219,12 +219,12 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
 
   if (isRecovery) {
     return (
-      <div className="bg-[#0d9488]/8 border border-[#0d9488]/25 rounded-lg p-4 space-y-3">
+      <div className="bg-teal/8 border border-teal/25 rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="font-mono text-xs tracking-widest text-[#0d9488]">
+          <div className="font-mono text-xs tracking-widest text-teal">
             SITUATION ACTIONS — 今確認すべき事項
           </div>
-          <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#0d9488]/15 text-[#0d9488]">
+          <span className="text-xs font-mono px-2 py-0.5 rounded bg-teal/15 text-teal">
             停戦・回復フェーズ
           </span>
         </div>
@@ -238,16 +238,16 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
             "燃料価格・物流コストの正常化を確認してから大型購入を検討する",
           ].map((action, i) => (
             <div key={i} className="flex items-start gap-2.5 text-xs text-text">
-              <span className="shrink-0 w-5 h-5 rounded-full border border-[#0d9488]/40 text-[#0d9488] flex items-center justify-center font-mono text-[10px] mt-0.5">
+              <span className="shrink-0 w-5 h-5 rounded-full border border-teal/40 text-teal flex items-center justify-center font-mono text-[10px] mt-0.5">
                 {i + 1}
               </span>
               <span className="leading-relaxed">{action}</span>
             </div>
           ))}
         </div>
-        <div className="text-xs text-text-muted border-t border-[#0d9488]/15 pt-2">
+        <div className="text-xs text-text-muted border-t border-teal/15 pt-2">
           シミュレーション上の推定です。実際の回復状況は政策対応により変動します。
-          <Link to="/prepare" className="text-[#0d9488] ml-1 hover:underline">詳細チェックリスト →</Link>
+          <Link to="/prepare" className="text-teal ml-1 hover:underline">詳細チェックリスト →</Link>
         </div>
       </div>
     );
@@ -312,7 +312,7 @@ export const SituationActionPanel: FC<Props> = ({ scenario }) => {
         </p>
         <Link
           to="/prepare"
-          className="text-xs font-mono text-[#2563eb] hover:underline shrink-0"
+          className="text-xs font-mono text-info hover:underline shrink-0"
         >
           詳細チェックリスト →
         </Link>

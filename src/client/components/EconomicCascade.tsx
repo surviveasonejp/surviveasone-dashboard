@@ -147,18 +147,18 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
       {/* ナフサ vs 石油 在庫比較 */}
       <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono border border-border rounded p-2 bg-[#0c1018]">
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-sm inline-block bg-[#f59e0b]" />
+          <span className="w-2 h-2 rounded-sm inline-block bg-warning-soft" />
           <span className="text-neutral-500">ナフサ民間在庫</span>
-          <span className="text-[#f59e0b] font-bold">{NAPHTHA_STOCK_DAYS}日</span>
+          <span className="text-warning-soft font-bold">{NAPHTHA_STOCK_DAYS}日</span>
           <span className="text-[10px] text-neutral-600">（法的備蓄義務なし）</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-sm inline-block bg-[#22c55e]" />
+          <span className="w-2 h-2 rounded-sm inline-block bg-success-soft" />
           <span className="text-neutral-500">石油国家備蓄</span>
-          <span className="text-[#22c55e] font-bold">241日</span>
+          <span className="text-success-soft font-bold">241日</span>
           <span className="text-[10px] text-neutral-600">（石油備蓄法）</span>
         </div>
-        <p className="w-full text-[10px] text-[#f59e0b]/70">
+        <p className="w-full text-[10px] text-warning-soft/70">
           ⚠ ナフサは石油より約4倍早く枯渇する。減産ライン: ¥10万/kL | 停止ライン: ¥11〜13万/kL | 崩壊ライン: ¥13万/kL超
         </p>
       </div>
@@ -216,7 +216,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
           {wtiPriceUsd != null
             ? `（WTI $${wtiPriceUsd.toFixed(1)}/バレル実測値より算出）`
             : "（静的基準値）"}
-          {" "}| 停止ライン: <span className="text-[#f59e0b]">¥10万（減産）</span>→<span className="text-[#ef4444]">¥11〜13万（広範囲停止）</span>→<span className="text-[#dc2626]">¥13万超（崩壊）</span>
+          {" "}| 停止ライン: <span className="text-warning-soft">¥10万（減産）</span>→<span className="text-primary-soft">¥11〜13万（広範囲停止）</span>→<span className="text-primary">¥13万超（崩壊）</span>
         </p>
         <p>
           ガソリン基準:
@@ -279,7 +279,7 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
       {/* 産業配給優先順位 — 配給前夜・配給制フェーズ時に表示 */}
       {snapshots.some((s) => s.phase === "rationing" || s.phase === "collapse") && (
         <div className="border-t border-border pt-3 space-y-2">
-          <div className="text-xs font-mono text-[#ef4444] tracking-wider">
+          <div className="text-xs font-mono text-primary-soft tracking-wider">
             産業配給 — ナフサ割当の優先順位
           </div>
           <p className="text-[10px] font-mono text-neutral-600">
@@ -308,11 +308,11 @@ export const EconomicCascade: FC<EconomicCascadeProps> = ({ simulation, wtiPrice
           </div>
           <div className="space-y-1">
             <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] font-mono text-neutral-600">
-              <span><span className="text-[#f59e0b]">在庫50%↓</span> → 石油備蓄法（国家備蓄放出）</span>
-              <span><span className="text-[#ef4444]">在庫30%↓</span> → 石油需給適正化法（用途別優先配分）</span>
-              <span><span className="text-[#dc2626]">在庫10%↓</span> → 国民生活安定緊急措置法（正式配給制）</span>
+              <span><span className="text-warning-soft">在庫50%↓</span> → 石油備蓄法（国家備蓄放出）</span>
+              <span><span className="text-primary-soft">在庫30%↓</span> → 石油需給適正化法（用途別優先配分）</span>
+              <span><span className="text-primary">在庫10%↓</span> → 国民生活安定緊急措置法（正式配給制）</span>
             </div>
-            <p className="text-[10px] font-mono text-[#ef4444]/70">
+            <p className="text-[10px] font-mono text-primary-soft/70">
               ⚠ ナフサ法的空白: 3法は「燃料危機」設計。ナフサ用途別配分・包装材統制の法的根拠なし。
               食料があっても「包めない・運べない」シナリオへの法的対応は未整備。
             </p>
