@@ -85,7 +85,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   "Referrer-Policy": "strict-origin-when-cross-origin",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=(self)",
   "Content-Security-Policy":
-    "default-src 'self'; script-src 'self' 'sha256-G4lm7I27uE0JjOWA3Rwp3wfXru5xF6qgfwc0GsE4q7E=' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com",
+    "default-src 'self'; script-src 'self' 'sha256-G4lm7I27uE0JjOWA3Rwp3wfXru5xF6qgfwc0GsE4q7E=' https://static.cloudflareinsights.com; script-src-attr 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com",
 };
 
 function isDevRequest(request: Request): boolean {
