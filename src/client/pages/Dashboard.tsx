@@ -18,6 +18,7 @@ import { PhaseIndicator } from "../components/PhaseIndicator";
 import { DecisionTriadPanel } from "../components/DecisionTriadPanel";
 import { DemandAnomalyBadge } from "../components/DemandAnomalyBadge";
 import { MyHypothesisPanel } from "../components/MyHypothesisPanel";
+import { HouseholdSummaryCard } from "../components/HouseholdSummaryCard";
 import { Badge } from "../components/Badge";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
@@ -69,6 +70,9 @@ export const Dashboard: FC = () => {
 
       {/* Phase 20-B: 事実 / 解釈 / 含意 の3カラムサマリー（旧 SUPPLY BUFFER + CountdownTimer×3 を統合） */}
       <DecisionTriadPanel scenario={scenario} />
+
+      {/* Phase 22-D: 世帯供給余力サマリー（localStorage の FamilyMeter 入力を使用） */}
+      <HouseholdSummaryCard scenario={scenario} />
 
       {/* Phase 21: 需要異常値シグナル（ブルウィップ効果の可視化） */}
       <DemandAnomalyBadge />

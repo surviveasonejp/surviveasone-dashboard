@@ -6,6 +6,7 @@ import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
 import { useUserRegion } from "../hooks/useUserRegion";
 import { useScenarioParam } from "../hooks/useScenarioParam";
+import { useRecentRealEvents } from "../hooks/useRecentRealEvents";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SCENARIOS } from "../../shared/scenarios";
 import type { FamilyInputs, SurvivalMode } from "../../shared/types";
@@ -149,6 +150,8 @@ export const FamilyMeter: FC = () => {
   const resourceStatus = STATUS_BY_SCENARIO[scenarioId];
 
   const score = useFamilySurvival(inputs, scenarioId);
+  const { response: recentEventsData, isFromApi: eventsFromApi } = useRecentRealEvents(30);
+  const recentEvents = recentEventsData.events.slice(0, 5);
   const rankColor = getSurvivalRankColor(score.rank);
   const rankLabel = getSurvivalRankLabel(score.rank);
 
@@ -255,6 +258,35 @@ export const FamilyMeter: FC = () => {
 
       <SimulationBanner />
       <BlockadeContext />
+
+      {/* 直近の関連イベント（constraint モード時・APIから取得） */}
+      {inputs.mode === "constraint" && recentEvents.length > 0 && (
+        <div className="bg-panel border border-border rounded-lg p-4 space-y-2">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">
+              直近30日の関連イベント
+            </SectionHeading>
+            <span className="text-[9px] font-mono text-text-muted">
+              全{recentEventsData.count}件 / 表示{recentEvents.length}件
+              {!eventsFromApi && " (キャッシュ)"}
+            </span>
+          </div>
+          <ul className="space-y-1.5">
+            {recentEvents.map((ev, i) => (
+              <li key={`${ev.date}-${i}`} className="flex gap-2 text-xs">
+                <span className="font-mono text-text-muted shrink-0 w-20">{ev.date}</span>
+                <span className="text-[10px] font-mono px-1.5 rounded border border-border text-text-muted shrink-0 self-start mt-0.5">
+                  {ev.category}
+                </span>
+                <span className="text-text leading-snug">{ev.label}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-[10px] text-text-muted leading-snug pt-1 border-t border-border">
+            供給制約の根拠となる実イベント。ステータス判定の補助情報として参照できます。
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 左: 入力フォーム */}

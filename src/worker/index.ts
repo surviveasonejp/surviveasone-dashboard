@@ -355,6 +355,8 @@ async function handleApiRoute(
       return handleMethodology();
     case "/api/validation":
       return handleValidation();
+    case "/api/real-events":
+      return handleRealEvents(url);
     case "/api/petrochemtree":
       return handlePetrochemTree(env);
     case "/api/petrochemtree/risk":
@@ -393,6 +395,7 @@ async function handleApiRoute(
           "GET /api/simulate?scenario={id}": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
           "GET /api/methodology": "計算モデル・前提条件・係数・出典（構造化JSON）",
           "GET /api/validation": "シミュレーション予測と実データの比較検証",
+          "GET /api/real-events": "封鎖後の実イベント一覧（?recentDays=60&category=industry でフィルタ）",
           "GET /api/sources": "全データソースの出典マッピング（数値→出典URLの1対1対応）",
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
@@ -1130,6 +1133,51 @@ function handleValidation(): Response {
   }, 200, true);
 }
 
+// ─── /api/real-events ────────────────────────────────
+// realEvents.json の記録イベントを返却。?recentDays=N で直近フィルタ、
+// ?category=X で種別（industry/government/international/medical）フィルタ。
+
+function handleRealEvents(url: URL): Response {
+  const recentDaysRaw = url.searchParams.get("recentDays");
+  const category = url.searchParams.get("category");
+  const recentDays = recentDaysRaw ? parseInt(recentDaysRaw, 10) : null;
+
+  type RealEvent = {
+    date: string;
+    dayOffset: number;
+    category: string;
+    label: string;
+    source: string;
+    impact: string;
+    scenario?: string;
+  };
+
+  let events: RealEvent[] = staticRealEvents.events as RealEvent[];
+
+  if (category) {
+    events = events.filter((e) => e.category === category);
+  }
+
+  if (recentDays && recentDays > 0) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - recentDays);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    events = events.filter((e) => e.date >= cutoffStr);
+  }
+
+  // 新しい順にソート
+  events = events.slice().sort((a, b) => b.date.localeCompare(a.date));
+
+  return jsonResponse({
+    generatedAt: new Date().toISOString(),
+    dataAsOf: staticRealEvents.meta.updatedAt,
+    blockadeStartDate: staticRealEvents.blockadeStartDate,
+    count: events.length,
+    filters: { recentDays, category },
+    events,
+  }, 200, true);
+}
+
 // ─── /api/sources ────────────────────────────────────
 // 全データソースの出典マッピング（数値→出典URLの1対1対応）
 
@@ -1247,6 +1295,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/petrochemtree/risk", desc: "石化樹形図シナリオ別リスクスコア・崩壊フラグ", params: "?scenario=realistic" },
     { method: "GET", path: "/api/methodology", desc: "16計算モデルのメタデータ・パラメータ・信頼度", params: "" },
     { method: "GET", path: "/api/validation", desc: "シミュレーション予測 vs 実際の照合結果", params: "" },
+    { method: "GET", path: "/api/real-events", desc: "封鎖後の実イベント一覧（日付降順）", params: "?recentDays=60&category=industry" },
     { method: "GET", path: "/api/sources", desc: "全データソース一覧（更新頻度・自動/手動・信頼度）", params: "" },
     { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要（LLM・クローラー向け）", params: "?scenario=realistic" },
     { method: "GET", path: "/api/data", desc: "全データ概要（HTML、研究者向け）", params: "" },

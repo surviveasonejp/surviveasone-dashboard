@@ -13,6 +13,7 @@ import {
   STATUS_COLOR,
   RESOURCE_STATUS_UPDATED_AT,
 } from "../lib/resourceStatus";
+import { useRecentRealEvents } from "../hooks/useRecentRealEvents";
 
 // ─── データ定義（既存と同一） ─────────────────────────
 
@@ -329,6 +330,11 @@ const EMPTY_SIM: FlowSimulationResult = {
 
 export const Prepare: FC = () => {
   const [scenario, setScenario] = useScenarioParam();
+  const { response: recentEvents14 } = useRecentRealEvents(14);
+  const eventCountByCategory = recentEvents14.events.reduce<Record<string, number>>((acc, ev) => {
+    acc[ev.category] = (acc[ev.category] ?? 0) + 1;
+    return acc;
+  }, {});
   const [housing, setHousing] = useState<HousingType>("");
   const [familyTags, setFamilyTags] = useState<Set<FamilyTag>>(new Set());
   const [hasCar, setHasCar] = useState<boolean | null>(null);
@@ -398,6 +404,22 @@ export const Prepare: FC = () => {
             {RESOURCE_STATUS_UPDATED_AT} 時点・{SCENARIOS[scenario].label}
           </span>
         </div>
+        {recentEvents14.count > 0 && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-mono text-text-muted bg-bg rounded px-2 py-1">
+            <span className="text-text-muted">直近14日の根拠イベント:</span>
+            {(["medical", "government", "industry", "international"] as const).map((cat) => {
+              const n = eventCountByCategory[cat] ?? 0;
+              if (n === 0) return null;
+              return (
+                <span key={cat} className="inline-flex items-center gap-0.5">
+                  <span className="text-text-muted">{cat}</span>
+                  <span className="text-text font-bold">{n}</span>
+                </span>
+              );
+            })}
+            <span className="text-text-muted ml-auto">計{recentEvents14.count}件</span>
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
           {(Object.entries(STATUS_BY_SCENARIO[scenario]) as [keyof typeof STATUS_BY_SCENARIO["realistic"], typeof STATUS_BY_SCENARIO["realistic"][keyof typeof STATUS_BY_SCENARIO["realistic"]]][])
             .map(([key, entry]) => {
