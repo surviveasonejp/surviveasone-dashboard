@@ -7,6 +7,12 @@ import type { FlowSimulationResult } from "../../shared/types";
 import { useApiData } from "../hooks/useApiData";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
+import {
+  STATUS_BY_SCENARIO,
+  STATUS_LABEL,
+  STATUS_COLOR,
+  RESOURCE_STATUS_UPDATED_AT,
+} from "../lib/resourceStatus";
 
 // ─── データ定義（既存と同一） ─────────────────────────
 
@@ -381,6 +387,41 @@ export const Prepare: FC = () => {
         level="warning"
         message="備蓄は配給や相互支援が届くまでの時間を稼ぐ手段 — わが家に足りないものを確認しよう"
       />
+
+      {/* 市場ステータス（リソース別・シナリオ連動） */}
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-1">
+          <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">
+            リソース別 市場ステータス
+          </SectionHeading>
+          <span className="text-[9px] font-mono text-text-muted">
+            {RESOURCE_STATUS_UPDATED_AT} 時点・{SCENARIOS[scenario].label}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+          {(Object.entries(STATUS_BY_SCENARIO[scenario]) as [keyof typeof STATUS_BY_SCENARIO["realistic"], typeof STATUS_BY_SCENARIO["realistic"][keyof typeof STATUS_BY_SCENARIO["realistic"]]][])
+            .map(([key, entry]) => {
+              const color = STATUS_COLOR[entry.status];
+              return (
+                <div key={key} className="flex items-start gap-2 text-xs py-1">
+                  <span
+                    className="text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 mt-0.5"
+                    style={{ color: color.text, backgroundColor: color.bg, borderColor: color.border }}
+                  >
+                    {STATUS_LABEL[entry.status]}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-text font-bold">{key}</div>
+                    <div className="text-[10px] text-text-muted leading-snug">
+                      {entry.note}
+                      {entry.since && <span className="ml-1 font-mono">({entry.since}〜)</span>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      </div>
 
       {/* 備蓄優先順位の変化（ceasefire時は非表示） */}
       {scenario !== "ceasefire" && <div className="bg-panel border border-warning/30 rounded-lg p-4 space-y-3">

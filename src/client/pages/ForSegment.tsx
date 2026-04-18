@@ -6,6 +6,19 @@ import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SectionHeading } from "../components/SectionHeading";
 import { type ScenarioId } from "../../shared/scenarios";
 import { useScenarioParam } from "../hooks/useScenarioParam";
+import {
+  STATUS_BY_SCENARIO,
+  STATUS_LABEL,
+  STATUS_COLOR,
+  type ResourceKey,
+} from "../lib/resourceStatus";
+
+/** セグメント別に強く関連するリソース（household系セグメントのみ） */
+const SEGMENT_RELEVANT_RESOURCES: Record<string, ResourceKey[]> = {
+  parents: ["食料", "医療・衛生", "水"],
+  dialysis: ["医療・衛生", "電力", "水"],
+  elderly: ["医療・衛生", "電力", "食料"],
+};
 
 const SCENARIO_LABELS: Record<ScenarioId, string> = {
   optimistic: "楽観シナリオ",
@@ -311,6 +324,38 @@ export const ForSegment: FC = () => {
           シミュレーション上の推定値です。備蓄放出・代替供給・医療施設の優先供給により変動します
         </div>
       </div>
+
+      {/* 関連リソースの市場ステータス（household系セグメントのみ） */}
+      {SEGMENT_RELEVANT_RESOURCES[seg.id] && (
+        <div className="bg-panel border border-border rounded-lg p-4 space-y-2">
+          <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">
+            このセグメントに関わる市場ステータス
+          </SectionHeading>
+          <div className="space-y-1.5">
+            {SEGMENT_RELEVANT_RESOURCES[seg.id]!.map((key) => {
+              const entry = STATUS_BY_SCENARIO[scenario][key];
+              const color = STATUS_COLOR[entry.status];
+              return (
+                <div key={key} className="flex items-start gap-2 text-xs">
+                  <span
+                    className="text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 mt-0.5"
+                    style={{ color: color.text, backgroundColor: color.bg, borderColor: color.border }}
+                  >
+                    {STATUS_LABEL[entry.status]}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-text font-bold">{key}</div>
+                    <div className="text-[10px] text-text-muted leading-snug">
+                      {entry.note}
+                      {entry.since && <span className="ml-1 font-mono">({entry.since}〜)</span>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* 供給制約タイムライン */}
       <div className="space-y-2">

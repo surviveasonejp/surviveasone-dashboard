@@ -5,6 +5,9 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
 import { useUserRegion } from "../hooks/useUserRegion";
+import { useScenarioParam } from "../hooks/useScenarioParam";
+import { ScenarioSelector } from "../components/ScenarioSelector";
+import { SCENARIOS } from "../../shared/scenarios";
 import type { FamilyInputs, SurvivalMode } from "../../shared/types";
 import {
   getSurvivalRankColor,
@@ -20,9 +23,10 @@ import {
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
 import {
-  RESOURCE_STATUS,
+  STATUS_BY_SCENARIO,
   STATUS_LABEL,
   STATUS_COLOR,
+  INFLATION_BY_SCENARIO,
   RESOURCE_STATUS_UPDATED_AT,
 } from "../lib/resourceStatus";
 
@@ -139,8 +143,12 @@ export const FamilyMeter: FC = () => {
   const [inputs, setInputs] = useState<FamilyInputs>(loadInputs);
   const [subsidyApplied, setSubsidyApplied] = useState(true);
   const { regionId, setManualRegion } = useUserRegion();
+  const [scenarioId, setScenarioId] = useScenarioParam();
+  const scenarioMeta = SCENARIOS[scenarioId];
+  const inflation = INFLATION_BY_SCENARIO[scenarioId];
+  const resourceStatus = STATUS_BY_SCENARIO[scenarioId];
 
-  const score = useFamilySurvival(inputs);
+  const score = useFamilySurvival(inputs, scenarioId);
   const rankColor = getSurvivalRankColor(score.rank);
   const rankLabel = getSurvivalRankLabel(score.rank);
 
@@ -212,6 +220,20 @@ export const FamilyMeter: FC = () => {
             );
           })}
         </div>
+
+        {inputs.mode === "constraint" && (
+          <div className="pt-3 border-t border-border space-y-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <span className="text-[10px] font-mono text-text-muted tracking-wider">
+                想定シナリオ
+              </span>
+              <ScenarioSelector selected={scenarioId} onChange={setScenarioId} />
+            </div>
+            <p className="text-[10px] text-text-muted leading-snug">
+              {scenarioMeta.description}
+            </p>
+          </div>
+        )}
       </div>
 
       <AlertBanner
@@ -349,7 +371,9 @@ export const FamilyMeter: FC = () => {
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
               const isBottleneck = b.label === score.bottleneck;
-              const status = inputs.mode === "constraint" ? RESOURCE_STATUS[b.label] : undefined;
+              const status = inputs.mode === "constraint"
+                ? resourceStatus[b.label as keyof typeof resourceStatus]
+                : undefined;
               const statusColor = status ? STATUS_COLOR[status.status] : null;
               return (
                 <div key={b.label} className="space-y-1">
@@ -399,7 +423,7 @@ export const FamilyMeter: FC = () => {
             // 1人1日あたり生活必需品推計: 食料1000円+飲料水300円+日用品400円+衛生200円 = 1900円
             // 出典: 総務省家計調査(2024)・2人以上世帯の食料+光熱費+消耗品月額から算出
             const DAILY_COST_PER_PERSON = 1900;
-            const INFLATION_TOTAL = 1.25; // 全品目加重平均の想定
+            const INFLATION_TOTAL = inflation.overall; // シナリオ連動の全品目加重平均
             const m = Math.max(inputs.members, 1);
             const baseDaysStore = inputs.cashYen / (m * DAILY_COST_PER_PERSON);
             const baseDaysActual = inputs.cashYen / (m * DAILY_COST_PER_PERSON * INFLATION_TOTAL);
@@ -653,11 +677,11 @@ export const FamilyMeter: FC = () => {
         // 根拠: ガソリン補助金48.1円/L→35.5円/L、実勢215円/L vs 店頭167.5円/L（+28%）
         // 物流・包装・燃料コスト転嫁、医療物資は受注制限由来のプレミアム
         const items: { name: string; amount: string; price: number; inflation: number; needed: boolean }[] = [
-          { name: "ペットボトル水(2L×6)", amount: `${Math.ceil(waterNeed / 12)}箱`, price: Math.ceil(waterNeed / 12) * 500, inflation: 1.10, needed: waterNeed > 0 },
-          { name: "非常食セット(3日分)", amount: `${Math.ceil(foodNeed / 3)}セット`, price: Math.ceil(foodNeed / 3) * 3000, inflation: 1.25, needed: foodNeed > 0 },
-          { name: "カセットボンベ(3本組)", amount: `${Math.ceil(gasNeed / 3)}パック`, price: Math.ceil(gasNeed / 3) * 350, inflation: 1.30, needed: gasNeed > 0 },
-          { name: "ポータブル電源", amount: batteryNeed > 1000 ? "1000Wh級×1" : "500Wh級×1", price: batteryNeed > 1000 ? 80000 : batteryNeed > 0 ? 40000 : 0, inflation: 1.05, needed: batteryNeed > 0 },
-          { name: "医療・衛生物資(処方薬・マスク・消毒薬等)", amount: `${medicalNeed}日分`, price: medicalNeed * 200, inflation: 1.40, needed: medicalNeed > 0 },
+          { name: "ペットボトル水(2L×6)", amount: `${Math.ceil(waterNeed / 12)}箱`, price: Math.ceil(waterNeed / 12) * 500, inflation: inflation.water, needed: waterNeed > 0 },
+          { name: "非常食セット(3日分)", amount: `${Math.ceil(foodNeed / 3)}セット`, price: Math.ceil(foodNeed / 3) * 3000, inflation: inflation.food, needed: foodNeed > 0 },
+          { name: "カセットボンベ(3本組)", amount: `${Math.ceil(gasNeed / 3)}パック`, price: Math.ceil(gasNeed / 3) * 350, inflation: inflation.gas, needed: gasNeed > 0 },
+          { name: "ポータブル電源", amount: batteryNeed > 1000 ? "1000Wh級×1" : "500Wh級×1", price: batteryNeed > 1000 ? 80000 : batteryNeed > 0 ? 40000 : 0, inflation: inflation.battery, needed: batteryNeed > 0 },
+          { name: "医療・衛生物資(処方薬・マスク・消毒薬等)", amount: `${medicalNeed}日分`, price: medicalNeed * 200, inflation: inflation.medical, needed: medicalNeed > 0 },
         ];
         const neededItems = items.filter((i) => i.needed);
         const isConstraint = inputs.mode === "constraint";
