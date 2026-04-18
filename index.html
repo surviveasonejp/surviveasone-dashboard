@@ -51,37 +51,6 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Dataset",
-      "name": "Japan Energy Supply Simulation Data",
-      "description": "日本のホルムズ海峡封鎖シナリオにおけるエネルギー備蓄・消費・供給制約シミュレーションデータ。石油備蓄、LNG在庫、電力需給、食料サプライチェーンを含む。",
-      "url": "https://surviveasonejp.net/api",
-      "license": "https://www.gnu.org/licenses/agpl-3.0.html",
-      "creator": { "@type": "Person", "name": "idx", "url": "https://github.com/idx" },
-      "distribution": [
-        {
-          "@type": "DataDownload",
-          "encodingFormat": "application/json",
-          "contentUrl": "https://surviveasonejp.net/api/reserves"
-        },
-        {
-          "@type": "DataDownload",
-          "encodingFormat": "application/json",
-          "contentUrl": "https://surviveasonejp.net/api/simulation?scenario=realistic"
-        },
-        {
-          "@type": "DataDownload",
-          "encodingFormat": "text/plain",
-          "contentUrl": "https://surviveasonejp.net/api/summary"
-        }
-      ],
-      "temporalCoverage": "2024/..",
-      "spatialCoverage": { "@type": "Place", "name": "Japan" },
-      "keywords": ["石油備蓄", "LNG", "ホルムズ海峡", "シミュレーション", "日本", "停電対策", "備蓄", "防災", "在宅医療", "乳幼児", "透析"]
-    }
-    </script>
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
         {
@@ -170,7 +139,10 @@
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Lato:wght@900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" /></noscript>
+    <link rel="stylesheet" href="/print.css" media="print" />
   </head>
   <body class="antialiased">
     <script src="/init.js"></script>

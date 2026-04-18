@@ -1,0 +1,80 @@
+/* ─── 印刷用スタイル（media="print" で遅延ロード） ─── */
+
+@media print {
+  body {
+    background: white !important;
+    color: #1a1a1a !important;
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  header, footer, nav,
+  .print\:hidden,
+  button,
+  a[href="/family"],
+  a[href*="github.com/sponsors"],
+  [class*="hover\:"] {
+    display: none !important;
+  }
+
+  *, *::before, *::after {
+    background: white !important;
+    box-shadow: none !important;
+  }
+  [class*="border"] {
+    border-color: #ddd !important;
+  }
+
+  * {
+    color: #1a1a1a !important;
+  }
+  [class*="text-[#ef4444]"], [class*="text-red-"] {
+    color: #c00 !important;
+    font-weight: bold !important;
+  }
+  [class*="text-[#f59e0b]"] {
+    color: #b45309 !important;
+    font-weight: bold !important;
+  }
+  [class*="text-[#22c55e]"] {
+    color: #15803d !important;
+    font-weight: bold !important;
+  }
+
+  .space-y-8 > * + * { margin-top: 0.5rem !important; }
+  .space-y-6 > * + * { margin-top: 0.4rem !important; }
+  .space-y-4 > * + * { margin-top: 0.3rem !important; }
+  .space-y-3 > * + * { margin-top: 0.2rem !important; }
+  .space-y-2 > * + * { margin-top: 0.15rem !important; }
+  [class*="p-6"], [class*="p-5"] { padding: 0.4rem !important; }
+  [class*="p-4"] { padding: 0.3rem !important; }
+  [class*="px-4"] { padding-left: 0.3rem !important; padding-right: 0.3rem !important; }
+  [class*="py-3"], [class*="py-2"] { padding-top: 0.15rem !important; padding-bottom: 0.15rem !important; }
+  [class*="gap-4"], [class*="gap-3"] { gap: 0.3rem !important; }
+  [class*="rounded-lg"] { border-radius: 2px !important; }
+
+  h1, h2, h3 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+  [class*="rounded-lg"] {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .font-mono { font-family: monospace !important; font-size: 8pt !important; }
+
+  .print\:\!block { display: block !important; }
+  .print\:\!max-h-none { max-height: none !important; }
+  .print\:\!opacity-100 { opacity: 1 !important; }
+
+  @page {
+    margin: 1cm;
+    size: A4;
+  }
+
+  a[href]::after { content: none !important; }
+  a { text-decoration: none !important; }
+}

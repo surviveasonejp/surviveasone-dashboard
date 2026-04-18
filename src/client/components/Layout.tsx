@@ -1,7 +1,23 @@
-import { type FC, useEffect } from "react";
+import { type FC, Suspense, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { useSwipeNavigation, getContentStyle } from "../hooks/useSwipeNavigation";
+
+const PageFallback: FC = () => (
+  <div className="min-h-[40vh] flex items-center justify-center">
+    <svg
+      role="status"
+      aria-label="読み込み中"
+      className="w-8 h-8 animate-spin text-text-muted"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeOpacity="0.2" strokeWidth="3" />
+      <path d="M22 12a10 10 0 0 1-10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  </div>
+);
 
 export const Layout: FC = () => {
   const location = useLocation();
@@ -37,7 +53,9 @@ export const Layout: FC = () => {
           className="page-content"
           style={contentStyle}
         >
-          <Outlet />
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
 

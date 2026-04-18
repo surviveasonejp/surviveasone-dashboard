@@ -34,7 +34,7 @@ export const Header: FC<HeaderProps> = ({ onNavigate }) => {
           onClick={() => onNavigate("/")}
           className="flex items-center gap-2"
         >
-          <span className="text-[#1e3a8a] text-lg" style={{ fontFamily: "'Lato', 'Arial Black', sans-serif", fontWeight: 900, letterSpacing: "-0.02em" }}>SAO</span>
+          <span className="text-[#1e3a8a] text-lg" style={{ fontFamily: "'Arial Black', 'Helvetica Neue', sans-serif", fontWeight: 900, letterSpacing: "-0.02em" }}>SAO</span>
           <span className="font-mono text-xs text-neutral-500 tracking-wide">Situation Awareness Observatory</span>
         </button>
         {/* モバイル: 現在ページ名 + テーマ切替 */}
