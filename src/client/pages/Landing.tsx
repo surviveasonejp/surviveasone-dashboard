@@ -216,7 +216,7 @@ export const Landing: FC = () => {
             <SectionHeading tone="warning">HOUSEHOLD SUPPLY CHECK</SectionHeading>
             <p className="text-lg font-bold">わが家の供給余力を確認する</p>
             <p className="text-xs text-neutral-500 leading-relaxed">
-              備蓄量を入力 → 供給可能日数の目安を確認。残り日数が少ない項目を把握できる。計算はブラウザ内で完結、サーバーへの送信なし
+              突発災害／供給制約（ホルムズ型）2モード + シナリオ連動 + 医療・衛生カテゴリ + 補助金ON/OFFトグル + 現金購買力 + 直近イベント連動。計算はブラウザ内で完結、サーバーへの送信なし
             </p>
           </div>
           <span className="text-warning-soft font-mono text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
@@ -250,7 +250,7 @@ export const Landing: FC = () => {
           to="/prepare"
           title="PREPARE"
           subtitle="公的推奨水準との比較ガイド"
-          description="内閣府推奨3日分と照らし合わせ、わが家の過不足を確認。シナリオ連動フェーズ判定・住居形態別・要配慮者5カテゴリ対応"
+          description="内閣府推奨3日分と照らし合わせ、わが家の過不足を確認。リソース別市場ステータス + 直近14日の根拠イベント件数 + シナリオ連動フェーズ判定・住居形態別・要配慮者5カテゴリ対応"
           tone="success-soft"
         />
       </div>

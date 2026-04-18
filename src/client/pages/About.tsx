@@ -144,6 +144,24 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     status: "completed" as const,
     items: ["About/Methodology「煽らない設計」章", "DemandAnomalyBadge（BULLWHIP INDICATOR）", "realEvents 74件（経産省4/17潤滑油流通偏在要請追加）", "マクロ供給とミクロ需給の区別明示"],
   },
+  {
+    phase: "Phase 22",
+    label: "HOUSEHOLD SUPPLY CHECK 供給制約モード",
+    status: "completed" as const,
+    items: [
+      "2モード構成（突発災害／供給制約ホルムズ型）— useFamilySurvival にモード分岐導入",
+      "医療・衛生カテゴリ追加（パニック買い先行発火リスク対応）",
+      "補助金ON/OFFトグル（店頭167.5円 vs 実勢215円相当の可視化・品目別インフレ係数）",
+      "現金購買力カード（備蓄＋購買で実質バッファ日数）",
+      "自主判断前提バナー（2026-04-07 高市首相消費自粛要請なし方針明示）",
+      "品目別市場ステータス（normal/tight/allotted/restricted 4段階）",
+      "シナリオ連動供給率・インフレ係数・ステータス（4シナリオ別テーブル）",
+      "Prepare/ForSegment への市場ステータス波及",
+      "/api/real-events エンドポイント新設（recentDays・category フィルタ）",
+      "Dashboard に HouseholdSummaryCard（localStorage 連動の世帯サマリー）",
+      "直近30日イベントパネル（FamilyMeter）・14日イベント件数サマリ（Prepare）",
+    ],
+  },
 ];
 
 const SIMULATION_FEATURES = [
@@ -165,6 +183,7 @@ const SIMULATION_FEATURES = [
   { label: "代替原油精製互換性", desc: "非中東原油（米国ガルフ/西アフリカ）の精製互換性ペナルティ。API度差・硫黄分差による効率補正。非中東調達が即座に100%補填にならない理由をモデル化" },
   { label: "製油所改造による非中東互換性向上", desc: "Day180-540で線形に最大+0.35の互換係数（Phase 20-A）。代替原油の受入余地を時間経過とともに拡大" },
   { label: "構造的需要削減", desc: "Day90-365で行動変容・産業構造転換により最大10%の恒久的需要減（Phase 20-A）。pessimistic のみ観測期間730日に延長し4フェーズ時系列（initial/rationing/structural/recovery）を出力" },
+  { label: "家計供給余力モデル（供給制約モード）", desc: "HOUSEHOLD SUPPLY CHECK の2モード目。備蓄÷(1-外部供給率)で延命日数を算出（Phase 22）。4シナリオ別に水/食料/燃料/電力/医療・衛生の供給率とインフレ係数（補助金反映の店頭価格 vs 実勢価格）を定義。現金購買力は1人1日1900円×インフレ係数で追加日数を算定" },
 ];
 
 export const About: FC = () => {
