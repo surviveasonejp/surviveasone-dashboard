@@ -19,6 +19,12 @@ import {
 } from "../lib/regionAdvice";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
+import {
+  RESOURCE_STATUS,
+  STATUS_LABEL,
+  STATUS_COLOR,
+  RESOURCE_STATUS_UPDATED_AT,
+} from "../lib/resourceStatus";
 
 interface SliderProps {
   label: string;
@@ -332,17 +338,42 @@ export const FamilyMeter: FC = () => {
 
           {/* 内訳バー */}
           <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-            <SectionHeading as="h3" tone="text-muted" tracking="wider">リソース別供給余力</SectionHeading>
+            <div className="flex items-center justify-between flex-wrap gap-1">
+              <SectionHeading as="h3" tone="text-muted" tracking="wider">リソース別供給余力</SectionHeading>
+              {inputs.mode === "constraint" && (
+                <span className="text-[9px] font-mono text-text-muted">
+                  市場ステータス {RESOURCE_STATUS_UPDATED_AT} 時点
+                </span>
+              )}
+            </div>
             {breakdowns.map((b) => {
               const pct = Math.min((b.days / maxDays) * 100, 100);
               const isBottleneck = b.label === score.bottleneck;
+              const status = inputs.mode === "constraint" ? RESOURCE_STATUS[b.label] : undefined;
+              const statusColor = status ? STATUS_COLOR[status.status] : null;
               return (
                 <div key={b.label} className="space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className={isBottleneck ? "text-primary-soft font-bold" : "text-text-muted"}>
-                      {b.label} {isBottleneck && "← ボトルネック"}
-                    </span>
-                    <span className="font-mono" style={{ color: b.color }}>
+                  <div className="flex justify-between items-center gap-2 text-xs">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={isBottleneck ? "text-primary-soft font-bold shrink-0" : "text-text-muted shrink-0"}>
+                        {b.label}
+                      </span>
+                      {status && statusColor && (
+                        <span
+                          title={status.note}
+                          className="text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0"
+                          style={{
+                            color: statusColor.text,
+                            backgroundColor: statusColor.bg,
+                            borderColor: statusColor.border,
+                          }}
+                        >
+                          {STATUS_LABEL[status.status]}
+                        </span>
+                      )}
+                      {isBottleneck && <span className="text-primary-soft text-[10px] shrink-0">← ボトルネック</span>}
+                    </div>
+                    <span className="font-mono shrink-0" style={{ color: b.color }}>
                       {formatDecimal(b.days)}日
                     </span>
                   </div>
@@ -352,6 +383,12 @@ export const FamilyMeter: FC = () => {
                       style={{ width: `${pct}%`, backgroundColor: b.color }}
                     />
                   </div>
+                  {status && inputs.mode === "constraint" && (
+                    <p className="text-[9px] text-text-muted leading-snug pl-0.5">
+                      {status.note}
+                      {status.since && <span className="ml-1 font-mono">({status.since}〜)</span>}
+                    </p>
+                  )}
                 </div>
               );
             })}
