@@ -258,6 +258,7 @@ export function calcFamilySurvival(inputs: FamilyInputs): FamilySurvivalScore {
     foodDays,
     energyDays,
     powerDays,
+    medicalDays: 0,
     bottleneck,
   };
 }

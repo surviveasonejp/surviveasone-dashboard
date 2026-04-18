@@ -5,7 +5,7 @@ import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
 import { useUserRegion } from "../hooks/useUserRegion";
-import type { FamilyInputs } from "../../shared/types";
+import type { FamilyInputs, SurvivalMode } from "../../shared/types";
 import {
   getSurvivalRankColor,
   getSurvivalRankLabel,
@@ -84,6 +84,11 @@ const BOTTLENECK_URGENT_ACTIONS: Record<string, string[]> = {
     "充電式ランタン・ヘッドライトの電池残量を確認する",
     "在宅医療機器がある場合、病院・クリニックへ電力確保方法を事前に相談する",
   ],
+  "医療・衛生": [
+    "処方薬の残薬日数を確認する（慢性疾患がある場合は90日分を目安に主治医と相談）",
+    "マスク・消毒薬・使い捨て手袋の残数を確認する（メーカー受注制限が先行発火する品目）",
+    "おむつ・生理用品・経口補水液・体温計等、代替困難な衛生用品の過不足を確認する",
+  ],
 };
 
 const STORAGE_KEY = "familyMeterInputs";
@@ -97,6 +102,21 @@ const DEFAULT_INPUTS: FamilyInputs = {
   solarWatts: 0,
   hasMedicalDevice: false,
   cashYen: 30000,
+  medicalSupplyDays: 7,
+  mode: "constraint",
+};
+
+const MODE_META: Record<SurvivalMode, { label: string; short: string; note: string }> = {
+  disaster: {
+    label: "突発災害（地震・台風）",
+    short: "突発災害",
+    note: "外部供給ゼロの前提で、公的支援が届くまでの窓を計算します",
+  },
+  constraint: {
+    label: "供給制約（ホルムズ型）",
+    short: "供給制約",
+    note: "部分供給が続く前提で、価格高騰・配給下での延命日数を計算します（realistic シナリオ相当）",
+  },
 };
 
 function loadInputs(): FamilyInputs {
@@ -111,6 +131,7 @@ function loadInputs(): FamilyInputs {
 
 export const FamilyMeter: FC = () => {
   const [inputs, setInputs] = useState<FamilyInputs>(loadInputs);
+  const [subsidyApplied, setSubsidyApplied] = useState(true);
   const { regionId, setManualRegion } = useUserRegion();
 
   const score = useFamilySurvival(inputs);
@@ -124,12 +145,20 @@ export const FamilyMeter: FC = () => {
       return next;
     });
 
+  const setMode = (mode: SurvivalMode) =>
+    setInputs((prev) => {
+      const next = { ...prev, mode };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+
   const isLight = document.documentElement.getAttribute("data-theme") === "light";
   const breakdowns = [
     { label: "水", days: score.waterDays, color: isLight ? "#3b82f6" : "#94a3b8" },
     { label: "食料", days: score.foodDays, color: isLight ? "#16a34a" : "#4ade80" },
     { label: "燃料", days: score.energyDays, color: isLight ? "#d97706" : "#f59e0b" },
     { label: "電力", days: score.powerDays, color: isLight ? "#7c3aed" : "#94a3b8" },
+    { label: "医療・衛生", days: score.medicalDays, color: isLight ? "#dc2626" : "#f87171" },
   ];
 
   const maxDays = Math.max(...breakdowns.map((b) => b.days), 30);
@@ -138,13 +167,63 @@ export const FamilyMeter: FC = () => {
     <div className="space-y-6">
       <PageHero
         title={<><span className="text-warning-soft">HOUSEHOLD</span> SUPPLY CHECK</>}
-        subtitle="公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）"
+        subtitle={
+          inputs.mode === "constraint"
+            ? "価格高騰・配給下でわが家の供給余力を確認する（参考ツール）"
+            : "公的支援が届くまでの間、わが家の供給余力を確認する（参考ツール）"
+        }
       />
+
+      {/* モード切替: 突発災害 / 供給制約 */}
+      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <SectionHeading as="h2" tone="text-muted" size="sm" tracking="wider">
+            想定する状況
+          </SectionHeading>
+          <span className="text-[10px] text-text-muted font-mono">
+            現在: {MODE_META[inputs.mode].short}モード
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {(["disaster", "constraint"] as const).map((m) => {
+            const active = inputs.mode === m;
+            return (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                aria-pressed={active}
+                className={`text-left p-3 rounded border transition-colors min-h-[56px] ${
+                  active
+                    ? "border-accent bg-accent/10 text-text"
+                    : "border-border text-text-muted hover:border-neutral-400"
+                }`}
+              >
+                <div className={`text-sm font-bold ${active ? "text-accent" : "text-text"}`}>
+                  {MODE_META[m].label}
+                </div>
+                <div className="text-[10px] mt-1 leading-snug">{MODE_META[m].note}</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       <AlertBanner
         level={getAlertLevel(score.totalDays)}
-        message={`供給余力: ${formatDecimal(score.totalDays)}日分（目安） — 最短項目: ${score.bottleneck}`}
+        message={`供給余力: ${formatDecimal(score.totalDays)}日分（目安・${MODE_META[inputs.mode].short}モード） — 最短項目: ${score.bottleneck}`}
       />
+
+      {/* 自主判断前提バナー（constraintモード時のみ） */}
+      {inputs.mode === "constraint" && (
+        <div className="bg-bg border border-info/30 rounded-lg p-3">
+          <p className="text-xs text-text-muted leading-relaxed">
+            <span className="font-bold text-info">政府は消費自粛を要請していません</span>
+            （2026-04-07 高市首相「電力・ガソリン消費の自粛要請はしない」経済維持方針）。
+            このモードは政策介入なし前提の<span className="text-text">自主判断の目安</span>です。
+            買い占めは最も脆弱な人から物資を奪うため、まず過不足の確認から始めてください。
+          </p>
+        </div>
+      )}
 
       <SimulationBanner />
       <BlockadeContext />
@@ -159,6 +238,18 @@ export const FamilyMeter: FC = () => {
           <InputSlider label="カセットボンベ" value={inputs.gasCanisterCount} min={0} max={100} step={1} unit="本" onChange={update("gasCanisterCount")} />
           <InputSlider label="ポータブル電源" value={inputs.batteryWh} min={0} max={5000} step={50} unit="Wh" onChange={update("batteryWh")} />
           <InputSlider label="ソーラーパネル" value={inputs.solarWatts} min={0} max={500} step={10} unit="W" onChange={update("solarWatts")} />
+          <InputSlider
+            label="医療・衛生物資"
+            value={inputs.medicalSupplyDays}
+            min={0}
+            max={90}
+            step={1}
+            unit="日分"
+            onChange={update("medicalSupplyDays")}
+          />
+          <p className="text-[10px] text-text-muted -mt-3">
+            処方薬・マスク・消毒薬・使い捨て手袋・経口補水液等。ホルムズ型ではパニック買いで先行逼迫
+          </p>
           <div className="flex items-center gap-3 min-h-[44px]">
             <button
               className={`w-6 h-6 rounded border flex items-center justify-center transition-colors shrink-0 ${
@@ -216,7 +307,7 @@ export const FamilyMeter: FC = () => {
               目安日: {formatDepletionDate(score.totalDays)}
             </div>
             <div className="text-[10px] text-text-muted mt-2">
-              {inputs.members}人世帯 / 水{inputs.waterLiters}L / 食料{inputs.foodDays}日 / ボンベ{inputs.gasCanisterCount}本
+              {inputs.members}人世帯 / 水{inputs.waterLiters}L / 食料{inputs.foodDays}日 / ボンベ{inputs.gasCanisterCount}本 / 医療{inputs.medicalSupplyDays}日
             </div>
             <div className="text-[9px] text-text-muted font-mono mt-1">
               surviveasonejp.org/family
@@ -226,7 +317,7 @@ export const FamilyMeter: FC = () => {
               onClick={() => {
                 const days = Math.round(score.totalDays);
                 const text = [
-                  `わが家の${score.bottleneck}は${days}日分（シミュレーション推定値・ランク${score.rank}）`,
+                  `わが家の${score.bottleneck}は${days}日分（${MODE_META[inputs.mode].short}モード推定・ランク${score.rank}）`,
                   `買い占めは最も脆弱な人から物資を奪います。まず過不足を確認。`,
                   `surviveasonejp.org/family`,
                   "",
@@ -265,6 +356,44 @@ export const FamilyMeter: FC = () => {
               );
             })}
           </div>
+
+          {/* 購買力カード: 現金による追加購買可能日数（constraintモード時のみ） */}
+          {inputs.mode === "constraint" && (() => {
+            // 1人1日あたり生活必需品推計: 食料1000円+飲料水300円+日用品400円+衛生200円 = 1900円
+            // 出典: 総務省家計調査(2024)・2人以上世帯の食料+光熱費+消耗品月額から算出
+            const DAILY_COST_PER_PERSON = 1900;
+            const INFLATION_TOTAL = 1.25; // 全品目加重平均の想定
+            const m = Math.max(inputs.members, 1);
+            const baseDaysStore = inputs.cashYen / (m * DAILY_COST_PER_PERSON);
+            const baseDaysActual = inputs.cashYen / (m * DAILY_COST_PER_PERSON * INFLATION_TOTAL);
+            const effectiveDays = subsidyApplied ? baseDaysStore : baseDaysActual;
+            return (
+              <div className="bg-panel border border-border rounded-lg p-4 space-y-2">
+                <div className="flex items-center justify-between">
+                  <SectionHeading as="h3" tone="text-muted" tracking="wider">
+                    現金による追加購買力
+                  </SectionHeading>
+                  <span className="text-[10px] font-mono text-text-muted">
+                    {subsidyApplied ? "店頭価格想定" : "実勢価格想定"}
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono font-bold text-2xl text-accent">
+                    +{formatDecimal(effectiveDays)}
+                  </span>
+                  <span className="text-text-muted text-sm">日分</span>
+                </div>
+                <div className="text-[10px] font-mono text-text-muted">
+                  店頭価格 {formatDecimal(baseDaysStore)}日 / 実勢価格 {formatDecimal(baseDaysActual)}日
+                </div>
+                <p className="text-[10px] text-text-muted leading-snug">
+                  ¥{inputs.cashYen.toLocaleString()} ÷ ({inputs.members}人 × {DAILY_COST_PER_PERSON}円/日
+                  {!subsidyApplied && ` × ${INFLATION_TOTAL}`})。
+                  配給制下では備蓄＋現金購買で{formatDecimal(score.totalDays + effectiveDays)}日分が実質バッファ。
+                </p>
+              </div>
+            );
+          })()}
 
           {/* ボトルネック緊急アドバイス（14日以内のみ表示） */}
           {score.totalDays < 14 && (() => {
@@ -482,20 +611,59 @@ export const FamilyMeter: FC = () => {
         const foodNeed = Math.max(0, TARGET_DAYS - inputs.foodDays);
         const gasNeed = Math.max(0, Math.ceil(TARGET_DAYS * m * 30 / 60) - inputs.gasCanisterCount);
         const batteryNeed = Math.max(0, TARGET_DAYS * m * 50 - inputs.batteryWh);
-        const items: { name: string; amount: string; price: number; needed: boolean }[] = [
-          { name: "ペットボトル水(2L×6)", amount: `${Math.ceil(waterNeed / 12)}箱`, price: Math.ceil(waterNeed / 12) * 500, needed: waterNeed > 0 },
-          { name: "非常食セット(3日分)", amount: `${Math.ceil(foodNeed / 3)}セット`, price: Math.ceil(foodNeed / 3) * 3000, needed: foodNeed > 0 },
-          { name: "カセットボンベ(3本組)", amount: `${Math.ceil(gasNeed / 3)}パック`, price: Math.ceil(gasNeed / 3) * 350, needed: gasNeed > 0 },
-          { name: "ポータブル電源", amount: batteryNeed > 1000 ? "1000Wh級×1" : "500Wh級×1", price: batteryNeed > 1000 ? 80000 : batteryNeed > 0 ? 40000 : 0, needed: batteryNeed > 0 },
+        const medicalNeed = Math.max(0, TARGET_DAYS - inputs.medicalSupplyDays);
+        // 補助金OFF時の品目別価格上昇係数（2026-04基準）
+        // 根拠: ガソリン補助金48.1円/L→35.5円/L、実勢215円/L vs 店頭167.5円/L（+28%）
+        // 物流・包装・燃料コスト転嫁、医療物資は受注制限由来のプレミアム
+        const items: { name: string; amount: string; price: number; inflation: number; needed: boolean }[] = [
+          { name: "ペットボトル水(2L×6)", amount: `${Math.ceil(waterNeed / 12)}箱`, price: Math.ceil(waterNeed / 12) * 500, inflation: 1.10, needed: waterNeed > 0 },
+          { name: "非常食セット(3日分)", amount: `${Math.ceil(foodNeed / 3)}セット`, price: Math.ceil(foodNeed / 3) * 3000, inflation: 1.25, needed: foodNeed > 0 },
+          { name: "カセットボンベ(3本組)", amount: `${Math.ceil(gasNeed / 3)}パック`, price: Math.ceil(gasNeed / 3) * 350, inflation: 1.30, needed: gasNeed > 0 },
+          { name: "ポータブル電源", amount: batteryNeed > 1000 ? "1000Wh級×1" : "500Wh級×1", price: batteryNeed > 1000 ? 80000 : batteryNeed > 0 ? 40000 : 0, inflation: 1.05, needed: batteryNeed > 0 },
+          { name: "医療・衛生物資(処方薬・マスク・消毒薬等)", amount: `${medicalNeed}日分`, price: medicalNeed * 200, inflation: 1.40, needed: medicalNeed > 0 },
         ];
         const neededItems = items.filter((i) => i.needed);
-        const totalCost = neededItems.reduce((sum, i) => sum + i.price, 0);
+        const isConstraint = inputs.mode === "constraint";
+        const showInflated = isConstraint && !subsidyApplied;
+        const effectivePrice = (item: { price: number; inflation: number }) =>
+          showInflated ? Math.round(item.price * item.inflation) : item.price;
+        const totalCost = neededItems.reduce((sum, i) => sum + effectivePrice(i), 0);
+        const totalSubsidized = neededItems.reduce((sum, i) => sum + i.price, 0);
+        const totalInflated = neededItems.reduce((sum, i) => sum + Math.round(i.price * i.inflation), 0);
         if (neededItems.length === 0) return null;
         return (
           <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-4">
-            <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">
-              30日分に向けた不足確認
-            </SectionHeading>
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">
+                30日分に向けた不足確認
+              </SectionHeading>
+              {isConstraint && (
+                <div className="flex items-center gap-1 text-[10px] font-mono">
+                  <button
+                    onClick={() => setSubsidyApplied(true)}
+                    aria-pressed={subsidyApplied}
+                    className={`px-2 py-1 rounded border transition-colors ${
+                      subsidyApplied
+                        ? "border-accent bg-accent/10 text-accent"
+                        : "border-border text-text-muted hover:border-neutral-400"
+                    }`}
+                  >
+                    補助金ON（店頭価格）
+                  </button>
+                  <button
+                    onClick={() => setSubsidyApplied(false)}
+                    aria-pressed={!subsidyApplied}
+                    className={`px-2 py-1 rounded border transition-colors ${
+                      !subsidyApplied
+                        ? "border-primary-soft bg-primary-soft/10 text-primary-soft"
+                        : "border-border text-text-muted hover:border-neutral-400"
+                    }`}
+                  >
+                    補助金OFF（実勢価格）
+                  </button>
+                </div>
+              )}
+            </div>
             <p className="text-xs text-text-muted">
               現在{formatDecimal(score.totalDays)}日分 → 目標30日分までの不足量
             </p>
@@ -507,21 +675,43 @@ export const FamilyMeter: FC = () => {
                     <span className="text-text-muted ml-2 text-xs">{item.amount}</span>
                   </div>
                   <span className="font-mono text-text-muted text-xs">
-                    ¥{item.price.toLocaleString()}
+                    ¥{effectivePrice(item).toLocaleString()}
+                    {isConstraint && showInflated && (
+                      <span className="ml-1 text-[9px] text-primary-soft">
+                        (店頭¥{item.price.toLocaleString()})
+                      </span>
+                    )}
                   </span>
                 </div>
               ))}
             </div>
             <div className="border-t border-border pt-3 flex items-center justify-between">
               <span className="text-sm text-text-muted">概算合計</span>
-              <span className="font-mono font-bold text-lg text-primary-soft">
-                ¥{totalCost.toLocaleString()}
-              </span>
+              <div className="text-right">
+                <span className="font-mono font-bold text-lg text-primary-soft">
+                  ¥{totalCost.toLocaleString()}
+                </span>
+                {isConstraint && (
+                  <div className="text-[9px] font-mono text-text-muted">
+                    店頭¥{totalSubsidized.toLocaleString()} / 実勢¥{totalInflated.toLocaleString()}
+                    <span className="ml-1">
+                      （+{Math.round(((totalInflated - totalSubsidized) / Math.max(totalSubsidized, 1)) * 100)}%）
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
             {totalCost > 10000 && (
               <p className="text-xs text-neutral-500 bg-bg rounded p-3 leading-relaxed">
                 一度に全部揃える必要はありません。<br />
-                優先順位：<span className="text-text">水 → 食料 → ガス → 電源</span>。まず水の残量を確認するところから始めましょう。
+                優先順位：<span className="text-text">水 → 食料 → 医療・衛生 → ガス → 電源</span>。まず水の残量を確認するところから始めましょう。
+              </p>
+            )}
+            {isConstraint && (
+              <p className="text-[10px] text-text-muted bg-bg rounded p-2 leading-relaxed">
+                「店頭価格」はガソリン補助金48.1円/L→35.5円/L等の政府介入を反映した2026-04時点の小売水準。
+                「実勢価格」は補助金が切れた場合の推計値（ガソリン実勢215円/L・品目別コスト転嫁係数ベース）。
+                補助金終了日は未公表。
               </p>
             )}
             <p className="text-[10px] text-neutral-600">

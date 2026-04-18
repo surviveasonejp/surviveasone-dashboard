@@ -68,6 +68,13 @@ export interface FoodDepletionParams {
   powerDays: number;
 }
 
+/**
+ * 供給余力確認モード
+ * - disaster: 突発災害前提（地震・台風）。外部供給ゼロ・公的支援到達までの窓として計算
+ * - constraint: 供給制約前提（ホルムズ型）。部分供給継続・価格高騰・配給下での延命日数
+ */
+export type SurvivalMode = "disaster" | "constraint";
+
 export interface FamilyInputs {
   members: number;
   waterLiters: number;
@@ -77,6 +84,9 @@ export interface FamilyInputs {
   solarWatts: number;
   hasMedicalDevice: boolean;
   cashYen: number;
+  /** 医療・衛生物資の備蓄日数（マスク・消毒薬・処方薬余剰・手袋等） */
+  medicalSupplyDays: number;
+  mode: SurvivalMode;
 }
 
 export interface FamilySurvivalScore {
@@ -86,6 +96,8 @@ export interface FamilySurvivalScore {
   foodDays: number;
   energyDays: number;
   powerDays: number;
+  /** 医療・衛生物資の供給余力日数 */
+  medicalDays: number;
   bottleneck: string;
 }
 
