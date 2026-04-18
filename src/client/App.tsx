@@ -15,6 +15,7 @@ const Methodology = lazy(() => import("./pages/Methodology").then(m => ({ defaul
 const ApiDocs = lazy(() => import("./pages/ApiDocs").then(m => ({ default: m.ApiDocs })));
 const ForSegment = lazy(() => import("./pages/ForSegment").then(m => ({ default: m.ForSegment })));
 const PetrochemTree = lazy(() => import("./pages/PetrochemTree").then(m => ({ default: m.PetrochemTree })));
+const Journal = lazy(() => import("./pages/Journal").then(m => ({ default: m.Journal })));
 
 export const App: FC = () => {
   return (
@@ -32,6 +33,7 @@ export const App: FC = () => {
         <Route path="/methodology" element={<Methodology />} />
         <Route path="/api-docs" element={<ApiDocs />} />
         <Route path="/petrochem" element={<PetrochemTree />} />
+        <Route path="/journal" element={<Journal />} />
         <Route path="/for/:segment" element={<ForSegment />} />
       </Route>
     </Routes>

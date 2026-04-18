@@ -1,13 +1,12 @@
 import { type FC, useState, useEffect } from "react";
-import { CountdownTimer } from "../components/CountdownTimer";
 import { RegionMap } from "../components/RegionMap";
 import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import type { ResourceCountdown, RegionCollapse } from "../../shared/types";
+import type { RegionCollapse, ResourceCountdown } from "../../shared/types";
 import { useScenarioParam } from "../hooks/useScenarioParam";
-import { FALLBACK_COUNTDOWNS, SCENARIO_RANGES } from "../lib/fallbackCountdowns";
+import { FALLBACK_COUNTDOWNS } from "../lib/fallbackCountdowns";
 import { DataFreshness } from "../components/DataFreshness";
 import { PolicyIntervention } from "../components/PolicyIntervention";
 import { SituationActionPanel } from "../components/SituationActionPanel";
@@ -15,6 +14,9 @@ import { IndustryImpactMatrix } from "../components/IndustryImpactMatrix";
 import { WorkImpactSelector } from "../components/WorkImpactSelector";
 import { PrefectureSelector } from "../components/PrefectureSelector";
 import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
+import { PhaseIndicator } from "../components/PhaseIndicator";
+import { DecisionTriadPanel } from "../components/DecisionTriadPanel";
+import { MyHypothesisPanel } from "../components/MyHypothesisPanel";
 import { Badge } from "../components/Badge";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
@@ -22,7 +24,6 @@ import { useCollapseOrder } from "../hooks/useCollapseOrder";
 import { useUserRegion } from "../hooks/useUserRegion";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow } from "../hooks/useApiData";
-import staticReserves from "../data/reserves.json";
 
 export const Dashboard: FC = () => {
   const [scenario, setScenario] = useScenarioParam();
@@ -65,48 +66,14 @@ export const Dashboard: FC = () => {
 
       <DataFreshness />
 
-      {/* 供給余力サマリー — 安心情報ファーストビュー */}
-      <div className="bg-success-soft/10 border border-success-soft/25 rounded-lg p-4 space-y-3">
-        <SectionHeading tone="success">
-          SUPPLY BUFFER — 現在の供給余力
-        </SectionHeading>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-success-soft">{staticReserves.oil.totalReserveDays}</div>
-            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">石油備蓄日数<br/>（法ベース・IEA上位）</div>
-          </div>
-          <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-success-soft">6.3<span className="text-sm font-normal">%</span></div>
-            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">LNG ホルムズ依存率<br/>93.7%は非ホルムズ供給</div>
-          </div>
-          <div className="text-center">
-            <div className="font-mono font-bold text-2xl text-success-soft">3</div>
-            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">代替供給ルート<br/>フジャイラ/ヤンブー/非中東</div>
-          </div>
-          <div className="text-center">
-            <div className="font-mono font-bold text-xl text-success-soft">IEA</div>
-            <div className="text-xs text-neutral-500 mt-0.5 leading-tight">協調備蓄放出・需要抑制<br/>政策介入で段階的に軽減</div>
-          </div>
-        </div>
-        <p className="text-xs text-neutral-500 leading-relaxed border-t border-success-soft/15 pt-2">
-          即時崩壊シナリオではありません。政策対応・代替供給・需要抑制により影響は段階的に制御可能です。
-          下記シミュレーションは代替供給・備蓄放出を含んだモデルです。
-        </p>
-      </div>
+      {/* Phase 20-B: 事実 / 解釈 / 含意 の3カラムサマリー（旧 SUPPLY BUFFER + CountdownTimer×3 を統合） */}
+      <DecisionTriadPanel scenario={scenario} />
 
-      {/* 上段: 3つのカウントダウン */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {countdowns.map((cd, i) => (
-          <CountdownTimer
-            key={cd.label}
-            label={cd.label}
-            totalSeconds={cd.totalSeconds}
-            compact
-            range={SCENARIO_RANGES[i]}
-            activeScenario={scenario}
-          />
-        ))}
-      </div>
+      {/* Phase 20-C: 「私の想定」— localStorage で個人の仮説を保存・比較 */}
+      <MyHypothesisPanel scenarioRef={scenario} />
+
+      {/* Phase 20-A: 長期化フェーズ区分 — 全体像を示してから「今確認すべき事項」へ繋ぐ */}
+      <PhaseIndicator scenario={scenario} />
 
       {/* 今確認すべき事項 — シナリオの最初の閾値イベントから行動を提示 */}
       <SituationActionPanel scenario={scenario} />

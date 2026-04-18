@@ -62,13 +62,25 @@ export interface ScenarioRange {
 
 function calcDaysForScenario(scenarioId: ScenarioId): number[] {
   const s = SCENARIOS[scenarioId];
+  return calcDaysForRates(s.oilBlockadeRate, s.lngBlockadeRate, s.demandReductionRate);
+}
+
+/**
+ * 任意の3パラメータから oil/lng/power 日数を算出（Phase 20-C: MyHypothesisPanel用）。
+ * 標準シナリオと同じ静的計算式を使用するため比較に齟齬が出ない。
+ */
+export function calcDaysForRates(
+  oilBlockadeRate: number,
+  lngBlockadeRate: number,
+  demandReductionRate: number,
+): number[] {
   const oilEffective = staticConsumption.oil.dailyConsumption_kL
-    * s.oilBlockadeRate * (1 - s.demandReductionRate);
+    * oilBlockadeRate * (1 - demandReductionRate);
   const oilDays = oilEffective > 0
     ? staticReserves.oil.totalReserve_kL / oilEffective
     : Infinity;
   const lngEffective = staticConsumption.lng.dailyConsumption_t
-    * s.lngBlockadeRate * (1 - s.demandReductionRate);
+    * lngBlockadeRate * (1 - demandReductionRate);
   const lngDays = lngEffective > 0
     ? staticReserves.lng.inventory_t / lngEffective
     : Infinity;
@@ -89,3 +101,33 @@ export function calcScenarioRanges(): ScenarioRange[] {
 }
 
 export const SCENARIO_RANGES: ScenarioRange[] = calcScenarioRanges();
+
+// ─── Phase 20-B: 4シナリオ枯渇日数表（DecisionTriadPanel用） ─────
+
+/** 1シナリオ分の oil/lng/power 日数 */
+export interface ScenarioDays {
+  id: ScenarioId;
+  oil: number;
+  lng: number;
+  power: number;
+}
+
+/**
+ * 4シナリオ全件の枯渇日数を返す（静的計算ベース）。
+ *
+ * SCENARIO_RANGES は3シナリオ固定構造のため、ceasefire 含む4シナリオ比較が必要な
+ * 用途（DecisionTriadPanel）はこちらを使用する。
+ */
+export function calcAllScenarioDays(): ScenarioDays[] {
+  return (["optimistic", "realistic", "pessimistic", "ceasefire"] as const).map((id) => {
+    const days = calcDaysForScenario(id);
+    return {
+      id,
+      oil: Math.round((days[0] ?? 0) * 10) / 10,
+      lng: Math.round((days[1] ?? 0) * 10) / 10,
+      power: Math.round((days[2] ?? 0) * 10) / 10,
+    };
+  });
+}
+
+export const ALL_SCENARIO_DAYS: ScenarioDays[] = calcAllScenarioDays();

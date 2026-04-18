@@ -137,6 +137,21 @@ export interface FlowSimulationResult {
   thresholds: ThresholdEvent[];
   /** 政策発動時の改善効果（動的計算値） */
   policyEffects?: PolicyEffects;
+  /** 長期化フェーズ区分（Phase 20-A） */
+  phaseTimeline?: PhaseInfo[];
+}
+
+// ─── 長期化フェーズモデル（Phase 20-A） ────────────────
+
+export type ScenarioPhase = "initial" | "rationing" | "structural" | "recovery";
+
+export interface PhaseInfo {
+  phase: ScenarioPhase;
+  startDay: number;
+  /** 終端日。null = 観測期間終了まで継続 */
+  endDay: number | null;
+  label: string;
+  description: string;
 }
 
 // ─── 石化樹形図 ──────────────────────────────────────────

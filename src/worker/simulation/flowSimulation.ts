@@ -17,6 +17,8 @@ import type {
   ThresholdEvent,
   FlowSimulationResult,
   PolicyEffects,
+  PhaseInfo,
+  ScenarioPhase,
 } from "../../shared/types";
 import { type ScenarioId, SCENARIOS } from "../../shared/scenarios";
 import staticReserves from "../data/reserves.json";
@@ -312,12 +314,155 @@ function getAlternativeSupply(day: number, profile: AlternativeSupplyProfile): n
 
   // フジャイラ・ヤンブーはアラビアン・ライト系 → 精製互換性問題なし
   // 非中東原油は互換性係数を適用（設備改造が完了するまで全量処理不可）
+  // Phase 20-A: Day 180〜540 で製油所改造による互換性向上を加算（最大 +0.35）
+  const matureCompatibility = Math.min(
+    1.0,
+    profile.nonMideastCompatibilityFactor + getRefineryRetrofitGain(day),
+  );
   const totalDailyCapacity =
     profile.fujairahDailyKL +
     profile.yanbuDailyKL +
-    profile.nonMiddleEastDailyKL * profile.nonMideastCompatibilityFactor;
+    profile.nonMiddleEastDailyKL * matureCompatibility;
 
   return totalDailyCapacity * successRate;
+}
+
+// ─── Phase 20-A: 長期化フェーズモデル ─────────────────
+//
+// ホルムズ封鎖が停戦失敗等で長期化した場合の構造的均衡を表現するためのパラメータ群。
+//
+// 1. シナリオ別のシミュレーション期間
+//    pessimistic は 730日（2年）まで延長し、構造的適応期の到達を観測可能にする。
+//
+// 2. 製油所改造の段階的成熟
+//    日本の製油所は中東重質油向けに最適化されている。封鎖長期化時は非中東軽質油への
+//    切替が必要だが、改造には6〜18ヶ月を要する。本モデルでは Day 180〜540 で
+//    nonMideastCompatibilityFactor を線形に増加させ、最大 +0.35 までの底上げを与える。
+//    出典: 石油連盟「製油所設備能力調査」+ 資源エネルギー庁「原油調達多様化報告」
+//
+// 3. 構造的需要削減
+//    1973年第一次石油危機後、日本のエネルギー消費は省エネ法・産業構造転換により
+//    年率 -2.1%（産業部門, 1973-1985年平均）で減少した。短期的には行動変容
+//    （在宅勤務定着・公共交通シフト・節電器具普及）でさらに高い削減率が観測される。
+//    本モデルでは Day 90 以降に発現し、365日かけて最大10%まで線形に拡大する控えめな
+//    設定を採用。これは政府介入なしでもベース需要が永続的に減少することを表す。
+//    出典: 資源エネルギー庁「総合エネルギー統計」+ IEA "Energy Efficiency 2024"
+
+const PHASE_INITIAL_MAX_DAY = 30;
+const PHASE_RATIONING_MAX_DAY = 180;
+
+const REFINERY_RETROFIT_START_DAY = 180;
+const REFINERY_RETROFIT_END_DAY = 540;
+const REFINERY_RETROFIT_MAX_GAIN = 0.35;
+
+const STRUCTURAL_DEMAND_START_DAY = 90;
+const STRUCTURAL_DEMAND_RAMP_DAYS = 365;
+const STRUCTURAL_DEMAND_MAX_REDUCTION = 0.10;
+
+/** シナリオ別のデフォルトシミュレーション期間 */
+const SCENARIO_MAX_DAYS: Record<ScenarioId, number> = {
+  optimistic: 365,
+  realistic: 365,
+  pessimistic: 730,
+  ceasefire: 365,
+};
+
+/** 製油所改造による非中東原油の互換性係数の上昇分（0〜MAX_GAIN） */
+function getRefineryRetrofitGain(day: number): number {
+  if (day < REFINERY_RETROFIT_START_DAY) return 0;
+  if (day >= REFINERY_RETROFIT_END_DAY) return REFINERY_RETROFIT_MAX_GAIN;
+  const t = (day - REFINERY_RETROFIT_START_DAY) / (REFINERY_RETROFIT_END_DAY - REFINERY_RETROFIT_START_DAY);
+  return REFINERY_RETROFIT_MAX_GAIN * t;
+}
+
+/** 行動変容・産業構造変化による永続的な需要削減率（0〜MAX_REDUCTION） */
+function getStructuralDemandReduction(day: number): number {
+  if (day < STRUCTURAL_DEMAND_START_DAY) return 0;
+  const t = Math.min(1, (day - STRUCTURAL_DEMAND_START_DAY) / STRUCTURAL_DEMAND_RAMP_DAYS);
+  return STRUCTURAL_DEMAND_MAX_REDUCTION * t;
+}
+
+/** フェーズ区分タイムラインを構築（在庫閾値イベントから境界を決定） */
+function buildPhaseTimeline(
+  scenarioId: ScenarioId,
+  maxDays: number,
+  thresholds: ThresholdEvent[],
+): PhaseInfo[] {
+  const phases: PhaseInfo[] = [];
+
+  if (scenarioId === "ceasefire") {
+    phases.push({
+      phase: "initial",
+      startDay: 0,
+      endDay: PHASE_INITIAL_MAX_DAY,
+      label: "初期ショック期",
+      description: "価格スパイクと買い占め圧力。代替調達の準備と備蓄放出が始動",
+    });
+    phases.push({
+      phase: "rationing",
+      startDay: PHASE_INITIAL_MAX_DAY,
+      endDay: CEASEFIRE_DAY,
+      label: "制限期",
+      description: "供給制限の調整。停戦合意までの待機期間",
+    });
+    phases.push({
+      phase: "recovery",
+      startDay: CEASEFIRE_DAY,
+      endDay: maxDays,
+      label: "回復期",
+      description: "段階的な封鎖解除と契約再締結。構造的残存リスクを伴う",
+    });
+    return phases;
+  }
+
+  // 非ceasefireシナリオ: 在庫閾値イベントから境界を決定
+  const oilRationing = thresholds.find((t) => t.type === "rationing" && t.resource === "oil");
+  const oilDistribution = thresholds.find((t) => t.type === "distribution" && t.resource === "oil");
+
+  const initialEnd = Math.min(PHASE_INITIAL_MAX_DAY, oilRationing?.day ?? PHASE_INITIAL_MAX_DAY);
+  phases.push({
+    phase: "initial",
+    startDay: 0,
+    endDay: initialEnd,
+    label: "初期ショック期",
+    description: "価格スパイクとパニック買い。国家備蓄放出と代替調達の準備",
+  });
+
+  // 制限期は構造的適応期に移行するか、シミュレーション終端まで継続
+  const structuralCandidateDay = oilDistribution?.day ?? PHASE_RATIONING_MAX_DAY;
+  const reachesStructural = scenarioId === "pessimistic" && structuralCandidateDay < maxDays;
+  const rationingEnd = reachesStructural ? structuralCandidateDay : maxDays;
+
+  phases.push({
+    phase: "rationing",
+    startDay: initialEnd,
+    endDay: rationingEnd,
+    label: "制限期",
+    description: "給油制限・産業優先配分。代替供給ルート確立と需要破壊が進行",
+  });
+
+  if (reachesStructural) {
+    phases.push({
+      phase: "structural",
+      startDay: rationingEnd,
+      endDay: maxDays,
+      label: "構造的適応期",
+      description: "製油所改造完了・代替供給確立・需要構造変化が定着した新均衡",
+    });
+  }
+
+  return phases;
+}
+
+/** 指定日に対応するフェーズを返す（外部呼び出し用ユーティリティ） */
+export function getCurrentPhase(day: number, phases: PhaseInfo[]): ScenarioPhase {
+  for (const p of phases) {
+    if (day >= p.startDay && (p.endDay === null || day < p.endDay)) {
+      return p.phase;
+    }
+  }
+  const last = phases.at(-1);
+  return last?.phase ?? "initial";
 }
 
 // ─── #10 歴史データ対比マーカー ──────────────────────
@@ -332,8 +477,10 @@ const HISTORICAL_MARKERS: Array<{ day: number; label: string }> = [
 
 export function runFlowSimulation(
   scenarioId: ScenarioId = "realistic",
-  maxDays: number = 365,
+  maxDaysParam?: number,
 ): FlowSimulationResult {
+  // Phase 20-A: シナリオ別デフォルト期間（pessimistic は 730日まで観測）
+  const maxDays = maxDaysParam ?? SCENARIO_MAX_DAYS[scenarioId];
   const s = SCENARIOS[scenarioId];
   const blockadeProfile = BLOCKADE_PROFILES[scenarioId];
   const altSupplyProfile = ALT_SUPPLY_PROFILES[scenarioId];
@@ -424,14 +571,17 @@ export function runFlowSimulation(
     const oilDemandDestruction = getDemandDestructionFactor(oilPercent);
     const lngDemandDestruction = getDemandDestructionFactor(lngPercent);
 
+    // Phase 20-A: 構造的需要削減（行動変容・産業構造変化による永続減）
+    const structuralFactor = 1 - getStructuralDemandReduction(day);
+
     // 石油: 封鎖で輸入が止まり在庫から消費（従来モデル）
-    const dailyOil = baseDailyOil * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
+    const dailyOil = baseDailyOil * structuralFactor * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
     oilStock = Math.max(0, oilStock - dailyOil);
 
     // LNG: 消費は需要ベース（封鎖率は消費に影響しない）
     // 非ホルムズ供給（93.7%）は継続、ホルムズ分（6.3%）のみ途絶
     // → 在庫減少 = 消費量 - 非ホルムズ供給 × 封鎖解除曲線補正
-    const lngConsumption = baseDailyLng * lngRationFactor * lngDemandDestruction;
+    const lngConsumption = baseDailyLng * structuralFactor * lngRationFactor * lngDemandDestruction;
     const lngContinuingSupply = lngNonHormuzSupply * (1 - s.demandReductionRate);
     // 封鎖解除に伴いホルムズ経由LNGも段階的に復帰
     const lngHormuzRecovery = staticConsumption.lng.dailyConsumption_t
@@ -571,7 +721,9 @@ export function runFlowSimulation(
   thresholds.sort((a, b) => a.day - b.day);
 
   const policyEffects = calcPolicyEffects(scenarioId, maxDays, { oilDepletionDay, lngDepletionDay, powerCollapseDay });
-  return { timeline, oilDepletionDay, lngDepletionDay, powerCollapseDay, thresholds, policyEffects };
+  // Phase 20-A: 長期化フェーズタイムラインを構築
+  const phaseTimeline = buildPhaseTimeline(scenarioId, maxDays, thresholds);
+  return { timeline, oilDepletionDay, lngDepletionDay, powerCollapseDay, thresholds, policyEffects, phaseTimeline };
 }
 
 // ─── 政策効果計算（枯渇日数のみ、タイムライン不要） ────
@@ -641,10 +793,13 @@ function calcDepletionDaysOnly(
     const oilDemandDestruction = getDemandDestructionFactor(oilPercent);
     const lngDemandDestruction = getDemandDestructionFactor(lngPercent);
 
-    const dailyOil = baseDailyOil * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
+    // Phase 20-A: 構造的需要削減（runFlowSimulation と同じモデル）
+    const structuralFactor = 1 - getStructuralDemandReduction(day);
+
+    const dailyOil = baseDailyOil * structuralFactor * currentBlockadeRate * oilRationFactor * oilDemandDestruction;
     oilStock = Math.max(0, oilStock - dailyOil);
 
-    const lngConsumption = baseDailyLng * lngRationFactor * lngDemandDestruction;
+    const lngConsumption = baseDailyLng * structuralFactor * lngRationFactor * lngDemandDestruction;
     const lngContinuingSupply = lngNonHormuzSupply * (1 - s.demandReductionRate);
     const lngHormuzRecovery = staticConsumption.lng.dailyConsumption_t
       * opts.lngDemandMultiplier

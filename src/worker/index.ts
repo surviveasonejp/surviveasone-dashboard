@@ -662,8 +662,12 @@ async function handleCollapse(url: URL, env: Env): Promise<Response> {
 
 async function handleSimulation(url: URL, env: Env): Promise<Response> {
   const scenario = parseScenario(url);
-  const maxDays = Math.min(Math.max(Number(url.searchParams.get("maxDays")) || 365, 1), 730);
-  const cacheKey = scenarioCacheKey("api:simulation", scenario, String(maxDays));
+  // Phase 20-A: maxDays 未指定時はシナリオ別デフォルト（pessimistic は 730日）を採用
+  const rawMaxDays = url.searchParams.get("maxDays");
+  const maxDays = rawMaxDays !== null
+    ? Math.min(Math.max(Number(rawMaxDays) || 365, 1), 730)
+    : undefined;
+  const cacheKey = scenarioCacheKey("api:simulation", scenario, String(maxDays ?? "default"));
 
   const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
   if (cached) {
