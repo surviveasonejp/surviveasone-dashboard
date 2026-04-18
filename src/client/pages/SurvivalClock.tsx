@@ -167,7 +167,7 @@ export const SurvivalClock: FC = () => {
             "",
             "シミュレーション詳細 → surviveasonejp.org/countdown",
             "",
-            "備蓄は、助けが届くまでの時間を稼ぐ手段。わが家に足りないものを確認 → surviveasonejp.org/family",
+            "備蓄は、突発災害でも供給制約（価格高騰・配給）でも、わが家の橋渡しになる。足りないものを確認 → surviveasonejp.org/family",
             "",
             "#ホルムズ海峡 #エネルギー安全保障",
           ].join("\n");
