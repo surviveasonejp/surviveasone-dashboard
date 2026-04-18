@@ -16,7 +16,7 @@ const DATA_SOURCES_LIST = [
   { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "EIA RWTC API", note: "WTI原油スポット価格 日次自動取得 → D1 oil_prices + KV", auto: true },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー30隻(VLCC13+LNG14+Chemical1+Suezmax2)のIMO・航路(2026年4月12日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]含む)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー32隻(VLCC14+LNG14+Chemical1+Suezmax2+Aframax1)のIMO・航路(2026年4月17日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]含む)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
@@ -120,6 +120,30 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     status: "completed" as const,
     items: ["PREPAREページ確認フレームリライト（内閣府3日分→出発点バッジ・ceasefire優先順位カード非表示・シナリオバッジ・CSS変数統一）", "FAMILYページ確認フレームリライト（HOUSEHOLD SUPPLY CHECK・供給余力N日分・CSS変数統一）", "X投稿テンプレート確認フレーム統一（ハッシュタグ統一・HOUSEHOLD SUPPLY CHECK CTA）"],
   },
+  {
+    phase: "Phase 18",
+    label: "Observatory UI統一",
+    status: "completed" as const,
+    items: ["@themeセマンティックカラー13色追加", "計324箇所の色クラス統一", "Badge/SectionHeading/PageHero共通化", "Stat/PanelCard tone prop 型安全化", "useScenarioParam抽出", "URLシナリオ保持", "スクロールリセット", "ScenarioSelectorキーボード操作"],
+  },
+  {
+    phase: "Phase 19",
+    label: "Lighthouse性能改善",
+    status: "completed" as const,
+    items: ["Lighthouse 56→71中央値", "FCP 8.8→2.7s", "React lazy化", "vendor分離", "フォント非同期化（display=optional）", "印刷CSS分離", "CSP script-src-attr追加"],
+  },
+  {
+    phase: "Phase 20",
+    label: "意思決定支援UIと長期化フェーズモデル",
+    status: "completed" as const,
+    items: ["DecisionTriadPanel（事実/解釈/含意）", "MyHypothesisPanel（自仮説を4標準シナリオと並置）", "PhaseIndicator（initial/rationing/structural/recovery）", "UncertaintyBand", "Journal意思決定ログ（localStorage・JSON I/O）", "製油所改造による非中東互換性向上", "構造的需要削減", "pessimistic観測期間730日拡張"],
+  },
+  {
+    phase: "Phase 21",
+    label: "煽らない設計明文化・需要異常値シグナル",
+    status: "completed" as const,
+    items: ["About/Methodology「煽らない設計」章", "DemandAnomalyBadge（BULLWHIP INDICATOR）", "realEvents 74件（経産省4/17潤滑油流通偏在要請追加）", "マクロ供給とミクロ需給の区別明示"],
+  },
 ];
 
 const SIMULATION_FEATURES = [
@@ -139,6 +163,8 @@ const SIMULATION_FEATURES = [
   { label: "食料サプライチェーン", desc: "ナフサ→石化製品(PE/PP/PS/PVC)→包装材の連鎖的供給制約。化学日報報道に基づくnapthaFactor設定。川下バッファ105日（JPCAポリマー在庫）" },
   { label: "物流制約モデル", desc: "石油在庫50%→物流稼働100%、30%→70%、10%→30%、0%→完全停止。地域別のトラック燃料依存率×配送遅延バッファで制約日を算出。地図上に地域間供給フローを可視化" },
   { label: "代替原油精製互換性", desc: "非中東原油（米国ガルフ/西アフリカ）の精製互換性ペナルティ。API度差・硫黄分差による効率補正。非中東調達が即座に100%補填にならない理由をモデル化" },
+  { label: "製油所改造による非中東互換性向上", desc: "Day180-540で線形に最大+0.35の互換係数（Phase 20-A）。代替原油の受入余地を時間経過とともに拡大" },
+  { label: "構造的需要削減", desc: "Day90-365で行動変容・産業構造転換により最大10%の恒久的需要減（Phase 20-A）。pessimistic のみ観測期間730日に延長し4フェーズ時系列（initial/rationing/structural/recovery）を出力" },
 ];
 
 export const About: FC = () => {
@@ -161,9 +187,40 @@ export const About: FC = () => {
           危機の進行を正しく理解し、素早く行動するための情報を提供する。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          公開統計データに基づく16の計算モデルと4つのシナリオで分析。
+          公開統計データに基づく18の計算モデルと4つのシナリオで分析。
           代替供給ルート・経済カスケード・配給制シミュレーション・地域別ロジスティクスを含む。
           予測ではなくリスクシナリオのシミュレーションとして、不確実性を含めて透明に提示する。
+        </p>
+      </div>
+
+      {/* 煽らない設計 */}
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
+        <SectionHeading as="h2" tone="success" size="sm" tracking="wider">煽らない設計 — NON-AMPLIFICATION DESIGN</SectionHeading>
+        <p className="text-neutral-300 text-sm leading-relaxed">
+          本ツールは<span className="text-neutral-200 font-bold">消費者を市場に駆り立てない設計</span>である。
+          経産省は2026年4月17日、潤滑油の3月出荷量が前年同月比約3割増となり流通に偏りが生じたため、元売に「前年同月比同量を基本とした供給」を要請した。
+          「量は足りているが供給の先行き不安による買い増しが目詰まりを生む」という構造が明示された。
+        </p>
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          本ツールは設計段階からこの構造を認識し、以下の原則を実装している:
+        </p>
+        <ul className="space-y-2 text-xs text-neutral-400 leading-relaxed pl-4">
+          <li>
+            <span className="text-success-soft font-bold">① 確認フレーム誘導</span> — 「枯渇」「崩壊」「今すぐ確保」といった恐怖フレームの用語を排除し、「供給可能日数」「過不足を確認」に統一。全ページで用語ガイドラインを強制。
+          </li>
+          <li>
+            <span className="text-success-soft font-bold">② レンジと不確実性の常時提示</span> — 単一予測値は与えない。4シナリオ（国際協調・標準対応・需要超過・停戦回復）を併記し、UncertaintyBand で結果幅を可視化。境野春彦氏が指摘する「統計4ヶ月 vs 実物0.5ヶ月」のようなマクロ・ミクロのギャップを、DecisionTriadPanel（事実/解釈/含意）で分離提示する。
+          </li>
+          <li>
+            <span className="text-success-soft font-bold">③ 一次情報への誘導</span> — realEvents（59件以上）で政府・業界団体・報道の原典を並走表示。SNSシェア文言には必ずシナリオ条件と買い占め抑止メッセージを含める。数字のみの切り取りを防ぐ。
+          </li>
+          <li>
+            <span className="text-success-soft font-bold">④ 脆弱層の優先保護</span> — FAMILYページ・PREPAREページに買い占めが「最も脆弱な人から物資を奪う」明示を常設。乳幼児・透析・在宅医療・要介護の6カテゴリで優先供給情報に誘導する。
+          </li>
+        </ul>
+        <p className="text-neutral-500 text-xs leading-relaxed">
+          この設計原則は、日経社説（2026-03-27）「石油製品の供給不安抑える丁寧な説明を」、木原官房長官発言「公式見解を確認」、野村総研・木内登英氏「代替調達が進んでも石油製品の目詰まりは続く」といった論調と整合する。
+          本ツールは「煽る側」ではなく、<span className="text-success-soft">政府・専門家・市民の間で在庫・閾値・不確実性を透明に共有する基盤</span>として機能する。
         </p>
       </div>
 
@@ -185,7 +242,8 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-success-soft">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。危機発生日数も全ページに表示</li>
-            <li>・タンカー30隻（VLCC13+LNG14+Chemical1+Suezmax2）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。MAYASAN/YAKUMOSAN（4/11 東進確認）(2026年4月12日)</li>
+            <li>・タンカー32隻（VLCC14+LNG14+Chemical1+Suezmax2+Aframax1）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。4/17: ENEOS GLORY喜入・KHURAIS名古屋・PACIFIC NOTUS・NISSHO MARU入港確認。MAYASAN/YAKUMOSAN湾内待機継続（2026年4月17日）</li>
+            <li>・現実イベント74件（経産省4/17「潤滑油 前年同月比約3割増・流通偏在」要請を含む）を時系列で並走表示。「量はあるが流通が詰まる」構造を DemandAnomalyBadge で可視化</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート。5月以降は喜望峰ルート代替供給が本格化予定</li>
             <li>・4/10: 高市首相が国家備蓄から追加20日分放出（5月開始）を発表。国家30日分+民間15日分+産油国5日分=計45日分放出済み。全計画完了後は合計約177日見込み</li>
             <li>・4/1: 石炭火力規制を緩和（LNG依存低減・供給安定化の緊急措置）</li>
@@ -199,7 +257,7 @@ export const About: FC = () => {
       {/* シミュレーション仕様 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">シミュレーション仕様（全16モデル）</SectionHeading>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">シミュレーション仕様（全18モデル）</SectionHeading>
         </div>
         <div className="divide-y divide-border">
           {SIMULATION_FEATURES.map((f) => (

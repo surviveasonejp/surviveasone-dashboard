@@ -16,6 +16,7 @@ import { PrefectureSelector } from "../components/PrefectureSelector";
 import { RecoveryTimelineSlider } from "../components/RecoveryTimelineSlider";
 import { PhaseIndicator } from "../components/PhaseIndicator";
 import { DecisionTriadPanel } from "../components/DecisionTriadPanel";
+import { DemandAnomalyBadge } from "../components/DemandAnomalyBadge";
 import { MyHypothesisPanel } from "../components/MyHypothesisPanel";
 import { Badge } from "../components/Badge";
 import { PageHero } from "../components/PageHero";
@@ -68,6 +69,9 @@ export const Dashboard: FC = () => {
 
       {/* Phase 20-B: 事実 / 解釈 / 含意 の3カラムサマリー（旧 SUPPLY BUFFER + CountdownTimer×3 を統合） */}
       <DecisionTriadPanel scenario={scenario} />
+
+      {/* Phase 21: 需要異常値シグナル（ブルウィップ効果の可視化） */}
+      <DemandAnomalyBadge />
 
       {/* Phase 20-C: 「私の想定」— localStorage で個人の仮説を保存・比較 */}
       <MyHypothesisPanel scenarioRef={scenario} />

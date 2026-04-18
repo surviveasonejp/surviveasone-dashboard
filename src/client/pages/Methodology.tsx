@@ -105,6 +105,29 @@ export const Methodology: FC = () => {
         </p>
       </div>
 
+      {/* 情報発信原則（煽らない設計） */}
+      <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
+        <SectionHeading as="h2" tone="success" size="sm" tracking="wider">情報発信原則 — マクロ供給とミクロ需給の区別</SectionHeading>
+        <p className="text-neutral-300 text-sm leading-relaxed">
+          本モデルは<span className="text-neutral-200 font-bold">「マクロ供給量」と「ミクロ需給（現場の入手可能性）」を区別</span>して提示します。
+          経産省が「ナフサ4ヶ月分確保」と発表しても、実物の国内ナフサ在庫は0.5ヶ月分です（境野春彦氏・ファクトチェックセンター 2026-04）。
+          この差は供給の先行き不安による買い増し・発注増幅（ブルウィップ効果）が中間流通層で発生するために生じます。
+        </p>
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          本ツールの情報発信は以下の原則で構築されています:
+        </p>
+        <ul className="space-y-1.5 text-xs text-neutral-500 leading-relaxed pl-4">
+          <li>・<span className="text-neutral-300 font-bold">単一予測値を与えない</span>: 4シナリオ併記 + UncertaintyBand で結果幅を常時可視化</li>
+          <li>・<span className="text-neutral-300 font-bold">マクロ数値に注釈を付ける</span>: 備蓄日数は法ベース/実効備蓄/生活維持ベースの3段階解釈（上表参照）で分離</li>
+          <li>・<span className="text-neutral-300 font-bold">恐怖フレーム語彙を排除</span>: 「崩壊」「枯渇」「詰む」は用いず、「供給制約」「供給可能日数」「逼迫」で統一</li>
+          <li>・<span className="text-neutral-300 font-bold">一次情報への誘導</span>: realEvents で政府・業界団体・報道原典を時系列に並走表示</li>
+          <li>・<span className="text-neutral-300 font-bold">代替供給・政策介入を常に含める</span>: 「完全停止」ではなく「制約付き供給」としてモデル化</li>
+        </ul>
+        <p className="text-neutral-500 text-xs leading-relaxed">
+          この設計は日経社説「石油製品の供給不安抑える丁寧な説明を」（2026-03-27）、経産省4/17 潤滑油流通偏在要請、野村総研・木内登英氏「代替調達が進んでも石油製品の目詰まりは続く」（2026-04-13）の問題意識と同期しています。
+        </p>
+      </div>
+
       {/* 備蓄日数の3段階解釈 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
