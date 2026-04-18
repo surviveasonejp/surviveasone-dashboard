@@ -72,6 +72,11 @@ import {
   type VtsRouteId,
 } from "./mlit-vts-fetcher";
 import {
+  STATUS_BY_SCENARIO,
+  RESOURCE_KEYS,
+  RESOURCE_STATUS_UPDATED_AT,
+} from "./resource-status";
+import {
   fetchNagoyaArrivals,
   getCachedNagoyaArrivals,
   detectNewNagoyaTankers,
@@ -370,6 +375,8 @@ async function handleApiRoute(
       return handleRealEvents(url);
     case "/api/port-arrivals":
       return handlePortArrivals(url, env);
+    case "/api/resource-status":
+      return handleResourceStatus(url);
     case "/api/petrochemtree":
       return handlePetrochemTree(env);
     case "/api/petrochemtree/risk":
@@ -410,6 +417,7 @@ async function handleApiRoute(
           "GET /api/validation": "シミュレーション予測と実データの比較検証",
           "GET /api/real-events": "封鎖後の実イベント一覧（?recentDays=60&category=industry でフィルタ）",
           "GET /api/port-arrivals": "VTS/港湾EDI入航予定タンカー（?port=uraga|akashi|kanmon|nagoya）+ tankers.json未登録便検出",
+          "GET /api/resource-status": "品目別市場ステータス（?scenario=realistic）— 4段階 normal/tight/allotted/restricted",
           "GET /api/sources": "全データソースの出典マッピング（数値→出典URLの1対1対応）",
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
@@ -1278,6 +1286,31 @@ async function handlePortArrivals(url: URL, env: Env): Promise<Response> {
   }, 400, false);
 }
 
+// ─── /api/resource-status ────────────────────────────
+// 品目別市場ステータス（4段階: normal/tight/allotted/restricted）をシナリオ別に返却
+// Phase 24: ops 側が market_status トリガーでポーリング→KVスナップショット比較
+
+function handleResourceStatus(url: URL): Response {
+  const scenario = url.searchParams.get("scenario") ?? "realistic";
+  const data = (STATUS_BY_SCENARIO as Record<string, unknown>)[scenario];
+  if (!data) {
+    return jsonResponse({
+      error: "invalid_scenario",
+      supported: Object.keys(STATUS_BY_SCENARIO),
+      requested: scenario,
+    }, 400, false);
+  }
+
+  return jsonResponse({
+    generatedAt: new Date().toISOString(),
+    scenario,
+    updatedAt: RESOURCE_STATUS_UPDATED_AT,
+    resources: RESOURCE_KEYS,
+    statuses: data,
+    note: "4段階ステータス（normal/tight/allotted/restricted）。sinceは遷移起点日、sourceは根拠出典",
+  }, 200, true);
+}
+
 // ─── /api/sources ────────────────────────────────────
 // 全データソースの出典マッピング（数値→出典URLの1対1対応）
 
@@ -1397,6 +1430,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/validation", desc: "シミュレーション予測 vs 実際の照合結果", params: "" },
     { method: "GET", path: "/api/real-events", desc: "封鎖後の実イベント一覧（日付降順）", params: "?recentDays=60&category=industry" },
     { method: "GET", path: "/api/port-arrivals", desc: "VTS/港湾EDI入航予定タンカー + 未登録便検出", params: "?port=uraga|akashi|kanmon|nagoya&refresh=true" },
+    { method: "GET", path: "/api/resource-status", desc: "品目別市場ステータス（4段階）シナリオ別", params: "?scenario=realistic" },
     { method: "GET", path: "/api/sources", desc: "全データソース一覧（更新頻度・自動/手動・信頼度）", params: "" },
     { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要（LLM・クローラー向け）", params: "?scenario=realistic" },
     { method: "GET", path: "/api/data", desc: "全データ概要（HTML、研究者向け）", params: "" },
