@@ -43,6 +43,30 @@ export const Layout: FC = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // キーボード矢印（←/→）でページ移動。フォーム要素や ScenarioSelector 等の
+  // インタラクティブ領域にフォーカス中は無効。修飾キー付きも無効。
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      const target = e.target as HTMLElement | null;
+      // フォーム要素にフォーカス中は無効（入力の十字キーを奪わない）
+      if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
+      // ScenarioSelector / スライダー等の既存 ArrowLeft/Right ハンドラと競合させない
+      if (target?.closest("[role='radiogroup'], [role='slider'], [data-no-swipe]")) return;
+
+      if (e.key === "ArrowLeft" && prevPage) {
+        e.preventDefault();
+        navigateTo(prevPage.path);
+      } else if (e.key === "ArrowRight" && nextPage) {
+        e.preventDefault();
+        navigateTo(nextPage.path);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [navigateTo, prevPage, nextPage]);
+
   return (
     <div className="min-h-screen bg-bg text-text overflow-x-hidden">
       <Header onNavigate={navigateTo} />
