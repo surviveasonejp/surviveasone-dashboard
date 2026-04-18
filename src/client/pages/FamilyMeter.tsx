@@ -271,14 +271,21 @@ export const FamilyMeter: FC = () => {
               {!eventsFromApi && " (キャッシュ)"}
             </span>
           </div>
-          <ul className="space-y-1.5">
+          <ul className="space-y-2">
             {recentEvents.map((ev, i) => (
               <li key={`${ev.date}-${i}`} className="flex gap-2 text-xs">
                 <span className="font-mono text-text-muted shrink-0 w-20">{ev.date}</span>
                 <span className="text-[10px] font-mono px-1.5 rounded border border-border text-text-muted shrink-0 self-start mt-0.5">
                   {ev.category}
                 </span>
-                <span className="text-text leading-snug">{ev.label}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-text leading-snug">{ev.label}</div>
+                  {ev.affectedPopulation && (
+                    <div className="text-[10px] text-primary-soft font-mono mt-0.5" title={ev.affectedPopulation.source}>
+                      影響: {ev.affectedPopulation.label}
+                    </div>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

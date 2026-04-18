@@ -1150,6 +1150,11 @@ function handleRealEvents(url: URL): Response {
     source: string;
     impact: string;
     scenario?: string;
+    affectedPopulation?: {
+      count: number;
+      label: string;
+      source: string;
+    };
   };
 
   let events: RealEvent[] = staticRealEvents.events as RealEvent[];

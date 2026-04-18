@@ -1,5 +1,14 @@
 import { useApiData } from "./useApiData";
 
+export interface AffectedPopulation {
+  /** 推計対象人数（または施設数） */
+  count: number;
+  /** 表示用ラベル（根拠内訳を含む） */
+  label: string;
+  /** 出典（統計名称・調査年含む） */
+  source: string;
+}
+
 export interface RealEvent {
   date: string;
   dayOffset: number;
@@ -8,6 +17,7 @@ export interface RealEvent {
   source: string;
   impact: string;
   scenario?: string;
+  affectedPopulation?: AffectedPopulation;
 }
 
 export interface RealEventsResponse {
