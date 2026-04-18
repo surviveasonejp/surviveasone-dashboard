@@ -18,6 +18,8 @@ import { fetchOilProductsUpdate } from "./oil-products-fetcher";
 import { fetchJpcaUpdate } from "./jpca-fetcher";
 import { fetchJarwUpdate } from "./jarw-fetcher";
 import { fetchHjksOutages } from "./hjks-fetcher";
+import { fetchVtsArrivals, VTS_ROUTE_IDS } from "./mlit-vts-fetcher";
+import { fetchNagoyaArrivals } from "./nagoya-port-fetcher";
 
 interface Env {
   DB: D1Database;
@@ -67,6 +69,9 @@ export async function handleScheduled(
     if (env.EIA_API_KEY) {
       ctx.waitUntil(fetchOilPrice({ DB: env.DB, CACHE: env.CACHE, EIA_API_KEY: env.EIA_API_KEY }));
     }
+    // MLIT VTS 3ルート（浦賀水道/明石海峡/関門海峡）+ 名古屋港EDI
+    ctx.waitUntil(fetchAllVtsArrivalsSafe(env));
+    ctx.waitUntil(fetchNagoyaArrivalsSafe(env));
   }
 
   // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期（月18日は備蓄更新と相乗り）
@@ -76,6 +81,8 @@ export async function handleScheduled(
         fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE)),
       );
     }
+    // MLIT VTS 3ルート（2回目）— AIS と並行して実行
+    ctx.waitUntil(fetchAllVtsArrivalsSafe(env));
   }
 
   // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW 自動更新
@@ -85,6 +92,43 @@ export async function handleScheduled(
     ctx.waitUntil(fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
     ctx.waitUntil(fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE }));
     ctx.waitUntil(fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE }));
+  }
+}
+
+/**
+ * MLIT VTS 全ルートの取得を安全に実行（失敗してもCron全体を止めない）
+ * uraga / akashi / kanmon の3ルート・取得結果をログ出力
+ */
+async function fetchAllVtsArrivalsSafe(env: Env): Promise<void> {
+  for (const routeId of VTS_ROUTE_IDS) {
+    try {
+      const result = await fetchVtsArrivals({ CACHE: env.CACHE }, routeId);
+      console.log(
+        `VTS ${routeId}: ${result.tankerArrivals.length} tanker(s) scheduled` +
+        ` (total ${result.totalArrivals} vessels)`,
+      );
+    } catch (err) {
+      console.warn(
+        `VTS ${routeId} fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+}
+
+/**
+ * 名古屋港 入港予定の取得を安全に実行
+ */
+async function fetchNagoyaArrivalsSafe(env: Env): Promise<void> {
+  try {
+    const result = await fetchNagoyaArrivals({ CACHE: env.CACHE });
+    console.log(
+      `Nagoya port update: ${result.tankerArrivals.length} tanker(s) scheduled` +
+      ` (total ${result.totalArrivals} vessels)`,
+    );
+  } catch (err) {
+    console.warn(
+      `Nagoya port fetch failed: ${err instanceof Error ? err.message : String(err)}`,
+    );
   }
 }
 

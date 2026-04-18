@@ -65,6 +65,17 @@ import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
 import { getAisPositions, AIS_LAST_SUCCESS_KEY, type AisPosition } from "./ais-tracker";
 import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
+import {
+  fetchVtsArrivals,
+  getCachedVtsArrivals,
+  detectNewVtsTankers,
+  type VtsRouteId,
+} from "./mlit-vts-fetcher";
+import {
+  fetchNagoyaArrivals,
+  getCachedNagoyaArrivals,
+  detectNewNagoyaTankers,
+} from "./nagoya-port-fetcher";
 
 interface Env {
   ASSETS: Fetcher;
@@ -357,6 +368,8 @@ async function handleApiRoute(
       return handleValidation();
     case "/api/real-events":
       return handleRealEvents(url);
+    case "/api/port-arrivals":
+      return handlePortArrivals(url, env);
     case "/api/petrochemtree":
       return handlePetrochemTree(env);
     case "/api/petrochemtree/risk":
@@ -396,6 +409,7 @@ async function handleApiRoute(
           "GET /api/methodology": "計算モデル・前提条件・係数・出典（構造化JSON）",
           "GET /api/validation": "シミュレーション予測と実データの比較検証",
           "GET /api/real-events": "封鎖後の実イベント一覧（?recentDays=60&category=industry でフィルタ）",
+          "GET /api/port-arrivals": "VTS/港湾EDI入航予定タンカー（?port=uraga|akashi|kanmon|nagoya）+ tankers.json未登録便検出",
           "GET /api/sources": "全データソースの出典マッピング（数値→出典URLの1対1対応）",
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
@@ -1183,6 +1197,87 @@ function handleRealEvents(url: URL): Response {
   }, 200, true);
 }
 
+// ─── /api/port-arrivals ──────────────────────────────
+// 公開VTS/港湾EDIから入航予定タンカーを取得し、tankers.json未登録便を検出
+// ?port=uraga (東京湾・既定) | akashi (大阪湾) | kanmon (関門海峡) | nagoya (名古屋港)
+// ?refresh=true でKVキャッシュを無視して強制フェッチ
+
+const VTS_ROUTES: VtsRouteId[] = ["uraga", "akashi", "kanmon"];
+
+async function handlePortArrivals(url: URL, env: Env): Promise<Response> {
+  const port = url.searchParams.get("port") ?? "uraga";
+  const forceRefresh = url.searchParams.get("refresh") === "true";
+  const registeredNames = calcTankerArrivals().map((v) => v.name);
+
+  // MLIT VTS 3ルート
+  if ((VTS_ROUTES as string[]).includes(port)) {
+    const routeId = port as VtsRouteId;
+    let data = forceRefresh ? null : await getCachedVtsArrivals(env, routeId);
+    if (!data) {
+      try {
+        data = await fetchVtsArrivals(env, routeId);
+      } catch (err) {
+        return jsonResponse({
+          error: "fetch_failed",
+          port: routeId,
+          message: err instanceof Error ? err.message : "unknown",
+          fallback: await getCachedVtsArrivals(env, routeId),
+        }, 503, false);
+      }
+    }
+    const newTankers = detectNewVtsTankers(data.tankerArrivals, registeredNames);
+    return jsonResponse({
+      generatedAt: new Date().toISOString(),
+      port: routeId,
+      portName: data.routeLabel,
+      dataSource: "国土交通省 海上保安庁 海上交通センター（VTS）",
+      fetchedAt: data.fetchedAt,
+      totalArrivals: data.totalArrivals,
+      tankerArrivals: data.tankerArrivals,
+      tankerArrivalsCount: data.tankerArrivals.length,
+      newTankers,
+      newTankersCount: newTankers.length,
+      note: "油タンカー/ガスタンカー/ケミカルタンカーを抽出。船名はtankers.jsonと正規化比較し未登録便をnewTankersに列挙。IMO番号は含まれない",
+    }, 200, true);
+  }
+
+  if (port === "nagoya") {
+    let data = forceRefresh ? null : await getCachedNagoyaArrivals(env);
+    if (!data) {
+      try {
+        data = await fetchNagoyaArrivals(env);
+      } catch (err) {
+        return jsonResponse({
+          error: "fetch_failed",
+          port,
+          message: err instanceof Error ? err.message : "unknown",
+          fallback: await getCachedNagoyaArrivals(env),
+        }, 503, false);
+      }
+    }
+    const newTankers = detectNewNagoyaTankers(data.tankerArrivals, registeredNames);
+    return jsonResponse({
+      generatedAt: new Date().toISOString(),
+      port: "nagoya",
+      portName: "名古屋港（伊勢湾）",
+      dataSource: "名古屋港管理組合 入港予定船情報",
+      fetchedAt: data.fetchedAt,
+      totalArrivals: data.totalArrivals,
+      tankerArrivals: data.tankerArrivals,
+      tankerArrivalsCount: data.tankerArrivals.length,
+      newTankers,
+      newTankersCount: newTankers.length,
+      note: "プロダクトオイルタンカー/油送船/LNG船/外航ケミカル船を抽出。コールサインは含まれるがIMOなし",
+    }, 200, true);
+  }
+
+  return jsonResponse({
+    error: "invalid_port",
+    supported: [...VTS_ROUTES, "nagoya"],
+    requested: port,
+  }, 400, false);
+}
+
 // ─── /api/sources ────────────────────────────────────
 // 全データソースの出典マッピング（数値→出典URLの1対1対応）
 
@@ -1301,6 +1396,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/methodology", desc: "16計算モデルのメタデータ・パラメータ・信頼度", params: "" },
     { method: "GET", path: "/api/validation", desc: "シミュレーション予測 vs 実際の照合結果", params: "" },
     { method: "GET", path: "/api/real-events", desc: "封鎖後の実イベント一覧（日付降順）", params: "?recentDays=60&category=industry" },
+    { method: "GET", path: "/api/port-arrivals", desc: "VTS/港湾EDI入航予定タンカー + 未登録便検出", params: "?port=uraga|akashi|kanmon|nagoya&refresh=true" },
     { method: "GET", path: "/api/sources", desc: "全データソース一覧（更新頻度・自動/手動・信頼度）", params: "" },
     { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要（LLM・クローラー向け）", params: "?scenario=realistic" },
     { method: "GET", path: "/api/data", desc: "全データ概要（HTML、研究者向け）", params: "" },
