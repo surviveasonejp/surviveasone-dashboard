@@ -41,5 +41,10 @@
   "Tomakomai": { "lat": 42.64, "lon": 141.60 },
   "Ain Sukhna": { "lat": 29.60, "lon": 32.55 },
   "Malaysia Hub": { "lat": 4.00, "lon": 104.00 },
-  "Mumbai STS": { "lat": 18.50, "lon": 70.50 }
+  "Mumbai STS": { "lat": 18.50, "lon": 70.50 },
+  "Ogishima": { "lat": 35.50, "lon": 139.78 },
+  "Anegasaki": { "lat": 35.47, "lon": 140.02 },
+  "Sohar": { "lat": 24.47, "lon": 56.62 },
+  "PortMoresby": { "lat": -9.48, "lon": 147.15 },
+  "Freeport": { "lat": 28.95, "lon": -95.36 }
 }

@@ -87,6 +87,9 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "USGC-Cape": "usgc-capehope",
   "USGC-Drake": "usgc-drakepassage",
   "Ain Sukhna": "ain-sukhna-babel",
+  "Sohar": "fujairah-malacca",
+  "PortMoresby": "australia-east",
+  "Freeport": "us-pacific",
 };
 
 /** 航路上のウェイポイント列に沿って t (0〜1) の位置を補間 */

@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-04-17",
+    "updatedAt": "2026-04-21",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-17時点でAIS位置を最新化",
-    "note": "32隻の追跡船舶（米国発Aframax新規追加1隻+米国発VLCC新規追加1隻含む） + 7チョークポイント監視。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-21時点でAIS位置を最新化",
+    "note": "36隻の追跡船舶（4/21 VTS検出便4隻追加: FRONT MAINE/KHASAB SILVER/PACIFIC ARCADIA/SHINSHU MARU） + 7チョークポイント監視。【4/21追加】海保VTS浦賀水道航路 4/22入港予定の4隻を新規登録: FRONT MAINE（Frontline VLCC・扇島シーバース4/22 10:45）・KHASAB SILVER（Oman Shipping MRプロダクト・姉崎4/22 10:15）・PACIFIC ARCADIA（MOL/OGIT LNG・PNG産・扇島4/22 11:15）・SHINSHU MARU（JERA/NYK LNG・米国Freeport産・富津4/22 13:00）。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
   },
   "chokepoints": [
     {
@@ -821,6 +821,102 @@
         "combined": 0.951
       },
       "note": "マーシャル諸島籍VLCC。IMO 9926661。MMSI 538009905。299,847DWT。LOA 330m。2022年建造。Bloomberg 4/8報道: 米国発日本向け計8隻のうちの1隻（VLCC4隻のうち1隻）。テキサス湾岸出港→大西洋→喜望峰→インド洋→日本経由。ETA 鹿児島・喜入（ENEOS喜入基地）5月23日（4/14から39日後）。喜望峰ルートは中東ルートより約50日長いが、ホルムズ・バベルマンデブ海峡を完全回避。米国産原油約200万バレル以上"
+    },
+    {
+      "id": "vlcc-alt-06",
+      "name": "FRONT MAINE",
+      "imo": "9898553",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "シンガポール錨地経由（起点要確認）",
+      "departurePort": "NonMideast",
+      "destination": "扇島シーバース（ENEOS）",
+      "destinationPort": "Ogishima",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 12.5,
+      "eta_days": 1,
+      "cargo_t": 300000,
+      "cargoType": "原油（起点要確認・シンガポール経由）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.95,
+        "route": 0.97,
+        "military": 0.95,
+        "combined": 0.875
+      },
+      "note": "Frontline社VLCC。IMO 9898553。MMSI 538010896。マーシャル諸島籍。2021年建造。LOA 336m。海保VTS浦賀水道航路 4/22 10:45到着予定（4/21検出）。扇島シーバース＝ENEOS扇島製油所系。3/19シンガポール錨地確認情報あり、起点は要AIS追跡確認。中東・非中東いずれかの可能性"
+    },
+    {
+      "id": "tanker-oman-01",
+      "name": "KHASAB SILVER",
+      "imo": "9718832",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "オマーン近海（ソハール/ドゥクム想定・要確認）",
+      "departurePort": "Sohar",
+      "destination": "姉崎（出光興産）",
+      "destinationPort": "Anegasaki",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 13.0,
+      "eta_days": 1,
+      "cargo_t": 49734,
+      "cargoType": "石油製品/化学品（オマーン産想定）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.95,
+        "route": 0.97,
+        "military": 0.95,
+        "combined": 0.875
+      },
+      "note": "Oman Shipping Co SAOC運航のMR型プロダクト/ケミカル船。IMO 9718832。MMSI 538006507。マーシャル諸島籍。2016年建造。49,734DWT。LOA 183m。海保VTS浦賀水道航路 4/22 10:15到着予定（4/21検出）。姉崎＝出光興産千葉製油所系。オマーン船主による中東プロダクト便。ホルムズ南側（ソハール/ドゥクム）発ならホルムズ非経由の可能性あり"
+    },
+    {
+      "id": "lng-11",
+      "name": "PACIFIC ARCADIA",
+      "imo": "9621077",
+      "aisTracked": true,
+      "type": "LNG",
+      "departure": "パプアニューギニア（PNG LNG）",
+      "departurePort": "PortMoresby",
+      "destination": "扇島（東京ガスLNG基地）",
+      "destinationPort": "Ogishima",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 17.5,
+      "eta_days": 1,
+      "cargo_t": 155000,
+      "cargoType": "LNG（PNG産・非中東代替供給）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.98,
+        "route": 0.98,
+        "military": 0.98,
+        "combined": 0.941
+      },
+      "note": "LNG Marine Transport Ltd（OGIT/MOL共同）運航LNG船。IMO 9621077。MMSI 311072200。バハマ籍。2014年建造。LOA 288m。78,311DWT。153,000m³ MOSS型4タンク。TEPCO向けPNG LNG 15年契約船。海保VTS浦賀水道航路 4/22 11:15到着予定（4/21検出）。扇島＝東京ガス扇島LNG基地。パプアニューギニア産で非中東・代替供給便。ホルムズ非経由"
+    },
+    {
+      "id": "lng-12",
+      "name": "SHINSHU MARU",
+      "imo": "9791200",
+      "aisTracked": true,
+      "type": "LNG",
+      "departure": "フリーポート（テキサス・米国）→パナマ運河経由",
+      "departurePort": "Freeport",
+      "destination": "富津（東京電力LNG）",
+      "destinationPort": "Futtsu",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 18.0,
+      "eta_days": 1,
+      "cargo_t": 180000,
+      "cargoType": "LNG（米国産・Freeport LNGプロジェクト）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.99,
+        "route": 0.98,
+        "military": 0.99,
+        "combined": 0.961
+      },
+      "note": "Trans Pacific Shipping Limited（JERA/NYK合弁）保有LNG船。IMO 9791200。MMSI 311000845。バハマ籍。2019年建造。LOA 299m。177,277m³ MOSS型4タンク。Kawasaki Panel System熱絶縁。JERA向けFreeport LNGプロジェクト専用船。海保VTS浦賀水道航路 4/22 13:00到着予定（4/21検出）。富津＝東京電力富津LNG火力。米国産LNGで非中東・代替供給便。ホルムズ・バベルマンデブ完全回避"
     }
   ]
 }
