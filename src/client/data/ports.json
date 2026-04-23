@@ -46,5 +46,8 @@
   "Anegasaki": { "lat": 35.47, "lon": 140.02 },
   "Sohar": { "lat": 24.47, "lon": 56.62 },
   "PortMoresby": { "lat": -9.48, "lon": 147.15 },
-  "Freeport": { "lat": 28.95, "lon": -95.36 }
+  "Freeport": { "lat": 28.95, "lon": -95.36 },
+  "Yokosuka": { "lat": 35.28, "lon": 139.67 },
+  "Fukuyama": { "lat": 34.47, "lon": 133.40 },
+  "Nagoya": { "lat": 34.95, "lon": 136.88 }
 }

@@ -31,6 +31,7 @@ const JAPAN_DEST_PORTS = new Set([
   "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
   "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
   "Yokohama", "Hitachi", "Sakai/Izumiotsu",
+  "Ogishima", "Anegasaki", "Yokosuka", "Fukuyama", "Nagoya", "Tomakomai",
 ]);
 
 /** 米国産ルート種別 */
