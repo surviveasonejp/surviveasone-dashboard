@@ -9,7 +9,12 @@ on:
       - 'index.html'
       - 'wrangler.jsonc'
       - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tsconfig*.json'
       - 'scripts/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
 
 jobs:
   deploy:
