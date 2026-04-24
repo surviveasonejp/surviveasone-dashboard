@@ -95,7 +95,9 @@ export async function handlePetrochemTree(env: Env): Promise<Response> {
     return jsonResponse(cached.data);
   }
 
-  // D1から取得（失敗時は静的JSONフォールバック）
+  // D1から取得（失敗時・または D1 が JSON より少ない場合は静的JSON優先）
+  // PX-F Phase 1: JSON は v2 拡張で D1 シード (v1) より新ノードを持つため、
+  // より多いノードを持つソースを採用する。seed 再生成後は一致し冪等になる。
   let nodes: PetrochemNode[];
   let edges: PetrochemEdge[];
   try {
@@ -103,8 +105,7 @@ export async function handlePetrochemTree(env: Env): Promise<Response> {
       getAllPetrochemNodes(env.DB),
       getAllPetrochemEdges(env.DB),
     ]);
-    // D1が空の場合は静的JSONを使用
-    if (nodes.length === 0) {
+    if (nodes.length < petrochemData.nodes.length) {
       nodes = petrochemData.nodes as PetrochemNode[];
       edges = petrochemData.edges as PetrochemEdge[];
     }
@@ -140,11 +141,11 @@ export async function handlePetrochemRisk(url: URL, env: Env): Promise<Response>
     return jsonResponse(cached.data);
   }
 
-  // ノード取得（キャッシュorD1orフォールバック）
+  // ノード取得（キャッシュorD1orフォールバック）。JSON側が大きい場合はJSON優先（PX-F Phase 1）
   let nodes: PetrochemNode[];
   try {
     const result = await getAllPetrochemNodes(env.DB);
-    nodes = result.length > 0 ? result : (petrochemData.nodes as PetrochemNode[]);
+    nodes = result.length >= petrochemData.nodes.length ? result : (petrochemData.nodes as PetrochemNode[]);
   } catch {
     nodes = petrochemData.nodes as PetrochemNode[];
   }

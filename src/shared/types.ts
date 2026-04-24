@@ -168,7 +168,29 @@ export interface PhaseInfo {
 
 // ─── 石化樹形図 ──────────────────────────────────────────
 
-export type PetrochemCategory = "feedstock" | "refinery" | "cracker" | "monomer" | "polymer" | "product" | "end_use";
+export type PetrochemCategory = "feedstock" | "refinery" | "cracker" | "monomer" | "intermediate" | "polymer" | "product" | "end_use";
+
+/**
+ * 有機工業薬品の官能基分類（Kahaku 田島慶三2016 表2.1 準拠）
+ * 16カテゴリ。category="intermediate" ノードの orthogonal 分類として使用。
+ */
+export type FunctionalGroup =
+  | "hydrocarbon"       // 炭化水素類（アルキル基）
+  | "alcohol"           // アルコール類（ヒドロキシ基）
+  | "aldehyde"          // アルデヒド類
+  | "ketone"            // ケトン類（カルボニル基）
+  | "epoxide"           // エポキシド類（三員環エーテル）
+  | "ether"             // エーテル類
+  | "carboxylic_acid"   // カルボン酸類（カルボキシ基）
+  | "ester"             // エステル類
+  | "acid_anhydride"    // 酸無水物類
+  | "amide"             // アミド類
+  | "amine"             // アミン類
+  | "nitrile"           // ニトリル類（シアノ基）
+  | "isocyanate"        // イソシアネート類
+  | "phenol"            // フェノール類
+  | "chloroorganic"     // 塩素系有機化合物
+  | "sulfur_organic";   // 含硫黄有機化合物
 
 export interface PetrochemNode {
   id: string;
@@ -178,6 +200,23 @@ export interface PetrochemNode {
   parent_id: string | null;
   naptha_factor: number | null;
   description: string;
+  // ── v2 拡張属性（Phase 1 スキーマ凍結 2026-04-24）────
+  /** 官能基分類（category="intermediate" 有機工業薬品の直交分類） */
+  functional_group?: FunctionalGroup;
+  /** ホルムズ海峡依存度 0.0〜1.0（原油→ナフサ→石化は 0.937 継承） */
+  hormuz_dependency?: number;
+  /** 川下在庫バッファ日数（推定値は sources に (est) 付記） */
+  buffer_days?: number | null;
+  /** 代替供給ルート（他ノードIDの配列） */
+  alt_routes?: string[];
+  /** 停戦シナリオでの復旧リードタイム（日） */
+  recovery_days?: number | null;
+  /** 一次ソース識別子（例: "JPCA2024", "Kahaku2016-p120", "ENEOS-binran"）*/
+  sources?: string[];
+  /** 年産量（トン）。null=データなし */
+  production_t_year?: number;
+  /** production_t_year の年次（例: 2024） */
+  production_year?: number;
 }
 
 export interface PetrochemEdge {

@@ -1,88 +1,65 @@
 /**
- * PetrochemTree — 石化サプライチェーン樹形図
- * ライトモード完全対応 + インタラクティブ強化版
+ * PetrochemTree — 石化サプライチェーン樹形図（React Flow 実装・PX-F Phase 2 移行後）
  *
  * 機能:
- * - ライトモード対応（白背景・ダークテキスト）
- * - ズーム/パン（wheelズーム + ドラッグパン）
- * - ホバーツールチップ（SVG外div・コンテナ相対座標）
- * - フォーカスパス（葉ノードクリックで上流/下流ハイライト）
- * - 検索フィルタ（ノード名でリアルタイムハイライト）
- * - ズーム in/out/リセット ボタン
+ *  - dagre LR auto-layout + pan/zoom/minimap（読み取り専用）
+ *  - シナリオ切替 / 日数スライダー / フェーズバッジ
+ *  - ナフサ枯渇連動の灰化（depth ベースの影響日数補正）
+ *  - 右端ボタンで下流折りたたみ（多親DAG対応の BFS）
+ *  - 検索フィルタ + クリックフォーカスパス（祖先+子孫強調）
+ *  - CONSUMER_IMPACTS カード（6 persona 入口・複数起点フォーカス）
+ *  - 初期 0〜4階層表示 + 階層セレクタ + モバイル対応
+ *
+ * 旧 SVG 実装は `PetrochemTreeLegacy.tsx` に archive。
  */
 
-import { type FC, useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { useSearchParams, Link } from "react-router-dom";
-import { AlertBanner } from "../components/AlertBanner";
+import { type FC, useMemo, useState, useCallback, useEffect } from "react";
+import {
+  ReactFlow,
+  Background,
+  Controls,
+  MiniMap,
+  Handle,
+  Position,
+  ReactFlowProvider,
+  useReactFlow,
+  type Node,
+  type Edge,
+  type NodeProps,
+} from "@xyflow/react";
+import dagre from "dagre";
+import "@xyflow/react/dist/style.css";
+
+import { useApiData } from "../hooks/useApiData";
 import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
-import { useApiData } from "../hooks/useApiData";
-import { type ScenarioId } from "../../shared/scenarios";
 import { useScenarioParam } from "../hooks/useScenarioParam";
-import type {
-  PetrochemNode,
-  PetrochemRiskNode,
-  PetrochemTreeResponse,
-  PetrochemCategory,
-} from "../../shared/types";
+import { type ScenarioId } from "../../shared/scenarios";
+import type { PetrochemNode, PetrochemEdge, PetrochemTreeResponse, PetrochemCategory } from "../../shared/types";
 
-// ─── カラー定数（ライトモード対応） ────────────────────────────
-
-const CATEGORY_COLORS: Record<PetrochemCategory, string> = {
-  feedstock: "#94a3b8",
-  refinery:  "#64748b",
-  cracker:   "#f59e0b",
-  monomer:   "#a78bfa",
-  polymer:   "var(--color-info-lighter)",
-  product:   "#34d399",
-  end_use:   "#fb923c",
+const CATEGORY_COLOR: Record<PetrochemCategory, string> = {
+  feedstock:    "#94a3b8",
+  refinery:     "#64748b",
+  cracker:      "#f59e0b",
+  monomer:      "#a78bfa",
+  intermediate: "#c084fc",
+  polymer:      "#60a5fa",
+  product:      "#34d399",
+  end_use:      "#fb923c",
 };
 
-const CATEGORY_LABELS: Record<PetrochemCategory, string> = {
-  feedstock: "原料・留分",
-  refinery:  "精製工程",
-  cracker:   "分解・合成",
-  monomer:   "モノマー",
-  polymer:   "ポリマー",
-  product:   "製品",
-  end_use:   "最終用途",
-};
-
-/** ライトモード崩壊色（グレー系・「消えた」印象） */
+/** 崩壊色（グレーアウト先） */
 const COLLAPSE_COLOR = "#94a3b8";
-/** エッジ通常色 */
-const EDGE_COLOR = "#cbd5e1";
-/** エッジ フォーカス/ハイライト色 */
-const EDGE_FOCUS = "#2563eb";
-/** フォーカスパス ノード stroke */
-const FOCUS_STROKE = "#2563eb";
-/** 検索マッチ ノード stroke */
-const SEARCH_STROKE = "#d97706";
 
-// ─── Phase 3: ナフサクラッカー収率（IEA/ICIS 標準値） ────────
-
-const CRACKER_YIELD: Partial<Record<string, number>> = {
-  ethylene:  0.30,
-  propylene: 0.16,
-  butadiene: 0.04,
-  benzene:   0.06,
-};
-
-// ─── レイアウト定数 ───────────────────────────────────────────
-
-const X_STEP = 160;
-const Y_STEP = 50;
-const NODE_W = 138;
-const NODE_H = 36;
-
+/** シナリオ別ナフサ枯渇日数（PetrochemTree.tsx と同値） */
 const NAPHTHA_DEPLETION_DAYS: Record<ScenarioId, number> = {
   optimistic:  60,
   realistic:   30,
   pessimistic: 14,
-  ceasefire:   45, // 停戦前（45日）はrealisticと同等、停戦後は段階的回復
+  ceasefire:   45,
 };
 
-// ─── ヘルパー関数 ─────────────────────────────────────────────
+// ─── 色補間 ────────────────────────────────────────────
 
 function hexToRgb(hex: string): [number, number, number] {
   return [
@@ -102,28 +79,21 @@ function lerpColor(from: string, to: string, t: number): string {
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
 }
 
-interface PhaseInfo {
-  label: string;
-  description: string;
-  color: string;
+// ─── リスク計算 ────────────────────────────────────────
+
+interface NodeRisk {
+  riskLevel: number;
+  impactDay: number;
 }
 
-function getPhase(day: number, depletionDay: number): PhaseInfo {
-  if (day === 0) return { label: "平常時", description: "供給制約なし。石化製品の供給は正常", color: "#16a34a" };
-  if (day < 7)  return { label: "初動期", description: "ナフサ在庫を消費中。クラッカー稼働は維持", color: "#16a34a" };
-  if (day < depletionDay * 0.5) return { label: "減産開始", description: "ナフサクラッカーが減産。エチレン・プロピレン生産量が低下し始める", color: "#d97706" };
-  if (day < depletionDay) return { label: "逼迫", description: "石化基礎製品が逼迫。ポリマー（PE・PP・PVC）の製造が制約を受ける", color: "#d97706" };
-  return { label: "枯渇・停止", description: "ナフサ在庫が枯渇。石化製品の新規製造が停止し、既存在庫のみで対応", color: "#dc2626" };
-}
-
-function calcRisk(nodes: PetrochemNode[], scenario: ScenarioId, day: number): Map<string, PetrochemRiskNode> {
+function calcRisk(nodes: PetrochemNode[], scenario: ScenarioId, day: number): Map<string, NodeRisk> {
   const depletionDay = NAPHTHA_DEPLETION_DAYS[scenario];
-  const result = new Map<string, PetrochemRiskNode>();
+  const result = new Map<string, NodeRisk>();
 
   for (const node of nodes) {
     const factor = node.naptha_factor;
     if (factor === null || factor === 0) {
-      result.set(node.id, { ...node, riskLevel: 0, impactDay: 0, riskReason: "ナフサ非依存" });
+      result.set(node.id, { riskLevel: 0, impactDay: 0 });
       continue;
     }
 
@@ -139,67 +109,188 @@ function calcRisk(nodes: PetrochemNode[], scenario: ScenarioId, day: number): Ma
       riskLevel = factor * progress;
     }
 
-    let riskReason = "影響なし";
-    if (riskLevel > 0.7) riskReason = "ナフサ枯渇により生産停止リスク";
-    else if (riskLevel > 0.4) riskReason = "ナフサ制約により減産中";
-    else if (riskLevel > 0.1) riskReason = "ナフサ在庫逼迫の影響開始";
-
     result.set(node.id, {
-      ...node,
       riskLevel: Math.round(riskLevel * 100) / 100,
       impactDay,
-      riskReason,
     });
   }
   return result;
 }
 
-interface LayoutNode extends PetrochemNode {
-  x: number;
-  y: number;
+// ─── フェーズ判定 ─────────────────────────────────────
+
+interface PhaseInfo {
+  label: string;
+  description: string;
+  color: string;
 }
 
-function buildLayout(nodes: PetrochemNode[]): LayoutNode[] {
-  const byDepth = new Map<number, PetrochemNode[]>();
-  for (const n of nodes) {
-    const arr = byDepth.get(n.depth) ?? [];
-    arr.push(n);
-    byDepth.set(n.depth, arr);
+function getPhase(day: number, depletionDay: number): PhaseInfo {
+  if (day === 0) return { label: "平常時", description: "供給制約なし", color: "#16a34a" };
+  if (day < 7)  return { label: "初動期", description: "ナフサ在庫を消費中・クラッカー稼働維持", color: "#16a34a" };
+  if (day < depletionDay * 0.5) return { label: "減産開始", description: "エチレン・プロピレン生産量低下", color: "#d97706" };
+  if (day < depletionDay) return { label: "逼迫", description: "ポリマー製造に制約", color: "#d97706" };
+  return { label: "枯渇・停止", description: "石化製品の新規製造停止、既存在庫のみ", color: "#dc2626" };
+}
+
+// ─── カスタムノード ───────────────────────────────────
+
+type PetrochemNodeData = PetrochemNode & {
+  riskLevel: number;
+  impactDay: number;
+  /** 下流ノード数（0 なら折りたたみボタン非表示） */
+  downstreamCount: number;
+  /** 自身が折りたたまれているか（下流を隠しているか） */
+  isCollapsed: boolean;
+  /** 折りたたみトグルコールバック */
+  onToggleCollapse: (id: string) => void;
+  /** フォーカス/検索の強調状態 (highlighted=完全表示, dimmed=減光, focused=focusNode本体) */
+  focusState: "highlighted" | "dimmed" | "focused";
+  /** 検索マッチ */
+  searchMatch: boolean;
+} & Record<string, unknown>;
+
+const PetrochemRfNode: FC<NodeProps<Node<PetrochemNodeData>>> = ({ data }) => {
+  const baseColor = CATEGORY_COLOR[data.category];
+  const color = data.riskLevel > 0 ? lerpColor(baseColor, COLLAPSE_COLOR, data.riskLevel) : baseColor;
+  const collapsedByRisk = data.riskLevel > 0.7;
+  const hasDownstream = data.downstreamCount > 0;
+
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    data.onToggleCollapse(data.id);
+  };
+
+  const focusOpacity = data.focusState === "dimmed" ? 0.25 : 1;
+  const focusRingClass = data.focusState === "focused"
+    ? "ring-2 ring-offset-1"
+    : data.searchMatch
+    ? "ring-2"
+    : "";
+  const ringStyle = data.focusState === "focused"
+    ? { ["--tw-ring-color" as string]: "#2563eb" }
+    : data.searchMatch
+    ? { ["--tw-ring-color" as string]: "#d97706" }
+    : {};
+
+  return (
+    <div
+      className={`relative rounded-md border pr-7 pl-3 py-2 text-xs font-medium shadow-sm bg-panel text-text transition-opacity ${collapsedByRisk ? "line-through opacity-75" : ""} ${focusRingClass}`}
+      style={{ borderColor: color, minWidth: 150, opacity: focusOpacity * (collapsedByRisk ? 0.75 : 1), ...ringStyle }}
+      title={data.description}
+    >
+      {/* ハンドルは pointer-events:none で接続イベントを無効化（読み取り専用）し、ボタンクリックを確実に拾う */}
+      <Handle type="target" position={Position.Left} isConnectable={false} style={{ background: color, pointerEvents: "none" }} />
+      <div className="flex items-center gap-2">
+        <span className="inline-block h-2 w-2 rounded-full" style={{ background: color }} />
+        <span className="truncate">{data.label}</span>
+      </div>
+      {data.riskLevel > 0.1 && (
+        <div className="mt-1 text-[10px] text-text-muted">
+          risk {Math.round(data.riskLevel * 100)}% / day {data.impactDay}
+        </div>
+      )}
+      {hasDownstream && (
+        <button
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={handleToggle}
+          className="nodrag nopan nowheel absolute top-0 right-0 h-full w-7 flex items-center justify-center border-l text-[11px] font-bold hover:bg-bg active:bg-bg transition-colors cursor-pointer"
+          style={{ borderColor: color, color, zIndex: 10 }}
+          aria-label={data.isCollapsed ? `${data.downstreamCount} 件の下流を展開` : `下流を折りたたむ`}
+          title={data.isCollapsed ? `+${data.downstreamCount} を展開` : "下流を折りたたむ"}
+        >
+          {data.isCollapsed ? `+${data.downstreamCount}` : "◀"}
+        </button>
+      )}
+      <Handle type="source" position={Position.Right} isConnectable={false} style={{ background: color, pointerEvents: "none" }} />
+    </div>
+  );
+};
+
+const nodeTypes = { petrochem: PetrochemRfNode };
+
+// ─── Layout ────────────────────────────────────────────
+
+const NODE_WIDTH = 170;
+const NODE_HEIGHT = 52;
+
+/** 起点ノード ID から上流（親側）全 ID を BFS で収集 */
+function collectAncestors(edges: PetrochemEdge[], rootId: string): Set<string> {
+  const parentsByChild = new Map<string, string[]>();
+  for (const e of edges) {
+    const arr = parentsByChild.get(e.target_id) ?? [];
+    arr.push(e.source_id);
+    parentsByChild.set(e.target_id, arr);
   }
-  const maxDepth = Math.max(...Array.from(byDepth.keys()), 0);
-  const sorted = new Map<number, PetrochemNode[]>();
-  for (let d = 0; d <= maxDepth; d++) {
-    const group = byDepth.get(d) ?? [];
-    sorted.set(d, [...group].sort((a, b) => {
-      const ap = a.parent_id ?? "";
-      const bp = b.parent_id ?? "";
-      return ap.localeCompare(bp) || a.id.localeCompare(b.id);
-    }));
+  const visited = new Set<string>();
+  const stack = [rootId];
+  while (stack.length > 0) {
+    const id = stack.pop()!;
+    for (const p of parentsByChild.get(id) ?? []) {
+      if (!visited.has(p)) {
+        visited.add(p);
+        stack.push(p);
+      }
+    }
   }
-  let maxCount = 0;
-  sorted.forEach((arr) => { if (arr.length > maxCount) maxCount = arr.length; });
-
-  const layoutNodes: LayoutNode[] = [];
-  sorted.forEach((arr, depth) => {
-    const totalH = arr.length * Y_STEP;
-    const startY = (maxCount * Y_STEP - totalH) / 2 + Y_STEP / 2;
-    arr.forEach((node, idx) => {
-      layoutNodes.push({ ...node, x: depth * X_STEP + 16, y: startY + idx * Y_STEP });
-    });
-  });
-  return layoutNodes;
+  return visited;
 }
 
-interface ViewBox { x: number; y: number; w: number; h: number; }
-
-function computeInitViewBox(layout: LayoutNode[]): ViewBox {
-  if (layout.length === 0) return { x: -16, y: -16, w: 832, h: 432 };
-  const maxX = Math.max(...layout.map(n => n.x + NODE_W)) + 32;
-  const maxY = Math.max(...layout.map(n => n.y + NODE_H)) + 40;
-  return { x: -16, y: -16, w: maxX + 32, h: maxY + 32 };
+/** 起点ノード ID から下流（子側）全 ID を BFS で収集 */
+function collectDescendants(edges: PetrochemEdge[], rootId: string): Set<string> {
+  const childrenByParent = new Map<string, string[]>();
+  for (const e of edges) {
+    const arr = childrenByParent.get(e.source_id) ?? [];
+    arr.push(e.target_id);
+    childrenByParent.set(e.source_id, arr);
+  }
+  const visited = new Set<string>();
+  const stack = [rootId];
+  while (stack.length > 0) {
+    const id = stack.pop()!;
+    for (const c of childrenByParent.get(id) ?? []) {
+      if (!visited.has(c)) {
+        visited.add(c);
+        stack.push(c);
+      }
+    }
+  }
+  return visited;
 }
 
-// ─── 消費者影響定義 ───────────────────────────────────────────
+/** collapsedIds 起点に下流 BFS し、隠れるべきノード ID セットを返す */
+function computeHiddenIds(_nodes: PetrochemNode[], edges: PetrochemEdge[], collapsedIds: Set<string>): Set<string> {
+  if (collapsedIds.size === 0) return new Set();
+  const childrenByParent = new Map<string, string[]>();
+  for (const e of edges) {
+    const arr = childrenByParent.get(e.source_id) ?? [];
+    arr.push(e.target_id);
+    childrenByParent.set(e.source_id, arr);
+  }
+  const hidden = new Set<string>();
+  const visit = (id: string) => {
+    for (const child of childrenByParent.get(id) ?? []) {
+      if (hidden.has(child)) continue;
+      hidden.add(child);
+      visit(child);
+    }
+  };
+  for (const root of collapsedIds) visit(root);
+  // 折りたたみ起点自体は表示するので hidden から除外
+  for (const root of collapsedIds) hidden.delete(root);
+  return hidden;
+}
+
+interface FocusContext {
+  /** フォーカス起点（単一クリック時）— リング描画用。複数根フォーカス時は null */
+  focusId: string | null;
+  /** フォーカス集合（起点＋祖先＋子孫の和集合） */
+  focusSet: Set<string>;
+  searchQuery: string;
+}
+
+// ─── 消費者影響カード定義 ─────────────────────────────
 
 interface ConsumerImpact {
   icon: string;
@@ -211,905 +302,405 @@ interface ConsumerImpact {
 const CONSUMER_IMPACTS: ConsumerImpact[] = [
   {
     icon: "🛒",
-    label: "食品包装が消える",
-    detail: "パン個包装・牛乳パック・食品トレーが入手困難。スーパーの生鮮コーナーが機能不全に",
+    label: "食品包装が逼迫",
+    detail: "パン個包装・牛乳パック・食品トレーが入手困難。生鮮コーナーが機能不全",
     nodeIds: ["food_film_pe", "milk_carton_pe", "food_wrap_pe", "food_tray_ps", "food_container_pp"],
   },
   {
     icon: "🏥",
-    label: "医療消耗品が枯渇",
-    detail: "透析チューブ（34万人）・輸液バッグ・注射器の供給停止。在宅医療も病院も機能不全",
-    nodeIds: ["dialysis_pvc", "iv_bag", "medical_pp"],
+    label: "医療消耗品が逼迫",
+    detail: "透析チューブ（34万人）・輸液バッグ・注射器・医療用手袋の供給停止",
+    nodeIds: ["dialysis_pvc", "iv_bag", "medical_pp", "medical_glove_nbr"],
   },
   {
     icon: "🚰",
     label: "水道管が補修不能に",
-    detail: "PVC・PE管の補修材料が枯渇。漏水放置→水圧低下→断水加速",
+    detail: "PVC・PE管の補修材料が逼迫。漏水放置→水圧低下→断水加速",
     nodeIds: ["water_pipe_pvc", "water_pipe_pe"],
   },
   {
     icon: "🚛",
-    label: "物流・農業が止まる",
-    detail: "タイヤ（合成ゴム）不足でトラック運行減少。化学肥料不足で翌年の作付けに深刻影響",
-    nodeIds: ["truck_logistics", "agriculture"],
+    label: "物流・農業が停止",
+    detail: "タイヤ・インナーチューブ不足でトラック運行減少。化学肥料不足で翌年の作付けに影響",
+    nodeIds: ["truck_logistics", "agriculture", "tire_butyl"],
+  },
+  {
+    icon: "🚗",
+    label: "自動車生産が停止",
+    detail: "シール/窓枠・シートクッション・エアバッグ基布・タイヤ全系統の部材供給停止",
+    nodeIds: ["car_seal_epdm", "mattress_pu", "textile_pa", "tire", "electronics_housing"],
+  },
+  {
+    icon: "🏠",
+    label: "住宅の断熱・冷凍保管が逼迫",
+    detail: "硬質PUフォーム（冷蔵庫・住宅断熱・冷凍倉庫）不足でコールドチェーン維持に影響",
+    nodeIds: ["insulation_pu"],
   },
 ];
 
-// ─── ツールチップ コンポーネント ──────────────────────────────
+function layoutWithDagre(
+  nodes: PetrochemNode[],
+  edges: PetrochemEdge[],
+  riskMap: Map<string, NodeRisk>,
+  collapsedIds: Set<string>,
+  hiddenIds: Set<string>,
+  onToggleCollapse: (id: string) => void,
+  focus: FocusContext,
+): { nodes: Node<PetrochemNodeData>[]; edges: Edge[] } {
+  const visibleNodes = nodes.filter((n) => !hiddenIds.has(n.id));
+  const visibleIdSet = new Set(visibleNodes.map((n) => n.id));
+  const visibleEdges = edges.filter((e) => visibleIdSet.has(e.source_id) && visibleIdSet.has(e.target_id));
 
-interface TooltipData {
-  node: PetrochemNode;
-  risk: PetrochemRiskNode | undefined;
-  x: number;
-  y: number;
-}
-
-const Tooltip: FC<{ data: TooltipData; containerW: number; containerH: number }> = ({
-  data, containerW, containerH,
-}) => {
-  const { node, risk, x, y } = data;
-  const baseColor = CATEGORY_COLORS[node.category] ?? "#94a3b8";
-  const effectiveRisk = risk?.riskLevel ?? 0;
-  const nodeColor = lerpColor(baseColor, COLLAPSE_COLOR, effectiveRisk);
-  const TW = 228;
-  const TH = 190;
-  const tx = Math.min(x + 14, containerW - TW - 8);
-  const ty = Math.max(8, Math.min(y - 70, containerH - TH - 8));
-
-  return (
-    <div
-      className="absolute z-50 pointer-events-none"
-      style={{ left: tx, top: ty, width: TW }}
-    >
-      <div className="bg-panel border border-border rounded-lg shadow-lg p-3 text-[10px] font-mono space-y-1.5">
-        <div className="font-bold text-[11px] leading-tight" style={{ color: nodeColor }}>
-          {node.label}
-        </div>
-        <span
-          className="inline-block text-[9px] px-1.5 py-0.5 rounded-full text-white"
-          style={{ backgroundColor: CATEGORY_COLORS[node.category] }}
-        >
-          {CATEGORY_LABELS[node.category]}
-        </span>
-        {node.description && (
-          <div className="text-text-muted leading-relaxed border-t border-border pt-1.5">
-            {node.description.length > 90 ? node.description.slice(0, 89) + "…" : node.description}
-          </div>
-        )}
-        {risk !== undefined && risk.riskLevel > 0 && (
-          <div className="space-y-1 border-t border-border pt-1.5">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 bg-border rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full"
-                  style={{
-                    width: `${risk.riskLevel * 100}%`,
-                    backgroundColor: lerpColor("#d97706", COLLAPSE_COLOR, Math.max(0, (risk.riskLevel - 0.4) / 0.6)),
-                  }}
-                />
-              </div>
-              <span className="text-text-muted shrink-0 text-[9px]">
-                {Math.round(risk.riskLevel * 100)}%
-              </span>
-            </div>
-            <div className="text-text-muted">{risk.riskReason}</div>
-          </div>
-        )}
-        {node.naptha_factor !== null && (
-          <div className="text-neutral-400 border-t border-border pt-1">
-            ナフサ依存度: {Math.round((node.naptha_factor ?? 0) * 100)}%
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// ─── SVGエッジ ────────────────────────────────────────────────
-
-interface EdgePathProps {
-  src: LayoutNode;
-  tgt: LayoutNode;
-  riskLevel: number;
-  isFocusPath: boolean;
-  highlighted: boolean;
-  isDimmed: boolean;
-}
-
-const EdgePath: FC<EdgePathProps> = ({ src, tgt, riskLevel, isFocusPath, highlighted, isDimmed }) => {
-  const x1 = src.x + NODE_W;
-  const y1 = src.y + NODE_H / 2;
-  const x2 = tgt.x;
-  const y2 = tgt.y + NODE_H / 2;
-  const cx = (x1 + x2) / 2;
-  const d = `M${x1},${y1} C${cx},${y1} ${cx},${y2} ${x2},${y2}`;
-  const isActive = highlighted || isFocusPath;
-  const stroke = isActive ? EDGE_FOCUS : lerpColor(EDGE_COLOR, COLLAPSE_COLOR, riskLevel);
-  const strokeWidth = isActive ? 2 : 1.5;
-  const opacity = isDimmed ? 0.10 : (isActive ? 1 : 0.65);
-
-  return (
-    <path d={d} fill="none" stroke={stroke} strokeWidth={strokeWidth} opacity={opacity} />
-  );
-};
-
-// ─── SVGノード ────────────────────────────────────────────────
-
-interface NodeRectProps {
-  node: LayoutNode;
-  riskNode: PetrochemRiskNode | undefined;
-  isHighlighted: boolean;
-  isFocusPath: boolean;
-  isSearchMatch: boolean;
-  isDimmed: boolean;
-  isCollapsed: boolean;
-  hasChildren: boolean;
-  onToggle: () => void;
-  onFocus: () => void;
-  onMouseEnter: (e: React.MouseEvent<SVGGElement>) => void;
-  onMouseLeave: () => void;
-}
-
-const NodeRect: FC<NodeRectProps> = ({
-  node, riskNode, isHighlighted, isFocusPath, isSearchMatch, isDimmed,
-  isCollapsed, hasChildren, onToggle, onFocus, onMouseEnter, onMouseLeave,
-}) => {
-  const baseColor = CATEGORY_COLORS[node.category] ?? "#94a3b8";
-  const risk = riskNode?.riskLevel ?? 0;
-  const fillColor = lerpColor(baseColor, COLLAPSE_COLOR, risk);
-
-  let strokeColor: string;
-  let strokeWidth: number;
-  if (isHighlighted || isFocusPath) {
-    strokeColor = FOCUS_STROKE;
-    strokeWidth = 2;
-  } else if (isSearchMatch) {
-    strokeColor = SEARCH_STROKE;
-    strokeWidth = 2;
-  } else {
-    strokeColor = fillColor;
-    strokeWidth = 1;
+  // 下流ノード数（全データベースで・表示状態に関係なく）
+  const downstreamCount = new Map<string, number>();
+  const childrenByParent = new Map<string, string[]>();
+  for (const e of edges) {
+    const arr = childrenByParent.get(e.source_id) ?? [];
+    arr.push(e.target_id);
+    childrenByParent.set(e.source_id, arr);
   }
+  const countDownstream = (id: string, seen: Set<string>): number => {
+    if (seen.has(id)) return 0;
+    seen.add(id);
+    const kids = childrenByParent.get(id) ?? [];
+    return kids.reduce((sum, k) => sum + 1 + countDownstream(k, seen), 0);
+  };
+  for (const n of nodes) downstreamCount.set(n.id, countDownstream(n.id, new Set()));
 
-  const fillOpacity = isDimmed ? 0.04 : (0.12 + risk * 0.18);
-  const textOpacity = isDimmed ? 0.2 : 1;
-  const yieldPercent = CRACKER_YIELD[node.id] ?? null;
-  const labelY = yieldPercent !== null ? 13 : NODE_H / 2;
-  const riskBarColor = lerpColor("#d97706", COLLAPSE_COLOR, Math.max(0, (risk - 0.4) / 0.6));
+  const g = new dagre.graphlib.Graph();
+  g.setGraph({ rankdir: "LR", nodesep: 20, ranksep: 70, marginx: 24, marginy: 24 });
+  g.setDefaultEdgeLabel(() => ({}));
 
-  return (
-    <g
-      transform={`translate(${node.x},${node.y})`}
-      data-node={node.id}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {/* ノード背景 */}
-      <rect
-        width={NODE_W}
-        height={NODE_H}
-        rx={4}
-        fill={fillColor}
-        fillOpacity={fillOpacity}
-        stroke={strokeColor}
-        strokeWidth={strokeWidth}
-        strokeDasharray={risk > 0.4 && !isFocusPath && !isSearchMatch && !isHighlighted ? "4 2" : undefined}
-        onClick={hasChildren ? onToggle : onFocus}
-        style={{ cursor: "pointer" }}
-      />
-      {/* ラベル */}
-      <text
-        x={6}
-        y={labelY}
-        dominantBaseline="middle"
-        fontSize={9}
-        fontFamily="'JetBrains Mono', monospace"
-        fill="var(--color-text)"
-        fillOpacity={textOpacity}
-        style={{ pointerEvents: "none" }}
-      >
-        {node.label.length > 15 ? node.label.slice(0, 14) + "…" : node.label}
-      </text>
-      {/* 収率ゲージ（crackerアウトプットのみ） */}
-      {yieldPercent !== null && (
-        <>
-          <rect x={6} y={21} width={NODE_W - 24} height={3} rx={1} fill="var(--color-border)" />
-          <rect
-            x={6} y={21}
-            width={(NODE_W - 24) * yieldPercent}
-            height={3} rx={1}
-            fill={fillColor}
-            opacity={isDimmed ? 0.15 : 0.8}
-          />
-          <text
-            x={NODE_W - 16} y={23}
-            dominantBaseline="middle"
-            fontSize={7}
-            fontFamily="'JetBrains Mono', monospace"
-            fill={fillColor}
-            opacity={isDimmed ? 0.15 : 0.8}
-            style={{ pointerEvents: "none" }}
-          >
-            {Math.round(yieldPercent * 100)}%
-          </text>
-        </>
-      )}
-      {/* リスクバー（底部） */}
-      {risk > 0 && (
-        <rect
-          width={NODE_W * risk}
-          height={2}
-          y={NODE_H - 2}
-          rx={1}
-          fill={riskBarColor}
-          opacity={isDimmed ? 0.15 : 1}
-        />
-      )}
-      {/* 折りたたみ/展開インジケータ */}
-      {hasChildren && (
-        <text
-          x={NODE_W - 10} y={NODE_H / 2}
-          dominantBaseline="middle"
-          fontSize={8}
-          fill="#94a3b8"
-          style={{ pointerEvents: "none" }}
-        >
-          {isCollapsed ? "▶" : "▼"}
-        </text>
-      )}
-      {/* 詳細ボタン（葉ノード） */}
-      {!hasChildren && (
-        <rect
-          x={NODE_W - 14} y={4}
-          width={10} height={NODE_H - 8}
-          rx={2}
-          fill="var(--color-bg)"
-          stroke="var(--color-border)"
-          strokeWidth={1}
-          onClick={onFocus}
-          style={{ cursor: "pointer" }}
-        />
-      )}
-    </g>
-  );
+  for (const n of visibleNodes) g.setNode(n.id, { width: NODE_WIDTH, height: NODE_HEIGHT });
+  for (const e of visibleEdges) g.setEdge(e.source_id, e.target_id);
+
+  dagre.layout(g);
+
+  const normalizedQuery = focus.searchQuery.trim().toLowerCase();
+  const hasFocus = focus.focusId !== null;
+  const hasSearch = normalizedQuery.length > 0;
+
+  const rfNodes: Node<PetrochemNodeData>[] = visibleNodes.map((n) => {
+    const { x, y } = g.node(n.id) ?? { x: 0, y: 0 };
+    const risk = riskMap.get(n.id) ?? { riskLevel: 0, impactDay: 0 };
+    const searchMatch = hasSearch && (
+      n.label.toLowerCase().includes(normalizedQuery) ||
+      n.id.toLowerCase().includes(normalizedQuery)
+    );
+    let focusState: PetrochemNodeData["focusState"];
+    if (hasFocus) {
+      if (n.id === focus.focusId) focusState = "focused";
+      else if (focus.focusSet.has(n.id)) focusState = "highlighted";
+      else focusState = "dimmed";
+    } else if (hasSearch) {
+      focusState = searchMatch ? "highlighted" : "dimmed";
+    } else {
+      focusState = "highlighted";
+    }
+
+    return {
+      id: n.id,
+      type: "petrochem",
+      position: { x: x - NODE_WIDTH / 2, y: y - NODE_HEIGHT / 2 },
+      data: {
+        ...n,
+        ...risk,
+        downstreamCount: downstreamCount.get(n.id) ?? 0,
+        isCollapsed: collapsedIds.has(n.id),
+        onToggleCollapse,
+        focusState,
+        searchMatch,
+      },
+    };
+  });
+
+  const rfEdges: Edge[] = visibleEdges.map((e) => {
+    const targetRisk = riskMap.get(e.target_id);
+    const riskDim = targetRisk && targetRisk.riskLevel > 0.5;
+    const inFocus = hasFocus && focus.focusSet.has(e.source_id) && focus.focusSet.has(e.target_id);
+    const outOfFocus = hasFocus && !inFocus;
+    const stroke = inFocus ? "#2563eb" : (riskDim ? COLLAPSE_COLOR : "var(--color-border)");
+    const opacity = outOfFocus ? 0.15 : (riskDim ? 0.4 : 0.8);
+    return {
+      id: e.id,
+      source: e.source_id,
+      target: e.target_id,
+      label: e.flow_label ?? undefined,
+      style: { stroke, strokeWidth: inFocus ? 2 : 1.2, opacity },
+      labelStyle: { fill: "var(--color-text-muted)", fontSize: 10 },
+      labelBgStyle: { fill: "var(--color-panel)" },
+    };
+  });
+
+  return { nodes: rfNodes, edges: rfEdges };
+}
+
+const minimapNodeColor = (node: Node<PetrochemNodeData>): string => {
+  const base = CATEGORY_COLOR[node.data.category];
+  return node.data.riskLevel > 0 ? lerpColor(base, COLLAPSE_COLOR, node.data.riskLevel) : base;
 };
 
-// ─── フォールバック ───────────────────────────────────────────
+/** ノード数変化で自動 fitView する内部コンポーネント */
+const FitViewOnChange: FC<{ trigger: number }> = ({ trigger }) => {
+  const rf = useReactFlow();
+  useEffect(() => {
+    const t = window.setTimeout(() => rf.fitView({ padding: 0.15, duration: 300 }), 50);
+    return () => window.clearTimeout(t);
+  }, [trigger, rf]);
+  return null;
+};
 
-const EMPTY_TREE: PetrochemTreeResponse = { nodes: [], edges: [] };
+// ─── ページ ────────────────────────────────────────────
 
-// ─── メインページ ─────────────────────────────────────────────
+/**
+ * 初期表示階層のデフォルト（0〜maxDepth を可視に）
+ * 4: 主要基礎製品（ethylene/propylene/butadiene/benzene/toluene 等）までで全体が把握しやすい
+ */
+const INITIAL_MAX_DEPTH = 4;
+
+/** maxDepth で自動折りたたむべきノード ID（depth === maxDepth かつ子を持つもの）*/
+function computeInitialCollapsedIds(nodes: PetrochemNode[], edges: PetrochemEdge[], maxDepth: number): Set<string> {
+  const hasChild = new Set(edges.map((e) => e.source_id));
+  const result = new Set<string>();
+  for (const n of nodes) {
+    if (n.depth >= maxDepth && hasChild.has(n.id)) result.add(n.id);
+  }
+  return result;
+}
 
 export const PetrochemTree: FC = () => {
-  const [searchParams] = useSearchParams();
-  const highlightId = searchParams.get("highlight");
-
-  // シナリオ・日数
   const [scenario, setScenario] = useScenarioParam();
   const [day, setDay] = useState(0);
+  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
+  const [maxDepth, setMaxDepth] = useState<number>(INITIAL_MAX_DEPTH);
+  const [initialCollapsed, setInitialCollapsed] = useState(false);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [focusRoots, setFocusRoots] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data } = useApiData<PetrochemTreeResponse>("/api/petrochemtree", { nodes: [], edges: [] });
 
-  // 折りたたみ
-  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  const depletionDay = NAPHTHA_DEPLETION_DAYS[scenario];
+  const phase = getPhase(day, depletionDay);
 
-  // フォーカスパス（葉ノードクリックで上流/下流ハイライト）
-  const [focusedNodeId, setFocusedNodeId] = useState<string | null>(null);
-
-  // 詳細パネル
-  const [detail, setDetail] = useState<{ node: PetrochemNode; risk: PetrochemRiskNode | undefined } | null>(null);
-
-  // 検索
-  const [search, setSearch] = useState("");
-
-  // ツールチップ
-  const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
-
-  // ズーム/パン
-  const [vb, setVb] = useState<ViewBox | null>(null);
-  const vbRef = useRef<ViewBox | null>(null);
-  vbRef.current = vb;
-  const [isDragging, setIsDragging] = useState(false);
-  const isDraggingRef = useRef(false);
-  const dragStartRef = useRef<{
-    cx: number; cy: number;
-    vbX: number; vbY: number; vbW: number; vbH: number;
-  } | null>(null);
-  const didInitVb = useRef(false);
-
-  // DOM refs
-  const svgRef = useRef<SVGSVGElement>(null);
-  const svgContainerRef = useRef<HTMLDivElement>(null);
-
-  // データ取得
-  const { data: treeData } = useApiData<PetrochemTreeResponse>("/api/petrochemtree", EMPTY_TREE);
-  const nodes = treeData?.nodes ?? [];
-  const edges = treeData?.edges ?? [];
-
-  // 折りたたみ初期化（depth >= 5 を折りたたむ）
+  // 初回ロード時: depth <= maxDepth の範囲だけ可視にするため、その境界より深いノードへ到達する
+  // 入口ノードを一括で折りたたむ
   useEffect(() => {
-    if (nodes.length === 0) return;
-    const initCollapsed = new Set<string>();
-    for (const n of nodes) {
-      if (n.depth >= 5) initCollapsed.add(n.id);
-    }
-    setCollapsed(initCollapsed);
-  }, [nodes.length]);
+    if (!data || data.nodes.length === 0 || initialCollapsed) return;
+    setCollapsedIds(computeInitialCollapsedIds(data.nodes, data.edges, maxDepth));
+    setInitialCollapsed(true);
+  }, [data, maxDepth, initialCollapsed]);
 
-  // リスク・レイアウト計算
-  const riskMap = useMemo(() => calcRisk(nodes, scenario, day), [nodes, scenario, day]);
-  const layout = useMemo(() => buildLayout(nodes), [nodes]);
-  const layoutMap = useMemo(() => new Map(layout.map((n) => [n.id, n])), [layout]);
-
-  const childrenMap = useMemo(() => {
-    const m = new Map<string, string[]>();
-    for (const e of edges) {
-      const arr = m.get(e.source_id) ?? [];
-      arr.push(e.target_id);
-      m.set(e.source_id, arr);
-    }
-    return m;
-  }, [edges]);
-
-  // viewBox 初期化（データロード後 1 回のみ）
-  useEffect(() => {
-    if (layout.length > 0 && !didInitVb.current) {
-      setVb(computeInitViewBox(layout));
-      didInitVb.current = true;
-    }
-  }, [layout]);
-
-  // wheel ズーム（passive: false が必要なため useEffect で登録）
-  useEffect(() => {
-    const el = svgRef.current;
-    if (!el) return;
-    const handler = (e: WheelEvent) => {
-      e.preventDefault();
-      const current = vbRef.current;
-      if (!current) return;
-      const rect = el.getBoundingClientRect();
-      const rx = (e.clientX - rect.left) / rect.width;
-      const ry = (e.clientY - rect.top) / rect.height;
-      const factor = e.deltaY < 0 ? 0.85 : 1.18;
-      const newW = Math.min(current.w * 4, Math.max(200, current.w * factor));
-      const newH = newW * (current.h / current.w);
-      const dw = newW - current.w;
-      const dh = newH - current.h;
-      const newVb: ViewBox = {
-        x: current.x - dw * rx,
-        y: current.y - dh * ry,
-        w: newW,
-        h: newH,
-      };
-      vbRef.current = newVb;
-      setVb(newVb);
-    };
-    el.addEventListener("wheel", handler, { passive: false });
-    return () => el.removeEventListener("wheel", handler);
-  }, []);
-
-  // フォーカスパス計算（クリックノードの上流祖先 + 下流子孫）
-  const focusedPath = useMemo<Set<string> | null>(() => {
-    if (!focusedNodeId) return null;
-    const result = new Set<string>();
-    // 上流（ルートまで辿る）
-    let cur: string | null = focusedNodeId;
-    while (cur !== null) {
-      result.add(cur);
-      const n = nodes.find(nd => nd.id === cur);
-      cur = n?.parent_id ?? null;
-    }
-    // 下流（子孫 BFS）
-    const queue: string[] = [focusedNodeId];
-    while (queue.length > 0) {
-      const id = queue.shift();
-      if (id === undefined) break;
-      result.add(id);
-      for (const childId of (childrenMap.get(id) ?? [])) {
-        queue.push(childId);
-      }
-    }
-    return result;
-  }, [focusedNodeId, nodes, childrenMap]);
-
-  // 検索マッチ
-  const searchMatches = useMemo<Set<string> | null>(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return null;
-    return new Set(nodes.filter(n => n.label.toLowerCase().includes(q)).map(n => n.id));
-  }, [search, nodes]);
-
-  // ツールチップ対象ノード
-  const tooltipNode = useMemo(() => {
-    if (!hoveredNodeId) return null;
-    return nodes.find(n => n.id === hoveredNodeId) ?? null;
-  }, [hoveredNodeId, nodes]);
-
-  // 可視判定
-  function isVisible(nodeId: string): boolean {
-    const node = nodes.find((n) => n.id === nodeId);
-    if (!node) return false;
-    if (node.parent_id === null) return true;
-    if (collapsed.has(node.parent_id)) return false;
-    return isVisible(node.parent_id);
-  }
-
-  function toggleCollapse(nodeId: string) {
-    setCollapsed((prev) => {
-      const next = new Set(prev);
-      if (next.has(nodeId)) next.delete(nodeId);
-      else next.add(nodeId);
-      return next;
-    });
-  }
-
-  const visibleNodes = layout.filter((n) => isVisible(n.id));
-  const visibleEdges = edges.filter(
-    (e) => isVisible(e.source_id) && isVisible(e.target_id),
-  );
-
-  // dim 状態（検索またはフォーカス中に非対象ノードを薄くする）
-  const hasSearch = searchMatches !== null;
-  const hasFocus = focusedPath !== null;
-
-  function isNodeDimmed(nodeId: string): boolean {
-    if (hasSearch) return !(searchMatches?.has(nodeId) ?? false);
-    if (hasFocus) return !(focusedPath?.has(nodeId) ?? false);
-    return false;
-  }
-
-  function isEdgeDimmed(sourceId: string, targetId: string): boolean {
-    if (hasSearch) {
-      return !(searchMatches?.has(sourceId) ?? false) && !(searchMatches?.has(targetId) ?? false);
-    }
-    if (hasFocus) {
-      return !(focusedPath?.has(sourceId) ?? false) || !(focusedPath?.has(targetId) ?? false);
-    }
-    return false;
-  }
-
-  // ズームコントロール
-  const zoomIn = useCallback(() => {
-    setVb(prev => {
-      if (!prev) return prev;
-      const f = 0.8;
-      const cx = prev.x + prev.w / 2;
-      const cy = prev.y + prev.h / 2;
-      const nw = prev.w * f;
-      const nh = prev.h * f;
-      return { x: cx - nw / 2, y: cy - nh / 2, w: nw, h: nh };
-    });
-  }, []);
-
-  const zoomOut = useCallback(() => {
-    setVb(prev => {
-      if (!prev) return prev;
-      const f = 1.25;
-      const cx = prev.x + prev.w / 2;
-      const cy = prev.y + prev.h / 2;
-      const nw = prev.w * f;
-      const nh = prev.h * f;
-      return { x: cx - nw / 2, y: cy - nh / 2, w: nw, h: nh };
-    });
-  }, []);
-
-  const zoomReset = useCallback(() => {
-    setVb(computeInitViewBox(layout));
-  }, [layout]);
-
-  // ドラッグパン
-  const handleSvgMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
-    if ((e.target as Element).closest("[data-node]")) return;
-    const current = vbRef.current;
-    if (!current) return;
-    isDraggingRef.current = true;
-    setIsDragging(true);
-    dragStartRef.current = {
-      cx: e.clientX, cy: e.clientY,
-      vbX: current.x, vbY: current.y, vbW: current.w, vbH: current.h,
-    };
-  }, []);
-
-  const handleSvgMouseMove = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
-    // ドラッグパン処理
-    if (isDraggingRef.current && dragStartRef.current && svgRef.current) {
-      const rect = svgRef.current.getBoundingClientRect();
-      const cur = vbRef.current;
-      if (!cur) return;
-      const scaleX = cur.w / rect.width;
-      const scaleY = cur.h / rect.height;
-      const dx = (e.clientX - dragStartRef.current.cx) * scaleX;
-      const dy = (e.clientY - dragStartRef.current.cy) * scaleY;
-      const newVb: ViewBox = {
-        x: dragStartRef.current.vbX - dx,
-        y: dragStartRef.current.vbY - dy,
-        w: dragStartRef.current.vbW,
-        h: dragStartRef.current.vbH,
-      };
-      vbRef.current = newVb;
-      setVb(newVb);
-    }
-    // ツールチップ位置更新
-    if (hoveredNodeId !== null && svgContainerRef.current) {
-      const rect = svgContainerRef.current.getBoundingClientRect();
-      setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    }
-  }, [hoveredNodeId]);
-
-  const handleSvgMouseUp = useCallback(() => {
-    isDraggingRef.current = false;
-    setIsDragging(false);
-    dragStartRef.current = null;
-  }, []);
-
-  const categories: PetrochemCategory[] = ["feedstock", "refinery", "cracker", "monomer", "polymer", "product", "end_use"];
-  const expandAll = () => setCollapsed(new Set());
-  const collapseDeep = () => {
-    const next = new Set<string>();
-    for (const n of nodes) {
-      if (n.depth >= 5) next.add(n.id);
-    }
-    setCollapsed(next);
+  const applyMaxDepth = (nextDepth: number) => {
+    setMaxDepth(nextDepth);
+    if (data) setCollapsedIds(computeInitialCollapsedIds(data.nodes, data.edges, nextDepth));
   };
 
-  const viewBoxStr = vb ? `${vb.x} ${vb.y} ${vb.w} ${vb.h}` : "0 0 800 400";
-  const phaseInfo = getPhase(day, NAPHTHA_DEPLETION_DAYS[scenario]);
+  const onToggleCollapse = useCallback((id: string) => {
+    setCollapsedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const riskMap = useMemo(() => {
+    if (!data) return new Map<string, NodeRisk>();
+    return calcRisk(data.nodes, scenario, day);
+  }, [data, scenario, day]);
+
+  const hiddenIds = useMemo(() => {
+    if (!data) return new Set<string>();
+    return computeHiddenIds(data.nodes, data.edges, collapsedIds);
+  }, [data, collapsedIds]);
+
+  const focusSet = useMemo(() => {
+    if (!data) return new Set<string>();
+    const roots: string[] = focusId ? [focusId] : focusRoots;
+    if (roots.length === 0) return new Set<string>();
+    const set = new Set<string>();
+    for (const root of roots) {
+      set.add(root);
+      for (const a of collectAncestors(data.edges, root)) set.add(a);
+      for (const d of collectDescendants(data.edges, root)) set.add(d);
+    }
+    return set;
+  }, [data, focusId, focusRoots]);
+
+  const focusCtx: FocusContext = useMemo(() => ({ focusId, focusSet, searchQuery }), [focusId, focusSet, searchQuery]);
+
+  const { nodes, edges } = useMemo(() => {
+    if (!data) return { nodes: [], edges: [] };
+    return layoutWithDagre(data.nodes, data.edges, riskMap, collapsedIds, hiddenIds, onToggleCollapse, focusCtx);
+  }, [data, riskMap, collapsedIds, hiddenIds, onToggleCollapse, focusCtx]);
+
+  const onNodeClick = useCallback((_: unknown, node: Node<PetrochemNodeData>) => {
+    setFocusRoots([]);
+    setFocusId((prev) => (prev === node.data.id ? null : node.data.id));
+  }, []);
+
+  const onPaneClick = useCallback(() => {
+    setFocusId(null);
+    setFocusRoots([]);
+  }, []);
+
+  const selectConsumerImpact = (nodeIds: string[]) => {
+    setFocusId(null);
+    setFocusRoots(nodeIds);
+    setSearchQuery("");
+  };
+
+  const handleDayChange = (newDay: number) => setDay(Math.max(0, Math.min(60, newDay)));
+  const expandAll = () => setCollapsedIds(new Set());
+  const clearFocus = () => { setFocusId(null); setFocusRoots([]); setSearchQuery(""); };
 
   return (
-    <div className="space-y-6">
-      {/* ヘッダー */}
+    <div className="flex flex-col gap-4 p-4">
       <PageHero
-        title={<><span className="text-warning-soft">PETROCHEM</span> CHAIN</>}
-        subtitle="原油→ナフサ→石化製品→社会インフラの連鎖依存構造"
-        right={<ScenarioSelector selected={scenario} onChange={setScenario} />}
+        title="PETROCHEM CHAIN"
+        subtitle="原油・天然ガスから石化製品・最終用途までの供給チェーン。シナリオ・日数でナフサ枯渇の波及を確認"
       />
 
-      <AlertBanner
-        level="warning"
-        message="ナフサ在庫は約14日分。逼迫するとクラッカーが減産開始し、透析チューブ・食品包装・水道管（PVC/PE）が順次影響を受ける"
-      />
-
-      {/* 日数スライダー */}
-      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <span className="font-mono text-xs text-text-muted tracking-wider">
-            制約日数をスライドすると連鎖制約の進行が見えます
-          </span>
-          <span className="font-mono text-sm font-bold" style={{ color: phaseInfo.color }}>
-            {day === 0 ? "平常時" : `発生後 ${day} 日`}
-          </span>
+      <div className="flex flex-wrap items-center gap-3">
+        <ScenarioSelector selected={scenario} onChange={setScenario} />
+        <div
+          className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs"
+          style={{ borderColor: phase.color, color: phase.color }}
+        >
+          Day {day} — {phase.label}
         </div>
+        <span className="text-xs text-text-muted hidden md:inline">{phase.description}</span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 text-xs">
+        <span className="text-text-muted">表示階層:</span>
+        {[3, 4, 5, 6, 8].map((d) => (
+          <button
+            key={d}
+            type="button"
+            onClick={() => applyMaxDepth(d)}
+            className={`rounded-md border px-2 py-1 transition-colors ${
+              maxDepth === d
+                ? "border-accent bg-accent/10 text-accent"
+                : "border-border bg-panel text-text hover:bg-bg"
+            }`}
+          >
+            {d === 8 ? "全階層" : `0〜${d}階層`}
+          </button>
+        ))}
+        {collapsedIds.size > 0 && (
+          <button
+            type="button"
+            onClick={expandAll}
+            className="ml-auto rounded-md border border-border bg-panel px-2 py-1 text-text hover:bg-bg transition-colors"
+          >
+            すべて展開（{collapsedIds.size}件）
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-3">
+        <label className="text-xs text-text-muted w-24">日数（0〜60）</label>
         <input
           type="range"
           min={0}
-          max={90}
-          step={1}
+          max={60}
           value={day}
-          onChange={(e) => setDay(parseInt(e.target.value, 10))}
-          className="w-full accent-warning-soft"
-          data-no-swipe
+          onChange={(e) => handleDayChange(parseInt(e.target.value, 10))}
+          className="flex-1"
         />
-        <div className="flex justify-between text-[9px] font-mono text-[#94a3b8] relative">
-          <span>0</span>
-          <span className="absolute left-[7%]">7日<br/>減産</span>
-          <span className="absolute left-[33%]">30日<br/>現実枯渇</span>
-          <span className="absolute left-[67%]">60日<br/>楽観枯渇</span>
-          <span>90</span>
-        </div>
-        <div
-          className="rounded-lg p-2.5 border text-xs font-mono"
-          style={{
-            borderColor: phaseInfo.color + "55",
-            backgroundColor: phaseInfo.color + "0d",
-          }}
-        >
-          <span className="font-bold mr-2" style={{ color: phaseInfo.color }}>
-            [{phaseInfo.label}]
-          </span>
-          <span className="text-text-muted">{phaseInfo.description}</span>
-        </div>
+        <span className="text-xs font-mono w-12 text-right">Day {day}</span>
       </div>
 
-      {/* 凡例 + 操作 + 検索 */}
-      <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        {/* カテゴリ凡例 */}
-        <div className="flex flex-wrap gap-3">
-          {categories.map((cat) => (
-            <div key={cat} className="flex items-center gap-1.5">
-              <div
-                className="w-3 h-3 rounded-sm border"
-                style={{
-                  backgroundColor: CATEGORY_COLORS[cat] + "33",
-                  borderColor: CATEGORY_COLORS[cat],
-                }}
-              />
-              <span className="text-[10px] font-mono text-text-muted">{CATEGORY_LABELS[cat]}</span>
-            </div>
-          ))}
-        </div>
-        {/* 操作ボタン */}
-        <div className="flex flex-wrap gap-2 items-center">
+      <div className="flex items-center gap-3">
+        <label className="text-xs text-text-muted w-24">検索</label>
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="ノード名・IDで絞り込み（例: 透析 / nylon / pvc）"
+          className="flex-1 rounded-md border border-border bg-panel px-3 py-1.5 text-xs text-text placeholder:text-text-muted"
+        />
+        {(focusId || focusRoots.length > 0 || searchQuery) && (
           <button
-            onClick={expandAll}
-            className="text-[10px] font-mono px-2 py-1 rounded border border-border text-text-muted hover:text-text hover:border-neutral-400 transition-colors"
+            type="button"
+            onClick={clearFocus}
+            className="rounded-md border border-border bg-panel px-3 py-1.5 text-xs text-text hover:bg-bg transition-colors"
           >
-            全展開
+            フォーカス解除
           </button>
-          <button
-            onClick={collapseDeep}
-            className="text-[10px] font-mono px-2 py-1 rounded border border-border text-text-muted hover:text-text hover:border-neutral-400 transition-colors"
-          >
-            深部を折りたたむ
-          </button>
-          {/* フォーカスクリア */}
-          {focusedNodeId && (
-            <button
-              onClick={() => { setFocusedNodeId(null); setDetail(null); }}
-              className="text-[10px] font-mono px-2 py-1 rounded border border-info text-info hover:bg-[#eff6ff] transition-colors"
-            >
-              ハイライト解除
-            </button>
-          )}
-          {/* ズームコントロール */}
-          <div className="flex gap-1 ml-auto">
-            <button
-              onClick={zoomIn}
-              className="text-[11px] font-mono w-7 h-7 rounded border border-border text-text-muted hover:text-text hover:border-neutral-400 transition-colors flex items-center justify-center"
-              title="ズームイン"
-            >
-              ＋
-            </button>
-            <button
-              onClick={zoomOut}
-              className="text-[11px] font-mono w-7 h-7 rounded border border-border text-text-muted hover:text-text hover:border-neutral-400 transition-colors flex items-center justify-center"
-              title="ズームアウト"
-            >
-              −
-            </button>
-            <button
-              onClick={zoomReset}
-              className="text-[10px] font-mono px-2 py-1 rounded border border-border text-text-muted hover:text-text hover:border-neutral-400 transition-colors"
-              title="ズームリセット"
-            >
-              全体表示
-            </button>
-          </div>
-        </div>
-        {/* 検索フィルタ */}
-        <div className="relative">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ノード名で検索… (例: エチレン)"
-            className="w-full text-[10px] font-mono px-3 py-1.5 rounded border border-border text-text placeholder-neutral-400 focus:outline-none focus:border-accent bg-panel transition-colors"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-text-muted text-xs transition-colors"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-        {searchMatches !== null && (
-          <div className="text-[9px] font-mono text-text-muted">
-            {searchMatches.size > 0
-              ? `${searchMatches.size} ノードがマッチ — amber 色でハイライト表示`
-              : "マッチするノードなし"}
-          </div>
         )}
-        <div className="text-[9px] font-mono text-[#94a3b8]">
-          ▼/▶ で折りたたみ · 葉ノードクリックで上流/下流ハイライト · wheel でズーム · ドラッグでパン
-        </div>
       </div>
 
-      {/* SVGツリー */}
-      <div
-        ref={svgContainerRef}
-        className="relative overflow-hidden rounded-lg border border-border bg-panel"
-        style={{ height: 420 }}
-      >
-        {nodes.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-[#94a3b8] text-sm font-mono">データ読み込み中...</p>
-          </div>
-        ) : (
-          <svg
-            ref={svgRef}
-            viewBox={viewBoxStr}
-            style={{
-              display: "block",
-              width: "100%",
-              height: "100%",
-              cursor: isDragging ? "grabbing" : "grab",
-              userSelect: "none",
-            }}
-            onMouseDown={handleSvgMouseDown}
-            onMouseMove={handleSvgMouseMove}
-            onMouseUp={handleSvgMouseUp}
-            onMouseLeave={handleSvgMouseUp}
-          >
-            {/* エッジ（ノードより先に描画） */}
-            {visibleEdges.map((edge) => {
-              const src = layoutMap.get(edge.source_id);
-              const tgt = layoutMap.get(edge.target_id);
-              if (!src || !tgt) return null;
-              const srcRisk = riskMap.get(edge.source_id)?.riskLevel ?? 0;
-              const tgtRisk = riskMap.get(edge.target_id)?.riskLevel ?? 0;
-              const isFPath = (focusedPath?.has(edge.source_id) && focusedPath?.has(edge.target_id)) ?? false;
-              return (
-                <EdgePath
-                  key={edge.id}
-                  src={src}
-                  tgt={tgt}
-                  riskLevel={Math.max(srcRisk, tgtRisk)}
-                  isFocusPath={isFPath}
-                  highlighted={highlightId === edge.target_id || highlightId === edge.source_id}
-                  isDimmed={isEdgeDimmed(edge.source_id, edge.target_id)}
-                />
-              );
-            })}
-            {/* ノード */}
-            {visibleNodes.map((node) => (
-              <NodeRect
-                key={node.id}
-                node={node}
-                riskNode={riskMap.get(node.id)}
-                isHighlighted={highlightId === node.id}
-                isFocusPath={focusedPath?.has(node.id) ?? false}
-                isSearchMatch={searchMatches?.has(node.id) ?? false}
-                isDimmed={isNodeDimmed(node.id)}
-                isCollapsed={collapsed.has(node.id)}
-                hasChildren={childrenMap.has(node.id)}
-                onToggle={() => toggleCollapse(node.id)}
-                onFocus={() => {
-                  const newId = focusedNodeId === node.id ? null : node.id;
-                  setFocusedNodeId(newId);
-                  setDetail(newId ? { node, risk: riskMap.get(node.id) } : null);
-                }}
-                onMouseEnter={(e) => {
-                  if (isDraggingRef.current) return;
-                  setHoveredNodeId(node.id);
-                  const container = svgContainerRef.current;
-                  if (container) {
-                    const rect = container.getBoundingClientRect();
-                    setTooltipPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-                  }
-                }}
-                onMouseLeave={() => {
-                  setHoveredNodeId(null);
-                  setTooltipPos(null);
-                }}
+      <div className="rounded-lg border border-border bg-panel h-[55vh] md:h-[70vh]">
+        {!data && <div className="p-4 text-text-muted">データ読み込み中...</div>}
+        {data && (
+          <ReactFlowProvider>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              onNodeClick={onNodeClick}
+              onPaneClick={onPaneClick}
+              fitView
+              fitViewOptions={{ padding: 0.15, includeHiddenNodes: false }}
+              minZoom={0.1}
+              maxZoom={2.5}
+              nodesConnectable={false}
+              nodesDraggable={false}
+              elementsSelectable={true}
+              proOptions={{ hideAttribution: true }}
+            >
+              <Background color="var(--color-border)" gap={16} />
+              <Controls showInteractive={false} />
+              <MiniMap
+                nodeColor={minimapNodeColor}
+                maskColor="rgba(0,0,0,0.1)"
+                pannable
+                zoomable
+                position="top-right"
+                style={{ width: 140, height: 90 }}
               />
-            ))}
-          </svg>
-        )}
-        {/* ホバーツールチップ（drag中は非表示） */}
-        {!isDragging && tooltipNode !== null && tooltipPos !== null && (
-          <Tooltip
-            data={{
-              node: tooltipNode,
-              risk: riskMap.get(tooltipNode.id),
-              x: tooltipPos.x,
-              y: tooltipPos.y,
-            }}
-            containerW={svgContainerRef.current?.clientWidth ?? 600}
-            containerH={svgContainerRef.current?.clientHeight ?? 420}
-          />
+              <FitViewOnChange trigger={nodes.length} />
+            </ReactFlow>
+          </ReactFlowProvider>
         )}
       </div>
 
-      {/* 消費者影響サマリー */}
-      <div className="space-y-2">
-        <p className="font-mono text-xs text-text-muted tracking-wider">
-          ↓ あなたの生活への影響（{day === 0 ? "平常時" : `発生後${day}日`}）
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="text-xs text-text-muted">
+        表示: {nodes.length} / {data?.nodes.length ?? 0} ノード（折りたたみで {hiddenIds.size} 件非表示）・エッジ: {edges.length} / {data?.edges.length ?? 0} ・シナリオ {scenario}（枯渇 day {depletionDay}）
+        {focusId && (
+          <span className="ml-2">・フォーカス: {focusId}（パス {focusSet.size} ノード）</span>
+        )}
+        {focusRoots.length > 0 && (
+          <span className="ml-2">・フォーカス: {focusRoots.length} 起点（パス {focusSet.size} ノード）</span>
+        )}
+      </div>
+
+      {/* Persona 入口: 消費者影響カード */}
+      <div className="mt-2">
+        <div className="mb-2 text-xs text-text-muted">
+          何から見るか — カードをクリックすると関連ノードとその全上流パスがハイライトされる
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
           {CONSUMER_IMPACTS.map((impact) => {
-            const maxRisk = Math.max(
-              ...impact.nodeIds.map((id) => riskMap.get(id)?.riskLevel ?? 0),
-            );
-            const isAffected = maxRisk > 0.1;
-            const isCritical = maxRisk > 0.7;
-            const borderColor = isCritical ? "#dc2626" : isAffected ? "#d97706" : "var(--color-border)";
-            const bgColor = isCritical ? "rgba(220,38,38,0.08)" : isAffected ? "rgba(217,119,6,0.08)" : "transparent";
-            const titleColor = isCritical ? "#dc2626" : isAffected ? "#d97706" : "var(--color-text-muted)";
+            const isActive = focusRoots.length > 0 && impact.nodeIds.every((id) => focusRoots.includes(id)) && focusRoots.length === impact.nodeIds.length;
             return (
-              <div
+              <button
                 key={impact.label}
-                className="rounded-lg p-3 border space-y-1 transition-all"
-                style={{ borderColor, backgroundColor: bgColor }}
+                type="button"
+                onClick={() => selectConsumerImpact(impact.nodeIds)}
+                className={`text-left rounded-md border p-3 text-xs transition-colors ${isActive ? "border-accent bg-bg" : "border-border bg-panel hover:bg-bg"}`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{impact.icon}</span>
-                  <span className="font-mono text-sm font-bold" style={{ color: titleColor }}>
-                    {impact.label}
-                  </span>
-                  {isCritical && (
-                    <span className="text-[9px] font-mono bg-primary text-white px-1 rounded ml-auto">危機</span>
-                  )}
-                  {isAffected && !isCritical && (
-                    <span className="text-[9px] font-mono bg-warning text-white px-1 rounded ml-auto">影響</span>
-                  )}
+                <div className="flex items-center gap-2 font-medium">
+                  <span className="text-lg leading-none">{impact.icon}</span>
+                  <span className="text-text">{impact.label}</span>
                 </div>
-                <p className="text-[10px] text-text-muted leading-relaxed">{impact.detail}</p>
-                {isAffected && (
-                  <div className="w-full h-1 bg-border rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${maxRisk * 100}%`,
-                        backgroundColor: isCritical ? "#dc2626" : "#d97706",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
+                <div className="mt-1 text-[11px] text-text-muted leading-snug">{impact.detail}</div>
+              </button>
             );
           })}
         </div>
-      </div>
-
-      {/* 詳細パネル */}
-      {detail && (
-        <div className="bg-panel border border-border rounded-lg p-4 space-y-2.5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-mono font-bold text-sm" style={{ color: CATEGORY_COLORS[detail.node.category] }}>
-                {detail.node.label}
-              </h3>
-              <span
-                className="text-[9px] font-mono px-1.5 py-0.5 rounded-full text-white"
-                style={{ backgroundColor: CATEGORY_COLORS[detail.node.category] }}
-              >
-                {CATEGORY_LABELS[detail.node.category]}
-              </span>
-            </div>
-            <button
-              onClick={() => { setDetail(null); setFocusedNodeId(null); }}
-              className="text-neutral-400 hover:text-text-muted text-xs font-mono transition-colors shrink-0"
-            >
-              ✕
-            </button>
-          </div>
-          <p className="text-text-muted text-xs leading-relaxed">{detail.node.description}</p>
-          {detail.risk && detail.risk.riskLevel > 0 && (
-            <div className="space-y-2 pt-1 border-t border-border">
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-border overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-300"
-                    style={{
-                      width: `${detail.risk.riskLevel * 100}%`,
-                      backgroundColor: lerpColor("#d97706", COLLAPSE_COLOR, Math.max(0, (detail.risk.riskLevel - 0.4) / 0.6)),
-                    }}
-                  />
-                </div>
-                <span className="text-[11px] font-mono font-bold text-text-muted shrink-0">
-                  リスク {Math.round(detail.risk.riskLevel * 100)}%
-                </span>
-              </div>
-              <div className="flex gap-4 text-[10px] font-mono flex-wrap">
-                <span className="text-text-muted">
-                  影響顕在化: <span className="text-warning font-bold">Day {detail.risk.impactDay}</span>〜
-                </span>
-                <span className="text-text-muted">{detail.risk.riskReason}</span>
-              </div>
-            </div>
-          )}
-          {detail.node.naptha_factor !== null && (
-            <p className="text-[10px] font-mono text-[#94a3b8]">
-              ナフサ依存度: {Math.round((detail.node.naptha_factor ?? 0) * 100)}%
-            </p>
-          )}
-        </div>
-      )}
-
-      {/* 出典 */}
-      <div className="text-[10px] text-[#94a3b8] font-mono space-y-0.5">
-        <p>出典: 資源エネルギー庁 石油統計 / JPCA石油化学工業協会 / 化学日報 / 農水省</p>
-        <Link to="/methodology" className="underline hover:text-text-muted transition-colors">計算モデルの前提条件 →</Link>
       </div>
     </div>
   );

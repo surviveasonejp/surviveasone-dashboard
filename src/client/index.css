@@ -411,3 +411,59 @@ input[type="range"]::-moz-range-track {
     border-color: #94a3b8 !important;
   }
 }
+
+/* ─── React Flow テーマ統合（PX-F Phase 2 PoC）──────────── */
+
+/* React Flow の .react-flow__* クラスへ CSS 変数を適用してテーマ追従 */
+.react-flow__node {
+  color: var(--color-text);
+}
+
+.react-flow__edge-path {
+  stroke: var(--color-border);
+}
+
+.react-flow__edge.selected .react-flow__edge-path,
+.react-flow__edge:focus .react-flow__edge-path {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+/* Controls パネル — bg-panel / text-text で追従 */
+.react-flow__controls {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.react-flow__controls-button {
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.react-flow__controls-button:hover {
+  background: var(--color-bg);
+}
+
+.react-flow__controls-button svg {
+  fill: var(--color-text);
+}
+
+/* Minimap パネル */
+.react-flow__minimap {
+  background: var(--color-panel) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--color-bg);
+  opacity: 0.5;
+}
+
+/* 属性リンク（proOptions で非表示だが念のため） */
+.react-flow__attribution {
+  background: transparent;
+  color: var(--color-text-muted);
+}

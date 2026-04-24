@@ -82,6 +82,15 @@ CREATE TABLE IF NOT EXISTS petrochem_nodes (
   parent_id     TEXT,
   naptha_factor REAL,
   description   TEXT NOT NULL DEFAULT '',
+  -- v2 拡張属性（PX-F Phase 1 スキーマ凍結 2026-04-24）
+  functional_group   TEXT,          -- FunctionalGroup 16官能基分類（intermediate用）
+  hormuz_dependency  REAL,          -- 0.0〜1.0
+  buffer_days        INTEGER,       -- 川下在庫バッファ日数
+  alt_routes         TEXT,          -- JSON array of node IDs
+  recovery_days      INTEGER,       -- 停戦後復旧リードタイム（日）
+  sources            TEXT,          -- JSON array of source IDs
+  production_t_year  INTEGER,       -- 年産量（トン）
+  production_year    INTEGER,       -- 生産年次
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

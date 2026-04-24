@@ -22,6 +22,9 @@ export default defineConfig({
             if (id.includes("react-dom") || id.includes("/react/")) return "react-vendor";
             if (id.includes("topojson") || id.includes("world-atlas")) return "geo-vendor";
             if (id.includes("@use-gesture")) return "gesture-vendor";
+            // PX-F Phase 2: React Flow + dagre は /petrochem/rf でのみ lazy ロード
+            // zustand/classcat は react 依存のため circular を避けて vendor に残す
+            if (id.includes("@xyflow") || id.includes("/dagre/")) return "petrochem-vendor";
             return "vendor";
           }
           return undefined;
