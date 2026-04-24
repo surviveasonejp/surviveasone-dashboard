@@ -17,15 +17,19 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules")) {
-            if (id.includes("react-router")) return "router-vendor";
-            if (id.includes("react-dom") || id.includes("/react/")) return "react-vendor";
-            if (id.includes("topojson") || id.includes("world-atlas")) return "geo-vendor";
-            if (id.includes("@use-gesture")) return "gesture-vendor";
-            // NOTE: @xyflow/react + dagre は react-vendor への circular 回避のため、
-            // 独自チャンク分離は行わない（2026-04-24 prod Activity エラー修正）
-            return "vendor";
-          }
+          if (!id.includes("node_modules")) return undefined;
+          // React 19 エコシステム (React/React-DOM/scheduler/use-sync-external-store)
+          // は同一チャンクに閉じる。circular 排除して初期化順を保証する。
+          if (
+            id.includes("/react-dom/") ||
+            id.includes("/react/") ||
+            id.includes("/scheduler/") ||
+            id.includes("/use-sync-external-store/")
+          ) return "react-vendor";
+          if (id.includes("react-router")) return "router-vendor";
+          if (id.includes("topojson") || id.includes("world-atlas")) return "geo-vendor";
+          if (id.includes("@use-gesture")) return "gesture-vendor";
+          // その他の node_modules は Vite の自動分割に任せる（戻り値なし）
           return undefined;
         },
       },
