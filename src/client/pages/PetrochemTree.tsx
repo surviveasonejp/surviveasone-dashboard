@@ -259,15 +259,27 @@ function collectDescendants(edges: PetrochemEdge[], rootId: string): Set<string>
   return visited;
 }
 
-/** collapsedIds 起点に下流 BFS し、隠れるべきノード ID セットを返す */
+/** collapsedIds 起点に下流 BFS し、隠れるべきノード ID セットを返す
+ *
+ * 折りたたみ起点は「自身より祖先側に別の collapsed root が無い場合のみ可視」。
+ * つまり、上位ノードが折り畳まれている時、下位の折り畳み起点はそのまま隠す。
+ * これにより ethylene (d4) が初期折り畳み状態で、ユーザが refinery (d1) を閉じた時、
+ * ethylene は親 naphtha_cracker が非表示になるため自身も非表示へフォールスルーし、
+ * DAG 全体の連続性が保たれる。
+ */
 function computeHiddenIds(_nodes: PetrochemNode[], edges: PetrochemEdge[], collapsedIds: Set<string>): Set<string> {
   if (collapsedIds.size === 0) return new Set();
   const childrenByParent = new Map<string, string[]>();
+  const parentsByChild = new Map<string, string[]>();
   for (const e of edges) {
-    const arr = childrenByParent.get(e.source_id) ?? [];
-    arr.push(e.target_id);
-    childrenByParent.set(e.source_id, arr);
+    const kids = childrenByParent.get(e.source_id) ?? [];
+    kids.push(e.target_id);
+    childrenByParent.set(e.source_id, kids);
+    const parents = parentsByChild.get(e.target_id) ?? [];
+    parents.push(e.source_id);
+    parentsByChild.set(e.target_id, parents);
   }
+
   const hidden = new Set<string>();
   const visit = (id: string) => {
     for (const child of childrenByParent.get(id) ?? []) {
@@ -277,8 +289,26 @@ function computeHiddenIds(_nodes: PetrochemNode[], edges: PetrochemEdge[], colla
     }
   };
   for (const root of collapsedIds) visit(root);
-  // 折りたたみ起点自体は表示するので hidden から除外
-  for (const root of collapsedIds) hidden.delete(root);
+
+  // 折りたたみ起点自体: 祖先に別の collapsed root が 1 つでもあれば hidden のまま、
+  // なければ可視化。多親 DAG では「すべての親系統が collapsed で遮られている」
+  // ことまでは要求しない（どれか 1 系統でも繋がっていれば可視のまま）。
+  const hasCollapsedAncestor = (id: string): boolean => {
+    const seen = new Set<string>([id]);
+    const stack = [...(parentsByChild.get(id) ?? [])];
+    while (stack.length > 0) {
+      const cur = stack.pop()!;
+      if (seen.has(cur)) continue;
+      seen.add(cur);
+      if (collapsedIds.has(cur)) return true;
+      for (const p of parentsByChild.get(cur) ?? []) stack.push(p);
+    }
+    return false;
+  };
+
+  for (const root of collapsedIds) {
+    if (!hasCollapsedAncestor(root)) hidden.delete(root);
+  }
   return hidden;
 }
 
