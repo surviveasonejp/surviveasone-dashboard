@@ -1,0 +1,15 @@
+# 全パスのデフォルト所有者
+*                       @idx
+
+# CI/CD・デプロイ設定（最重要：改変は本番に直結）
+/.github/workflows/**   @idx
+/.github/CODEOWNERS     @idx
+/wrangler.jsonc         @idx
+/package.json           @idx
+/package-lock.json      @idx
+
+# Worker 本体（API・データパイプライン・認可ロジック）
+/src/worker/**          @idx
+
+# データファイル（自動更新パイプラインで上書きされる箇所）
+/src/worker/data/**     @idx

@@ -16,6 +16,9 @@ on:
         description: '投稿テキスト（280文字以内）'
         required: true
 
+permissions:
+  contents: read
+
 jobs:
   repost:
     runs-on: ubuntu-latest
