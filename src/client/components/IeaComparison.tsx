@@ -10,12 +10,18 @@
  *
  * データソース:
  * - IEA Oil Security Policy / 協調放出プレスリリース（2026年3月11日）
+ * - IEA Oil Market Report April 2026
  * - EIA Weekly Petroleum Status Report（2026年4月22日・4/17時点）
  * - EIA Today in Energy 67504「China, US, Japan hold most strategic oil inventories」（2026年4月）
  * - Kpler / Energy Aspects 中国在庫推計（2025年12月〜2026年4月）
  * - DropThe "32 Nations Just Emptied Their Oil Reserves"（2026年3月）
  * - Al Jazeera "Which countries have strategic oil reserves"（2026年3月23日）
- * - S&P Global / KED Global / Bloomberg（2026年3月〜4月報道）
+ * - S&P Global / KED Global / Bloomberg / Focus Taiwan（2026年3月〜4月報道）
+ * - Nation Thailand（2026年4月24日・タイ110日発表）
+ * - DOE Philippines / Rappler（2026年4月5日・フィリピン51日）
+ * - The Edge Malaysia / PETRONAS（2026年4月・マレーシア60日）
+ * - DCCEEW Australia（2026年4月12日・豪州39日）
+ * - Euronews / Clean Energy Wire（2026年3〜4月・欧州各国）
  * - Forbes Japan「石油枯渇の危険性が最も高い国々」（2026年3月）
  * - 時事通信「東南ア各国が燃料消費の抑制に動く」（2026年3月〜4月）
  * - 資源エネルギー庁 石油備蓄統計（2026年4月8日速報・4/5時点）
@@ -43,17 +49,17 @@ const COUNTRIES: CountryStock[] = [
   { country: "スペイン", days: 80, note: "11.6mb放出後80日推定。90日義務を下回る", group: "iea" },
   { country: "イタリア", days: 54, note: "OCSIT管理。10mb放出後54日推定（DropThe 2026-03）。90日義務を大幅に下回る", group: "iea" },
   { country: "英国", days: 39, note: "国家備蓄なし・民間義務のみ。14mb放出後39日（DropThe 2026-03）。欧州最脆弱", group: "iea" },
-  { country: "豪州", days: 49, note: "IEA唯一の義務未達国。2012年以降ずっと未達。中東依存低くLNG自給", group: "iea" },
+  { country: "豪州", days: 39, note: "オンショア液体燃料39日分（DCCEEW 2026-04-12時点）。IEA義務未達（2012年以降）。SPR放出後は27日に一時低下。ガソリン38日・軽油30日・ジェット燃料30日（2026-03-21時点）。中東依存低くLNG自給", group: "iea" },
   // アジア諸国（日本と関係の深い国）
   { country: "中国", days: 121, note: "EIA/Kpler最新推計で総在庫（商業+戦略）15億バレル超・輸入カバー約121日（IEA90日基準大幅超過）。2025年平均1.1mbpd積み増し・容量20億バレル規模。データ非公開。ロシア産を『バックストップ供給』として位置づけ", group: "asia" },
-  { country: "台湾", days: 100, note: "政府発表100日超。法定90日義務（政府30+民間60）。Al Jazeera 2026-03-23確認", group: "asia" },
+  { country: "台湾", days: 100, note: "CPC+台塑が管理。法定90日義務超・政府発表100日超。4月紅海経由で約800万バレル（月需要の1/3）調達でホルムズ迂回。Focus Taiwan 2026-04-08", group: "asia" },
   { country: "インド", days: 74, note: "国家SPR 9.5日分（5.33MMT容量・充填率64%・実在庫約25MB）＋商業在庫64.5日＝総合74日（PIB India / ISPRL 2026-04）。ロシア原油依存35.8%。石化・ガス供給義務免除宣言", group: "asia" },
-  { country: "タイ", days: 61, note: "総在庫61日分（時事 2026-03）。燃料全品目値上げ・バイオ燃料混合比率引き上げ・燃料輸出停止を実施", group: "asia" },
-  { country: "シンガポール", days: 40, note: "貯蔵ハブ。多くは外国企業の通過在庫。実質国内カバーは40日分（Forbes Japan 2026-03）", group: "asia" },
-  { country: "マレーシア", days: 30, note: "産油国だが精製能力不足。燃料補助金維持。ホルムズ依存低い", group: "asia" },
-  { country: "インドネシア", days: 20, note: "財政最脆弱。20日分（時事 2026-03）。B35/B40パーム油混合で代替推進。予算見直し検討", group: "asia" },
-  { country: "フィリピン", days: 60, note: "商業在庫含む総在庫60日分（時事 2026-03）。国家エネルギー非常事態宣言・週4日出勤導入。政府備蓄は約45日分", group: "asia" },
-  { country: "ベトナム", days: 15, note: "アジア最脆弱クラス。15日分（Forbes Japan / 時事 2026-03）。精製システムも構造的脆弱。石化・ガス供給義務免除宣言。日韓に支援要請", group: "asia" },
+  { country: "タイ", days: 110, note: "タイ政府発表110日分（Nation Thailand 2026-04-24）: 法定25日+商業25日+輸送中37日+確約供給23日。中東依存57%。Oil Fuel Fund赤字620億バーツ超・バイオ燃料混合比率引き上げ・燃料輸出停止を実施", group: "asia" },
+  { country: "シンガポール", days: 40, note: "貯蔵ハブ。貯蔵容量は245日相当だが、多くは外国企業の通過在庫・輸出契約分。実質国内カバーは40日分（Black Dot Research / Forbes Japan 2026-03〜04）", group: "asia" },
+  { country: "マレーシア", days: 60, note: "Anwar首相が5月まで供給確保と表明（The Edge Malaysia 2026-04）。IEA非加盟・公式SPRなし。PETRONAS/精製会社の商業在庫ベースで約60日。精製用原油輸入依存41%。燃料補助金維持", group: "asia" },
+  { country: "インドネシア", days: 22, note: "燃料備蓄21〜23日分（Al Jazeera / VIR 2026-03〜04）。ホルムズ通過の原油輸入は約25%。B35/B40パーム油混合で代替推進。財政最脆弱クラス", group: "asia" },
+  { country: "フィリピン", days: 51, note: "DOE発表総合51日分（Migrant Times / Rappler 2026-04-05）。LPG 33日分（4/3時点）。国家エネルギー非常事態宣言・週4日出勤導入。原油輸入の98%が中東依存", group: "asia" },
+  { country: "ベトナム", days: 30, note: "国内需要30〜45日分（Al Jazeera 2026-03 / VIR 2026-04）。精製システムも構造的脆弱。石化・ガス供給義務免除宣言。日韓に支援要請", group: "asia" },
 ];
 
 function getJapanIeaDays(): number {
@@ -150,7 +156,7 @@ export const IeaComparison: FC = () => {
           30日未満
         </span>
         <span>|</span>
-        <span>出典: IEA協調放出(3/11) / EIA WPSR(4/22) / EIA Today in Energy / Kpler / DropThe / Al Jazeera(3/23) / S&P Global / KED Global / Forbes Japan / 時事通信 / 資源エネルギー庁 / 経産省20260424009（2026年4月24日更新）</span>
+        <span>出典: IEA OMR4月版 / 協調放出(3/11) / EIA WPSR(4/22) / EIA Today in Energy / Kpler / DropThe / Al Jazeera(3/23) / S&P Global / KED Global / Nation Thailand / DOE Philippines / Focus Taiwan / DCCEEW / Edge Malaysia / Forbes Japan / 時事通信 / 資源エネルギー庁 / 経産省20260424009（2026年4月24日更新）</span>
       </div>
     </div>
   );
