@@ -1,0 +1,19 @@
+# Local development secrets — copy to `.dev.vars` (gitignored) for `wrangler dev`.
+# 本番では `wrangler secret put <NAME>` で Workers Secrets に登録すること。
+# 全て optional — 未設定時は該当機能（外部API取得）が graceful にスキップされる。
+
+# 管理API認証トークン (POST /api/tankers/update)
+# 推奨生成: `openssl rand -hex 32`
+ADMIN_TOKEN=
+
+# AISStream.io WebSocket APIキー (タンカーAIS追跡)
+# 取得: https://aisstream.io 無料登録
+AISSTREAM_API_KEY=
+
+# U.S. EIA APIキー (WTI原油価格 oil-price-fetcher.ts)
+# 取得: https://www.eia.gov/opendata/register.php
+EIA_API_KEY=
+
+# e-Stat APIアプリID (貿易統計 trade-fetcher.ts)
+# 取得: https://www.e-stat.go.jp/api/
+ESTAT_APP_ID=
