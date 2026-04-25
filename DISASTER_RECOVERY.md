@@ -43,11 +43,53 @@ wrangler secret put DISCORD_WEBHOOK_URL  # Discord Webhook URL
 
 ### GitHub Actions Secrets
 ```
-X_API_KEY          # X API v2 Consumer Key
-X_API_SECRET       # X API v2 Consumer Secret
-X_ACCESS_TOKEN     # X API v2 Access Token
-X_ACCESS_SECRET    # X API v2 Access Token Secret
+CLOUDFLARE_API_TOKEN     # wrangler deploy 認証 (deploy.yml)
+CLOUDFLARE_ACCOUNT_ID    # Cloudflare アカウントID
+X_API_KEY                # X API v2 Consumer Key
+X_API_SECRET             # X API v2 Consumer Secret
+X_ACCESS_TOKEN           # X API v2 Access Token
+X_ACCESS_TOKEN_SECRET    # X API v2 Access Token Secret
 ```
+
+### ローカル開発用シークレット
+```bash
+# .dev.vars.example をコピーして値を埋める
+cp .dev.vars.example .dev.vars
+# `wrangler dev` が自動で .dev.vars を読み込む（gitignore済み）
+```
+
+### ローテーションスケジュール
+
+| 鍵 | 推奨頻度 | トリガー |
+|---|---|---|
+| `ADMIN_TOKEN` | 90日 | 計画ローテ |
+| `APPROVE_SECRET` (ops) | 90日 | 計画ローテ |
+| `CLOUDFLARE_API_TOKEN` | 180日 | 計画ローテ |
+| `X_API_*` 4件 | 180日 or 凍結時 | X ロック検知時に即時 |
+| `DISCORD_WEBHOOK_URL` (ops) | 漏洩検知時 | インシデント発生時 |
+| `DISCORD_BOT_TOKEN` (ops) | 365日 | 計画ローテ |
+| `GITHUB_TOKEN` (ops) | 365日 | fine-grained PAT 期限 |
+| `AISSTREAM_API_KEY` | 提供元規定 | 提供元 rotate 時 |
+| `EIA_API_KEY` | 提供元規定 | 提供元 rotate 時 |
+| `ESTAT_APP_ID` | 提供元規定 | 提供元 rotate 時 |
+| `GEMINI_API_KEY` (ops) | 90日 | LLM_PROVIDER=gemini 時のみ |
+
+ローテ手順:
+```bash
+# 1. 新トークン発行（提供元 or `openssl rand -hex 32`）
+# 2. Workers Secrets を上書き
+wrangler secret put ADMIN_TOKEN
+# 3. GitHub Secrets を更新（Actions利用時）
+gh secret set CLOUDFLARE_API_TOKEN
+# 4. 旧トークンを発行元で revoke
+# 5. 動作確認: `wrangler tail` でエラー監視（30分）
+```
+
+### シークレット誤コミット防止
+
+- `.gitignore` で `.env*` `.dev.vars` `.dev.vars.*` `*.key` `*.pem` `credentials.json` を除外
+- GitHub Actions: `.github/workflows/secret-scan.yml` が PR と main push で gitleaks を実行
+- 検知時は CI が fail → PR をマージ不可
 
 ## 4. 外部サービスアカウント
 

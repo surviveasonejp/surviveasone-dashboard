@@ -1,0 +1,23 @@
+# gitleaks configuration
+# https://github.com/gitleaks/gitleaks
+#
+# デフォルトルールを継承しつつ、本プロジェクトの誤検知を抑制する。
+
+[extend]
+useDefault = true
+
+# プロジェクト固有の allowlist
+#
+# generic-api-key ルールは entropy ベースで広く検知するため、
+# TypeScript の camelCase 識別子（React の key prop、列挙値、type discriminator 等）
+# を文字列リテラルとして使う場合に誤検知することがある。
+# 例: key: "demandCut10pct"
+#
+# 真のAPIキー/トークンは通常 camelCase ではなく英数字+記号の混在パターンのため、
+# 以下の regex で誤抑制リスクは低い。
+[allowlist]
+description = "camelCase TypeScript identifiers used as string literals"
+regexTarget = "match"
+regexes = [
+  '''["'][a-z][a-zA-Z0-9]+["']''',
+]
