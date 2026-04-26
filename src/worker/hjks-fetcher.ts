@@ -107,18 +107,21 @@ async function fetchSession(): Promise<HjksSession | null> {
 /**
  * outages_ajax エンドポイントから全停止情報を取得する。
  * limit=1000 で一括取得（通常は数十〜数百件）。
+ *
+ * w2grid のデフォルト送信形式は application/x-www-form-urlencoded。
+ * application/json で送ると CSRF 検証が通らず HTTP 403 が返る。
  */
 async function fetchOutagesAjax(session: HjksSession): Promise<W2GridRecord[]> {
-  const body = JSON.stringify({
+  const body = new URLSearchParams({
     _csrf: session.csrfToken,
-    limit: 1000,
-    offset: 0,
+    limit: "1000",
+    offset: "0",
   });
 
   const res = await fetch(HJKS_OUTAGES_AJAX, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
       Cookie: `JSESSIONID=${session.jsessionId}`,
       "User-Agent": "Mozilla/5.0 (compatible; SAO-DataBot/1.0; +https://surviveasonejp.org)",
       "X-Requested-With": "XMLHttpRequest",
@@ -181,12 +184,13 @@ function parseRecord(record: W2GridRecord, fetchedAt: string): PowerOutageRecord
     console.log("HJKS record fields:", JSON.stringify(Object.keys(record)));
   }
 
-  const area = getString(record, "area", "エリア", "area_name", "areaName");
-  const operator = getString(record, "operator", "事業者", "company", "operatorName");
-  const plantCode = getString(record, "plant_code", "発電所コード", "plantCode", "code");
-  const plantName = getString(record, "plant_name", "発電所名", "plantName", "name");
-  const fuelType = getString(record, "fuel_type", "発電形式", "fuelType", "type");
-  const unitName = getString(record, "unit_name", "ユニット名", "unitName", "unit");
+  // フィールド名は HJKS の w2grid 定義（/hjks/outages の HTML 内）から確定。
+  const area = getString(record, "area");
+  const operator = getString(record, "company");
+  const plantCode = getString(record, "plantcd");
+  const plantName = getString(record, "name");
+  const fuelType = getString(record, "format");
+  const unitName = getString(record, "unitname");
 
   // 最低限 エリア + 発電所名 が取れなければスキップ
   if (!area || !plantName) {
@@ -194,7 +198,7 @@ function parseRecord(record: W2GridRecord, fetchedAt: string): PowerOutageRecord
   }
 
   // ID: 発電所コード + ユニット名 + 停止日時 でユニーク
-  const outageAt = getString(record, "outage_at", "停止日時", "outageAt", "outage_date", "stop_at");
+  const outageAt = getString(record, "startdt");
   const idSource = `${plantCode || plantName}_${unitName}_${outageAt}`;
   const id = idSource.replace(/[^a-zA-Z0-9\u3000-\u9fff\u0021-\u007e]/g, "_").slice(0, 100);
 
@@ -206,15 +210,15 @@ function parseRecord(record: W2GridRecord, fetchedAt: string): PowerOutageRecord
     plant_name: plantName,
     fuel_type: fuelType,
     unit_name: unitName,
-    capacity_kw: getNumber(record, "capacity_kw", "認可出力", "capacity", "capacityKw"),
-    outage_type: getString(record, "outage_type", "停止区分", "outageType") || null,
-    category: getString(record, "category", "種別", "kind") || null,
-    reduction_kw: getNumber(record, "reduction_kw", "出力低下量", "reductionKw", "reduction"),
+    capacity_kw: getNumber(record, "maxcapacity"),
+    outage_type: getString(record, "maintemode") || null,
+    category: getString(record, "assortment") || null,
+    reduction_kw: getNumber(record, "downcapacity"),
     outage_at: outageAt || null,
-    recovery_forecast: getString(record, "recovery_forecast", "復旧見通し", "recoveryForecast") || null,
-    recovery_planned_at: getString(record, "recovery_planned_at", "復旧予定日", "recoveryPlannedAt") || null,
-    cause: getString(record, "cause", "停止原因", "reason") || null,
-    source_updated_at: getString(record, "source_updated_at", "最終更新日時", "updatedAt") || null,
+    recovery_forecast: getString(record, "outlook") || null,
+    recovery_planned_at: getString(record, "restartschdt") || null,
+    cause: getString(record, "factor") || null,
+    source_updated_at: getString(record, "upddt") || null,
     fetched_at: fetchedAt,
   };
 }
