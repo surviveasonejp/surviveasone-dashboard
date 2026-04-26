@@ -1,0 +1,32 @@
+/* TEAM */
+
+Maintainer: idx (Kazuhiko Ido)
+Contact: kazuhiko.ido [at] gmail.com
+GitHub: @idx
+X: @surviveasonejp
+Site: https://surviveasonejp.org
+Repo: https://github.com/surviveasonejp/surviveasone-dashboard
+
+/* THANKS */
+
+Sponsors: https://github.com/sponsors/idx
+Open data sources: e-Stat (METI/MIC), 経済産業省, 資源エネルギー庁,
+                   JPCA, JARW, 海上保安庁 VTS, 名古屋港管理組合 EDI,
+                   AISStream.io, EIA (RWTC), OWID, Natural Earth
+
+/* SITE */
+
+Last update: 2026/04/26
+Standards: HTML5, CSS3, ES2024, RFC 9116
+Components: React 19, Vite 6, Tailwind CSS 4, React Router 7,
+            Cloudflare Workers, D1, KV, R2, Cron Triggers
+Language: 日本語 (Japanese), English
+License: AGPL-3.0
+
+/* PROJECT */
+
+Name: SAO – Situation Awareness Observatory
+Mission: ホルムズ海峡封鎖シナリオ下の供給制約を多角的に可視化し、
+        市民・政策立案者・研究者の意思決定を支援する。
+        恐怖フレームではなく確認フレームへ誘導する。
+Approach: 16の計算モデル × 4シナリオ × 完全公開データ

@@ -1,0 +1,12 @@
+# SAO – Situation Awareness Observatory
+# Security disclosure policy (RFC 9116)
+
+Contact: https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new
+Contact: mailto:kazuhiko.ido@gmail.com
+Expires: 2027-04-26T00:00:00.000Z
+Preferred-Languages: ja, en
+Canonical: https://surviveasonejp.org/.well-known/security.txt
+Policy: https://github.com/surviveasonejp/surviveasone-dashboard/blob/main/SECURITY.md
+
+# Project: https://github.com/surviveasonejp/surviveasone-dashboard
+# License: AGPL-3.0
