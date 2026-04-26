@@ -5,7 +5,7 @@
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
     "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, 各社プレスリリース）から取得。2026-04-26時点でAIS位置を最新化",
-    "note": "54隻の追跡船舶（4/26 米国湾岸→日本向け原油タンカー6隻追加: ECO OCEANO CA/FRONT SIENA/LAWHAH/PRINCESS VANYA/CE-HAMILTON/ATREBATES）。【4/26追加】はれるや氏(@I3Xv3t4me684451)4/25報告13隻のうち、AIS Destination日本向けが確認できた6隻を一次裏取り後に登録（VesselFinder 2026-04-26）。Princess Vanya最早5/2四日市着。Lawhah(Bahri/サウジ)・Atrebates(CMB.TECH/ベルギー新造)など多国籍船社が米国産原油を喜望峰経由で輸送。残り3隻保留: New Prosperity(AIS Destination「JP TSJ」コード未確定・同名IMO 9183362との混同リスク)、Montestena(AIS Destination「Singapore」のため日本直行便ではない)、PVT Poseidon(AIS Destination「Sakai」・米湾岸出港未確認・パナマ通過記録のみ)。【既存48隻】4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7（4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7） + 7チョークポイント監視。【4/23追加】海保VTS浦賀水道航路 4/24入港予定4隻: KITA LNG（マルタ籍LNG・富津4/24 08:30）・SEYMOUR SUN（NYK/シンガポール籍MRメタノール二元燃料・姉崎4/24 11:00）・GENESIS RIVER（K LINE VLGC・パナマ籍LPG・川崎沖4/24 17:15）・TORM THUNDER（TORM/米国籍MRプロダクト・横須賀4/24 18:30）。海保VTS明石海峡航路 4/24通航 1隻: SETO AZURE（大阪ガス子会社Osaka Bay LNG Shipping・日本初LNGバンカー船・堺泉北発福山向け4/24 10:15）。名古屋港管理組合EDI 4/23検出 7隻: GLORY HANA/KEOYOUNG SEVEN/NO.7 HANA/CS HANA/BONANZA/CS BREEZE/PRINCESS DAISY（外航ケミカル/プロダクトオイルタンカー）。【4/21追加】海保VTS浦賀水道航路 4/22入港予定4隻: FRONT MAINE（Frontline VLCC・扇島シーバース4/22 10:45）・KHASAB SILVER（Oman Shipping MRプロダクト・姉崎4/22 10:15）・PACIFIC ARCADIA（MOL/OGIT LNG・PNG産・扇島4/22 11:15）・SHINSHU MARU（JERA/NYK LNG・米国Freeport産・富津4/22 13:00）。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
+    "note": "56隻の追跡船舶（4/26 米国湾岸→日本向け原油タンカー8隻追加: ECO OCEANO CA/FRONT SIENA/LAWHAH/PRINCESS VANYA/CE-HAMILTON/ATREBATES + 追加調査でNEW PROSPERITY/PVT POSEIDON）。【4/26追加・第2弾】NEW PROSPERITY(IMO 9689988・318,329DWT VLCC・Corpus Christi出港・ETA 5/20)はAIS「JP TSJ」=対馬海峡UN/LOCODE（VLCC接近時の最終仕向確定前ウェイポイント慣習）と判明。PVT POSEIDON(IMO 9457593・PVTrans/ベトナム籍・LOOP+Houston出港・パナマ経由・ETA 5/10)はAIS「Sakai Senboku」=コスモエネルギー堺製油所向けで確定（ツイートの「喜入向け」は誤情報）。MONTESTENA(IMO 9585883)は引き続き保留: AIS Destination「Singapore」のままで日本向け一次裏取りなし・CEPSA系/Singapore製油所向けの可能性高・5/13着後のDestination変更を継続監視。【4/26追加・第1弾】はれるや氏(@I3Xv3t4me684451)4/25報告13隻のうち、AIS Destination日本向けが確認できた6隻を一次裏取り後に登録（VesselFinder 2026-04-26）。Princess Vanya最早5/2四日市着。Lawhah(Bahri/サウジ)・Atrebates(CMB.TECH/ベルギー新造)など多国籍船社が米国産原油を喜望峰経由で輸送。【既存48隻】4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7（4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7） + 7チョークポイント監視。【4/23追加】海保VTS浦賀水道航路 4/24入港予定4隻: KITA LNG（マルタ籍LNG・富津4/24 08:30）・SEYMOUR SUN（NYK/シンガポール籍MRメタノール二元燃料・姉崎4/24 11:00）・GENESIS RIVER（K LINE VLGC・パナマ籍LPG・川崎沖4/24 17:15）・TORM THUNDER（TORM/米国籍MRプロダクト・横須賀4/24 18:30）。海保VTS明石海峡航路 4/24通航 1隻: SETO AZURE（大阪ガス子会社Osaka Bay LNG Shipping・日本初LNGバンカー船・堺泉北発福山向け4/24 10:15）。名古屋港管理組合EDI 4/23検出 7隻: GLORY HANA/KEOYOUNG SEVEN/NO.7 HANA/CS HANA/BONANZA/CS BREEZE/PRINCESS DAISY（外航ケミカル/プロダクトオイルタンカー）。【4/21追加】海保VTS浦賀水道航路 4/22入港予定4隻: FRONT MAINE（Frontline VLCC・扇島シーバース4/22 10:45）・KHASAB SILVER（Oman Shipping MRプロダクト・姉崎4/22 10:15）・PACIFIC ARCADIA（MOL/OGIT LNG・PNG産・扇島4/22 11:15）・SHINSHU MARU（JERA/NYK LNG・米国Freeport産・富津4/22 13:00）。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
   },
   "chokepoints": [
     {
@@ -1349,6 +1349,54 @@
         "combined": 0.951
       },
       "note": "CMB.TECH保有VLCC。IMO 1029869（新形式）。ベルギー籍。2025〜2026年CSSC Qingdao Beihai Shipbuilding建造。約322,000DWT。LOA 339.5m・喫水22.5m。4/8 13:16 UTC イングルサイド出港→大西洋→喜望峰経由。4/26時点AIS北西大西洋航行中・SOG 13.0kn。AIS Destination「Kiire, Japan」（ENEOS喜入備蓄基地）。ETA 5/27 10:00。米国産原油約225万バレル担当。CMB.TECHは約250隻保有の大手。ホルムズ・バベルマンデブ完全回避。VesselFinder 2026-04-26 確認"
+    },
+    {
+      "id": "vlcc-us-05",
+      "name": "NEW PROSPERITY",
+      "imo": "9689988",
+      "aisTracked": true,
+      "type": "VLCC",
+      "departure": "コーパスクリスティ（テキサス・米国）→喜望峰経由",
+      "departurePort": "USGC",
+      "destination": "日本（最終港未確定・対馬海峡ウェイポイント経由）",
+      "destinationPort": "Japan",
+      "distanceToJapan_nm": 18500,
+      "speed_knots": 14.3,
+      "eta_days": 24,
+      "cargo_t": 318329,
+      "cargoType": "原油（米国産WTI系・喜望峰回り）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.99,
+        "route": 0.95,
+        "military": 0.99,
+        "combined": 0.931
+      },
+      "note": "香港籍VLCC。IMO 9689988。MMSI 477699100。2015年建造。318,329DWT。LOA 333m・Beam 60m・喫水19.8m（laden）。3/27 Corpus Christi出港→大西洋→喜望峰経由。4/26時点AIS南アフリカ沖航行中・SOG 14.3kn。AIS Destination「JP TSJ」=対馬海峡UN/LOCODE（VLCCがアジア接近時の最終仕向確定前ウェイポイント表記の慣習）。ETA 5/20。米国産原油約220万バレル担当。最終港は日本沿岸接近時に更新見込み（Kiire/Kawasaki/Chiba候補）。同名IMO 9183362（1999年建造281,050DWT）との混同注意・本船は新造の方。直近寄港: Corpus Christi 3/25-3/29 → Gibraltar 3/10 → Fos-sur-Mer 2/28-3/8。ホルムズ・バベルマンデブ完全回避。VesselFinder 2026-04-26 確認"
+    },
+    {
+      "id": "aframax-us-02",
+      "name": "PVT POSEIDON",
+      "imo": "9457593",
+      "aisTracked": true,
+      "type": "Aframax",
+      "departure": "ヒューストン+LOOP（米湾岸）→パナマ運河経由",
+      "departurePort": "USGC",
+      "destination": "堺泉北（コスモエネルギー堺製油所）",
+      "destinationPort": "Sakai",
+      "distanceToJapan_nm": 9500,
+      "speed_knots": 13.0,
+      "eta_days": 14,
+      "cargo_t": 114542,
+      "cargoType": "原油（米国産WTI系・パナマ運河経由）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.99,
+        "route": 0.98,
+        "military": 0.99,
+        "combined": 0.961
+      },
+      "note": "PVTrans (Petrovietnam Transportation Corporation) 保有・運航Aframax/LR2。IMO 9457593。MMSI 574006350。Call sign XVMY9。ベトナム籍。2011年日本建造・ABS船級。114,542DWT。LOA 244m・Beam 42m・喫水14.1m（laden）。3/28-29 LOOP（Louisiana Offshore Oil Port）→3/31-4/4 Houston寄港→4/9-12 Balboa/Panama Canal経由→現在North Pacific航行中。4/26時点AIS Destination「Sakai Senboku, Japan」（コスモエネルギー堺製油所所在地）。ETA 5/10 21:00。米国産原油約80万バレル担当。日本企業スポット契約とベトナム発再チャーター（Vietnam Asks Japan for Oil・The Diplomat 2026-03 文脈）。当初ツイートの「喜入向け」は別港誤情報。ホルムズ・バベルマンデブ完全回避。VesselFinder/MaritimeOptima 2026-04-26 確認"
     }
   ]
 }
