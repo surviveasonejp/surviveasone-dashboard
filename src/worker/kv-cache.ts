@@ -69,6 +69,7 @@ export const CACHE_KEYS = {
   // Phase 25: 基地別石油備蓄
   OIL_RELEASES_ALL: "api:oil-releases:all",
   OIL_RESERVE_BASES: "api:oil-reserve-bases:all",
+  IMPORT_PRICE_LATEST: "api:import-price:latest",
 } as const;
 
 /** シナリオ別キャッシュキー生成 */
@@ -91,4 +92,5 @@ export const CACHE_TTL = {
   FOOD_COLD_STORAGE: 86400 * 35, // 35日（JARW統計、月次更新）
   OIL_RELEASES: 86400 * 35, // 35日（放出イベントは不定期、月次以下）
   OIL_RESERVE_BASES: 3600,  // 1時間（基地別残存率、reservesと同期）
+  IMPORT_PRICE: 86400 * 35, // 35日（日銀 輸入物価指数、月次更新）
 } as const;

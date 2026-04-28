@@ -420,6 +420,35 @@ export async function getPowerOutagesByFuelType(
   return result.results;
 }
 
+// ─── 輸入物価指数（日銀 月次）─────────────────────────
+
+export interface ImportPriceIndexRow {
+  month: string;            // YYYY-MM
+  yen_base: number;         // 円ベース総平均（2020年=100）
+  contract_base: number | null; // 契約通貨ベース総平均（2020年=100）
+  source: string;
+  updated_at: string;
+}
+
+export async function getLatestImportPrice(
+  db: D1Database,
+): Promise<ImportPriceIndexRow | null> {
+  return db
+    .prepare("SELECT * FROM import_price_index ORDER BY month DESC LIMIT 1")
+    .first<ImportPriceIndexRow>();
+}
+
+export async function getImportPriceHistory(
+  db: D1Database,
+  limit: number = 24,
+): Promise<ImportPriceIndexRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM import_price_index ORDER BY month DESC LIMIT ?")
+    .bind(limit)
+    .all<ImportPriceIndexRow>();
+  return result.results;
+}
+
 /** 停止情報のサマリ（件数・合計出力制約量） */
 export async function getPowerOutageSummary(db: D1Database): Promise<{
   total: number;
