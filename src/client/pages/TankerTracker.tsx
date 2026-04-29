@@ -63,6 +63,11 @@ export const TankerTracker: FC = () => {
   const [mapScenario, setMapScenario] = useState<MapScenario>("full");
   const [showInset, setShowInset] = useState(false);
   const [showDimmed, setShowDimmed] = useState(false);
+  const [showArrived, setShowArrived] = useState(false);
+  const isArrivedOrComplete = (t: { status: string; eta_days: number }) =>
+    t.status === "入港済" || t.eta_days <= 0;
+  const filteredTankers = (showDimmed ? tankers : tankers.filter((t) => !isDimmed(t)))
+    .filter((t) => showArrived || !isArrivedOrComplete(t));
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
   const [hoveredRouteId, setHoveredRouteId] = useState<string | null>(null);
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map());
@@ -130,8 +135,9 @@ export const TankerTracker: FC = () => {
 
         {/* 左カラム: シナリオセレクター + マップ */}
         <div className="space-y-2">
-          {/* シナリオセレクター + フィルター */}
+          {/* シナリオセレクター */}
           <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-mono text-text-muted tracking-wider uppercase shrink-0">シナリオ</span>
             <div className="flex rounded-md overflow-hidden border border-border text-[11px] font-mono">
               {(
                 [
@@ -153,21 +159,58 @@ export const TankerTracker: FC = () => {
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => setShowDimmed((v) => !v)}
-              className={`px-3 py-1 rounded-md border text-[11px] font-mono transition-colors ${
-                showDimmed
-                  ? "border-neutral-500 bg-neutral-700 text-neutral-200"
-                  : "border-border text-neutral-500 hover:text-neutral-300"
-              }`}
-            >
-              {showDimmed ? "全船表示" : "日本向けのみ"}
-            </button>
             <span className="text-[10px] text-neutral-600 font-mono hidden sm:inline">
               {mapScenario === "normal" && "全ルート通常稼働"}
               {mapScenario === "partial" && "ホルムズ50%制限"}
               {mapScenario === "full" && "完全封鎖 — 代替ルート強調"}
             </span>
+          </div>
+
+          {/* 表示フィルター（独立行・トグル明示） */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-[10px] font-mono text-text-muted tracking-wider uppercase shrink-0">表示フィルタ</span>
+            <button
+              onClick={() => setShowDimmed((v) => !v)}
+              role="switch"
+              aria-checked={!showDimmed}
+              title={showDimmed ? "クリックで日本向けのみに絞り込む" : "クリックで全船表示に切替"}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-mono transition-colors cursor-pointer ${
+                !showDimmed
+                  ? "border-info bg-info/15 text-info hover:bg-info/25"
+                  : "border-border bg-transparent text-text-muted hover:bg-bg hover:text-text"
+              }`}
+            >
+              <span
+                className={`inline-block w-3 h-3 rounded-sm border ${
+                  !showDimmed ? "bg-info border-info" : "bg-transparent border-text-muted"
+                }`}
+                aria-hidden="true"
+              >
+                {!showDimmed && <span className="block text-[10px] leading-3 text-center" style={{ color: "var(--color-panel)" }}>✓</span>}
+              </span>
+              日本向けのみ
+            </button>
+            <button
+              onClick={() => setShowArrived((v) => !v)}
+              role="switch"
+              aria-checked={!showArrived}
+              title={showArrived ? "クリックで航行中のみに絞り込む" : "クリックで入港済も含めて表示"}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border text-[11px] font-mono transition-colors cursor-pointer ${
+                !showArrived
+                  ? "border-info bg-info/15 text-info hover:bg-info/25"
+                  : "border-border bg-transparent text-text-muted hover:bg-bg hover:text-text"
+              }`}
+            >
+              <span
+                className={`inline-block w-3 h-3 rounded-sm border ${
+                  !showArrived ? "bg-info border-info" : "bg-transparent border-text-muted"
+                }`}
+                aria-hidden="true"
+              >
+                {!showArrived && <span className="block text-[10px] leading-3 text-center" style={{ color: "var(--color-panel)" }}>✓</span>}
+              </span>
+              航行中のみ
+            </button>
           </div>
 
           <TankerMap
@@ -320,42 +363,66 @@ export const TankerTracker: FC = () => {
           )}
 
           {/* ── コンパクトタンカーリスト ── */}
-          <div className="bg-panel border border-border rounded-lg overflow-hidden">
-            <div className="px-3 py-2 border-b border-border flex items-center justify-between">
-              <span className="text-[10px] font-mono text-text-muted tracking-wider">
-                {showDimmed ? `全タンカー ${tankers.length}隻` : `日本向け ${tankers.filter((t) => !isDimmed(t)).length}隻`}
-              </span>
-              <span className="text-[9px] font-mono text-text-muted">タップで選択</span>
-            </div>
-            <div className="divide-y divide-border max-h-64 overflow-y-auto">
-              {(showDimmed ? tankers : tankers.filter((t) => !isDimmed(t))).map((t) => {
-                const typeColor = t.type === "VLCC" ? "#f59e0b" : "#22c55e";
-                const dimmed = isDimmed(t);
-                const level = getAlertLevel(t.eta_days);
-                const etaColor = dimmed ? "#525252" : getAlertColor(level);
-                return (
-                  <button
-                    key={t.id}
-                    ref={(el) => { if (el) rowRefs.current.set(t.id, el as unknown as HTMLTableRowElement); }}
-                    onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-[11px] font-mono transition-colors text-left ${
-                      selectedId === t.id ? "bg-info/10" : "hover:bg-white/[0.03]"
-                    } ${dimmed ? "opacity-50" : ""}`}
-                  >
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
-                      <span className={`text-text-muted truncate ${dimmed ? "line-through" : ""}`}>{t.name}</span>
-                      {t.aisTracked && <span className="text-[8px] text-success-soft shrink-0">AIS</span>}
-                      {t.status === "引き返し" && <span className="text-[8px] text-warning-soft shrink-0">引返</span>}
-                    </div>
-                    <span className="font-bold shrink-0 ml-2" style={{ color: etaColor }}>
-                      {dimmed ? "—" : `${t.eta_days.toFixed(1)}日`}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {(() => {
+            const baseLabel = showDimmed ? "全タンカー" : "日本向け";
+            return (
+              <div className="bg-panel border border-border rounded-lg overflow-hidden">
+                <div className="px-3 py-2 border-b border-border flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-text-muted tracking-wider">
+                    {`${baseLabel} ${filteredTankers.length}隻${showArrived ? "（入港済含む）" : ""}`}
+                  </span>
+                  <span className="text-[9px] font-mono text-text-muted">タップで選択</span>
+                </div>
+                <div className="divide-y divide-border max-h-64 overflow-y-auto">
+                  {filteredTankers.map((t) => {
+                    const typeColor = t.type === "VLCC" ? "#f59e0b" : "#22c55e";
+                    const dimmed = isDimmed(t);
+                    const isArrived = t.status === "入港済";
+                    const isReturned = t.status === "引き返し" && t.eta_days <= 0;
+                    const isCompleted = !isArrived && !isReturned && t.eta_days <= 0;
+                    const level = getAlertLevel(t.eta_days);
+                    const etaColor = isArrived
+                      ? "#16a34a"
+                      : isReturned
+                      ? "#d97706"
+                      : isCompleted || dimmed
+                      ? "#525252"
+                      : getAlertColor(level);
+                    const etaText = isArrived
+                      ? "入港済"
+                      : isReturned
+                      ? "離脱済"
+                      : isCompleted
+                      ? "推定到着"
+                      : dimmed
+                      ? "—"
+                      : `${t.eta_days.toFixed(1)}日`;
+                    return (
+                      <button
+                        key={t.id}
+                        ref={(el) => { if (el) rowRefs.current.set(t.id, el as unknown as HTMLTableRowElement); }}
+                        onClick={() => handleTankerSelect(selectedId === t.id ? null : t.id)}
+                        className={`w-full flex items-center justify-between px-3 py-2 text-[11px] font-mono transition-colors text-left ${
+                          selectedId === t.id ? "bg-info/10" : "hover:bg-white/[0.03]"
+                        } ${dimmed && !isArrived ? "opacity-50" : ""} ${isArrived || isReturned || isCompleted ? "opacity-70" : ""}`}
+                      >
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: typeColor }} />
+                          <span className={`text-text-muted truncate ${dimmed && !isArrived ? "line-through" : ""}`}>{t.name}</span>
+                          {t.aisTracked && <span className="text-[8px] text-success-soft shrink-0">AIS</span>}
+                          {t.status === "引き返し" && <span className="text-[8px] text-warning-soft shrink-0">引返</span>}
+                          {isArrived && <span className="text-[8px] text-success-soft shrink-0">入港</span>}
+                        </div>
+                        <span className="font-bold shrink-0 ml-2" style={{ color: etaColor }}>
+                          {etaText}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -464,8 +531,16 @@ export const TankerTracker: FC = () => {
 
       {/* 到着順ランキング */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between gap-3 flex-wrap">
           <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">到着順ランキング</SectionHeading>
+          <span className="text-[10px] font-mono text-text-muted">
+            表示中 {filteredTankers.length} 隻 / 全 {tankers.length} 隻
+            {(!showDimmed || !showArrived) && (
+              <span className="ml-1 text-text-muted/70">
+                （{!showDimmed && "日本向けのみ"}{!showDimmed && !showArrived && "・"}{!showArrived && "航行中のみ"}）
+              </span>
+            )}
+          </span>
         </div>
 
         {/* デスクトップ: テーブル */}
@@ -485,14 +560,32 @@ export const TankerTracker: FC = () => {
               </tr>
             </thead>
             <tbody>
-              {tankers.map((tanker, index) => {
+              {filteredTankers.map((tanker, index) => {
                 const blocked = isBlocked(tanker);
                 const notJapan = isNotJapanBound(tanker);
                 const dimmed = blocked || notJapan;
+                const isArrived = tanker.status === "入港済";
+                const isReturned = tanker.status === "引き返し" && tanker.eta_days <= 0;
+                const isCompleted = !isArrived && !isReturned && tanker.eta_days <= 0;
                 const level = getAlertLevel(tanker.eta_days);
-                const color = dimmed ? "#525252" : getAlertColor(level);
+                const color = isArrived
+                  ? "#16a34a"
+                  : isReturned
+                  ? "#d97706"
+                  : isCompleted || dimmed
+                  ? "#525252"
+                  : getAlertColor(level);
+                const etaText = isArrived
+                  ? "入港済"
+                  : isReturned
+                  ? "離脱済"
+                  : isCompleted
+                  ? "推定到着"
+                  : dimmed
+                  ? "—"
+                  : `${formatDecimal(tanker.eta_days)}日`;
                 const isSelected = tanker.id === selectedId;
-                const dimClass = dimmed ? "opacity-45" : "";
+                const dimClass = dimmed && !isArrived && !isCompleted ? "opacity-45" : "";
                 return (
                   <tr
                     key={tanker.id}
@@ -555,8 +648,8 @@ export const TankerTracker: FC = () => {
                       {formatDecimal(tanker.speed_knots)}kn
                     </td>
                     <td className="px-4 py-2 text-right font-mono font-bold" style={{ color }}>
-                      <div className={dimmed ? "line-through" : ""}>{dimmed && tanker.eta_days === 0 ? "—" : `${formatDecimal(tanker.eta_days)}日`}</div>
-                      <div className="text-xs font-normal text-neutral-400">{dimmed ? "—" : formatDepletionDate(tanker.eta_days)}</div>
+                      <div className={dimmed && !isArrived && !isCompleted ? "line-through" : ""}>{etaText}</div>
+                      <div className="text-xs font-normal text-neutral-400">{dimmed || isArrived || isReturned || isCompleted ? "—" : formatDepletionDate(tanker.eta_days)}</div>
                     </td>
                     <td className="px-4 py-2 text-right font-mono text-neutral-400">
                       <div>{formatNumber(tanker.cargo_t)}t</div>
@@ -580,12 +673,30 @@ export const TankerTracker: FC = () => {
 
         {/* モバイル: カードレイアウト */}
         <div className="md:hidden divide-y divide-border">
-          {tankers.map((tanker, index) => {
+          {filteredTankers.map((tanker, index) => {
             const blocked = isBlocked(tanker);
             const notJapan = isNotJapanBound(tanker);
             const dimmed = blocked || notJapan;
+            const isArrived = tanker.status === "入港済";
+            const isReturned = tanker.status === "引き返し" && tanker.eta_days <= 0;
+            const isCompleted = !isArrived && !isReturned && tanker.eta_days <= 0;
             const level = getAlertLevel(tanker.eta_days);
-            const color = dimmed ? "#525252" : getAlertColor(level);
+            const color = isArrived
+              ? "#16a34a"
+              : isReturned
+              ? "#d97706"
+              : isCompleted || dimmed
+              ? "#525252"
+              : getAlertColor(level);
+            const etaText = isArrived
+              ? "入港済"
+              : isReturned
+              ? "離脱済"
+              : isCompleted
+              ? "推定到着"
+              : dimmed
+              ? "—"
+              : `${formatDecimal(tanker.eta_days)}日`;
             const isSelected = tanker.id === selectedId;
             const typeColor = tanker.type === "VLCC" ? "#f59e0b" : "#22c55e";
             return (
@@ -596,13 +707,13 @@ export const TankerTracker: FC = () => {
                 }}
                 className={`px-4 py-3 cursor-pointer transition-colors ${
                   isSelected ? "bg-white/[0.06]" : "active:bg-white/[0.03]"
-                } ${dimmed ? "opacity-45" : ""}`}
+                } ${dimmed && !isArrived && !isCompleted ? "opacity-45" : ""}`}
                 onClick={() => handleTankerSelect(isSelected ? null : tanker.id)}
               >
                 {/* 1行目: 順位 + 船名 + バッジ */}
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-xs text-neutral-600 w-5 shrink-0">{index + 1}</span>
-                  <span className={`font-bold text-sm text-neutral-200 ${dimmed ? "line-through" : ""}`}>{tanker.name}</span>
+                  <span className={`font-bold text-sm text-neutral-200 ${dimmed && !isArrived && !isCompleted ? "line-through" : ""}`}>{tanker.name}</span>
                   {tanker.aisTracked ? (
                     <Badge tone="success" className="text-[10px] shrink-0">
                       AIS
@@ -641,7 +752,7 @@ export const TankerTracker: FC = () => {
                     {tanker.departure} → {tanker.destination}
                   </span>
                   <span className="font-mono text-sm font-bold shrink-0" style={{ color }}>
-                    {dimmed && tanker.eta_days === 0 ? "—" : `${formatDecimal(tanker.eta_days)}日`}
+                    {etaText}
                   </span>
                 </div>
                 {/* 3行目: 詳細（選択時のみ展開） */}

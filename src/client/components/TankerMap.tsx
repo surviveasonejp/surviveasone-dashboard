@@ -363,9 +363,12 @@ export const TankerMap: FC<TankerMapProps> = ({
   const [hoveredRouteId, setHoveredRouteId] = useState<string | null>(null);
   const [hoveredHubId, setHoveredHubId] = useState<string | null>(null);
 
-  // 表示対象タンカー（showDimmed=false のとき非日本向け・ホルムズ船を除外）
+  // 表示対象タンカー（入港済は常に除外。showDimmed=false のとき非日本向け・ホルムズ船も除外）
   const visibleTankers = useMemo(
-    () => (showDimmed ? tankers : tankers.filter((t) => !isDimmed(t, scenario))),
+    () => {
+      const sailing = tankers.filter((t) => t.status !== "入港済");
+      return showDimmed ? sailing : sailing.filter((t) => !isDimmed(t, scenario));
+    },
     [tankers, showDimmed, scenario],
   );
 
