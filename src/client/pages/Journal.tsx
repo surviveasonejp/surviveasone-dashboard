@@ -276,6 +276,26 @@ export const Journal: FC = () => {
                     <div>需要削減率: {entry.hypothesis.demandReductionRate.toFixed(3)}</div>
                   </div>
                 </details>
+
+                {/* Phase 25-D: 国家備蓄スナップショット */}
+                {entry.reserveSnapshot && (
+                  <details className="text-[10px] font-mono text-text-muted">
+                    <summary className="cursor-pointer hover:text-text">
+                      国家備蓄スナップショット ▼
+                    </summary>
+                    <div className="mt-1.5 pl-3 space-y-0.5 border-l border-border">
+                      <div>
+                        国家備蓄: 残存 {entry.reserveSnapshot.totalNationalRemainingPercent.toFixed(1)}%
+                        （累積放出 {(entry.reserveSnapshot.totalNationalReleased_kL / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 0 })}万kL / 容量 {(entry.reserveSnapshot.totalNationalCapacity_kL / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 0 })}万kL）
+                      </div>
+                      {entry.reserveSnapshot.mostDepletedBase && (
+                        <div>
+                          最も逼迫: {entry.reserveSnapshot.mostDepletedBase.name}（残存 {entry.reserveSnapshot.mostDepletedBase.remainingPercent.toFixed(1)}%）
+                        </div>
+                      )}
+                    </div>
+                  </details>
+                )}
               </li>
             ))}
           </ul>
