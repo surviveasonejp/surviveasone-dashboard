@@ -66,6 +66,9 @@ export const CACHE_KEYS = {
   JPCA_LATEST: "api:jpca:latest",
   FOOD_COLD_STORAGE_LATEST: "api:food-cold-storage:latest",
   FOOD_SUPPLY_LATEST: "api:food-supply:latest",
+  // Phase 25: 基地別石油備蓄
+  OIL_RELEASES_ALL: "api:oil-releases:all",
+  OIL_RESERVE_BASES: "api:oil-reserve-bases:all",
 } as const;
 
 /** シナリオ別キャッシュキー生成 */
@@ -86,4 +89,6 @@ export const CACHE_TTL = {
   OIL_PRODUCTS: 86400 * 8,  // 8日（石油製品在庫、週次更新）
   JPCA: 86400 * 35,         // 35日（JPCA統計、月次更新）
   FOOD_COLD_STORAGE: 86400 * 35, // 35日（JARW統計、月次更新）
+  OIL_RELEASES: 86400 * 35, // 35日（放出イベントは不定期、月次以下）
+  OIL_RESERVE_BASES: 3600,  // 1時間（基地別残存率、reservesと同期）
 } as const;

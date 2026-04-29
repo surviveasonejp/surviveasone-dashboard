@@ -267,6 +267,106 @@ export async function getFoodColdStorageHistory(
   return result.results;
 }
 
+// ─── 石油備蓄放出イベント（基地別・Phase 25-A） ────────────
+
+export interface OilReleaseEventRow {
+  id: string;
+  release_date: string;
+  base_id: string;
+  base_name: string;
+  reserve_type: "national" | "private" | "joint";
+  volume_kL: number;
+  split_method: "confirmed" | "estimated_equal" | "capacity_weighted";
+  wave: string;
+  refiners: string | null;
+  source_url: string;
+  source_label: string;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getAllOilReleaseEvents(
+  db: D1Database,
+): Promise<OilReleaseEventRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM oil_release_events ORDER BY release_date DESC, base_id ASC")
+    .all<OilReleaseEventRow>();
+  return result.results;
+}
+
+export async function getOilReleaseEventsByBase(
+  db: D1Database,
+  baseId: string,
+): Promise<OilReleaseEventRow[]> {
+  const result = await db
+    .prepare("SELECT * FROM oil_release_events WHERE base_id = ? ORDER BY release_date DESC")
+    .bind(baseId)
+    .all<OilReleaseEventRow>();
+  return result.results;
+}
+
+/** 基地別の累積放出量を集計 */
+export async function getCumulativeReleasesByBase(
+  db: D1Database,
+): Promise<Array<{ base_id: string; base_name: string; total_kL: number; event_count: number }>> {
+  const result = await db
+    .prepare(`
+      SELECT base_id, base_name,
+             SUM(volume_kL) AS total_kL,
+             COUNT(*) AS event_count
+      FROM oil_release_events
+      GROUP BY base_id, base_name
+      ORDER BY total_kL DESC
+    `)
+    .all<{ base_id: string; base_name: string; total_kL: number; event_count: number }>();
+  return result.results;
+}
+
+// ─── 港湾原油・石油製品 海上出入貨物（Phase 25-B） ──────
+
+export interface PortOilThroughputRow {
+  port_id: string;
+  port_name: string;
+  month: string;
+  crude_t: number | null;
+  products_t: number | null;
+  source: string;
+  updated_at: string;
+}
+
+export async function getAllPortOilThroughput(
+  db: D1Database,
+  monthsBack: number = 12,
+): Promise<PortOilThroughputRow[]> {
+  const result = await db
+    .prepare(`
+      SELECT * FROM port_oil_throughput
+      WHERE month >= (
+        SELECT COALESCE(strftime('%Y-%m', date(MAX(month) || '-01', '-' || ? || ' months')), '0000-00')
+        FROM port_oil_throughput
+      )
+      ORDER BY month DESC, port_id ASC
+    `)
+    .bind(monthsBack)
+    .all<PortOilThroughputRow>();
+  return result.results;
+}
+
+export async function getPortOilThroughputByPort(
+  db: D1Database,
+  portId: string,
+  limit: number = 12,
+): Promise<PortOilThroughputRow[]> {
+  const result = await db
+    .prepare(
+      "SELECT * FROM port_oil_throughput WHERE port_id = ? ORDER BY month DESC LIMIT ?",
+    )
+    .bind(portId, limit)
+    .all<PortOilThroughputRow>();
+  return result.results;
+}
+
 // ─── 発電機停止情報（HJKS） ──────────────────────────────
 
 export interface PowerOutageRow {

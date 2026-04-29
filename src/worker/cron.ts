@@ -20,6 +20,8 @@ import { fetchJarwUpdate } from "./jarw-fetcher";
 import { fetchHjksOutages } from "./hjks-fetcher";
 import { fetchVtsArrivals, VTS_ROUTE_IDS } from "./mlit-vts-fetcher";
 import { fetchNagoyaArrivals } from "./nagoya-port-fetcher";
+import { fetchJogmecUpdate } from "./jogmec-fetcher";
+import { fetchPortCargoUpdate } from "./port-cargo-fetcher";
 
 interface Env {
   DB: D1Database;
@@ -85,13 +87,17 @@ export async function handleScheduled(
     ctx.waitUntil(fetchAllVtsArrivalsSafe(env));
   }
 
-  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW 自動更新
+  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW + JOGMEC放出 自動更新
   if (hour === 6 && dayOfMonth === 18) {
     ctx.waitUntil(fetchReservesUpdate(env));
     ctx.waitUntil(fetchLngUpdate(env));
     ctx.waitUntil(fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
     ctx.waitUntil(fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE }));
     ctx.waitUntil(fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    // Phase 25-A: 基地別放出イベント seed + 新規リリース探索
+    ctx.waitUntil(fetchJogmecUpdate(env));
+    // Phase 25-B: 港湾原油・石油製品 月次海上出入貨物（10基地最寄港）
+    ctx.waitUntil(fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
   }
 }
 

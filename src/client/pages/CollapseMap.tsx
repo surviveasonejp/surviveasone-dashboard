@@ -12,6 +12,7 @@ import { formatDecimal, formatDepletionDate } from "../lib/formatters";
 import staticRegions from "../../worker/data/regions.json";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
+import { OilReserveBasesPanel } from "../components/OilReserveBasesPanel";
 
 // 再エネ自立率計算（RegionDetail.tsxと同一定数）
 const NATIONAL_AVG_MW = 115_000;
@@ -170,6 +171,9 @@ export const CollapseMap: FC = () => {
           </table>
         </div>
       </div>
+      {/* Phase 25-C: 国家・民間 石油備蓄 基地別状況 */}
+      <OilReserveBasesPanel />
+
       {/* 再エネ自立率ランキング（マイクログリッド指標） */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border space-y-1">
