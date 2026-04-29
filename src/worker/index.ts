@@ -38,7 +38,13 @@ import {
   getLatestPowerOutages,
   getPowerOutagesByFuelType,
   getPowerOutageSummary,
+  getAllOilReleaseEvents,
+  getCumulativeReleasesByBase,
+  getAllPortOilThroughput,
+  getPortOilThroughputByPort,
 } from "./db";
+import { ALL_BASES, NATIONAL_BASES, PRIVATE_BASES } from "./jogmec-fetcher";
+import { PORT_REGISTRY } from "./port-cargo-fetcher";
 import {
   getFromCache,
   setCache,
@@ -383,6 +389,12 @@ async function handleApiRoute(
       return handlePetrochemRisk(url, env);
     case "/api/power-outages":
       return handlePowerOutages(url, env);
+    case "/api/oil-reserves/bases":
+      return handleOilReserveBases(env);
+    case "/api/oil-reserves/releases":
+      return handleOilReleases(env);
+    case "/api/oil-reserves/throughput":
+      return handleOilThroughput(url, env);
     case "/api/sources":
       return handleSources();
     case "/api/docs":
@@ -419,6 +431,9 @@ async function handleApiRoute(
           "GET /api/port-arrivals": "VTS/港湾EDI入航予定タンカー（?port=uraga|akashi|kanmon|nagoya）+ tankers.json未登録便検出",
           "GET /api/resource-status": "品目別市場ステータス（?scenario=realistic）— 4段階 normal/tight/allotted/restricted",
           "GET /api/sources": "全データソースの出典マッピング（数値→出典URLの1対1対応）",
+          "GET /api/oil-reserves/bases": "国家10基地+民間4拠点の容量・累積放出量・残存率（Phase 25）",
+          "GET /api/oil-reserves/releases": "石油備蓄放出イベント全件（出典: JOGMEC・経産省プレス）",
+          "GET /api/oil-reserves/throughput?port={id}": "10基地最寄港の原油・石油製品 月次荷揚げ量（出典: e-Stat 港湾調査月報）",
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
         },
@@ -596,6 +611,142 @@ async function handlePowerOutages(url: URL, env: Env): Promise<Response> {
     source: "HJKS（日本卸電力取引所 発電情報公開システム）",
     note: "認可出力100万kW以上のユニットが対象。毎週月曜更新。",
     fetchedAt: rows[0]?.fetched_at ?? null,
+  });
+}
+
+// ─── /api/oil-reserves/bases ──────────────────────────
+// Phase 25-A: 基地マスタ（容量）+ 累積放出量 + 残存率
+async function handleOilReserveBases(env: Env): Promise<Response> {
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.OIL_RESERVE_BASES);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const cumulative = await getCumulativeReleasesByBase(env.DB);
+  const cumulativeMap = new Map(cumulative.map((c) => [c.base_id, c]));
+
+  const bases = ALL_BASES.map((base) => {
+    const released = cumulativeMap.get(base.id);
+    const totalReleased_kL = released?.total_kL ?? 0;
+    const eventCount = released?.event_count ?? 0;
+    const remaining_kL = base.capacity_kL !== null ? Math.max(0, base.capacity_kL - totalReleased_kL) : null;
+    const remaining_pct = base.capacity_kL && base.capacity_kL > 0
+      ? Math.max(0, Math.min(100, (remaining_kL ?? 0) / base.capacity_kL * 100))
+      : null;
+
+    return {
+      base_id: base.id,
+      name: base.name,
+      region: base.region,
+      reserve_type: base.id.startsWith("private_") ? "private" : "national",
+      capacity_kL: base.capacity_kL,
+      cumulativeReleased_kL: totalReleased_kL,
+      remaining_kL,
+      remainingPercent: remaining_pct !== null ? Math.round(remaining_pct * 10) / 10 : null,
+      releaseEventCount: eventCount,
+    };
+  });
+
+  const totalNationalCapacity = NATIONAL_BASES.reduce((s, b) => s + b.capacity_kL, 0);
+  const totalNationalReleased = bases
+    .filter((b) => b.reserve_type === "national")
+    .reduce((s, b) => s + b.cumulativeReleased_kL, 0);
+
+  const payload = {
+    bases,
+    summary: {
+      nationalBaseCount: NATIONAL_BASES.length,
+      privateBaseCount: PRIVATE_BASES.length,
+      totalNationalCapacity_kL: totalNationalCapacity,
+      totalNationalReleased_kL: totalNationalReleased,
+      totalNationalRemaining_kL: totalNationalCapacity - totalNationalReleased,
+      totalNationalRemainingPercent: Math.round(
+        (totalNationalCapacity - totalNationalReleased) / totalNationalCapacity * 1000,
+      ) / 10,
+    },
+    note: "国家10基地は容量確定。民間4拠点は容量非公表。基地別放出量は均等配分推定を含む（split_method='estimated_equal'）",
+    sources: [
+      "JOGMEC 国家石油備蓄基地一覧",
+      "経産省プレス（放出計画）",
+      "regions.json (stockpileBases)",
+    ],
+  };
+
+  await setCache(env.CACHE, CACHE_KEYS.OIL_RESERVE_BASES, payload, CACHE_TTL.OIL_RESERVE_BASES);
+  return jsonResponse({ data: payload, cache: "miss" });
+}
+
+// ─── /api/oil-reserves/releases ───────────────────────
+// Phase 25-A: 放出イベント全件（時系列）
+async function handleOilReleases(env: Env): Promise<Response> {
+  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.OIL_RELEASES_ALL);
+  if (cached) {
+    return jsonResponse({ data: cached.data, cache: "hit" });
+  }
+
+  const events = await getAllOilReleaseEvents(env.DB);
+  const enriched = events.map((e) => ({
+    ...e,
+    refiners: e.refiners ? safeParseJson<string[]>(e.refiners) ?? [] : [],
+  }));
+
+  const payload = {
+    events: enriched,
+    total: events.length,
+    note: "split_method='confirmed' は一次ソース確定値、'estimated_equal' は総量÷基地数の均等配分推定",
+    source: "JOGMEC ニュースリリース + 経産省プレス（jogmec-fetcher.ts KNOWN_EVENTS）",
+  };
+
+  await setCache(env.CACHE, CACHE_KEYS.OIL_RELEASES_ALL, payload, CACHE_TTL.OIL_RELEASES);
+  return jsonResponse({ data: payload, cache: "miss" });
+}
+
+function safeParseJson<T>(s: string): T | null {
+  try {
+    return JSON.parse(s) as T;
+  } catch {
+    return null;
+  }
+}
+
+// ─── /api/oil-reserves/throughput ─────────────────────
+// Phase 25-B: 10基地最寄港の原油・石油製品 月次荷揚げ量
+async function handleOilThroughput(url: URL, env: Env): Promise<Response> {
+  const portId = url.searchParams.get("port");
+
+  // 港マスタは常に同梱（UI 側で基地と紐づけるため）
+  const ports = PORT_REGISTRY.map((p) => ({
+    port_id: p.id,
+    port_name: p.name,
+    estat_code: p.estat_code,
+    nearest_bases: p.nearest_bases,
+  }));
+
+  if (portId) {
+    const validIds = new Set(PORT_REGISTRY.map((p) => p.id));
+    if (!validIds.has(portId)) {
+      return jsonResponse({
+        error: "invalid_port",
+        message: `Valid port ids: ${[...validIds].join(", ")}`,
+      }, 400);
+    }
+    const limit = Math.min(Number(url.searchParams.get("limit")) || 12, 60);
+    const rows = await getPortOilThroughputByPort(env.DB, portId, limit);
+    return jsonResponse({
+      data: { port_id: portId, monthly: rows, ports },
+      total: rows.length,
+      source: "e-Stat 港湾調査月報 第3表 (statsDataId=0003130476)",
+      note: "公表ラグ約3〜4ヶ月。単位はトン",
+    });
+  }
+
+  const monthsBack = Math.min(Number(url.searchParams.get("monthsBack")) || 12, 36);
+  const rows = await getAllPortOilThroughput(env.DB, monthsBack);
+  return jsonResponse({
+    data: { monthly: rows, ports },
+    total: rows.length,
+    source: "e-Stat 港湾調査月報 第3表 (statsDataId=0003130476)",
+    note: "10基地最寄港。原油+石油製品(重油・揮発油・その他)。公表ラグ約3〜4ヶ月",
   });
 }
 

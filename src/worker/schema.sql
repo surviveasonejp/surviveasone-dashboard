@@ -165,3 +165,46 @@ CREATE INDEX IF NOT EXISTS idx_trade_statistics_month    ON trade_statistics(mon
 CREATE INDEX IF NOT EXISTS idx_oil_products_week         ON oil_products_inventory(week_ending DESC);
 CREATE INDEX IF NOT EXISTS idx_petrochem_production_month ON petrochem_production(month DESC, product);
 CREATE INDEX IF NOT EXISTS idx_food_cold_storage_month   ON food_cold_storage(month DESC);
+
+-- ─── 石油備蓄放出イベント（基地別）─────────────────────────────────
+-- JOGMEC ニュースリリース (release_NNNNN.html) + 経産省プレスから抽出
+-- 基地別の連続在庫時系列は公的に存在しないため、放出イベントの累積で残存量を擬似時系列化
+-- 1 イベント = 1 wave × 1 base のセル粒度
+CREATE TABLE IF NOT EXISTS oil_release_events (
+  id            TEXT PRIMARY KEY,          -- '<wave>_<base_id>' 例: 'wave2_shibushi'
+  release_date  TEXT NOT NULL,             -- 放出開始日 YYYY-MM-DD
+  base_id       TEXT NOT NULL,             -- 'tomakomai_higashibu' / 'shibushi' / 'private_kashima' 等
+  base_name     TEXT NOT NULL,             -- 表示用日本語名
+  reserve_type  TEXT NOT NULL,             -- 'national' | 'private' | 'joint'
+  volume_kL     INTEGER NOT NULL,          -- 放出量 kL（推定の場合あり）
+  split_method  TEXT NOT NULL,             -- 'confirmed' | 'estimated_equal' | 'capacity_weighted'
+  wave          TEXT NOT NULL,             -- 'wave1' | 'wave2' 等の放出イベント識別子
+  refiners      TEXT,                      -- JSON 配列文字列 ['ENEOS','COSMO',...]
+  source_url    TEXT NOT NULL,
+  source_label  TEXT NOT NULL,
+  note          TEXT,
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_oil_release_events_date ON oil_release_events(release_date DESC);
+CREATE INDEX IF NOT EXISTS idx_oil_release_events_base ON oil_release_events(base_id);
+CREATE INDEX IF NOT EXISTS idx_oil_release_events_wave ON oil_release_events(wave);
+
+-- ─── 港湾原油・石油製品 海上出入貨物量（月次・基地最寄港）───────────
+-- e-Stat 港湾調査月報 第3表（statsDataId=0003130476）
+-- 国家備蓄10基地最寄港の crude(030) / fuel_oil(041) / gasoline(042) / other(043) を月次集計
+-- 単位は実トン。公表ラグ約3〜4ヶ月。基地別残存量と並行表示する補充フローの代理指標
+CREATE TABLE IF NOT EXISTS port_oil_throughput (
+  port_id     TEXT NOT NULL,           -- 'tomakomai' / 'akita' / 'kitakyushu' 等
+  port_name   TEXT NOT NULL,           -- 表示用日本語名
+  month       TEXT NOT NULL,           -- YYYY-MM
+  crude_t     INTEGER,                 -- 原油トン（cdCat02=030）
+  products_t  INTEGER,                 -- 石油製品合計トン（041+042+043）
+  source      TEXT NOT NULL,
+  updated_at  TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (port_id, month)
+);
+
+CREATE INDEX IF NOT EXISTS idx_port_oil_throughput_month ON port_oil_throughput(month DESC);
+CREATE INDEX IF NOT EXISTS idx_port_oil_throughput_port ON port_oil_throughput(port_id);
