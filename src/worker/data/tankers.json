@@ -324,18 +324,19 @@
     },
     {
       "id": "vlcc-alt-02",
-      "name": "代替ルート第2便",
-      "aisTracked": false,
+      "name": "SUZUKASAN [推定・代替ルート第2便]",
+      "imo": "9828950",
+      "aisTracked": true,
       "type": "VLCC",
-      "departure": "フジャイラ（UAE）",
+      "departure": "フジャイラ（UAE・出発港推定）",
       "departurePort": "Fujairah",
-      "destination": "東京湾（港未公表）",
+      "destination": "千葉（東京湾・推定）",
       "destinationPort": "Japan",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
-      "cargo_t": 300000,
-      "cargoType": "原油（ムルバンブレンド想定）",
+      "cargo_t": 311854,
+      "cargoType": "原油（ムルバンブレンド想定・推定）",
       "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.85,
@@ -343,7 +344,7 @@
         "military": 0.9,
         "combined": 0.727
       },
-      "note": "フジャイラはホルムズ外のUAE原油備蓄拠点(7000万バレル貯蔵能力)から出荷。マラッカ海峡経由で日本へ直行（喜望峰迂回不要）。4/5入港確認（東京湾方面）。Bloomberg/Yahoo!ニュース報道。赤沢経産相は社名・船名を非公表。第1便（3/28、愛媛・太陽石油向け、ヤンブー発）に続く2便目。ホルムズ外調達ルート確立"
+      "note": "【推定・代替ルート第2便】公的確認なし・AIS推定ベースの「事実上の特定」。SUZUKASAN（鈴鹿山）。IMO 9828950。MMSI 431662000。Call sign 7KDL。日本籍。2018年10月12日竣工。LOA 339m・Beam 60m・喫水21.085m（夏季満載）。311,854DWT。【重要訂正】運航は商船三井 (Mitsui O.S.K. Lines / MOL) ＝ MOL公式リリース・VesselFinderニュース（VLCC Suzukasan VR Tour）で確定。一部ネットソース（Reddit等）が「日本郵船系」と記載するが事実誤認。【根拠】(1)赤沢経産相 3/24発表で「4/5着の代替ルート第2便」を予告・社名/船名非公表。(2)4/7会見（日本海事新聞 paywall）で「3/28・4/5に中東発タンカーが日本到着」と確認。(3)同時期のAIS航跡で SUZUKASAN が東京湾向け航行。【不確実性】AIS情報では「ETA Chiba 4/3 21:00」表記もあり4/5着確定は得られず。同時期に複数のVLCCが東京湾向け航行していた可能性。出発港もフジャイラ確定情報なし（推定）。VesselFinder/MarineTraffic/MaritimeOptima/MOL公式 確認"
     },
     {
       "id": "vlcc-alt-03",
