@@ -300,18 +300,19 @@
     },
     {
       "id": "vlcc-alt-01",
-      "name": "代替ルート第1便",
-      "aisTracked": false,
-      "type": "VLCC",
+      "name": "PACIFIC ANNA",
+      "imo": "9772010",
+      "aisTracked": true,
+      "type": "Aframax",
       "departure": "ヤンブー（サウジ西岸）→マレーシア積替",
       "departurePort": "Yanbu",
-      "destination": "愛媛（太陽石油四国事業所）",
+      "destination": "愛媛（太陽石油四国事業所菊間）",
       "destinationPort": "Ehime",
       "distanceToJapan_nm": 6300,
       "speed_knots": 12.5,
       "eta_days": 0,
-      "cargo_t": 300000,
-      "cargoType": "原油（サウジ産・東西パイプライン経由・紅海ルート）",
+      "cargo_t": 109999,
+      "cargoType": "原油（サウジ産・約64万バレル/10万kL・東西パイプライン経由・紅海ルート）",
       "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.85,
@@ -319,7 +320,7 @@
         "military": 0.9,
         "combined": 0.727
       },
-      "note": "太陽石油が3月1日にヤンブー港で原油積載、紅海経由で日本向け。3月28日今治沖に到着確認（テレ朝/ABEMA報道）。サウジ産原油約10万kL。供給危機発生後初の代替ルート便到着。到着港は太陽石油四国事業所（愛媛県今治市菊間）"
+      "note": "代替ルート第1便。Aframax (LR 2) Epoxy Crude Oil Tanker。IMO 9772010。MMSI 538006923。Call sign V7LY4。マーシャル諸島籍。2017年建造。LOA 250m・Beam 44m・喫水14.647m（夏季満載）。109,999DWT。Registered Owner: BASIC ETERNITY LINE SA。Commercial Manager: SINOKOR MARITIME CO LTD（韓国系）。ISM Manager: FLEET MANAGEMENT LTD-HKG（香港）。3月1日にヤンブー港で原油積載・マレーシアで積替・紅海経由で日本向け。3月29日午後に今治沖から太陽石油四国事業所菊間製油所（愛媛県今治市菊間町、日量13万8,000バレル精製）の桟橋へ着岸（テレ朝/ABEMA報道）。サウジ産原油約64万バレル（≒10万kL）。米イラン紛争（2/28開始）後、ホルムズ非経由で日本到着した初の原油タンカー（経産省発表）。VesselFinder/MarineTraffic/MaritimeOptima 確認"
     },
     {
       "id": "vlcc-alt-02",
