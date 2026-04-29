@@ -29,6 +29,20 @@ export const DEFAULT_HYPOTHESIS: UserHypothesis = {
   updatedAt: "",
 };
 
+/** 国家備蓄スナップショット — 判断時の基地別実観測（Phase 25-D） */
+export interface ReserveSnapshot {
+  /** 国家10基地の総容量（kL） */
+  totalNationalCapacity_kL: number;
+  /** 累積放出量（kL） */
+  totalNationalReleased_kL: number;
+  /** 残存率（%） */
+  totalNationalRemainingPercent: number;
+  /** 最も逼迫している国家備蓄基地（容量公表分のみ） */
+  mostDepletedBase: { name: string; remainingPercent: number } | null;
+  /** 取得時刻 ISO 8601 */
+  capturedAt: string;
+}
+
 /** 意思決定ログエントリ */
 export interface DecisionLogEntry {
   id: string;
@@ -44,6 +58,8 @@ export interface DecisionLogEntry {
   };
   /** 参照していた標準シナリオ（任意） */
   scenarioRef?: ScenarioId | "custom";
+  /** 判断時の国家備蓄スナップショット（Phase 25-D・取得失敗時は undefined） */
+  reserveSnapshot?: ReserveSnapshot;
 }
 
 /** UUID生成（crypto.randomUUID() ラッパー、フォールバック付き） */

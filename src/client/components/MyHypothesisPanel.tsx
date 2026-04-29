@@ -22,9 +22,11 @@ import {
   newId,
   nowIso,
   type DecisionLogEntry,
+  type ReserveSnapshot,
 } from "../lib/journal";
 import { ALL_SCENARIO_DAYS, calcDaysForRates } from "../lib/fallbackCountdowns";
 import { SCENARIOS, type ScenarioId } from "../../shared/scenarios";
+import { useOilReserves } from "../hooks/useOilReserves";
 
 interface Props {
   scenarioRef: ScenarioId;
@@ -50,6 +52,7 @@ export const MyHypothesisPanel: FC<Props> = ({ scenarioRef }) => {
     STORAGE_KEYS.decisionLog,
     [],
   );
+  const reserves = useOilReserves();
 
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<UserHypothesis>(hypothesis);
@@ -93,8 +96,31 @@ export const MyHypothesisPanel: FC<Props> = ({ scenarioRef }) => {
     }));
   };
 
+  // Phase 25-D: 国家備蓄基地の最も逼迫した拠点を抽出（容量公表分のみ対象）
+  const mostDepletedBase = useMemo(() => {
+    const candidates = reserves.bases
+      .filter((b) => b.reserve_type === "national" && b.remainingPercent !== null && b.cumulativeReleased_kL > 0)
+      .sort((a, b) => (a.remainingPercent ?? 100) - (b.remainingPercent ?? 100));
+    const top = candidates[0];
+    return top && top.remainingPercent !== null
+      ? { name: top.name, remainingPercent: top.remainingPercent }
+      : null;
+  }, [reserves.bases]);
+
+  const buildReserveSnapshot = (): ReserveSnapshot | undefined => {
+    if (!reserves.summary) return undefined;
+    return {
+      totalNationalCapacity_kL: reserves.summary.totalNationalCapacity_kL,
+      totalNationalReleased_kL: reserves.summary.totalNationalReleased_kL,
+      totalNationalRemainingPercent: reserves.summary.totalNationalRemainingPercent,
+      mostDepletedBase,
+      capturedAt: nowIso(),
+    };
+  };
+
   const handleAddLog = () => {
     if (!logTitle.trim()) return;
+    const snapshot = buildReserveSnapshot();
     const entry: DecisionLogEntry = {
       id: newId(),
       timestamp: nowIso(),
@@ -107,6 +133,7 @@ export const MyHypothesisPanel: FC<Props> = ({ scenarioRef }) => {
         label: draft.label,
       },
       scenarioRef,
+      ...(snapshot ? { reserveSnapshot: snapshot } : {}),
     };
     setLog((prev) => [entry, ...prev]);
     setLogTitle("");
@@ -283,6 +310,55 @@ export const MyHypothesisPanel: FC<Props> = ({ scenarioRef }) => {
               ベース計算（封鎖率×消費）。代替供給・SPR放出・需要破壊・構造的需要減は含まない。
               フェーズ別動的モデルとの差は <Link to="/methodology" className="text-info hover:underline">手法ページ</Link> 参照。
             </p>
+          </div>
+
+          {/* Phase 25-D: 基地別残存状況（実観測） */}
+          <div className="space-y-2 border-t border-border pt-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <SectionHeading tone="warning" size="xs">
+                BASE RESERVES — 基地別残存状況（実観測）
+              </SectionHeading>
+              <Link
+                to="/collapse-map"
+                className="text-[10px] font-mono text-info hover:underline shrink-0"
+              >
+                全14拠点を見る →
+              </Link>
+            </div>
+            {reserves.loading ? (
+              <p className="text-[10px] font-mono text-text-muted">基地データ読み込み中…</p>
+            ) : reserves.summary ? (
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between gap-3 text-xs">
+                  <span className="font-mono text-text-muted">国家備蓄合計</span>
+                  <span className="font-mono">
+                    <span className="text-text font-bold">
+                      残存 {reserves.summary.totalNationalRemainingPercent.toFixed(1)}%
+                    </span>
+                    <span className="text-text-muted ml-2">
+                      累積放出 {(reserves.summary.totalNationalReleased_kL / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 0 })}万kL
+                    </span>
+                  </span>
+                </div>
+                {mostDepletedBase && (
+                  <div className="flex items-baseline justify-between gap-3 text-xs bg-bg/50 rounded px-2 py-1.5">
+                    <span className="font-mono text-text-muted">最も逼迫</span>
+                    <span className="font-mono">
+                      <span className="text-text">{mostDepletedBase.name}</span>
+                      <span className="text-warning-soft ml-2 font-bold">
+                        残存 {mostDepletedBase.remainingPercent.toFixed(1)}%
+                      </span>
+                    </span>
+                  </div>
+                )}
+                <p className="text-[10px] text-text-muted leading-relaxed">
+                  この値は判断ログ記録時に自動でスナップショットされ、後から仮説と紐づけて参照できる。
+                  基地別 kL は公式非公表のため均等配分・容量加重の推定を含む。
+                </p>
+              </div>
+            ) : (
+              <p className="text-[10px] font-mono text-text-muted">基地データはまだ取得されていません</p>
+            )}
           </div>
 
           {/* 意思決定ログ追加フォーム */}
