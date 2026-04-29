@@ -84,9 +84,13 @@ const JAPAN_DEST_PORTS = new Set([
   "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
 ]);
 
-const isDimmed = (t: { departurePort: string; destinationPort: string }, scenario: MapScenario) => {
+const isDimmed = (
+  t: { departurePort: string; destinationPort: string; hormuzPassed?: boolean },
+  scenario: MapScenario,
+) => {
   if (scenario === "normal") return !JAPAN_DEST_PORTS.has(t.destinationPort);
-  return HORMUZ_PORTS.has(t.departurePort) || !JAPAN_DEST_PORTS.has(t.destinationPort);
+  const blocked = HORMUZ_PORTS.has(t.departurePort) && !t.hormuzPassed;
+  return blocked || !JAPAN_DEST_PORTS.has(t.destinationPort);
 };
 
 /** cargo_t 最大値（TAKASAGO 313,989t）— マーカーサイズ正規化の基準 */

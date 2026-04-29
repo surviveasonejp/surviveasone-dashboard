@@ -1718,6 +1718,7 @@
       "name": "IDEMITSU MARU",
       "imo": "9334210",
       "aisTracked": true,
+      "hormuzPassed": true,
       "type": "VLCC",
       "departure": "サウジJuaymah（3月初旬積み込み）→アブダビ北西錨地（1週間以上停泊）→4/27深夜出港",
       "departurePort": "Ras Tanura",

@@ -48,6 +48,8 @@ export interface TankerInfo {
   imo?: string;
   /** AISで位置追跡可能か（IMO確認済み＝AIS受信可能） */
   aisTracked?: boolean;
+  /** ホルムズ海峡を既に通過済みの便（出発港がホルムズ内側でも封鎖時到達不可扱いから除外） */
+  hormuzPassed?: boolean;
 }
 
 export interface FoodProduct {

@@ -53,9 +53,11 @@ function getSizeClass(cargo_t: number): { label: string; color: string } {
 
 export const TankerTracker: FC = () => {
   const { tankers, meta } = useTankerData();
-  const isBlocked = (t: { departurePort: string }) => HORMUZ_PORTS.has(t.departurePort);
+  const isBlocked = (t: { departurePort: string; hormuzPassed?: boolean }) =>
+    HORMUZ_PORTS.has(t.departurePort) && !t.hormuzPassed;
   const isNotJapanBound = (t: { destinationPort: string }) => !JAPAN_DEST_PORTS.has(t.destinationPort);
-  const isDimmed = (t: { departurePort: string; destinationPort: string }) => isBlocked(t) || isNotJapanBound(t);
+  const isDimmed = (t: { departurePort: string; destinationPort: string; hormuzPassed?: boolean }) =>
+    isBlocked(t) || isNotJapanBound(t);
   const vlccTankers = tankers.filter((t) => t.type === "VLCC" && !isDimmed(t));
   const lngTankers = tankers.filter((t) => t.type === "LNG" && !isDimmed(t));
   const usTankers = tankers.filter((t) => US_ORIGIN_PORTS.has(t.departurePort));
@@ -292,7 +294,7 @@ export const TankerTracker: FC = () => {
             if (!selectedId) return null;
             const t = tankers.find((v) => v.id === selectedId);
             if (!t) return null;
-            const blocked = HORMUZ_PORTS.has(t.departurePort);
+            const blocked = HORMUZ_PORTS.has(t.departurePort) && !t.hormuzPassed;
             const notJapan = !JAPAN_DEST_PORTS.has(t.destinationPort);
             const typeColor = t.type === "VLCC" ? "#f59e0b" : "#22c55e";
             const level = getAlertLevel(t.eta_days);
