@@ -16,7 +16,7 @@ const DATA_SOURCES_LIST = [
   { name: "原子力規制委員会", note: "稼働原発15基・設備利用率(柏崎刈羽6号機2026年1月再稼働。島根2号は定期検査停止中)", auto: false },
   { name: "EIA RWTC API", note: "WTI原油スポット価格 日次自動取得 → D1 oil_prices + KV", auto: true },
   { name: "MaritimeOptima / AISStream.io", note: "タンカー位置・航路のAIS検証(日次自動取得+日本向け判定)", auto: true },
-  { name: "公開船舶DB / 海運各社PR", note: "タンカー32隻(VLCC14+LNG14+Chemical1+Suezmax2+Aframax1)のIMO・航路(2026年4月17日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]含む)", auto: false },
+  { name: "公開船舶DB / 海運各社PR", note: "タンカー81隻(VLCC23+LNG22+Suezmax5+Aframax5+Chemical13+その他13)のIMO・航路(2026年5月1日検証済。引き返し2隻[AL DAAYEN・RASHEEDA]・ホルムズ承認通過便1隻[出光丸IDEMITSU MARU 4/27]・サハリン代替供給便2隻[VOYAGER・CYGNUS PASSAGE]含む)", auto: false },
   { name: "資源エネルギー庁 給油所統計", note: "都道府県別給油所数 27,414箇所(2023年度末)", auto: false },
   { name: "JOGMEC 石油備蓄基地一覧", note: "国家石油備蓄10基地の所在地・容量・貯蔵方式", auto: false },
   { name: "化学日報", note: "石化産業減産状況(2026年3月19日報道)", auto: false },
@@ -64,7 +64,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 8",
     label: "モデル誠実性・現実連動",
     status: "completed" as const,
-    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント119件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
+    items: ["3シナリオレンジ", "IEA国際比較", "現実イベント120件", "感度分析", "経済カスケード", "地域別ロジスティクス", "国家備蓄基地10基地"],
   },
   {
     phase: "Phase 9",
@@ -191,6 +191,21 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
       "プロンプトで SAO 煽らない設計を強制（「崩壊」「パニック」禁止・「逼迫」「連鎖」推奨）",
     ],
   },
+  {
+    phase: "Phase 25",
+    label: "地域別石油備蓄オブザーバビリティ",
+    status: "completed" as const,
+    items: [
+      "3層データモデル（L1静的容量×L2 JOGMEC確定放出×L3シナリオ予測）",
+      "D1 oil_release_events（基地別 kL・元売・JOGMECリリース番号・split_method）",
+      "Wave1/2 seed済（菊間 残存24.2%・全国69.6%）",
+      "e-Stat 港湾調査月報 第3表 9港（statsDataId=0003130476・原油/重油/ガソリン/その他石油）",
+      "OilReserveBasesPanel.tsx・useOilReserves hook・CollapseMap統合",
+      "MyHypothesisPanel/Journal にスナップショット連動（ReserveSnapshot 型・国家備蓄合計+最逼迫基地キャプチャ）",
+      "/api/oil-reserves/bases ・/releases ・/throughput",
+      "Cron: 既存月次枠（毎月18日）相乗りで完結・新規枠なし",
+    ],
+  },
 ];
 
 const SIMULATION_FEATURES = [
@@ -235,7 +250,7 @@ export const About: FC = () => {
           危機の進行を正しく理解し、素早く行動するための情報を提供する。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          公開統計データに基づく18の計算モデルと4つのシナリオで分析。
+          公開統計データに基づく19の計算モデルと4つのシナリオで分析。
           代替供給ルート・経済カスケード・配給制シミュレーション・地域別ロジスティクスを含む。
           予測ではなくリスクシナリオのシミュレーションとして、不確実性を含めて透明に提示する。
         </p>
@@ -260,7 +275,7 @@ export const About: FC = () => {
             <span className="text-success-soft font-bold">② レンジと不確実性の常時提示</span> — 単一予測値は与えない。4シナリオ（国際協調・標準対応・需要超過・停戦回復）を併記し、UncertaintyBand で結果幅を可視化。境野春彦氏が指摘する「統計4ヶ月 vs 実物0.5ヶ月」のようなマクロ・ミクロのギャップを、DecisionTriadPanel（事実/解釈/含意）で分離提示する。
           </li>
           <li>
-            <span className="text-success-soft font-bold">③ 一次情報への誘導</span> — realEvents（59件以上）で政府・業界団体・報道の原典を並走表示。SNSシェア文言には必ずシナリオ条件と買い占め抑止メッセージを含める。数字のみの切り取りを防ぐ。
+            <span className="text-success-soft font-bold">③ 一次情報への誘導</span> — realEvents（120件以上）で政府・業界団体・報道の原典を並走表示。SNSシェア文言には必ずシナリオ条件と買い占め抑止メッセージを含める。数字のみの切り取りを防ぐ。
           </li>
           <li>
             <span className="text-success-soft font-bold">④ 脆弱層の優先保護</span> — FAMILYページ・PREPAREページに買い占めが「最も脆弱な人から物資を奪う」明示を常設。乳幼児・透析・在宅医療・要介護の6カテゴリで優先供給情報に誘導する。
@@ -290,8 +305,8 @@ export const About: FC = () => {
           <ul className="space-y-1.5 text-xs text-neutral-500">
             <li>・石油備蓄・LNG在庫・電力需給・消費量データは<span className="text-success-soft">自動パイプライン</span>で定期更新（月次/日次/週次）+ バリデーション（絶対範囲・整合性・前回比チェック）</li>
             <li>・データの基準日と経過日数をUI上に常時表示し、鮮度を可視化。危機発生日数も全ページに表示</li>
-            <li>・タンカー32隻（VLCC14+LNG14+Chemical1+Suezmax2+Aframax1）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。4/17: ENEOS GLORY喜入・KHURAIS名古屋・PACIFIC NOTUS・NISSHO MARU入港確認。MAYASAN/YAKUMOSAN湾内待機継続（2026年4月17日）</li>
-            <li>・現実イベント119件（4/24 経産省第2弾国家備蓄原油580万kL放出プレス・4/23 JPCA 3月エチレン稼働率68.6%等を含む）を時系列で並走表示。「量はあるが流通が詰まる」構造を DemandAnomalyBadge で可視化</li>
+            <li>・タンカー70隻（VLCC21+LNG20+Suezmax5+Aframax4+Chemical10+MR6+LPG2+Product1+LNG Bunker1）のIMO・現在位置をMaritimeOptima/AISで検証。供給元カテゴリ別タイムライン（代替ルート amber/米国ガルフ blue/LNG green）で表示。4/6-7: カタールLNG船AL DAAYEN・RASHEEDAがホルムズ通過を試みて引き返し（Bloomberg）。4/27: 出光丸（IDEMITSU MARU・IMO 9334210）がイラン承認の北ルートでホルムズ通過 — 米イラン紛争（2/28開始）以降ペルシャ湾を出た初の日本関連原油タンカー（Bloomberg/gCaptain）。4/26: 米国湾岸→日本向け原油タンカー8隻追加。Phase 23 公開VTS/港湾EDI 4港（浦賀水道/明石海峡/関門海峡/名古屋港）から新規便を継続検出</li>
+            <li>・現実イベント120件（4/29 Phase 25 地域別石油備蓄オブザーバビリティ稼働・4/24 経産省第2弾国家備蓄原油580万kL放出プレス・4/23 JPCA 3月エチレン稼働率68.6%等を含む）を時系列で並走表示。「量はあるが流通が詰まる」構造を DemandAnomalyBadge で可視化</li>
             <li>・代替供給ルートは経産相発表(2026-03-24)に基づく。フジャイラ/ヤンブー/非中東/紅海経由の5ルート。5月以降は喜望峰ルート代替供給が本格化予定（経産省4/24: 5月に前年実績比過半到達見込み）</li>
             <li>・4/24 経産省プレス: 第2弾国家備蓄原油 約580万kL(20日分)・総額5,400億円を5/1以降ENEOS・出光・コスモ・太陽石油へ順次放出。国家30日+民間15日+共同5日+追加20日=計70日分放出計画。全計画完了後は合計約163〜177日見込み</li>
             <li>・4/1: 石炭火力規制を緩和（LNG依存低減・供給安定化の緊急措置）</li>
@@ -305,7 +320,7 @@ export const About: FC = () => {
       {/* シミュレーション仕様 */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">シミュレーション仕様（全18モデル）</SectionHeading>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">シミュレーション仕様（全19モデル）</SectionHeading>
         </div>
         <div className="divide-y divide-border">
           {SIMULATION_FEATURES.map((f) => (
@@ -506,7 +521,7 @@ export const About: FC = () => {
           ))}
         </div>
         <div className="text-xs text-neutral-600 font-mono space-y-0.5">
-          <p>API: 23エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
+          <p>API: 25エンドポイント（.org + .net専用ドメイン）+ OpenAPI 3.0 + AI Plugin</p>
           <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次+WTI原油 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知(日次サマリ+差分検知+RSS監視)Worker + Workers AI LLM要約</p>
           <p>コスト: インフラ ~$3/月（ドメイン2件。Cloudflare無料枠）+ 開発ツール（AI支援）~$100-200/月</p>
         </div>

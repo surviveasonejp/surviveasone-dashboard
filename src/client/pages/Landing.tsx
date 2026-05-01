@@ -236,7 +236,7 @@ export const Landing: FC = () => {
           to="/last-tanker"
           title="TANKER TRACKER"
           subtitle="タンカー追跡"
-          description="実在32隻（VLCC14+LNG14+Chemical1+Suezmax2+Aframax1）のAIS追跡 + 国交省VTS 4港（浦賀水道/明石海峡/関門海峡/名古屋港）入航予定監視で新規便自動検出。供給元カテゴリ別タイムライン・シナリオ連動代替ルート可視化"
+          description="実在81隻（VLCC23+LNG22+Suezmax5+Aframax5+Chemical13+その他13）のAIS追跡 + 国交省VTS 4港（浦賀水道/明石海峡/関門海峡/名古屋港）入航予定監視で新規便自動検出。供給元カテゴリ別タイムライン・シナリオ連動代替ルート可視化・ホルムズ承認通過便（出光丸4/27）追跡・サハリン代替供給（VOYAGER/CYGNUS PASSAGE）監視"
           tone="neutral"
         />
         <PanelCard
