@@ -50,5 +50,6 @@
   "Freeport": { "lat": 28.95, "lon": -95.36 },
   "Yokosuka": { "lat": 35.28, "lon": 139.67 },
   "Fukuyama": { "lat": 34.47, "lon": 133.40 },
-  "Nagoya": { "lat": 34.95, "lon": 136.88 }
+  "Nagoya": { "lat": 34.95, "lon": 136.88 },
+  "Yokohama": { "lat": 35.40, "lon": 139.65 }
 }
