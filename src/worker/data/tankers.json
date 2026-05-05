@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-05-04",
+    "updatedAt": "2026-05-05",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, VesselTracker, MarinePublic, MagicPort, 各社プレスリリース）から取得。2026-05-04時点でVTS/港湾EDI検出便のIMO/船社情報を確定",
-    "note": "93隻の追跡船舶。【5/4追加・VTS/港湾EDI検出便12隻】(1) SAKURAGAWA(IMO 9391751・vlcc-uraga-06・Japan籍2009年建造299,982DWT・160,068GT・LOA 333m) 海保VTS浦賀 5/5 08:00京葉シーバース。(2) APOLLO DREAM(IMO 9671424・vlcc-uraga-07・パナマ籍2014年JMU呉建造・311,842DWT・160,333GT・LOA 340m・出光タンカーVLCC) 海保VTS浦賀 5/5 11:00京葉シーバース。(3) SHINSEI MARU/新生丸(IMO 9759850・suezmax-jp-01・Japan籍2016年建造・119,774DWT・66,536GT・LOA 246.80m・Suezmax/Aframax級) 海保VTS浦賀 5/5 14:00根岸。(4) DEIRA GHAIR(IMO 9617959・mr-08・マーシャル諸島籍2013年建造・49,999DWT・30,265GT・MR・Synergy Marine Copenhagen運航) 海保VTS浦賀 5/5 10:00市原。(5) NORD MIYAKO(IMO 9890927・mr-09・マーシャル諸島籍2021年建造・51,000DWT・30,560GT・MR・Call sign V7A4339) 海保VTS浦賀 5/5 11:00千葉。(6) AMADI(IMO 9682552・lng-21・ブルネイ籍2015年HHI建造・85,466DWT・102,585GT・LOA 288m・154,800m³・Brunei Gas Carriers A-Class) 海保VTS明石 5/5 08:40姫路（明石VTSのdeparture「その他地域」=ブルネイLNG便と推定）。(7) KEOYOUNG STAR 3(IMO 9798090・chem-nagoya-15・韓国籍2018年建造・2,824DWT・2,222GT) 名古屋港EDI 5/5入港。(8) KEOYOUNG SUN 5(IMO 9321794・chem-nagoya-16・韓国籍2005年建造・1,228DWT・610GT) 名古屋港EDI 5/9入港。(9) KEOYOUNG STAR(IMO 9435301・chem-nagoya-17・韓国籍2007年建造・2,747DWT・1,530GT・Dongkuk Marine運航) 名古屋港EDI 5/10入港。(10) OCEAN ACE 11(IMO 9655793・chem-nagoya-18・韓国籍2012年建造・2,114DWT・1,268GT) 名古屋港EDI 5/10入港。(11) KEOYOUNG STAR 5(IMO 9362798・chem-nagoya-19・韓国籍2005年建造・2,499DWT・1,930GT) 名古屋港EDI 5/11入港。(12) WOORI HANA(IMO 9890707・chem-nagoya-20・韓国籍2020年建造・1,754DWT・1,066GT) 名古屋港EDI 5/8入港。【5/4状態更新・9隻入港済】(a) GEN-EI(vlcc-uraga-04)・SETAGAWA(vlcc-uraga-05)・MARVEL PHOENIX(lng-20)・CONCERTO(mr-07)・FUTURE DIAMOND(lpg-03) 5/2京葉シーバース/富津/川崎沖入港済。(b) AWAJI(chem-nagoya-12) 5/1名古屋・CRANE LUNA(chem-nagoya-11) 5/4名古屋入港済。(c) VOYAGER(aframax-sakh-01) 5/3菊間入港済（サハリン代替供給第1陣完了・米Gen License期限2026-06-18まで）。(d) PRINCESS VANYA(vlcc-us-03) 5/2四日市入港済（米国湾岸→日本VLCC便完了）。。【5/1追加・VTS/港湾EDI検出便9隻（第3陣）】(1) GEN-EI(元栄・IMO 9814117・vlcc-uraga-04・日本籍2018年建造312,375DWT・160,898GT・LOA 339.5m) 海保VTS浦賀 5/2 08:00京葉シーバース到着・3/21 Singapore Anchorage 5発（中東積みSTSまたはバンカリング寄港）・世界最大クラスの339.5m級新造VLCC・運航者未確定。(2) MARVEL PHOENIX(IMO 9962419・lng-20・MOL運航/三井物産チャーター・バミューダ籍2024年新造・115,204GT・174,000m³・LOA 295m) 海保VTS浦賀 5/2 08:30富津到着・米国Cameron LNG（Sabine Pass近接）プロジェクト向け新造船で完全に非中東調達ルート。(3) SETAGAWA(IMO 9391763・vlcc-uraga-05・出光タンカーtime-charter VLCC・パナマ籍2009年建造・159,936GT・299,998DWT・LOA 333m) 海保VTS浦賀 5/2 11:00京葉シーバース到着・直近4/30名古屋発で国内転送便・Idemitsu公開VLCC fleetに掲載確認。(4) CONCERTO(IMO 9743837・mr-07・MR Chemical/Oil Products・シンガポール籍2017年建造・22,987GT・37,350DWT) 海保VTS浦賀 5/2 12:15川崎沖到着・4/3パナマ運河大西洋側錨地発でVesselFinder AIS確認・米墨湾→太平洋ルートで非中東調達便と推定。(5) FUTURE DIAMOND(IMO 9853864・lpg-03・LPG VLGC・パナマ籍2020年HD現代群山建造・46,863GT・50,900DWT・LOA 229.94m) 海保VTS浦賀 5/2 17:20川崎沖到着・VTS分類「ガスタンカー」だがLNGではなくLPG VLGCで分類訂正。(6) CRANE LUNA(IMO 9792175・chem-nagoya-11・パナマ籍2017年建造・3,765GT・LOA 102m) 名古屋港EDI 5/4入港・ACマリン運航・直近Ulsan→Mizushima航跡確認の韓国〜西日本石化港湾近海ケミカル定期便。(7) AWAJI(IMO 9813278・chem-nagoya-12・パナマ籍2017年建造・4,122GT・LOA 107m・ClassNK CNo.172710) 名古屋港EDI 5/1入港・ACマリン運航。(8) NEW GLOBAL(IMO 9425617・chem-nagoya-13・韓国籍2009年建造・4,060GT・5,666DWT・LOA 105.6m) 名古屋港EDI 5/5入港・ACマリン代理店扱いだが船主は韓国オペレータ。(9) KOKA MARU(IMO 9767742・chem-nagoya-14・パナマ籍2017年USUKI SHIPYARD臼杵造船所建造・1,975GT・3,091DWT・LOA 89m・ClassNK CNo.173340) 名古屋港EDI 5/8入港・五洋海運運航・国内/近海ケミカル便。VTS検出CHANG HANG LAN JING(国内コースタル便)・MARITIME EQUATOR(姉崎発・大山行きの出港便)・ENERGY HORIZON(既存lng-01同船・5/2根岸再入港)は重複・出港便のため新規追加せず。【5/1状態更新】OTIS(suezmax-us-01)入港済→4/27千葉出港済(米国産原油91万バレル陸揚げ完了・現在シンガポール向け)・FRONT SINGAPORE(suezmax-us-02)はAIS確認でCape Town向け5/5 ETA表示で日本航路に乗っておらず誤同定の疑い・IMO 9832248の紐付け要再検討（combined確度0.347に低減）・ENERGY FRONTIER(lng-12)入港済(ETA 4/21達成)・本IMO 9422908は要再照合(VesselFinderで同名異IMO 9245720のARUNIKA JAYAインドネシア籍へ改名済船を別途確認)・CASPAR destinationPortをKirin→Kiireに修正・米国湾岸便のETA一律9日後ろ倒し(LAWHAH→6/12・FRONT SIENA→6/10・ECO OCEANO CA→6/1・CE-HAMILTON→5/22・ATREBATES→5/27)・chem-nagoya-01〜10入港済・浦賀/明石/名古屋4/28-29検出便11隻入港済(NAVE CELESTE/SANTANDER KNUTSEN/STARLING/CONSTELLATION/GRAND MEREYA/TEDORIGAWA/ENEOS ARROW/TOPAZ EXPRESS/DIAMOND EXPRESS/YAMILAH 3/NURI CHEMIST)。【5/1追加・サハリン代替供給2隻】(1) VOYAGER(IMO 9843560・aframax-sakh-01・OFAC 2024-01/EU 17次/UK制裁対象タンカー・旧Vernadsky Prospect・オマーン籍2019建造113,310DWT) 3/23 13:44 UTC プリゴロドノエ・オフショア出港→ETA 5/3 10:00菊間（太陽石油菊間製油所）。サハリンブレンド原油は米財務省Gen License で制裁適用除外（経産省要請でG7獲得・期限2026-06-18）・2025-06-09同船同港で60万バレル受入の前例。Bloomberg/OpenSanctions裏取り。(2) CYGNUS PASSAGE(IMO 9376294・lng-19・NYK LNG Shipmanagement運航・バハマ籍2009年三菱長崎建造Moss型145,000m³) 4/26 23:56 UTC プリゴロドノエ出港→ETA 5/8 00:45川崎・サハリン2 LNG専属配船240+航海・非制裁。両船とも米財務省Gen License（期限2026-06-18）の延長判断が次の地政学リスク。【4/29整理】代替ルート第1便を PACIFIC ANNA(IMO 9772010・MOL系Aframax LR2・3/29 太陽石油菊間着) で確定・代替ルート第2便を SUZUKASAN [推定](IMO 9828950・MOL VLCC・日本籍・東京湾着) で反映。経産相3/24予告の『非中東調達便（4/25着予定）』は その後の Reuters/日経報道で OTIS(suezmax-us-01) = Cosmo向け米国産原油便と判明したため重複エントリ vlcc-alt-03 を OTIS に統合。【4/28追加・最重大: ホルムズ承認通過便】IDEMITSU MARU(IMO 9334210・出光タンカーVLCC・パナマ籍2007年IHI建造・300,433DWT) 4/27深夜アブダビ北西錨地→Qeshm/Larak島付近の北ルート（イラン承認）でホルムズ通過。米イラン紛争（2/28開始）以降ペルシャ湾を出た初の日本関連原油タンカー（Bloomberg/gCaptain報）。サウジJuaymah積み・原油200万バレル・ETA 5/17 23:00名古屋。4/28 13:10 UTC AIS active状態・速度14.2kn・喫水20.1m満載・アラビア海東進。トランプ「逆封鎖」下のCENTCOM「非イラン港向けは妨げない」声明と整合する稀少事例。【4/28追加・VTS/港湾EDI検出便9隻（第2陣）】(1) TEDORIGAWA(IMO 9805099・K Line系VLCC・パナマ籍2018年NACKS建造・311,000DWT・161,483GT・LOA 339.5m) 海保VTS浦賀 4/29 06:45扇島シーバース到着・起点要AIS確認。(2) ENEOS ARROW(IMO 9814129・ENEOS Ocean VLCC・日本籍2017年建造・160,597GT・LOA 339m) 海保VTS浦賀 4/29 08:30根岸到着・ENEOS根岸製油所向け・起点要AIS確認。(3) TOPAZ EXPRESS(IMO 9552800・Bernhard Schulte運航MR2プロダクト・香港籍2009年建造・27,976GT・45,650DWT・LOA 180m) 海保VTS浦賀 4/29 14:15市原到着・コスモ千葉/丸善石化向け。(4) DIAMOND EXPRESS(IMO 9409493・MOL Product Tankers運航MR2・香港籍2009年建造・27,976GT・45,634DWT・LOA 180m) 海保VTS浦賀 4/29 17:45市原到着。(5) YAMILAH 3(IMO 9487263・LR1/Panamax原油・リベリア籍2011年建造・42,538GT・74,866DWT・LOA 228m) 海保VTS浦賀 4/29 17:10姉崎到着・出光千葉向け・2024年アデン湾フーシ攻撃被害船・要警戒。(6) CS OCEAN(IMO 1051329・Chemical/Oil Products・パナマ籍2025年建造・5,273GT・LOA 102m) 名古屋港EDI 5/02入港・丸中興産エージェント。(7) MISIKAN(IMO 9246932・油送船・韓国籍2001年建造・4,551GT・8,716DWT・LOA 114m) 名古屋港EDI 5/04入港。(8) NURI CHEMIST(IMO 9485538・KSS Line運航Chemical・パナマ籍2010年臼杵建造・2,193GT・3,968DWT・LOA 89m) 名古屋港EDI 4/28入港・名古屋寄港後Zhangjiagang回航の可能性。(9) FLEX CONSTELLATION(IMO 9825427・Flex LNG運航・マーシャル諸島籍2019年Hanwha Ocean建造・113,428GT・173,400m³・LOA 294.9m・MEGI+PRS) 名古屋港EDI 5/08知多入港・2026年Q1-Q2新15年長期チャーター開始便。明石VTSのDURHAM(GBR籍ガスタンカー・水島→中国通過便)は日本入港便ではないため除外。【4/28・第1陣5隻】(1) NAVE CELESTE(IMO 9916185・Navios Tanker系VLCC・リベリア籍2022年建造・313,418DWT・160,115GT・LOA 339m) 海保VTS浦賀 4/28 12:15京葉シーバース到着・起点要AIS確認。(2) SANTANDER KNUTSEN(IMO 9904170・Knutsen OAS Shipping運航LNG・ノルウェー籍2022年Hyundai Samho建造・174,000m³ Mark III Flex・WinGD X-DF二元燃料・95,548DWT・114,180GT) 海保VTS浦賀 4/28 12:30扇島到着・Shell長期チャーター・起点はカタール/豪/米いずれか。(3) STARLING(IMO 9737527・LR1/Panamax Epoxy・シンガポール籍2016年建造・74,033DWT・43,188GT) 海保VTS浦賀 4/28 17:45姉崎到着・出光千葉製油所向け・起点要AIS確認。(4) CONSTELLATION(IMO 9734680・LGC級LPG・バハマ籍2015年建造・54,336DWT・48,060GT) 海保VTS明石 4/29 03:40坂出到着・departure: ｱﾒﾘｶ明示・四国電力坂出LNG/LPG基地・米湾岸→パナマ運河経由・ホルムズ完全回避。(5) GRAND MEREYA(IMO 9338929・LNG・キプロス籍2008年建造・74,497DWT・120,525GT・LOA 289.5m) 名古屋港EDI 4/29 11:30知多入港・中部電力/東邦ガス知多LNG基地・知多桟橋管理(株)エージェント・起点要AIS確認。坂出はports.jsonに新規Sakaide(34.32N, 133.86E)追加。【4/26追加・米国湾岸→日本向け原油タンカー8隻】ECO OCEANO CA/FRONT SIENA/LAWHAH/PRINCESS VANYA/CE-HAMILTON/ATREBATES + 追加調査でNEW PROSPERITY/PVT POSEIDON。【4/26追加・第2弾】NEW PROSPERITY(IMO 9689988・318,329DWT VLCC・Corpus Christi出港・ETA 5/20)はAIS「JP TSJ」=対馬海峡UN/LOCODE（VLCC接近時の最終仕向確定前ウェイポイント慣習）と判明。PVT POSEIDON(IMO 9457593・PVTrans/ベトナム籍・LOOP+Houston出港・パナマ経由・ETA 5/10)はAIS「Sakai Senboku」=コスモエネルギー堺製油所向けで確定（ツイートの「喜入向け」は誤情報）。MONTESTENA(IMO 9585883)は引き続き保留: AIS Destination「Singapore」のままで日本向け一次裏取りなし・CEPSA系/Singapore製油所向けの可能性高・5/13着後のDestination変更を継続監視。【4/26追加・第1弾】はれるや氏(@I3Xv3t4me684451)4/25報告13隻のうち、AIS Destination日本向けが確認できた6隻を一次裏取り後に登録（VesselFinder 2026-04-26）。Princess Vanya最早5/2四日市着。Lawhah(Bahri/サウジ)・Atrebates(CMB.TECH/ベルギー新造)など多国籍船社が米国産原油を喜望峰経由で輸送。【既存48隻】4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7（4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7） + 7チョークポイント監視。【4/23追加】海保VTS浦賀水道航路 4/24入港予定4隻: KITA LNG（マルタ籍LNG・富津4/24 08:30）・SEYMOUR SUN（NYK/シンガポール籍MRメタノール二元燃料・姉崎4/24 11:00）・GENESIS RIVER（K LINE VLGC・パナマ籍LPG・川崎沖4/24 17:15）・TORM THUNDER（TORM/米国籍MRプロダクト・横須賀4/24 18:30）。海保VTS明石海峡航路 4/24通航 1隻: SETO AZURE（大阪ガス子会社Osaka Bay LNG Shipping・日本初LNGバンカー船・堺泉北発福山向け4/24 10:15）。名古屋港管理組合EDI 4/23検出 7隻: GLORY HANA/KEOYOUNG SEVEN/NO.7 HANA/CS HANA/BONANZA/CS BREEZE/PRINCESS DAISY（外航ケミカル/プロダクトオイルタンカー）。【4/21追加】海保VTS浦賀水道航路 4/22入港予定4隻: FRONT MAINE（Frontline VLCC・扇島シーバース4/22 10:45）・KHASAB SILVER（Oman Shipping MRプロダクト・姉崎4/22 10:15）・PACIFIC ARCADIA（MOL/OGIT LNG・PNG産・扇島4/22 11:15）・SHINSHU MARU（JERA/NYK LNG・米国Freeport産・富津4/22 13:00）。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, VesselTracker, MarinePublic, MagicPort, 各社プレスリリース）から取得。2026-05-05時点でVTS/港湾EDI検出便のIMO/船社情報を確定",
+    "note": "97隻の追跡船舶。【5/5追加・VTS検出便4隻】(1) NEW GIANT(IMO 9516947・vlcc-uraga-08・リベリア籍2016年建造319,611DWT・166,223GT・LOA 333m) Fujairah(UAE)直発32日航海・喫水19.2m満載・海保VTS浦賀 5/6 14:00京葉シーバース。Fujairahはホルムズ海峡外側でUAE経由非ペルシャ湾調達便（米イラン紛争下で重要パターン）。(2) LILA KOCHI(IMO 9515436・vlcc-uraga-09・リベリア籍2008年建造313,798DWT・160,705GT・LOA 333m) Singapore Anchorage 49日航海・喫水16.3m部分積・Lila Global/Tankers International VLCC pool・海保VTS浦賀 5/6 08:00京葉シーバース。中東積→Singapore待機STSパターン。(3) PS TOKYO(IMO 1024508・mr-10・パナマ籍2025年新造52,789DWT・30,591GT・LOA 184m) Singapore Anchorage 4発9日航海・喫水11.8m満載・海保VTS浦賀 5/6 15:15横浜沖。MR外航便。(4) YUAN YU HE(IMO 9896256・mr-11・中国籍2022年建造49,842DWT・29,861GT・LOA 183m) Darwin(豪州北部)発10日航海・喫水10.7m・海保VTS浦賀 5/6 14:45姉崎。豪州産原油対日便でホルムズ非経由。【5/5除外】NORD MARINER(国内コースタル便・堺→横浜)・CHANG HANG LAN JING(国内コースタル便・姉崎→千葉/再除外)・GAS INNOVATOR(明石VTS・水島→中国出港便)。【5/5状態更新】IDEMITSU MARU(vlcc-hormuz-01) 5/1にAIS destinationをGalle(スリランカ)へ一時変更し速度を14.5→9.3knへ半減・Galle沖を停船せず通過後Nagoyaに復帰・現在インド沿岸航行中・速度9.5kn・喫水20.1m満載・ETA 5/22 09:00名古屋（当初5/17 23:00から約4日半後ろ倒し）・動機は商業的判断か外部介入か一次ソース無し（出光興産は個別船舶コメント拒否）。【5/4追加・VTS/港湾EDI検出便12隻】(1) SAKURAGAWA(IMO 9391751・vlcc-uraga-06・Japan籍2009年建造299,982DWT・160,068GT・LOA 333m) 海保VTS浦賀 5/5 08:00京葉シーバース。(2) APOLLO DREAM(IMO 9671424・vlcc-uraga-07・パナマ籍2014年JMU呉建造・311,842DWT・160,333GT・LOA 340m・出光タンカーVLCC) 海保VTS浦賀 5/5 11:00京葉シーバース。(3) SHINSEI MARU/新生丸(IMO 9759850・suezmax-jp-01・Japan籍2016年建造・119,774DWT・66,536GT・LOA 246.80m・Suezmax/Aframax級) 海保VTS浦賀 5/5 14:00根岸。(4) DEIRA GHAIR(IMO 9617959・mr-08・マーシャル諸島籍2013年建造・49,999DWT・30,265GT・MR・Synergy Marine Copenhagen運航) 海保VTS浦賀 5/5 10:00市原。(5) NORD MIYAKO(IMO 9890927・mr-09・マーシャル諸島籍2021年建造・51,000DWT・30,560GT・MR・Call sign V7A4339) 海保VTS浦賀 5/5 11:00千葉。(6) AMADI(IMO 9682552・lng-21・ブルネイ籍2015年HHI建造・85,466DWT・102,585GT・LOA 288m・154,800m³・Brunei Gas Carriers A-Class) 海保VTS明石 5/5 08:40姫路（明石VTSのdeparture「その他地域」=ブルネイLNG便と推定）。(7) KEOYOUNG STAR 3(IMO 9798090・chem-nagoya-15・韓国籍2018年建造・2,824DWT・2,222GT) 名古屋港EDI 5/5入港。(8) KEOYOUNG SUN 5(IMO 9321794・chem-nagoya-16・韓国籍2005年建造・1,228DWT・610GT) 名古屋港EDI 5/9入港。(9) KEOYOUNG STAR(IMO 9435301・chem-nagoya-17・韓国籍2007年建造・2,747DWT・1,530GT・Dongkuk Marine運航) 名古屋港EDI 5/10入港。(10) OCEAN ACE 11(IMO 9655793・chem-nagoya-18・韓国籍2012年建造・2,114DWT・1,268GT) 名古屋港EDI 5/10入港。(11) KEOYOUNG STAR 5(IMO 9362798・chem-nagoya-19・韓国籍2005年建造・2,499DWT・1,930GT) 名古屋港EDI 5/11入港。(12) WOORI HANA(IMO 9890707・chem-nagoya-20・韓国籍2020年建造・1,754DWT・1,066GT) 名古屋港EDI 5/8入港。【5/4状態更新・9隻入港済】(a) GEN-EI(vlcc-uraga-04)・SETAGAWA(vlcc-uraga-05)・MARVEL PHOENIX(lng-20)・CONCERTO(mr-07)・FUTURE DIAMOND(lpg-03) 5/2京葉シーバース/富津/川崎沖入港済。(b) AWAJI(chem-nagoya-12) 5/1名古屋・CRANE LUNA(chem-nagoya-11) 5/4名古屋入港済。(c) VOYAGER(aframax-sakh-01) 5/3菊間入港済（サハリン代替供給第1陣完了・米Gen License期限2026-06-18まで）。(d) PRINCESS VANYA(vlcc-us-03) 5/2四日市入港済（米国湾岸→日本VLCC便完了）。。【5/1追加・VTS/港湾EDI検出便9隻（第3陣）】(1) GEN-EI(元栄・IMO 9814117・vlcc-uraga-04・日本籍2018年建造312,375DWT・160,898GT・LOA 339.5m) 海保VTS浦賀 5/2 08:00京葉シーバース到着・3/21 Singapore Anchorage 5発（中東積みSTSまたはバンカリング寄港）・世界最大クラスの339.5m級新造VLCC・運航者未確定。(2) MARVEL PHOENIX(IMO 9962419・lng-20・MOL運航/三井物産チャーター・バミューダ籍2024年新造・115,204GT・174,000m³・LOA 295m) 海保VTS浦賀 5/2 08:30富津到着・米国Cameron LNG（Sabine Pass近接）プロジェクト向け新造船で完全に非中東調達ルート。(3) SETAGAWA(IMO 9391763・vlcc-uraga-05・出光タンカーtime-charter VLCC・パナマ籍2009年建造・159,936GT・299,998DWT・LOA 333m) 海保VTS浦賀 5/2 11:00京葉シーバース到着・直近4/30名古屋発で国内転送便・Idemitsu公開VLCC fleetに掲載確認。(4) CONCERTO(IMO 9743837・mr-07・MR Chemical/Oil Products・シンガポール籍2017年建造・22,987GT・37,350DWT) 海保VTS浦賀 5/2 12:15川崎沖到着・4/3パナマ運河大西洋側錨地発でVesselFinder AIS確認・米墨湾→太平洋ルートで非中東調達便と推定。(5) FUTURE DIAMOND(IMO 9853864・lpg-03・LPG VLGC・パナマ籍2020年HD現代群山建造・46,863GT・50,900DWT・LOA 229.94m) 海保VTS浦賀 5/2 17:20川崎沖到着・VTS分類「ガスタンカー」だがLNGではなくLPG VLGCで分類訂正。(6) CRANE LUNA(IMO 9792175・chem-nagoya-11・パナマ籍2017年建造・3,765GT・LOA 102m) 名古屋港EDI 5/4入港・ACマリン運航・直近Ulsan→Mizushima航跡確認の韓国〜西日本石化港湾近海ケミカル定期便。(7) AWAJI(IMO 9813278・chem-nagoya-12・パナマ籍2017年建造・4,122GT・LOA 107m・ClassNK CNo.172710) 名古屋港EDI 5/1入港・ACマリン運航。(8) NEW GLOBAL(IMO 9425617・chem-nagoya-13・韓国籍2009年建造・4,060GT・5,666DWT・LOA 105.6m) 名古屋港EDI 5/5入港・ACマリン代理店扱いだが船主は韓国オペレータ。(9) KOKA MARU(IMO 9767742・chem-nagoya-14・パナマ籍2017年USUKI SHIPYARD臼杵造船所建造・1,975GT・3,091DWT・LOA 89m・ClassNK CNo.173340) 名古屋港EDI 5/8入港・五洋海運運航・国内/近海ケミカル便。VTS検出CHANG HANG LAN JING(国内コースタル便)・MARITIME EQUATOR(姉崎発・大山行きの出港便)・ENERGY HORIZON(既存lng-01同船・5/2根岸再入港)は重複・出港便のため新規追加せず。【5/1状態更新】OTIS(suezmax-us-01)入港済→4/27千葉出港済(米国産原油91万バレル陸揚げ完了・現在シンガポール向け)・FRONT SINGAPORE(suezmax-us-02)はAIS確認でCape Town向け5/5 ETA表示で日本航路に乗っておらず誤同定の疑い・IMO 9832248の紐付け要再検討（combined確度0.347に低減）・ENERGY FRONTIER(lng-12)入港済(ETA 4/21達成)・本IMO 9422908は要再照合(VesselFinderで同名異IMO 9245720のARUNIKA JAYAインドネシア籍へ改名済船を別途確認)・CASPAR destinationPortをKirin→Kiireに修正・米国湾岸便のETA一律9日後ろ倒し(LAWHAH→6/12・FRONT SIENA→6/10・ECO OCEANO CA→6/1・CE-HAMILTON→5/22・ATREBATES→5/27)・chem-nagoya-01〜10入港済・浦賀/明石/名古屋4/28-29検出便11隻入港済(NAVE CELESTE/SANTANDER KNUTSEN/STARLING/CONSTELLATION/GRAND MEREYA/TEDORIGAWA/ENEOS ARROW/TOPAZ EXPRESS/DIAMOND EXPRESS/YAMILAH 3/NURI CHEMIST)。【5/1追加・サハリン代替供給2隻】(1) VOYAGER(IMO 9843560・aframax-sakh-01・OFAC 2024-01/EU 17次/UK制裁対象タンカー・旧Vernadsky Prospect・オマーン籍2019建造113,310DWT) 3/23 13:44 UTC プリゴロドノエ・オフショア出港→ETA 5/3 10:00菊間（太陽石油菊間製油所）。サハリンブレンド原油は米財務省Gen License で制裁適用除外（経産省要請でG7獲得・期限2026-06-18）・2025-06-09同船同港で60万バレル受入の前例。Bloomberg/OpenSanctions裏取り。(2) CYGNUS PASSAGE(IMO 9376294・lng-19・NYK LNG Shipmanagement運航・バハマ籍2009年三菱長崎建造Moss型145,000m³) 4/26 23:56 UTC プリゴロドノエ出港→ETA 5/8 00:45川崎・サハリン2 LNG専属配船240+航海・非制裁。両船とも米財務省Gen License（期限2026-06-18）の延長判断が次の地政学リスク。【4/29整理】代替ルート第1便を PACIFIC ANNA(IMO 9772010・MOL系Aframax LR2・3/29 太陽石油菊間着) で確定・代替ルート第2便を SUZUKASAN [推定](IMO 9828950・MOL VLCC・日本籍・東京湾着) で反映。経産相3/24予告の『非中東調達便（4/25着予定）』は その後の Reuters/日経報道で OTIS(suezmax-us-01) = Cosmo向け米国産原油便と判明したため重複エントリ vlcc-alt-03 を OTIS に統合。【4/28追加・最重大: ホルムズ承認通過便】IDEMITSU MARU(IMO 9334210・出光タンカーVLCC・パナマ籍2007年IHI建造・300,433DWT) 4/27深夜アブダビ北西錨地→Qeshm/Larak島付近の北ルート（イラン承認）でホルムズ通過。米イラン紛争（2/28開始）以降ペルシャ湾を出た初の日本関連原油タンカー（Bloomberg/gCaptain報）。サウジJuaymah積み・原油200万バレル・ETA 5/17 23:00名古屋。4/28 13:10 UTC AIS active状態・速度14.2kn・喫水20.1m満載・アラビア海東進。トランプ「逆封鎖」下のCENTCOM「非イラン港向けは妨げない」声明と整合する稀少事例。【4/28追加・VTS/港湾EDI検出便9隻（第2陣）】(1) TEDORIGAWA(IMO 9805099・K Line系VLCC・パナマ籍2018年NACKS建造・311,000DWT・161,483GT・LOA 339.5m) 海保VTS浦賀 4/29 06:45扇島シーバース到着・起点要AIS確認。(2) ENEOS ARROW(IMO 9814129・ENEOS Ocean VLCC・日本籍2017年建造・160,597GT・LOA 339m) 海保VTS浦賀 4/29 08:30根岸到着・ENEOS根岸製油所向け・起点要AIS確認。(3) TOPAZ EXPRESS(IMO 9552800・Bernhard Schulte運航MR2プロダクト・香港籍2009年建造・27,976GT・45,650DWT・LOA 180m) 海保VTS浦賀 4/29 14:15市原到着・コスモ千葉/丸善石化向け。(4) DIAMOND EXPRESS(IMO 9409493・MOL Product Tankers運航MR2・香港籍2009年建造・27,976GT・45,634DWT・LOA 180m) 海保VTS浦賀 4/29 17:45市原到着。(5) YAMILAH 3(IMO 9487263・LR1/Panamax原油・リベリア籍2011年建造・42,538GT・74,866DWT・LOA 228m) 海保VTS浦賀 4/29 17:10姉崎到着・出光千葉向け・2024年アデン湾フーシ攻撃被害船・要警戒。(6) CS OCEAN(IMO 1051329・Chemical/Oil Products・パナマ籍2025年建造・5,273GT・LOA 102m) 名古屋港EDI 5/02入港・丸中興産エージェント。(7) MISIKAN(IMO 9246932・油送船・韓国籍2001年建造・4,551GT・8,716DWT・LOA 114m) 名古屋港EDI 5/04入港。(8) NURI CHEMIST(IMO 9485538・KSS Line運航Chemical・パナマ籍2010年臼杵建造・2,193GT・3,968DWT・LOA 89m) 名古屋港EDI 4/28入港・名古屋寄港後Zhangjiagang回航の可能性。(9) FLEX CONSTELLATION(IMO 9825427・Flex LNG運航・マーシャル諸島籍2019年Hanwha Ocean建造・113,428GT・173,400m³・LOA 294.9m・MEGI+PRS) 名古屋港EDI 5/08知多入港・2026年Q1-Q2新15年長期チャーター開始便。明石VTSのDURHAM(GBR籍ガスタンカー・水島→中国通過便)は日本入港便ではないため除外。【4/28・第1陣5隻】(1) NAVE CELESTE(IMO 9916185・Navios Tanker系VLCC・リベリア籍2022年建造・313,418DWT・160,115GT・LOA 339m) 海保VTS浦賀 4/28 12:15京葉シーバース到着・起点要AIS確認。(2) SANTANDER KNUTSEN(IMO 9904170・Knutsen OAS Shipping運航LNG・ノルウェー籍2022年Hyundai Samho建造・174,000m³ Mark III Flex・WinGD X-DF二元燃料・95,548DWT・114,180GT) 海保VTS浦賀 4/28 12:30扇島到着・Shell長期チャーター・起点はカタール/豪/米いずれか。(3) STARLING(IMO 9737527・LR1/Panamax Epoxy・シンガポール籍2016年建造・74,033DWT・43,188GT) 海保VTS浦賀 4/28 17:45姉崎到着・出光千葉製油所向け・起点要AIS確認。(4) CONSTELLATION(IMO 9734680・LGC級LPG・バハマ籍2015年建造・54,336DWT・48,060GT) 海保VTS明石 4/29 03:40坂出到着・departure: ｱﾒﾘｶ明示・四国電力坂出LNG/LPG基地・米湾岸→パナマ運河経由・ホルムズ完全回避。(5) GRAND MEREYA(IMO 9338929・LNG・キプロス籍2008年建造・74,497DWT・120,525GT・LOA 289.5m) 名古屋港EDI 4/29 11:30知多入港・中部電力/東邦ガス知多LNG基地・知多桟橋管理(株)エージェント・起点要AIS確認。坂出はports.jsonに新規Sakaide(34.32N, 133.86E)追加。【4/26追加・米国湾岸→日本向け原油タンカー8隻】ECO OCEANO CA/FRONT SIENA/LAWHAH/PRINCESS VANYA/CE-HAMILTON/ATREBATES + 追加調査でNEW PROSPERITY/PVT POSEIDON。【4/26追加・第2弾】NEW PROSPERITY(IMO 9689988・318,329DWT VLCC・Corpus Christi出港・ETA 5/20)はAIS「JP TSJ」=対馬海峡UN/LOCODE（VLCC接近時の最終仕向確定前ウェイポイント慣習）と判明。PVT POSEIDON(IMO 9457593・PVTrans/ベトナム籍・LOOP+Houston出港・パナマ経由・ETA 5/10)はAIS「Sakai Senboku」=コスモエネルギー堺製油所向けで確定（ツイートの「喜入向け」は誤情報）。MONTESTENA(IMO 9585883)は引き続き保留: AIS Destination「Singapore」のままで日本向け一次裏取りなし・CEPSA系/Singapore製油所向けの可能性高・5/13着後のDestination変更を継続監視。【4/26追加・第1弾】はれるや氏(@I3Xv3t4me684451)4/25報告13隻のうち、AIS Destination日本向けが確認できた6隻を一次裏取り後に登録（VesselFinder 2026-04-26）。Princess Vanya最早5/2四日市着。Lawhah(Bahri/サウジ)・Atrebates(CMB.TECH/ベルギー新造)など多国籍船社が米国産原油を喜望峰経由で輸送。【既存48隻】4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7（4/23 VTS/港湾EDI検出便12隻追加: 浦賀4+明石1+名古屋7） + 7チョークポイント監視。【4/23追加】海保VTS浦賀水道航路 4/24入港予定4隻: KITA LNG（マルタ籍LNG・富津4/24 08:30）・SEYMOUR SUN（NYK/シンガポール籍MRメタノール二元燃料・姉崎4/24 11:00）・GENESIS RIVER（K LINE VLGC・パナマ籍LPG・川崎沖4/24 17:15）・TORM THUNDER（TORM/米国籍MRプロダクト・横須賀4/24 18:30）。海保VTS明石海峡航路 4/24通航 1隻: SETO AZURE（大阪ガス子会社Osaka Bay LNG Shipping・日本初LNGバンカー船・堺泉北発福山向け4/24 10:15）。名古屋港管理組合EDI 4/23検出 7隻: GLORY HANA/KEOYOUNG SEVEN/NO.7 HANA/CS HANA/BONANZA/CS BREEZE/PRINCESS DAISY（外航ケミカル/プロダクトオイルタンカー）。【4/21追加】海保VTS浦賀水道航路 4/22入港予定4隻: FRONT MAINE（Frontline VLCC・扇島シーバース4/22 10:45）・KHASAB SILVER（Oman Shipping MRプロダクト・姉崎4/22 10:15）・PACIFIC ARCADIA（MOL/OGIT LNG・PNG産・扇島4/22 11:15）・SHINSHU MARU（JERA/NYK LNG・米国Freeport産・富津4/22 13:00）。2026-04-17更新: 【4/16】ENEOS GLORYが喜入（鹿児島・ENEOS喜入基地）入港確認（AIS ETA 4/16 00:01達成・目的地は大分でなく喜入に判明）。【4/16-17】KHURAISがAIS 4/17 06:00名古屋入港ETA確認（目的地は四日市でなく名古屋に変更・AIS 5時間前更新・speed 0.1kn）。【4/17】NISSHO MARUが四日市入港（ETA 4/17達成）。【PACIFIC NOTUS】AIS「Japan/Korea Range」確認→袖ケ浦入港済と推定。【4/15】米国とイランが停戦2週間延長を検討（Bloomberg、当初2週間停戦の期限4/21-22頃）。Agios Fanourios I（マルタ籍VLCC）が4/15に2回目の試みでホルムズ通過成功（バスラ/イラク向け）。【4/16】米制裁対象イラン関係船2隻がUAE経由ルートでホルムズ通過（Bloomberg 4/16）。【MAYASAN】ペルシャ湾内（25.8°N, 53.7°E）で0.1knの実質停泊継続・目的地をフジャイラへ変更（ホルムズ未通過・4/16 13:57 UTC AIS）。【YAKUMOSAN】ペルシャ湾内で錨泊継続・目的地OPL AE DAS（ダス島沖）・喫水20.2m（満載）。MOL田村社長「停戦内容精査後にホルムズ通過判断」。【最重大4/12-13】米イランのイスラマバード協議決裂→トランプが逆封鎖宣言（日本時間4/14 00:00発動）。CENTCOM「非イラン港向け船舶は通過妨げない」。ETA（4/17基準）: TATESHINA→5/10(23日)・ENERGY FRONTIER→4/21(4日)・非中東調達便→4/25(8日)・OTIS→4/29(12日)・FRONT SINGAPORE→5/8(21日)・Seaways Yosemite→5/9(22日)・CASPAR→5/23(36日)・MAYASAN/YAKUMOSAN→ホルムズ通過後5/3頃(16日)。日本向け航行中9隻・入港済15隻・回航中2隻・引き返し2隻"
   },
   "chokepoints": [
     {
@@ -1725,8 +1725,8 @@
       "destination": "名古屋港（伊勢湾）",
       "destinationPort": "Nagoya",
       "distanceToJapan_nm": 5800,
-      "speed_knots": 9.6,
-      "eta_days": 16,
+      "speed_knots": 9.5,
+      "eta_days": 17,
       "cargo_t": 300433,
       "cargoType": "原油（サウジ産・200万バレル）",
       "status": "航行中",
@@ -1736,7 +1736,7 @@
         "military": 0.92,
         "combined": 0.804
       },
-      "note": "出光タンカー運航VLCC。IMO 9334210。MMSI 353841000。パナマ籍。2007年IHI Marine United（出光と共同開発）建造。300,433DWT。【最重大4/27-28】米イラン紛争（2026-02-28開始）以降、ペルシャ湾を出た初の日本関連原油タンカー（Bloomberg/gCaptain報）。アブダビ北西錨地で1週間以上停泊後、4/27深夜出港。Qeshm島・Larak島付近の北ルート（イラン承認）でホルムズ海峡通過。4/28 13:10 UTC: 25.82N/57.05E（Larak島東30km）でAIS active状態・東進。VesselFinder 4/28-29: アラビア海航行中・速度14.2kn・喫水20.1m（満載）・ETA 5/17 23:00名古屋。サウジJuaymah港で3月初旬積み込み・原油200万バレル担当。トランプ「逆封鎖」（4/14発動）下のCENTCOM「非イラン港向けは妨げない」声明と整合する稀少事例。MAYASAN/YAKUMOSAN（ペルシャ湾内停泊継続）と対照的な動き。出光興産は個別船舶コメント拒否。VesselFinder/Bloomberg/gCaptain 2026-04-28 確認"
+      "note": "出光タンカー運航VLCC。IMO 9334210。MMSI 353841000。パナマ籍。2007年IHI Marine United（出光と共同開発）建造。300,433DWT・マラッカマックス級。【最重大4/27-28】米イラン紛争（2026-02-28開始）以降、ペルシャ湾を出た初の日本関連原油タンカー（Bloomberg/gCaptain報）。アブダビ北西錨地で1週間以上停泊後、4/27深夜出港。Qeshm島・Larak島付近の北ルート（イラン承認）でホルムズ海峡通過。4/28 13:10 UTC: 25.82N/57.05E（Larak島東30km）でAIS active状態・東進。【5/1 destination 一時変更】巡航14.2-14.5kn・ETA 5/17 23:00名古屋で航行していたが、5/1にAIS destinationをGalle（スリランカ）へ一時変更し速度を9.3knへ半減（kunisawa.net独立追跡）。Galle沖を停船せず通過後、destinationを再びNagoyaに復帰。【5/5現在】VesselFinder: インド沿岸航行中・速度9.5kn・喫水20.1m満載・ETA 5/22 09:00名古屋（当初予定から約4日半後ろ倒し）。サウジJuaymah港で3月初旬積み込み・原油200万バレル担当。トランプ「逆封鎖」（4/14発動）下のCENTCOM「非イラン港向けは妨げない」声明と整合する稀少事例。MAYASAN/YAKUMOSAN（ペルシャ湾内停泊継続）と対照的な動き。Galle経由→Nagoya復帰の動機は商業的判断（保険条件確定待ち・荷揚げ調整）か外部介入か一次ソース無し（出光興産は個別船舶コメント拒否）。VesselFinder/Bloomberg/gCaptain/kunisawa.net 2026-05-05 確認"
     },
     {
       "id": "aframax-sakh-01",
@@ -2289,6 +2289,104 @@
         "combined": 0.893
       },
       "note": "Product/Chemical Oil Tanker。IMO 9890707。MMSI 441224000。Call sign D7WH。韓国籍2020年建造・1,754DWT・1,066GT・LOA 68m。名古屋港管理組合EDI 5/8 08:00名古屋入港予定（5/4検出）。エージェント: 中部船舶。韓国〜日本沿岸プロダクトオイル便。ホルムズ非経由。VesselFinder 2026-05-04 確認"
+    },
+    {
+      "id": "vlcc-uraga-08",
+      "name": "NEW GIANT",
+      "imo": "9516947",
+      "aisTracked": true,
+      "hormuzPassed": false,
+      "type": "VLCC",
+      "departure": "Fujairah, UAE（4/3発・32日航海）",
+      "departurePort": "Fujairah",
+      "destination": "京葉シーバース（千葉）",
+      "destinationPort": "Sodegaura",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 12.0,
+      "eta_days": 1,
+      "cargo_t": 319611,
+      "cargoType": "原油（喫水19.2m満載）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.93,
+        "route": 0.96,
+        "military": 0.94,
+        "combined": 0.840
+      },
+      "note": "リベリア籍VLCC。IMO 9516947。2016年建造・319,611DWT・166,223GT・LOA 333m。Fujairah(UAE)直発・32日航海・喫水19.2m満載・AIS Destination Chiba。海保VTS浦賀 5/6 14:00京葉シーバース到着予定（5/5検出）。Fujairahはホルムズ海峡外側（オマーン湾）でホルムズ非経由のUAE代替ルート寄港地。米イラン紛争下でのUAE経由非ペルシャ湾調達便（パイプライン陸送→Fujairah積み出しと推定）。VesselFinder 2026-05-05 確認"
+    },
+    {
+      "id": "vlcc-uraga-09",
+      "name": "LILA KOCHI",
+      "imo": "9515436",
+      "aisTracked": true,
+      "hormuzPassed": false,
+      "type": "VLCC",
+      "departure": "Singapore Anchorage（3/17発・49日航海）",
+      "departurePort": "NonMideast",
+      "destination": "京葉シーバース（千葉）",
+      "destinationPort": "Sodegaura",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 12.0,
+      "eta_days": 1,
+      "cargo_t": 313798,
+      "cargoType": "原油（喫水16.3m・部分積）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.94,
+        "route": 0.96,
+        "military": 0.96,
+        "combined": 0.867
+      },
+      "note": "リベリア籍VLCC。IMO 9515436。MMSI 636025407。2008年建造・313,798DWT・160,705GT・LOA 333m。Lila Global運航・Tankers International VLCC pool所属。Singapore Anchorage 3/17発・49日航海と長期で中東積→Singapore待機経由のSTSまたはバンカリング寄港の典型パターン。AIS Destination Chiba・喫水16.3m。海保VTS浦賀 5/6 08:00京葉シーバース到着予定（5/5検出）。VesselFinder/Splash247 2026-05-05 確認"
+    },
+    {
+      "id": "mr-10",
+      "name": "PS TOKYO",
+      "imo": "1024508",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "Singapore Anchorage 4（4/26発・9日航海）",
+      "departurePort": "NonMideast",
+      "destination": "横浜沖",
+      "destinationPort": "Yokohama",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 12.0,
+      "eta_days": 1,
+      "cargo_t": 52789,
+      "cargoType": "石油製品/ケミカル（喫水11.8m満載）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.96,
+        "route": 0.97,
+        "military": 0.97,
+        "combined": 0.903
+      },
+      "note": "Chemical/Oil Products Tanker。IMO 1024508。パナマ籍2025年新造・52,789DWT・30,591GT・LOA 184m。Singapore Anchorage 4 発9日航海・AIS Destination Yokohama・喫水11.8m満載。海保VTS浦賀 5/6 15:15横浜沖到着予定（5/5検出）。シンガポール積みのMR外航便でホルムズ非経由。VesselFinder 2026-05-05 確認"
+    },
+    {
+      "id": "mr-11",
+      "name": "YUAN YU HE",
+      "imo": "9896256",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "Darwin, Australia（4/25発・10日航海）",
+      "departurePort": "NonMideast",
+      "destination": "姉崎（姉崎航路・千葉）",
+      "destinationPort": "Anegasaki",
+      "distanceToJapan_nm": 0,
+      "speed_knots": 12.0,
+      "eta_days": 1,
+      "cargo_t": 49842,
+      "cargoType": "原油（喫水10.7m）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 0.95,
+        "route": 0.97,
+        "military": 0.97,
+        "combined": 0.893
+      },
+      "note": "Crude Oil Tanker。IMO 9896256。中国籍2022年建造・49,842DWT・29,861GT・LOA 183m（LR1/MR2境界の小型原油船）。Darwin(豪州北部)発10日航海・AIS Destination Chiba・喫水10.7m。海保VTS浦賀 5/6 14:45姉崎（姉崎航路）到着予定（5/5検出）。豪州産原油の対日輸送便でホルムズ非経由。中国籍だが船籍と仕向地は独立で、中国近海便ではない。VesselFinder 2026-05-05 確認"
     }
   ]
 }
