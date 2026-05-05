@@ -161,10 +161,23 @@ CREATE TABLE IF NOT EXISTS food_cold_storage (
   updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+-- ─── 輸入物価指数（月次・Phase 25）────────────────────────────────────
+-- 日本銀行 時系列統計データ検索サイト API（2026-02-18公開）から月次取得
+-- 系列: PRCG20_2600000000（円ベース総平均）/ PRCG20_2500000000（契約通貨ベース総平均）
+-- 2020年=100 基準。EconomicCascade の WTI 連動モデルを実測ベースで補正する。
+CREATE TABLE IF NOT EXISTS import_price_index (
+  month         TEXT PRIMARY KEY,  -- YYYY-MM
+  yen_base      REAL NOT NULL,     -- 輸入物価指数 円ベース 総平均（2020年=100）
+  contract_base REAL,              -- 輸入物価指数 契約通貨ベース 総平均（2020年=100）
+  source        TEXT NOT NULL,
+  updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE INDEX IF NOT EXISTS idx_trade_statistics_month    ON trade_statistics(month DESC, commodity);
 CREATE INDEX IF NOT EXISTS idx_oil_products_week         ON oil_products_inventory(week_ending DESC);
 CREATE INDEX IF NOT EXISTS idx_petrochem_production_month ON petrochem_production(month DESC, product);
 CREATE INDEX IF NOT EXISTS idx_food_cold_storage_month   ON food_cold_storage(month DESC);
+CREATE INDEX IF NOT EXISTS idx_import_price_month        ON import_price_index(month DESC);
 
 -- ─── 石油備蓄放出イベント（基地別）─────────────────────────────────
 -- JOGMEC ニュースリリース (release_NNNNN.html) + 経産省プレスから抽出

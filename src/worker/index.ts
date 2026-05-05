@@ -42,6 +42,8 @@ import {
   getCumulativeReleasesByBase,
   getAllPortOilThroughput,
   getPortOilThroughputByPort,
+  getLatestImportPrice,
+  getImportPriceHistory,
 } from "./db";
 import { ALL_BASES, NATIONAL_BASES, PRIVATE_BASES } from "./jogmec-fetcher";
 import { PORT_REGISTRY } from "./port-cargo-fetcher";
@@ -395,6 +397,8 @@ async function handleApiRoute(
       return handleOilReleases(env);
     case "/api/oil-reserves/throughput":
       return handleOilThroughput(url, env);
+    case "/api/import-price":
+      return handleImportPrice(url, env);
     case "/api/sources":
       return handleSources();
     case "/api/docs":
@@ -423,6 +427,7 @@ async function handleApiRoute(
           "GET /api/tankers": "タンカー15隻の到着予測",
           "GET /api/electricity?area={id}": "電力需給実測データ（全10エリア）",
           "GET /api/oil-price": "WTI原油スポット価格（出典: EIA）",
+          "GET /api/import-price?history={n}": "輸入物価指数 円ベース・契約通貨ベース（出典: 日本銀行 企業物価指数 2020年基準）",
           "GET /api/summary?scenario={id}": "プレーンテキスト概要（LLM・クローラー向け）",
           "GET /api/simulate?scenario={id}": "シミュレーション要約（枯渇日・主要イベント・備蓄データ）",
           "GET /api/methodology": "計算モデル・前提条件・係数・出典（構造化JSON）",
@@ -559,6 +564,63 @@ async function handleOilPrice(env: Env): Promise<Response> {
     JSON.stringify({ wti_usd: row.wti_usd, date: row.date, updatedAt: row.updated_at }),
     { expirationTtl: CACHE_TTL.OIL_PRICE },
   );
+  return jsonResponse(payload);
+}
+
+// ─── /api/import-price ────────────────────────────────
+
+/**
+ * 日銀 輸入物価指数（円ベース・契約通貨ベース・2020年=100）
+ * ?history=12 で直近Nヶ月分の履歴を返す（既定: 直近12ヶ月）
+ */
+async function handleImportPrice(url: URL, env: Env): Promise<Response> {
+  const historyParam = url.searchParams.get("history");
+  const limit = Math.min(Math.max(Number(historyParam) || 12, 1), 60);
+
+  const cacheKey = `${CACHE_KEYS.IMPORT_PRICE_LATEST}:h${limit}`;
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
+  if (cached) {
+    return jsonResponse({ ...(cached.data as object), cache: "hit" });
+  }
+
+  const latest = await getLatestImportPrice(env.DB);
+  if (!latest) {
+    return jsonResponse(
+      { error: "no_data", message: "輸入物価指数はまだ取得されていません（毎月18日更新）" },
+      404,
+    );
+  }
+
+  const history = await getImportPriceHistory(env.DB, limit);
+
+  // 前年同月比（同月が履歴内にあれば計算）
+  const yoyMap = new Map(history.map((r) => [r.month, r.yen_base]));
+  const ym = latest.month.split("-");
+  const prevYearMonth = `${Number(ym[0]) - 1}-${ym[1]}`;
+  const prevYearVal = yoyMap.get(prevYearMonth);
+  const yoyPct = prevYearVal
+    ? Math.round(((latest.yen_base - prevYearVal) / prevYearVal) * 1000) / 10
+    : null;
+
+  const payload = {
+    latest: {
+      month: latest.month,
+      yen_base: latest.yen_base,
+      contract_base: latest.contract_base,
+      yoy_yen_base_pct: yoyPct,
+      updatedAt: latest.updated_at,
+    },
+    history: history.map((r) => ({
+      month: r.month,
+      yen_base: r.yen_base,
+      contract_base: r.contract_base,
+    })),
+    source: latest.source,
+    note: "2020年=100基準。円ベースは円安・原油高の輸入コスト波及を反映。",
+    cache: "miss",
+  };
+
+  await setCache(env.CACHE, cacheKey, payload, CACHE_TTL.IMPORT_PRICE);
   return jsonResponse(payload);
 }
 
@@ -1568,6 +1630,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/regions", desc: "全国10電力エリアパラメータ（原子力・再エネ・連系線）", params: "" },
     { method: "GET", path: "/api/electricity", desc: "電力需給実測データ（全10エリア、日次自動更新）", params: "?area=tokyo" },
     { method: "GET", path: "/api/oil-price", desc: "WTI原油スポット価格（EIA RWTC、日次自動更新）", params: "" },
+    { method: "GET", path: "/api/import-price", desc: "輸入物価指数 円ベース・契約通貨ベース（日銀 企業物価指数 2020年基準、月次自動更新）", params: "?history=12" },
     { method: "GET", path: "/api/countdowns", desc: "石油/LNG/電力の供給可能日数", params: "?scenario=realistic" },
     { method: "GET", path: "/api/collapse", desc: "全国10エリア供給影響順序", params: "?scenario=realistic" },
     { method: "GET", path: "/api/simulation", desc: "フロー型在庫シミュレーション（365日タイムライン）", params: "?scenario=realistic&maxDays=365" },
