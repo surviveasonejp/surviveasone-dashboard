@@ -1,0 +1,44 @@
+# Dependabot 設定
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# - npm: dependency 更新を週次でスキャン
+# - github-actions: SHA pinned actions の最新タグへの更新を週次で提案
+#   (各ワークフロー内の `# vX.Y.Z` コメントを参照して新 SHA に書き換える)
+
+version: 2
+
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "deps"
+    groups:
+      # React 19 系は同期更新（react / react-dom / @types/react* を1 PR に集約）
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      # Cloudflare ツールチェイン（wrangler / @cloudflare/* を1 PR に集約）
+      cloudflare:
+        patterns:
+          - "wrangler"
+          - "@cloudflare/*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
