@@ -256,6 +256,48 @@ export const About: FC = () => {
         </p>
       </div>
 
+      {/* 運営者・独立性 */}
+      <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">OPERATOR — 運営者と独立性</SectionHeading>
+        <p className="text-neutral-300 text-sm leading-relaxed">
+          本プロジェクトは<span className="text-neutral-200 font-bold">独立した個人プロジェクト</span>です。
+          日本政府、経済産業省、資源エネルギー庁、その他いかなる政府機関・公的機関・営利企業とも
+          一切の関係・出資・提携・委託関係を持ちません。
+        </p>
+        <div className="text-xs text-neutral-500 space-y-1.5 leading-relaxed">
+          <div className="flex gap-3">
+            <span className="text-neutral-400 font-mono w-28 shrink-0">運営者</span>
+            <span>Kazuhiko Ido（個人開発者・X: <a href="https://x.com/idxx" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">@idxx</a>）</span>
+          </div>
+          <div className="flex gap-3">
+            <span className="text-neutral-400 font-mono w-28 shrink-0">連絡先</span>
+            <span>
+              <a href="mailto:kazuhiko.ido@gmail.com" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">kazuhiko.ido@gmail.com</a>
+              {" / "}
+              GitHub <a href="https://github.com/idx" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">@idx</a>
+            </span>
+          </div>
+          <div className="flex gap-3">
+            <span className="text-neutral-400 font-mono w-28 shrink-0">ソースコード</span>
+            <span>
+              <a href="https://github.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">github.com/surviveasonejp</a>
+              （AGPL-3.0・コミット履歴で単独運営を立証可能）
+            </span>
+          </div>
+          <div className="flex gap-3">
+            <span className="text-neutral-400 font-mono w-28 shrink-0">ドメイン</span>
+            <span>surviveasonejp.org / surviveasonejp.net（運営者本人が登録・WHOIS で立証可能）</span>
+          </div>
+          <div className="flex gap-3">
+            <span className="text-neutral-400 font-mono w-28 shrink-0">財務</span>
+            <span>広告・トラッキング・個人情報収集なし。インフラ費は運営者が自己負担（GitHub Sponsors で任意支援を受付）</span>
+          </div>
+        </div>
+        <p className="text-xs text-neutral-500 leading-relaxed">
+          政府統計・公的データを引用する際は必ず出典を明記しています。本サイトの内容は引用元機関の公式見解ではなく、運営者個人による独立した分析・可視化です。
+        </p>
+      </div>
+
       {/* 煽らない設計 */}
       <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
         <SectionHeading as="h2" tone="success" size="sm" tracking="wider">煽らない設計 — NON-AMPLIFICATION DESIGN</SectionHeading>
