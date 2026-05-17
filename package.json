@@ -13,8 +13,8 @@
     "@use-gesture/react": "^10.3.1",
     "@xyflow/react": "^12.10.2",
     "dagre": "^0.8.5",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-router-dom": "^7.4.0"
   },
   "devDependencies": {
