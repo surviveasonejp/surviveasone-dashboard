@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "ホルムズ海峡封鎖に関連する実際に発生したイベント。シミュレーションのタイムラインに重ねて表示する。",
-    "updatedAt": "2026-05-01T00:00:00+09:00",
+    "updatedAt": "2026-05-18T00:00:00+09:00",
     "note": "dateはISO 8601形式。dayOffsetは封鎖開始日(2026-03-01想定)からの経過日数。"
   },
   "blockadeStartDate": "2026-03-01",
@@ -1123,6 +1123,19 @@
       "label": "VTS/港湾EDI検出便9隻が東京湾・名古屋港へ集中入港 — 米国Cameron LNG新造船MARVEL PHOENIX含む",
       "source": "国土交通省 海上保安庁 浦賀水道VTS / 名古屋港管理組合EDI / VesselFinder 2026-05-01",
       "impact": "海保VTS浦賀水道航路と名古屋港EDI で 5/1-5/8 の9隻入港予定を新規検出。東京湾向け5隻（GEN-EI・MARVEL PHOENIX・SETAGAWA・CONCERTO・FUTURE DIAMOND）と名古屋向け4隻（CRANE LUNA・AWAJI・NEW GLOBAL・KOKA MARU）。MARVEL PHOENIX（IMO 9962419・MOL運航/三井物産チャーター・2024年新造）は米国Sabine Pass近接Cameron LNG プロジェクト向けで完全に非中東調達ルート・富津5/2着。GEN-EI（IMO 9814117・日本籍339.5m級新造VLCC）はSingapore Anchorage 5発の中東積み想定。SETAGAWA（出光タンカーtime-charter VLCC）は4/30名古屋発の国内転送便。封鎖期2か月目に米国LNG・米墨湾原油・国内転送・近海ケミカルが並走するマルチソース供給を裏付け"
+    },
+    {
+      "date": "2026-05-18",
+      "dayOffset": 78,
+      "category": "international",
+      "label": "出光丸 入港遅延 — 南シナ海航行中・ETA 5/25に再延期（当初5/17から約1週間後ろ倒し）",
+      "source": "VesselFinder AIS 2026-05-17 / MyShipTracking AIS 2026-05-17 / kunisawa.net 2026-05",
+      "impact": "出光丸（IMO 9334210・出光タンカー運航VLCC）は5/17 07:10 UTC時点で19.00°N/119.69°E（南シナ海・ルソン海峡付近・台湾南方約350km）を航行中。速度7-8kn・喫水20.1m満載継続（原油200万バレル）。名古屋向けETA 5/25 00:01（当初5/17 23:00→5/5更新時5/22 09:00→さらに5/25 00:01と2回後ろ倒し）。5/1のGalle一時転向・速度9.3knへ半減後、名古屋復帰するも低速航行が継続。5/5前後にAIS信号が一時断絶（kunisawa.net独立追跡）後に復帰。遅延理由（保険条件確定待ち・港湾スケジュール調整等）は未確認（出光興産は個別船舶コメントを拒否）。名古屋着岸・積み荷揚げはETA 5/25以降の確認待ち",
+      "affectedPopulation": {
+        "count": 2000000,
+        "label": "原油200万バレル（日本国内消費約8日分相当）・ETA 5/25着岸想定で当初予定から約1週間遅延",
+        "source": "経済産業省 資源・燃料統計（2024年度国内原油消費量約日量250万バレル）/ VesselFinder AIS 2026-05-17"
+      }
     }
   ]
 }
