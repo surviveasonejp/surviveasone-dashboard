@@ -1,7 +1,7 @@
 /* TEAM */
 
-Maintainer: idx (Kazuhiko Ido)
-Contact: kazuhiko.ido [at] gmail.com
+Maintainer: idx
+Contact: https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new
 GitHub: @idx
 X: @surviveasonejp
 Site: https://surviveasonejp.org

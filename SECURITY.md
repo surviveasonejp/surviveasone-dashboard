@@ -2,11 +2,10 @@
 
 ## 報告先
 
-脆弱性を発見した場合は、**公開issueではなく**以下のいずれかで報告してください:
+脆弱性を発見した場合は、**公開issueではなく** GitHub Security Advisories のプライベート報告で連絡してください:
 
-1. **GitHub Security Advisories（推奨）**:
-   <https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new>
-2. **メール**: kazuhiko.ido [at] gmail.com
+- **GitHub Security Advisories（推奨）**:
+  <https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new>
 
 報告には以下を含めていただけると助かります:
 
