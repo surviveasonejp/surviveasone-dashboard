@@ -286,7 +286,7 @@ export const About: FC = () => {
           </div>
           <div className="flex gap-3">
             <span className="text-neutral-400 font-mono w-28 shrink-0">ドメイン</span>
-            <span>surviveasonejp.org / surviveasonejp.net（運営者本人が登録・WHOIS で立証可能）</span>
+            <span>surviveasonejp.org / surviveasonejp.net（運営者が登録・管理）</span>
           </div>
           <div className="flex gap-3">
             <span className="text-neutral-400 font-mono w-28 shrink-0">財務</span>
