@@ -267,14 +267,14 @@ export const About: FC = () => {
         <div className="text-xs text-neutral-500 space-y-1.5 leading-relaxed">
           <div className="flex gap-3">
             <span className="text-neutral-400 font-mono w-28 shrink-0">運営者</span>
-            <span>Kazuhiko Ido（個人開発者・X: <a href="https://x.com/idxx" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">@idxx</a>）</span>
+            <span>個人開発者 idx（独立運営）</span>
           </div>
           <div className="flex gap-3">
             <span className="text-neutral-400 font-mono w-28 shrink-0">連絡先</span>
             <span>
-              <a href="mailto:kazuhiko.ido@gmail.com" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">kazuhiko.ido@gmail.com</a>
-              {" / "}
               GitHub <a href="https://github.com/idx" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">@idx</a>
+              {" / "}
+              脆弱性報告は <a href="https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 underline underline-offset-2">GitHub Security Advisories</a>
             </span>
           </div>
           <div className="flex gap-3">
