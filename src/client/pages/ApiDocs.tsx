@@ -251,7 +251,7 @@ LNG在庫: 750.4日
   {
     method: "GET",
     path: "/api/methodology",
-    description: "16の計算モデル・前提パラメータ・信頼度スコア・データソースのメタデータ。研究・検証用途向け",
+    description: "19の計算モデル・前提パラメータ・信頼度スコア・データソースのメタデータ。研究・検証用途向け",
     example: `curl ${API_BASE}/api/methodology
 
 // Response (抜粋)

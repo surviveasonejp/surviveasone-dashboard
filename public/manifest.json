@@ -1,7 +1,7 @@
 {
   "name": "SAO – Situation Awareness Observatory",
   "short_name": "SAO",
-  "description": "ホルムズ海峡封鎖シナリオで日本のエネルギー供給制約を可視化する意思決定支援ツール",
+  "description": "公開データと公開モデルで日本の重要インフラ依存を観測するオープン基盤（第1の観測事例: ホルムズ海峡封鎖）",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

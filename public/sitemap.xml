@@ -9,9 +9,9 @@
   <url><loc>https://surviveasonejp.org/petrochem</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://surviveasonejp.org/family</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://surviveasonejp.org/prepare</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://surviveasonejp.org/for/childcare</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://surviveasonejp.org/for/parents</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://surviveasonejp.org/for/dialysis</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://surviveasonejp.org/for/nursing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://surviveasonejp.org/for/elderly</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://surviveasonejp.org/methodology</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://surviveasonejp.org/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://surviveasonejp.org/api-docs</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>

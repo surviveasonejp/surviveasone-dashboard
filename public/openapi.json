@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "SAO – Situation Awareness Observatory API",
-    "description": "ホルムズ海峡封鎖シナリオにおける日本のエネルギー・食料・物流への供給制約の波及をシミュレーションするAPI。全エンドポイント認証不要・無料。16の計算モデルと4シナリオ（国際協調/標準対応/需要超過/停戦・回復）で分析。",
+    "description": "公開データと公開モデルで日本の重要インフラ依存と供給リスクの波及を観測するAPI（第1の観測事例: ホルムズ海峡封鎖）。全エンドポイント認証不要・無料。19の計算モデルと4シナリオ（国際協調/標準対応/需要超過/停戦・回復）で分析。",
     "version": "0.3.0",
     "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },
     "contact": { "url": "https://github.com/surviveasonejp/surviveasone-dashboard" }
@@ -134,7 +134,7 @@
     "/api/methodology": {
       "get": {
         "summary": "計算モデル・前提条件メタデータ",
-        "description": "16の計算モデル・前提パラメータ（hormuzDependencyRate等）・信頼度スコア・データソースの構造化JSON。研究・検証用途向け。",
+        "description": "19の計算モデル・前提パラメータ（hormuzDependencyRate等）・信頼度スコア・データソースの構造化JSON。研究・検証用途向け。",
         "responses": { "200": { "description": "モデル一覧・係数・出典・信頼度スコア" } }
       }
     },

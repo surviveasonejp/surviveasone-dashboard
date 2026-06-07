@@ -1640,7 +1640,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/ais", desc: "AIS生データ（位置・速度・目的港・日本向け判定）", params: "" },
     { method: "GET", path: "/api/petrochemtree", desc: "石化サプライチェーン樹形図ノード・エッジデータ", params: "" },
     { method: "GET", path: "/api/petrochemtree/risk", desc: "石化樹形図シナリオ別リスクスコア・崩壊フラグ", params: "?scenario=realistic" },
-    { method: "GET", path: "/api/methodology", desc: "16計算モデルのメタデータ・パラメータ・信頼度", params: "" },
+    { method: "GET", path: "/api/methodology", desc: "19計算モデルのメタデータ・パラメータ・信頼度", params: "" },
     { method: "GET", path: "/api/validation", desc: "シミュレーション予測 vs 実際の照合結果", params: "" },
     { method: "GET", path: "/api/real-events", desc: "封鎖後の実イベント一覧（日付降順）", params: "?recentDays=60&category=industry" },
     { method: "GET", path: "/api/port-arrivals", desc: "VTS/港湾EDI入航予定タンカー + 未登録便検出", params: "?port=uraga|akashi|kanmon|nagoya&refresh=true" },

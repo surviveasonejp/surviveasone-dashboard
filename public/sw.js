@@ -1,4 +1,4 @@
-// ─── Survive as One — Service Worker ─────────────────
+// ─── SAO (Situation Awareness Observatory) — Service Worker ─────────────────
 // 戦略: App Shell キャッシュ + API ネットワーク優先
 // 目的: 電源喪失前にインストール → オフラインで FOOD/FAMILY/PREPARE 等を閲覧可能
 
@@ -150,7 +150,7 @@ async function navigationHandler(request) {
     const cached = await caches.match("/");
     return cached || new Response(
       "<html><body style='background:#0f1419;color:#fff;font-family:sans-serif;padding:2rem;'>" +
-      "<h1 style='color:#ef4444;'>Survive as One</h1>" +
+      "<h1 style='color:#ef4444;'>SAO – Situation Awareness Observatory</h1>" +
       "<p>オフラインです。事前にページを開いてキャッシュしてください。</p></body></html>",
       { status: 503, headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
