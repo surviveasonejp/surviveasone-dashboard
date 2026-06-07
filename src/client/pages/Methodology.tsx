@@ -89,7 +89,7 @@ export const Methodology: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <PageHero
         title={<span className="text-warning-soft">METHODOLOGY</span>}
-        subtitle="シミュレーションモデルの前提・計算式・データソース・制約"
+        subtitle="観測事例 #1（ホルムズ海峡封鎖）の前提・計算式・データソース・制約。手法は全量公開・再現可能で、他の供給制約にも適用できる設計"
       />
 
       {/* シミュレーション宣言 */}
@@ -529,15 +529,16 @@ export const Methodology: FC = () => {
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">APA</div>
             <code className="block text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 select-all">
-              Survive as One Japan. (2026). Hormuz Strait blockade energy simulation for Japan. https://surviveasonejp.org
+              SAO – Situation Awareness Observatory. (2026). Open infrastructure risk observatory for Japan (Case Study #1: Hormuz Strait blockade). https://surviveasonejp.org
             </code>
           </div>
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">BibTeX</div>
             <pre className="text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 overflow-x-auto select-all">
 {`@misc{surviveasonejp2026,
-  title  = {Survive as One Japan: Hormuz Strait
-            Blockade Energy Simulation},
+  title  = {SAO – Situation Awareness Observatory:
+            Open Infrastructure Risk Observatory for Japan
+            (Case Study #1: Hormuz Strait Blockade)},
   author = {idx},
   year   = {2026},
   url    = {https://surviveasonejp.org},
@@ -558,7 +559,7 @@ export const Methodology: FC = () => {
       <div className="bg-panel border border-success-soft/30 rounded-lg p-6 space-y-3">
         <SectionHeading as="h2" tone="success" size="sm" tracking="wider">検証と貢献</SectionHeading>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          ソースコードはAGPL-3.0で全量公開されています。計算ロジックは誰でも検証可能です。
+          ソースコードはAGPL-3.0で全量公開されています。計算ロジックは誰でも検証可能で、この観測手法はホルムズ以外の供給制約にも再現・適用できます。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
           モデルの前提・パラメータに対する検証や改善提案は GitHub Issue（モデル検証テンプレート）で受け付けています。

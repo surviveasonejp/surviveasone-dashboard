@@ -74,7 +74,7 @@ export const Landing: FC = () => {
     <div className="space-y-8">
       <AlertBanner
         level="warning"
-        message="これは予測ではなくリスクシナリオのシミュレーションです — 国際協調/標準対応/需要超過/停戦・回復の4シナリオで分析"
+        message="公開データと公開モデルで重要インフラ依存を観測する基盤です。下記は第1の観測事例（ホルムズ海峡封鎖）— 国際協調/標準対応/需要超過/停戦・回復の4シナリオで分析"
       />
 
       {/* ヒーロー */}
@@ -271,6 +271,7 @@ export const Landing: FC = () => {
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
           日本の石油備蓄はIEA基準で国際的に充実した水準にあります。
           前提条件・計算モデルの詳細は<Link to="/about" className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400">ABOUTページ</Link>を参照してください。
+          計算ロジックとデータは全量公開（AGPL-3.0）。この手法はホルムズ以外の供給制約にも再現・適用できます。
         </p>
       </div>
     </div>
