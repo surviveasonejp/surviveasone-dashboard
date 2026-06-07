@@ -50,6 +50,7 @@ export const Dashboard: FC = () => {
     <div className="space-y-6">
       <PageHero
         title={<span className="text-primary-soft">SAO</span>}
+        subtitle="Situation Awareness Observatory — 公開データと公開モデルで重要インフラ依存を観測（観測事例 #1: ホルムズ海峡封鎖）"
         right={<>
           {isFromApi && <Badge tone="success">LIVE</Badge>}
           <ScenarioSelector selected={scenario} onChange={setScenario} />
@@ -61,7 +62,7 @@ export const Dashboard: FC = () => {
 
       <AlertBanner
         level="warning"
-        message="ホルムズ海峡リスクシナリオ — 公開データに基づく影響度分析"
+        message="観測事例 #1: ホルムズ海峡封鎖 — 公開データに基づく重要インフラ影響度の統合分析"
       />
 
       <SimulationBanner />

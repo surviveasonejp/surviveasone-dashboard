@@ -332,10 +332,11 @@ export const About: FC = () => {
 
       {/* なぜホルムズ海峡か */}
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
-        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">なぜホルムズ海峡か</SectionHeading>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">なぜ第1の観測事例にホルムズ海峡か</SectionHeading>
         <div className="space-y-2 text-sm text-neutral-400 leading-relaxed">
+          <p>重要インフラ依存の観測対象は数多くあるが、第1の観測事例にホルムズ海峡封鎖を選んだのは、供給制約の波及が急峻で、かつ検証可能な公開データ（タンカー位置・備蓄量・貿易統計）が揃い、手法の再現可能性を示しやすいためだ。</p>
           <p>日本の原油輸入の<span className="text-warning-soft font-mono font-bold">94%</span>が中東依存。うち<span className="text-warning-soft font-mono font-bold">93%</span>がホルムズ海峡を通過する。</p>
-          <p>供給危機が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に制約される。</p>
+          <p>供給制約が長期化すれば、火力発電（LNG29.1%+石炭28.2%+石油1.4%+その他6.3%=全体の65%）への燃料供給が影響を受け、電力→石化製品→物流→食料→水道が連鎖的に制約される。</p>
           <p className="text-neutral-500 text-xs">{`※ 石油備蓄${staticReserves.oil.totalReserveDays}日分（経産省${staticReserves.meta.baselineDate}時点・法ベース・放出中）。放出制約・精製変換効率を考慮した実効値は約120〜160日。LNG在庫は約25日分でホルムズ直接依存は6.3%だが、保険・海運市場への波及で非依存ルートにも影響し得る。`}</p>
         </div>
       </div>
