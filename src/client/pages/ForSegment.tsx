@@ -1,6 +1,7 @@
 import { type FC } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
+import { ShareButton } from "../components/ShareButton";
 import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
 import { SectionHeading } from "../components/SectionHeading";
@@ -452,24 +453,18 @@ export const ForSegment: FC = () => {
       )}
 
       {/* シェア */}
-      <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
-        onClick={() => {
-          const text = [
-            `【${seg.title}】ホルムズリスクシナリオ（${SCENARIO_LABELS[scenario]}）`,
-            `${displayLabel}: ${displayStat}${seg.heroUnit}`,
-            "",
-            seg.actions[0] ?? "今のうちに備えを確認してください。",
-            "",
-            `surviveasonejp.org/for/${seg.id}`,
-            "",
-            "#ホルムズ海峡 #エネルギー安全保障",
-          ].join("\n");
-          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-        }}
-      >
-        X(Twitter)でシェア
-      </button>
+      <ShareButton
+        getText={() => [
+          `【${seg.title}】ホルムズリスクシナリオ（${SCENARIO_LABELS[scenario]}）`,
+          `${displayLabel}: ${displayStat}${seg.heroUnit}`,
+          "",
+          seg.actions[0] ?? "今のうちに備えを確認してください。",
+          "",
+          `surviveasonejp.org/for/${seg.id}`,
+          "",
+          "#ホルムズ海峡 #エネルギー安全保障",
+        ].join("\n")}
+      />
     </div>
   );
 };
