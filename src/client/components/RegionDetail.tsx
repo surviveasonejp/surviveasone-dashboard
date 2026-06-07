@@ -60,7 +60,7 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
     ? (regionData as Record<string, unknown>).jointStockpile as { partner: string; location: string; capacity_kL: number; note: string } | undefined
     : undefined;
 
-  // 配送停止予測日 = 石油枯渇日の手前（配送遅延分だけ早く停止）
+  // 配送停止予測日 = 石油供給可能日数の手前（配送遅延分だけ早く停止）
   const deliveryStopDay = logistics
     ? Math.max(0, region.oilDepletionDays - logistics.deliveryDelayDays)
     : null;
@@ -78,10 +78,10 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
         </span>
       </div>
 
-      {/* 崩壊予測日数 */}
+      {/* 影響到達日数 */}
       <div className="text-center py-3">
         <div className="text-xs font-mono text-neutral-500 tracking-wider mb-1 flex items-center justify-center gap-2">
-          崩壊予測 <DataBadge confidence={region.hasLiveData ? "verified" : "estimated"} />
+          影響到達 <DataBadge confidence={region.hasLiveData ? "verified" : "estimated"} />
         </div>
         <div className="font-mono font-bold text-4xl" style={{ color: collapseColor }}>
           {formatDecimal(region.collapseDays)}
@@ -94,10 +94,10 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
 
       {/* 詳細ブレイクダウン */}
       <div className="space-y-2 text-sm">
-        <DetailRow label="石油枯渇" value={`${formatDecimal(region.oilDepletionDays)}日`} sub={formatDepletionDate(region.oilDepletionDays)} />
-        <DetailRow label="LNG枯渇" value={`${formatDecimal(region.lngDepletionDays)}日`} sub={formatDepletionDate(region.lngDepletionDays)} />
-        <DetailRow label="電力崩壊" value={`${formatDecimal(region.powerCollapseDays)}日`} sub={formatDepletionDate(region.powerCollapseDays)} />
-        <DetailRow label="物流崩壊" value={`${formatDecimal(region.logisticsCollapseDays)}日`} sub={formatDepletionDate(region.logisticsCollapseDays)} />
+        <DetailRow label="石油供給可能" value={`${formatDecimal(region.oilDepletionDays)}日`} sub={formatDepletionDate(region.oilDepletionDays)} />
+        <DetailRow label="LNG供給可能" value={`${formatDecimal(region.lngDepletionDays)}日`} sub={formatDepletionDate(region.lngDepletionDays)} />
+        <DetailRow label="電力逼迫" value={`${formatDecimal(region.powerCollapseDays)}日`} sub={formatDepletionDate(region.powerCollapseDays)} />
+        <DetailRow label="物流逼迫" value={`${formatDecimal(region.logisticsCollapseDays)}日`} sub={formatDepletionDate(region.logisticsCollapseDays)} />
       </div>
 
       {/* 国家石油備蓄基地 */}

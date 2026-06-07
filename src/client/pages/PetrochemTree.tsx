@@ -588,7 +588,7 @@ export const PetrochemTree: FC = () => {
     <div className="flex flex-col gap-4 p-4">
       <PageHero
         title="PETROCHEM CHAIN"
-        subtitle="原油・天然ガスから石化製品・最終用途までの供給チェーン。シナリオ・日数でナフサ枯渇の波及を確認"
+        subtitle="原油・天然ガスから石化製品・最終用途までの供給チェーン。シナリオ・日数でナフサ在庫低下の波及を確認"
       />
 
       <div className="flex flex-wrap items-center gap-3">

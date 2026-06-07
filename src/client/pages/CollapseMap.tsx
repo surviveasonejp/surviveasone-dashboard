@@ -54,12 +54,12 @@ export const CollapseMap: FC = () => {
     <div className="space-y-6">
       <PageHero
         title={<><span className="text-warning-soft">COLLAPSE</span> MAP</>}
-        subtitle="全国10電力エリアの崩壊予測順序 — どのエリアが最初に機能停止するか"
+        subtitle="観測事例#1ホルムズ海峡封鎖下で、全国10電力エリアに供給影響が現れる順序を観測 — どのエリアが先に供給逼迫に至るか"
       />
 
       <AlertBanner
         level="warning"
-        message="エリア別の脆弱性に基づく崩壊順序シミュレーション"
+        message="エリア別の脆弱性に基づく供給影響進行シミュレーション"
       />
 
       <SimulationBanner />
@@ -99,10 +99,10 @@ export const CollapseMap: FC = () => {
         </div>
       </div>
 
-      {/* 崩壊順ランキングテーブル */}
+      {/* 供給影響進行ランキングテーブル */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">崩壊順ランキング</SectionHeading>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">供給影響進行ランキング</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -111,11 +111,11 @@ export const CollapseMap: FC = () => {
                 <th className="px-4 py-2 text-left">#</th>
                 <th className="px-4 py-2 text-left">エリア</th>
                 <th className="px-4 py-2 text-left">ランク</th>
-                <th className="px-4 py-2 text-right">崩壊予測日</th>
-                <th className="px-4 py-2 text-right">石油枯渇</th>
-                <th className="px-4 py-2 text-right">LNG枯渇</th>
-                <th className="px-4 py-2 text-right">電力崩壊</th>
-                <th className="px-4 py-2 text-right">物流崩壊</th>
+                <th className="px-4 py-2 text-right">影響到達日</th>
+                <th className="px-4 py-2 text-right">石油供給可能</th>
+                <th className="px-4 py-2 text-right">LNG供給可能</th>
+                <th className="px-4 py-2 text-right">電力逼迫</th>
+                <th className="px-4 py-2 text-right">物流逼迫</th>
               </tr>
             </thead>
             <tbody>

@@ -144,7 +144,7 @@ export const RegionMap: FC<RegionMapProps> = ({ regions, onSelectRegion, selecte
       viewBox="14 0 552 600"
       className="w-full h-full max-h-[600px] mx-auto block"
       role="img"
-      aria-label="日本地図 — 10電力エリア崩壊順マップ"
+      aria-label="日本地図 — 10電力エリア供給影響進行マップ"
     >
       {/* 本州・九州のパス描画 */}
       {Array.from(prefByRegion.entries())

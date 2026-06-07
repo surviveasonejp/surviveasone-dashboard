@@ -24,7 +24,7 @@ const EMPTY_SIM: FlowSimulationResult = {
   thresholds: [],
 };
 
-/** フローシミュレーションの閾値イベントから動的にサプライチェーン崩壊ステップを生成 */
+/** フローシミュレーションの閾値イベントから動的にサプライチェーン供給制約ステップを生成 */
 function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollapse | null): Array<{ label: string; color: string; days: number }> {
   const findOilThresholdDay = (type: string): number | null => {
     const ev = sim.thresholds.find((t) => t.resource === "oil" && t.type === type);
@@ -46,7 +46,7 @@ function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollap
   }
 
   // 石化カスケード: 石油供給制限の前段で発生（ナフサは原油精製の副産物）
-  // 価格高騰時点でナフサ調達が困難化し、その後段階的に崩壊
+  // 価格高騰時点でナフサ調達が困難化し、その後段階的に供給制約
   const naphthaConstraintDay = oilPriceSpikeDay != null
     ? Math.max(oilPriceSpikeDay - 5, 1)
     : Math.round(sim.oilDepletionDay * 0.2);
@@ -78,7 +78,7 @@ function buildChainSteps(sim: FlowSimulationResult, selectedRegion: RegionCollap
     { label: `物流制限 — 長距離輸送停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "var(--color-logistics)", days: logisticsLimitDay },
     { label: "包装材・容器・食品トレーの品薄", color: "#f59e0b", days: packagingShortageDay },
     { label: "石化製品の供給停止（塩ビ・PE・PP）", color: "#ef4444", days: petrochemStopDay },
-    { label: "電力崩壊 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
+    { label: "電力逼迫 → 冷蔵停止", color: "#f59e0b", days: sim.powerCollapseDay },
     { label: `物流停止 — 店頭補充停止${selectedRegion ? `（${selectedRegion.name}）` : ""}`, color: "var(--color-logistics)", days: logisticsStopDay },
   );
 
@@ -172,13 +172,13 @@ export const FoodCollapse: FC = () => {
         {selectedRegion && (
           <div className="mt-3 flex flex-wrap gap-4 text-xs font-mono text-neutral-500">
             <span>
-              崩壊予測: <span className="text-neutral-300">{formatDecimal(selectedRegion.collapseDays)}日</span>
+              影響到達: <span className="text-neutral-300">{formatDecimal(selectedRegion.collapseDays)}日</span>
             </span>
             <span>
-              石油枯渇: <span className="text-neutral-300">{formatDecimal(selectedRegion.oilDepletionDays)}日</span>
+              石油供給可能: <span className="text-neutral-300">{formatDecimal(selectedRegion.oilDepletionDays)}日</span>
             </span>
             <span>
-              電力崩壊: <span className="text-neutral-300">{formatDecimal(selectedRegion.powerCollapseDays)}日</span>
+              電力逼迫: <span className="text-neutral-300">{formatDecimal(selectedRegion.powerCollapseDays)}日</span>
             </span>
             <span>
               食料自給率: <span className="text-neutral-300">{formatNumber(Math.round(selectedRegion.foodSelfSufficiency * 100))}%</span>
@@ -248,7 +248,7 @@ export const FoodCollapse: FC = () => {
           対策：ガラス・ステンレス容器への移行と食品バルク購入（包装なしで保存できる状態に）。
         </p>
         <p className="text-xs text-warning-soft/70 leading-relaxed">
-          ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで枯渇する。「食料不足」ではなく「衛生・包装の崩壊」が先に来る。
+          ゴミ袋・ラップ・洗剤・医療用品（注射器・点滴バッグ）も同じルートで品薄になる。「食料不足」ではなく「衛生・包装の供給制約」が先に来る。
         </p>
         {/* 容器が先に消える — キーポイント */}
         <div className="border-t border-border pt-2 mt-1">
@@ -259,10 +259,10 @@ export const FoodCollapse: FC = () => {
         </div>
       </div>
 
-      {/* 消費財消滅タイムライン */}
+      {/* 消費財の店頭在庫低下タイムライン */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">消費財消滅タイムライン</SectionHeading>
-        <p className="text-xs text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「モノが消える」が先に来る。</p>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">消費財の店頭在庫低下タイムライン</SectionHeading>
+        <p className="text-xs text-neutral-600">ナフサ不足が家庭生活に波及する順序。「燃料がない」より「日用品が店頭から薄くなる」が先に来る。</p>
         <div className="space-y-3">
           {([
             {
@@ -292,7 +292,7 @@ export const FoodCollapse: FC = () => {
               items: [
                 { name: "化繊衣類（ポリエステル・ナイロン）", reason: "石化由来。綿・ウールに回帰するが供給不足" },
                 { name: "家電・修理部品", reason: "樹脂部品不足。壊れたら直せない状態に" },
-                { name: "宅配便・配送サービス", reason: "包装材不足で荷受け困難。物流崩壊の副作用" },
+                { name: "宅配便・配送サービス", reason: "包装材不足で荷受け困難。物流逼迫の副作用" },
               ],
             },
             {
@@ -332,7 +332,7 @@ export const FoodCollapse: FC = () => {
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
         <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">家庭支出への価格転嫁 — ナフサ価格段階別</SectionHeading>
         <p className="text-xs text-neutral-600">
-          ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫枯渇後のシナリオ。
+          ナフサ+40%（¥10万/kL超）は現在進行中の減産フェーズ。+80%以降は在庫低下後のシナリオ。
         </p>
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
@@ -365,15 +365,15 @@ export const FoodCollapse: FC = () => {
         </div>
         <div className="text-[10px] font-mono text-neutral-600 space-y-0.5 border-t border-border pt-2">
           <p><span className="text-warning-soft">+40%（¥10万/kL超）</span>: 減産開始フェーズ — 現在進行中。企業が自主減産して価格転嫁</p>
-          <p><span className="text-primary-soft">+80%（¥11〜13万/kL）</span>: 広範囲停止フェーズ — 在庫枯渇後。多くのクラッカーが稼働停止</p>
-          <p><span className="text-primary">+120%（¥14万/kL超）</span>: 構造崩壊フェーズ — プラント長期停止・産業配給発動済み</p>
+          <p><span className="text-primary-soft">+80%（¥11〜13万/kL）</span>: 広範囲停止フェーズ — 在庫低下後。多くのクラッカーが稼働停止</p>
+          <p><span className="text-primary">+120%（¥14万/kL超）</span>: 構造的供給制約フェーズ — プラント長期停止・産業配給発動済み</p>
           <p className="text-neutral-700">出典: IEA価格弾力性モデル + 経産省石化産業調査 + 2026年業界減産実績に基づく推計</p>
         </div>
       </div>
 
       {/* サプライチェーン連鎖図 */}
       <div className="bg-panel border border-border rounded-lg p-4 space-y-3">
-        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">サプライチェーン崩壊フロー</SectionHeading>
+        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">サプライチェーン供給制約フロー</SectionHeading>
         <div className="flex flex-col gap-1">
           {chainSteps.map((step, i) => (
             <div key={i} className="flex items-center gap-3">
@@ -398,7 +398,7 @@ export const FoodCollapse: FC = () => {
         </div>
         <div className="text-xs text-neutral-600 font-mono mt-2">
           {selectedRegion ? `${selectedRegion.name}: ` : "全国: "}
-          石油枯渇 {formatDecimal(oilDays)}日 / 電力崩壊 {formatDecimal(powerDays)}日
+          石油供給可能 {formatDecimal(oilDays)}日 / 電力逼迫 {formatDecimal(powerDays)}日
         </div>
       </div>
 
@@ -416,7 +416,7 @@ export const FoodCollapse: FC = () => {
                 <th className="px-4 py-2 text-left">エリア</th>
                 <th className="px-4 py-2 text-right">自給率</th>
                 <th className="px-4 py-2 text-left">ゲージ</th>
-                <th className="px-4 py-2 text-right">崩壊予測</th>
+                <th className="px-4 py-2 text-right">影響到達</th>
               </tr>
             </thead>
             <tbody>
