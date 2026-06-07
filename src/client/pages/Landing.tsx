@@ -80,15 +80,24 @@ export const Landing: FC = () => {
       {/* ヒーロー */}
       <div className="text-center space-y-4">
         <span className="inline-block text-neutral-500 text-xs font-mono tracking-widest border border-border px-3 py-1 rounded-full">
-          HORMUZ STRAIT BLOCKADE SCENARIO SIMULATION
+          OPEN INFRASTRUCTURE RISK OBSERVATORY
         </span>
         <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-          ホルムズ封鎖シナリオで、<br className="md:hidden" /><span className="text-primary-soft">エネルギー供給</span>はどう変化するか
+          公開データと公開モデルで、<br className="md:hidden" />日本の<span className="text-primary-soft">重要インフラ依存</span>を観測する
         </h1>
         <p className="text-text-muted text-sm leading-relaxed max-w-lg mx-auto">
-          石油の94%は中東から届く。その全量がホルムズ海峡を通る。<br />
-          封鎖シナリオ下で、供給制約はいつ、どのように進むのか。
+          石油・LNG・電力・食料 — 暮らしを支える供給はどこで途切れうるか。<br />
+          第1の観測事例はホルムズ海峡封鎖。計算ロジックとデータは全量公開、手法は他の供給制約にも適用できる。
         </p>
+      </div>
+
+      {/* 観測事例 #1 — ここから下はフラッグシップ事例の分析 */}
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-xs font-bold tracking-widest text-warning-soft whitespace-nowrap">
+          CASE STUDY #1
+        </span>
+        <span className="text-xs text-text-muted">ホルムズ海峡封鎖シナリオ — 公開統計データに基づく4シナリオ分析</span>
+        <span className="flex-1 border-t border-border" />
       </div>
 
       {/* 封鎖Day カウンター */}

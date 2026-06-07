@@ -243,7 +243,8 @@ export const About: FC = () => {
       <div className="bg-panel border border-primary-soft/30 rounded-lg p-6 space-y-3">
         <SectionHeading as="h2" tone="primary" size="sm" tracking="wider">MISSION</SectionHeading>
         <p className="text-neutral-300 leading-relaxed">
-          ホルムズ海峡封鎖シナリオ下で日本のエネルギー・食料・物流への供給制約がどう波及するかを多角的に可視化し、市民・政策立案者・研究者の理解と意思決定を支援するデータツール。
+          公開データと公開モデルで、日本の重要インフラ依存と供給リスクがどう波及するかを多角的に観測し、市民・政策立案者・研究者の理解と意思決定を支援するオープン基盤。
+          第1の観測事例として<span className="text-neutral-200 font-bold">ホルムズ海峡封鎖シナリオ</span>を深掘りし、エネルギー・食料・物流への供給制約を分析する。計算ロジックとデータは全量公開（AGPL）し、手法は他の供給制約にも適用できる設計とする。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
           特に、乳幼児・在宅医療機器利用者・透析患者・要介護高齢者・障害のある家族を持つ人々が、
