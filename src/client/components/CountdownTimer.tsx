@@ -59,7 +59,7 @@ export const CountdownTimer: FC<CountdownTimerProps> = ({
   const isCritical = !noAlert && !isCeasefire && alertLevel === "critical";
   // 停戦シナリオではレンジバー非表示（3シナリオ比較レンジは適用外）
   const showRange = range !== undefined && !isCeasefire;
-  const depletionLabel = isCeasefire ? "正常化目標:" : "枯渇日:";
+  const depletionLabel = isCeasefire ? "正常化目標:" : "供給可能日数:";
   const { value: mainValue, unit: mainUnit, sub: mainSub } = formatDaysMain(days);
 
   if (compact) {

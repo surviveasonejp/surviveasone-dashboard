@@ -315,7 +315,7 @@ export const FamilyMeter: FC = () => {
             onChange={update("medicalSupplyDays")}
           />
           <p className="text-[10px] text-text-muted -mt-3">
-            処方薬・マスク・消毒薬・使い捨て手袋・経口補水液等。ホルムズ型ではパニック買いで先行逼迫
+            処方薬・マスク・消毒薬・使い捨て手袋・経口補水液等。ホルムズ型では需要先行で逼迫しやすい
           </p>
           <div className="flex items-center gap-3 min-h-[44px]">
             <button
