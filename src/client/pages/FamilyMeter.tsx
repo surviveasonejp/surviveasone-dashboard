@@ -1,6 +1,7 @@
 import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertBanner } from "../components/AlertBanner";
+import { ShareButton } from "../components/ShareButton";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { BlockadeContext } from "../components/BlockadeContext";
 import { useFamilySurvival } from "../hooks/useFamilySurvival";
@@ -379,22 +380,19 @@ export const FamilyMeter: FC = () => {
             <div className="text-[9px] text-text-muted font-mono mt-1">
               surviveasonejp.org/family
             </div>
-            <button
-              className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
-              onClick={() => {
+            <ShareButton
+              className="mt-3 w-full py-2 px-4 rounded text-xs font-mono font-bold bg-accent/10 text-accent border border-accent/30 hover:bg-accent/20 transition-colors"
+              getText={() => {
                 const days = Math.round(score.totalDays);
-                const text = [
+                return [
                   `わが家の${score.bottleneck}は${days}日分（${MODE_META[inputs.mode].short}モード推定・ランク${score.rank}）`,
                   `買い占めは最も脆弱な人から物資を奪います。まず過不足を確認。`,
                   `surviveasonejp.org/family`,
                   "",
                   "#surviveasonejp #ホルムズ海峡 #供給リスク分析",
                 ].join("\n");
-                window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
               }}
-            >
-              X(Twitter)でシェア
-            </button>
+            />
           </div>
 
           {/* 内訳バー */}

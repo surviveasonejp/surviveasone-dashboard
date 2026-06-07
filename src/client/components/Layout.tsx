@@ -90,8 +90,6 @@ export const Layout: FC = () => {
           <div className="flex items-center gap-3 font-mono">
             <a href="https://github.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">GitHub</a>
             <span className="text-neutral-700">&middot;</span>
-            <a href="https://x.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">X</a>
-            <span className="text-neutral-700">&middot;</span>
             <a href="https://github.com/sponsors/idx" target="_blank" rel="noopener noreferrer" className="hover:text-neutral-400 transition-colors">Support</a>
             <span className="text-neutral-700">&middot;</span>
             <Link to="/journal" className="hover:text-neutral-400 transition-colors">Journal</Link>

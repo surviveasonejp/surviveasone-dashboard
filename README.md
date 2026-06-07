@@ -4,7 +4,7 @@
 
 > **これは予測ではなくシミュレーションです。** 国際協調/標準対応/需要超過/停戦・回復の4シナリオで分析し、前提条件・計算式・データソースを全て公開しています。IEA協調備蓄放出・代替供給ルート・需要削減政策等の対応が取られた場合の影響も明示しています。
 
-**Live:** [surviveasonejp.org](https://surviveasonejp.org) | **API:** [surviveasonejp.net/api](https://surviveasonejp.net/api) | **X:** [@surviveasonejp](https://x.com/surviveasonejp)
+**Live:** [surviveasonejp.org](https://surviveasonejp.org) | **API:** [surviveasonejp.net/api](https://surviveasonejp.net/api)
 
 ## 誰のためのツールか
 
@@ -251,4 +251,3 @@ React 19 + Vite 6 + TypeScript (strict) / Cloudflare Workers + Workers AI + D1 +
 ## Support
 
 - GitHub Issues: バグ報告・モデル検証・データ精度の議論
-- X: [@surviveasonejp](https://x.com/surviveasonejp)

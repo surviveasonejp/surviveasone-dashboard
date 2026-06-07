@@ -1,5 +1,6 @@
 import { type FC } from "react";
 import { CountdownTimer } from "../components/CountdownTimer";
+import { ShareButton } from "../components/ShareButton";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
 import { DataBadge } from "../components/DataBadge";
@@ -148,10 +149,9 @@ export const SurvivalClock: FC = () => {
         </div>
       </div>
 
-      {/* Xシェア */}
-      <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
-        onClick={() => {
+      {/* シェア */}
+      <ShareButton
+        getText={() => {
           const blockadeStart = new Date("2026-03-01");
           const dayOffset = Math.floor((Date.now() - blockadeStart.getTime()) / 86400000);
           const oil = displayCountdowns.find((c) => c.label === "石油備蓄");
@@ -159,7 +159,7 @@ export const SurvivalClock: FC = () => {
           const power = displayCountdowns.find((c) => c.label === "電力供給");
           const oilRange = SCENARIO_RANGES[0];
           const powerRange = SCENARIO_RANGES[2];
-          const text = [
+          return [
             `発生後${dayOffset}日のシミュレーション。`,
             "",
             `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日（現実シナリオ・備蓄放出込み）`,
@@ -171,11 +171,8 @@ export const SurvivalClock: FC = () => {
             "",
             "#ホルムズ海峡 #エネルギー安全保障",
           ].join("\n");
-          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
         }}
-      >
-        X(Twitter)でシェア
-      </button>
+      />
     </div>
   );
 };

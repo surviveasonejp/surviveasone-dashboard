@@ -1,5 +1,6 @@
 import { type FC, useState, useEffect } from "react";
 import { RegionMap } from "../components/RegionMap";
+import { ShareButton } from "../components/ShareButton";
 import { RegionDetail } from "../components/RegionDetail";
 import { AlertBanner } from "../components/AlertBanner";
 import { SimulationBanner } from "../components/SimulationBanner";
@@ -121,13 +122,11 @@ export const Dashboard: FC = () => {
         </div>
       </div>
 
-      {/* Xシェア */}
-      <button
-        className="w-full py-2.5 px-4 rounded-lg text-xs font-mono font-bold bg-x-brand/15 text-x-brand border border-x-brand/30 hover:bg-x-brand/25 transition-colors"
-        onClick={() => {
-          let text: string;
+      {/* シェア */}
+      <ShareButton
+        getText={() => {
           if (selectedRegion) {
-            text = [
+            return [
               `【${selectedRegion.name}の予測】ホルムズリスクシナリオ（現実）`,
               `電力制約 Day ${selectedRegion.powerCollapseDays} / 食料影響 Day ${selectedRegion.collapseDays}`,
               `脆弱性ランク: ${selectedRegion.vulnerabilityRank}`,
@@ -139,27 +138,23 @@ export const Dashboard: FC = () => {
               "",
               "#ホルムズ海峡 #エネルギー安全保障",
             ].join("\n");
-          } else {
-            const oil = countdowns.find((c) => c.label === "石油備蓄");
-            const lng = countdowns.find((c) => c.label === "LNG供給余力");
-            const power = countdowns.find((c) => c.label === "電力供給");
-            text = [
-              "ホルムズリスクシナリオ（現実シナリオ）:",
-              `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日`,
-              "",
-              "全国10エリアの地域別影響を公開データで可視化 →",
-              "surviveasonejp.org/dashboard",
-              "",
-              "備蓄は、突発災害でも供給制約（価格高騰・配給）でも、わが家の橋渡しになる。足りないものを確認 → surviveasonejp.org/family",
-              "",
-              "#ホルムズ海峡 #エネルギー安全保障",
-            ].join("\n");
           }
-          window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+          const oil = countdowns.find((c) => c.label === "石油備蓄");
+          const lng = countdowns.find((c) => c.label === "LNG供給余力");
+          const power = countdowns.find((c) => c.label === "電力供給");
+          return [
+            "ホルムズリスクシナリオ（現実シナリオ）:",
+            `石油${oil ? Math.round(oil.totalDays) : "??"}日 / LNG${lng ? Math.round(lng.totalDays) : "??"}日 / 電力${power ? Math.round(power.totalDays) : "??"}日`,
+            "",
+            "全国10エリアの地域別影響を公開データで可視化 →",
+            "surviveasonejp.org/dashboard",
+            "",
+            "備蓄は、突発災害でも供給制約（価格高騰・配給）でも、わが家の橋渡しになる。足りないものを確認 → surviveasonejp.org/family",
+            "",
+            "#ホルムズ海峡 #エネルギー安全保障",
+          ].join("\n");
         }}
-      >
-        X(Twitter)でシェア
-      </button>
+      />
     </div>
   );
 };

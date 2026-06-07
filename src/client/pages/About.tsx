@@ -633,10 +633,6 @@ export const About: FC = () => {
             <a href="https://surviveasonejp.net/api" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 transition-colors">surviveasonejp.net/api</a>
           </div>
           <div className="flex gap-3">
-            <span className="text-neutral-500 font-mono w-24 shrink-0">X</span>
-            <a href="https://x.com/surviveasonejp" target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-neutral-200 transition-colors">@surviveasonejp</a>
-          </div>
-          <div className="flex gap-3">
             <span className="text-neutral-500 font-mono w-24 shrink-0">License</span>
             <span className="text-neutral-400">AGPL-3.0（商用は個別ライセンス）</span>
           </div>
