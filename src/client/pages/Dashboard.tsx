@@ -50,8 +50,8 @@ export const Dashboard: FC = () => {
   return (
     <div className="space-y-6">
       <PageHero
-        title={<span className="text-primary-soft">SAO</span>}
-        subtitle="Situation Awareness Observatory — 公開データと公開モデルで重要インフラ依存を観測（観測事例 #1: ホルムズ海峡封鎖）"
+        title={<span className="text-primary-soft">Situation Awareness Observatory</span>}
+        subtitle="公開データと公開モデルで重要インフラ依存を観測（観測事例 #1: ホルムズ海峡封鎖）"
         right={<>
           {isFromApi && <Badge tone="success">LIVE</Badge>}
           <ScenarioSelector selected={scenario} onChange={setScenario} />

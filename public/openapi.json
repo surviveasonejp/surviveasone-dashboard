@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "SAO – Situation Awareness Observatory API",
+    "title": "Situation Awareness Observatory API",
     "description": "公開データと公開モデルで日本の重要インフラ依存と供給リスクの波及を観測するAPI（第1の観測事例: ホルムズ海峡封鎖）。全エンドポイント認証不要・無料。19の計算モデルと4シナリオ（国際協調/標準対応/需要超過/停戦・回復）で分析。",
     "version": "0.3.0",
     "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },

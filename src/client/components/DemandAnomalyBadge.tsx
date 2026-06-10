@@ -38,7 +38,7 @@ const ANOMALIES: Anomaly[] = [
  * 需要異常値シグナル — 前年同月比で大きく乖離した品目と政府の対応を並置。
  *
  * ブルウィップ効果（supply先行き不安→発注増幅→中間流通の目詰まり）を
- * 可視化し、SAO の「煽らない設計」を裏付ける。
+ * 可視化し、観測基盤の「煽らない設計」を裏付ける。
  * Phase 22 で `demandAnomalies.json` に分離予定。
  */
 export const DemandAnomalyBadge: FC = () => {
