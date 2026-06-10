@@ -320,7 +320,7 @@ export const ApiDocs: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <PageHero
         title={<><span className="text-[#94a3b8]">API</span> DOCUMENTATION</>}
-        subtitle={`SAO – Situation Awareness Observatory API — ${API_BASE}/api`}
+        subtitle={`Situation Awareness Observatory API — ${API_BASE}/api`}
       />
 
       <div className="bg-panel border border-border rounded-lg p-4 text-sm text-neutral-400 space-y-2">

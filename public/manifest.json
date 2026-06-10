@@ -1,6 +1,6 @@
 {
-  "name": "SAO – Situation Awareness Observatory",
-  "short_name": "SAO",
+  "name": "Situation Awareness Observatory",
+  "short_name": "Observatory",
   "description": "公開データと公開モデルで日本の重要インフラ依存を観測するオープン基盤（第1の観測事例: ホルムズ海峡封鎖）",
   "start_url": "/",
   "display": "standalone",

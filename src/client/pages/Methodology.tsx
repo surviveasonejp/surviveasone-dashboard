@@ -529,14 +529,14 @@ export const Methodology: FC = () => {
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">APA</div>
             <code className="block text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 select-all">
-              SAO – Situation Awareness Observatory. (2026). Open infrastructure risk observatory for Japan (Case Study #1: Hormuz Strait blockade). https://surviveasonejp.org
+              Situation Awareness Observatory. (2026). Open infrastructure risk observatory for Japan (Case Study #1: Hormuz Strait blockade). https://surviveasonejp.org
             </code>
           </div>
           <div>
             <div className="text-[10px] font-mono text-neutral-600 mb-1">BibTeX</div>
             <pre className="text-xs font-mono text-neutral-400 bg-bg rounded px-3 py-2 overflow-x-auto select-all">
 {`@misc{surviveasonejp2026,
-  title  = {SAO – Situation Awareness Observatory:
+  title  = {Situation Awareness Observatory:
             Open Infrastructure Risk Observatory for Japan
             (Case Study #1: Hormuz Strait Blockade)},
   author = {idx},

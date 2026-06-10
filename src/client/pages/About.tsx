@@ -82,7 +82,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 11",
     label: "デザイン刷新",
     status: "completed" as const,
-    items: ["ライトモード移行", "SAO=Situation Awareness Observatory", "シナリオ軸を政策対応軸へ", "意思決定支援UIへ転換", "Supply Buffer安心情報ファーストビュー"],
+    items: ["ライトモード移行", "Situation Awareness Observatory へ改称", "シナリオ軸を政策対応軸へ", "意思決定支援UIへ転換", "Supply Buffer安心情報ファーストビュー"],
   },
   {
     phase: "Phase 12",
@@ -188,7 +188,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
       "手動トリガー /trigger/{category} エンドポイント追加",
       "LLM補助導入: Cloudflare Workers AI Qwen3-30B-A3B で冒頭見出し自然化（Swallow Leaderboard v2 JP-SOTA級）",
       "LLM失敗時はテンプレートフォールバック・数字/URL/ハッシュタグ/禁止語彙は機械的に保護",
-      "プロンプトで SAO 煽らない設計を強制（「崩壊」「パニック」禁止・「逼迫」「連鎖」推奨）",
+      "プロンプトで煽らない設計を強制（「崩壊」「パニック」禁止・「逼迫」「連鎖」推奨）",
     ],
   },
   {
@@ -236,7 +236,7 @@ export const About: FC = () => {
     <div className="space-y-8 max-w-3xl">
       <PageHero
         title={<><span className="text-primary-soft">ABOUT</span> THIS PROJECT</>}
-        subtitle="SAO – Situation Awareness Observatory | プロジェクト概要"
+        subtitle="Situation Awareness Observatory | プロジェクト概要"
       />
 
       {/* ミッション */}
@@ -664,7 +664,7 @@ export const About: FC = () => {
       <div className="bg-panel border border-border rounded-lg p-6 space-y-3">
         <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">プロジェクトの背景</SectionHeading>
         <p className="text-sm text-neutral-400 leading-relaxed">
-          SAO（Survive as One）は「個人の生存」ではなく「社会としての連帯」を意味します。
+          旧称「Survive as One」は「個人の生存」ではなく「社会としての連帯」を意味します。
           バラバラに備えるのではなく、正確な情報の共有が危機耐性を高めます。
           買い占めは最も脆弱な人から物資を奪います——わが家の過不足を静かに確認することが、社会全体の resilience につながります。
         </p>
