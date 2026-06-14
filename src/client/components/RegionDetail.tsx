@@ -60,11 +60,6 @@ export const RegionDetail: FC<RegionDetailProps> = ({ region }) => {
     ? (regionData as Record<string, unknown>).jointStockpile as { partner: string; location: string; capacity_kL: number; note: string } | undefined
     : undefined;
 
-  // 配送停止予測日 = 石油供給可能日数の手前（配送遅延分だけ早く停止）
-  const deliveryStopDay = logistics
-    ? Math.max(0, region.oilDepletionDays - logistics.deliveryDelayDays)
-    : null;
-
   return (
     <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
       {/* ヘッダー */}

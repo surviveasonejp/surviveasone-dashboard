@@ -58,7 +58,6 @@ const SPR_NATIONAL_DAILY_MAX_KL = 300000;
 // 根拠: 資源エネルギー庁「石油備蓄実効値評価」分析 + IEA協調放出(2022年)時の
 // 日本分実出荷量(JOGMEC報告)と整合。
 const SPR_PRIVATE_USABLE_RATIO = 0.40;
-const SPR_PRIVATE_DAILY_MAX_KL = 200000;
 
 // 産油国共同備蓄の実効利用可能率（シナリオ別）
 // 契約ベースで確実性が低く、産油国の政治的立場・外交交渉遅延で利用不可になり得る。

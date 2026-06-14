@@ -97,35 +97,44 @@ function interpolateAlongPath(
   path: [number, number][],
   t: number,
 ): Position {
-  if (path.length === 0) return { lon: 0, lat: 0 };
-  if (t <= 0) return { lon: path[0][0], lat: path[0][1] };
+  const first = path[0];
+  if (!first) return { lon: 0, lat: 0 };
+  if (t <= 0) return { lon: first[0], lat: first[1] };
+
+  const last = path[path.length - 1] ?? first;
   if (t >= 1) {
-    const last = path[path.length - 1];
     return { lon: last[0], lat: last[1] };
   }
 
   const lengths: number[] = [];
   let total = 0;
   for (let i = 1; i < path.length; i++) {
-    const dx = path[i][0] - path[i - 1][0];
-    const dy = path[i][1] - path[i - 1][1];
-    lengths.push(Math.sqrt(dx * dx + dy * dy));
-    total += lengths[i - 1];
+    const prev = path[i - 1];
+    const cur = path[i];
+    if (!prev || !cur) continue;
+    const dx = cur[0] - prev[0];
+    const dy = cur[1] - prev[1];
+    const len = Math.sqrt(dx * dx + dy * dy);
+    lengths.push(len);
+    total += len;
   }
 
   let target = t * total;
   for (let i = 0; i < lengths.length; i++) {
-    if (target <= lengths[i]) {
-      const segT = target / lengths[i];
+    const segLen = lengths[i];
+    const cur = path[i];
+    const next = path[i + 1];
+    if (segLen === undefined || !cur || !next) continue;
+    if (target <= segLen) {
+      const segT = segLen === 0 ? 0 : target / segLen;
       return {
-        lon: path[i][0] + (path[i + 1][0] - path[i][0]) * segT,
-        lat: path[i][1] + (path[i + 1][1] - path[i][1]) * segT,
+        lon: cur[0] + (next[0] - cur[0]) * segT,
+        lat: cur[1] + (next[1] - cur[1]) * segT,
       };
     }
-    target -= lengths[i];
+    target -= segLen;
   }
 
-  const last = path[path.length - 1];
   return { lon: last[0], lat: last[1] };
 }
 
