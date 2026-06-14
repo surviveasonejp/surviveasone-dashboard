@@ -70,7 +70,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 9",
     label: "当事者リーチ・アクセシビリティ",
     status: "completed" as const,
-    items: ["要配慮者チェックリスト(6カテゴリ)", "行動チェックリスト(5カテゴリ)", "住居形態別ガイド", "FAQ構造化データ(9問)", "パーソナライズフィルタ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v3)"],
+    items: ["要配慮者チェックリスト(6カテゴリ)", "行動チェックリスト(5カテゴリ)", "住居形態別ガイド", "FAQ構造化データ(10問)", "パーソナライズフィルタ", "Xシェア機能", "アクセシビリティ(ARIA)", "オフライン強化(SW v3)"],
   },
   {
     phase: "Phase 10",
