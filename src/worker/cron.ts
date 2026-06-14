@@ -41,13 +41,13 @@ const TWH_TO_TONNE_LNG = 1 / 0.00001444; // 1 TWh ≈ 69,252 t LNG
 const KL_TO_BARRELS = 1 / 0.159; // 1 kL ≈ 6.29 barrels
 
 export async function handleScheduled(
-  event: ScheduledEvent,
+  controller: ScheduledController,
   env: Env,
   ctx: ExecutionContext,
 ): Promise<void> {
   // 毎週月曜 UTC 3:00: OWIDデータ取得 + D1更新
   // 毎日 UTC 18:00: 電力需給データ取得
-  const scheduledDate = new Date(event.scheduledTime);
+  const scheduledDate = new Date(controller.scheduledTime);
   const hour = scheduledDate.getUTCHours();
   const dayOfWeek = scheduledDate.getUTCDay();
   const dayOfMonth = scheduledDate.getUTCDate();
@@ -240,7 +240,9 @@ function extractJapanLatest(csvText: string): OwidJapanRecord | null {
   if (lines.length < 2) return null;
 
   // ヘッダー解析
-  const headers = parseCSVLine(lines[0]);
+  const headerLine = lines[0];
+  if (!headerLine) return null;
+  const headers = parseCSVLine(headerLine);
   const colIndex = (name: string): number => headers.indexOf(name);
 
   const iCountry = colIndex("country");
@@ -265,22 +267,23 @@ function extractJapanLatest(csvText: string): OwidJapanRecord | null {
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i];
     // 高速フィルタ: Japan で始まる行のみパース
-    if (!line.startsWith("Japan,")) continue;
+    if (!line || !line.startsWith("Japan,")) continue;
 
     const cols = parseCSVLine(line);
-    const year = parseInt(cols[iYear], 10);
+    const col = (idx: number): string => cols[idx] ?? "";
+    const year = parseInt(col(iYear), 10);
     if (isNaN(year)) continue;
 
     const record: OwidJapanRecord = {
       year,
-      oil_consumption: parseFloat(cols[iOilConsumption]) || 0,
-      gas_consumption: parseFloat(cols[iGasConsumption]) || 0,
-      coal_electricity: parseFloat(cols[iCoalElectricity]) || 0,
-      gas_electricity: parseFloat(cols[iGasElectricity]) || 0,
-      oil_electricity: parseFloat(cols[iOilElectricity]) || 0,
-      nuclear_electricity: parseFloat(cols[iNuclearElectricity]) || 0,
-      renewables_electricity: parseFloat(cols[iRenewablesElectricity]) || 0,
-      electricity_generation: parseFloat(cols[iElectricityGeneration]) || 0,
+      oil_consumption: parseFloat(col(iOilConsumption)) || 0,
+      gas_consumption: parseFloat(col(iGasConsumption)) || 0,
+      coal_electricity: parseFloat(col(iCoalElectricity)) || 0,
+      gas_electricity: parseFloat(col(iGasElectricity)) || 0,
+      oil_electricity: parseFloat(col(iOilElectricity)) || 0,
+      nuclear_electricity: parseFloat(col(iNuclearElectricity)) || 0,
+      renewables_electricity: parseFloat(col(iRenewablesElectricity)) || 0,
+      electricity_generation: parseFloat(col(iElectricityGeneration)) || 0,
     };
 
     // 主要カラムが0でない最新年を採用

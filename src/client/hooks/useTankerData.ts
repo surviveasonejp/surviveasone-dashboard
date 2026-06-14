@@ -22,10 +22,11 @@ export function useTankerData(): { tankers: TankerInfo[]; meta: TankerMeta } {
     let cancelled = false;
     fetch("/api/tankers")
       .then((r) => r.json())
-      .then((json: { data?: TankerInfo[]; meta?: TankerMeta }) => {
-        if (cancelled) return;
-        if (Array.isArray(json.data)) setTankers(json.data);
-        if (json.meta?.updatedAt) setMeta(json.meta);
+      .then((json: unknown) => {
+        if (cancelled || !json || typeof json !== "object") return;
+        const payload = json as { data?: TankerInfo[]; meta?: TankerMeta };
+        if (Array.isArray(payload.data)) setTankers(payload.data);
+        if (payload.meta?.updatedAt) setMeta(payload.meta);
       })
       .catch(() => {/* フォールバックのまま */});
     return () => { cancelled = true; };

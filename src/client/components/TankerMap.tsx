@@ -51,17 +51,21 @@ function project(lon: number, lat: number): [number, number] {
 /** Catmull-Rom スプライン → SVG cubic Bezier パス文字列
  *  ウェイポイントを全て通りながら自然な曲線を生成する */
 function smoothPath(pts: [number, number][]): string {
-  if (pts.length < 2) return "";
+  const first = pts[0];
+  if (pts.length < 2 || !first) return "";
   if (pts.length === 2) {
-    return `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)} L${pts[1][0].toFixed(1)},${pts[1][1].toFixed(1)}`;
+    const second = pts[1];
+    if (!second) return "";
+    return `M${first[0].toFixed(1)},${first[1].toFixed(1)} L${second[0].toFixed(1)},${second[1].toFixed(1)}`;
   }
   const n = pts.length;
-  let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  let d = `M${first[0].toFixed(1)},${first[1].toFixed(1)}`;
   for (let i = 0; i < n - 1; i++) {
     const p0 = pts[Math.max(0, i - 1)];
     const p1 = pts[i];
     const p2 = pts[i + 1];
     const p3 = pts[Math.min(n - 1, i + 2)];
+    if (!p0 || !p1 || !p2 || !p3) continue;
     const cp1x = p1[0] + (p2[0] - p0[0]) / 10;
     const cp1y = p1[1] + (p2[1] - p0[1]) / 10;
     const cp2x = p2[0] - (p3[0] - p1[0]) / 10;
@@ -100,13 +104,6 @@ const MAX_CARGO_T = 314000;
 function getMarkerScale(cargo_t: number): number {
   const t = Math.min(Math.max(cargo_t, 0), MAX_CARGO_T) / MAX_CARGO_T;
   return 0.55 + t * 0.85;
-}
-
-/** cargo_t → サイズ分類ラベル */
-function getSizeLabel(cargo_t: number): string {
-  if (cargo_t >= 200000) return "超大型";
-  if (cargo_t >= 80000) return "大型";
-  return "中型";
 }
 
 // ─── ルート容量→線幅（誇張スケール: ホルムズ7px、代替1.7〜2.5px）───

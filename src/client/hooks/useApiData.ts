@@ -88,9 +88,13 @@ export function useApiData<T>(
         if (!res.ok) {
           throw new Error(`API ${res.status}`);
         }
-        const json = await res.json();
+        const json: unknown = await res.json();
         if (!cancelled) {
-          setData(json.data ?? json);
+          const payload =
+            json && typeof json === "object" && "data" in json
+              ? (json as { data: T }).data
+              : (json as T);
+          setData(payload);
           setIsFromApi(true);
           setError(null);
         }

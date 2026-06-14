@@ -12,7 +12,6 @@
  * Layer 6: D1/KV/R2クォータガード → ストレージ操作制限
  */
 
-import { WORKERS_FREE, SAFETY, getSecondsUntilDailyReset } from "./free-tier";
 import {
   checkGlobalDailyLimit,
   checkIpRateLimit,
@@ -26,7 +25,6 @@ import {
   methodNotAllowedResponse,
 } from "./bot-guard";
 import { getCachedResponse, cacheResponse } from "./api-cache";
-import { getQuotaStatus } from "./quota-guard";
 import {
   getLatestReserves,
   getReservesHistory,
@@ -57,7 +55,6 @@ import {
 } from "./kv-cache";
 import { handleScheduled } from "./cron";
 import { type ScenarioId, SCENARIOS } from "../shared/scenarios";
-import type { FamilyInputs } from "../shared/types";
 import openApiSpec from "../../public/openapi.json";
 import {
   getAllCountdowns,
@@ -71,7 +68,7 @@ import {
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
-import { getAisPositions, AIS_LAST_SUCCESS_KEY, type AisPosition } from "./ais-tracker";
+import { getAisPositions, AIS_LAST_SUCCESS_KEY } from "./ais-tracker";
 import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
 import {
   fetchVtsArrivals,
@@ -331,8 +328,8 @@ export default {
     return addSecurityHeaders(cachedResponse, isDev);
   },
 
-  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
-    await handleScheduled(event, env, ctx);
+  async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    await handleScheduled(controller, env, ctx);
   },
 } satisfies ExportedHandler<Env>;
 
@@ -785,7 +782,7 @@ async function handleOilThroughput(url: URL, env: Env): Promise<Response> {
   }));
 
   if (portId) {
-    const validIds = new Set(PORT_REGISTRY.map((p) => p.id));
+    const validIds = new Set<string>(PORT_REGISTRY.map((p) => p.id));
     if (!validIds.has(portId)) {
       return jsonResponse({
         error: "invalid_port",

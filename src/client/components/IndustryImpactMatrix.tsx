@@ -136,7 +136,7 @@ const CATEGORY_META: Record<Industry["category"], { label: string; color: string
 function calcImpactDays(
   industry: Industry,
   oilDays: number,
-  lngDays: number,
+  _lngDays: number,
   powerDays: number,
 ): { constraint: number; reduction: number; halt: number } {
   // 各リソースの影響日数を依存度で加重

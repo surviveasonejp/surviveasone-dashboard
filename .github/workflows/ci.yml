@@ -1,12 +1,8 @@
 name: CI
 
-# PR 時の品質ゲート: プロダクションビルドが通ることを保証する。
-# secret-scan.yml(gitleaks) と並ぶ必須チェックとして main 保護に登録する。
-#
-# 注: `tsc --noEmit` は現状コードベースに 150 件の既存型エラー
-# (TS2304 D1Database 系=tsconfig に @cloudflare/workers-types 未設定が主因 +
-#  TS2532/18048 等の実 strict 債務) があり通らないため、まだゲート化しない。
-# 債務解消(tsconfig 是正 + strict 修正)後に Type check ステップを追加し必須化する。
+# PR 時の品質ゲート: 型チェック(tsc --noEmit) + プロダクションビルド。
+# secret-scan.yml(gitleaks) と並ぶ必須チェック(check 名: build)として main 保護に登録する。
+# build スクリプト(vite build)は esbuild で型チェックしないため、tsc を明示実行する。
 
 on:
   pull_request:
@@ -32,6 +28,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
 
       - name: Build
         run: npm run build
