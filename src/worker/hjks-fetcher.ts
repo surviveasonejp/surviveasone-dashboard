@@ -68,7 +68,7 @@ interface HjksSession {
 async function fetchSession(): Promise<HjksSession | null> {
   const res = await fetch(HJKS_OUTAGES_PAGE, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; SAO-DataBot/1.0; +https://surviveasonejp.org)",
+      "User-Agent": "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)",
       Accept: "text/html,application/xhtml+xml",
       "Accept-Language": "ja,en;q=0.9",
     },
@@ -123,7 +123,7 @@ async function fetchOutagesAjax(session: HjksSession): Promise<W2GridRecord[]> {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Cookie: `JSESSIONID=${session.jsessionId}`,
-      "User-Agent": "Mozilla/5.0 (compatible; SAO-DataBot/1.0; +https://surviveasonejp.org)",
+      "User-Agent": "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)",
       "X-Requested-With": "XMLHttpRequest",
       Referer: HJKS_OUTAGES_PAGE,
     },

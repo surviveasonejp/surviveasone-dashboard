@@ -1092,7 +1092,7 @@ async function handleSummary(url: URL, env: Env): Promise<Response> {
     .map((t) => `  Day ${String(t.day).padStart(3)}: ${t.label}`)
     .join("\n");
 
-  const text = `=== SAO – Situation Awareness Observatory — エネルギー供給制約シミュレーション ===
+  const text = `=== Situation Awareness Observatory — エネルギー供給制約シミュレーション ===
 シナリオ: ${s.label}（${s.description}）
 データ基準日: ${staticReserves.meta.baselineDate}
 生成日時: ${new Date().toISOString()}
@@ -1658,15 +1658,15 @@ function handleApiDocsHtml(): Response {
 
   const html = `<!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SAO – Situation Awareness Observatory API Documentation</title>
-<meta name="description" content="SAO – Situation Awareness Observatory API - ホルムズ海峡封鎖シミュレーションデータAPI。23エンドポイント、認証不要、AGPL-3.0。">
+<title>Situation Awareness Observatory API Documentation</title>
+<meta name="description" content="Situation Awareness Observatory API - ホルムズ海峡封鎖シミュレーションデータAPI。23エンドポイント、認証不要、AGPL-3.0。">
 <style>body{font-family:system-ui,sans-serif;max-width:900px;margin:0 auto;padding:2rem;background:#0f1419;color:#d4d4d4;line-height:1.6}
 h1{color:#ef4444}h2{color:#f59e0b;margin-top:2rem}a{color:#3b82f6}
 table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{padding:.5rem;border:1px solid #333;text-align:left;font-size:.85rem}
 th{background:#1a2332;color:#999}code{background:#1a2332;padding:.1rem .3rem;border-radius:3px;font-size:.85rem}
 pre{background:#1a2332;padding:1rem;border-radius:6px;overflow-x:auto}</style></head>
 <body>
-<h1>SAO – Situation Awareness Observatory API</h1>
+<h1>Situation Awareness Observatory API</h1>
 <p>ホルムズ海峡封鎖シナリオ下での日本のエネルギー・食料・石化サプライチェーンの供給制約シミュレーションデータを提供するREST API。</p>
 <p>Base URL: <code>https://surviveasonejp.net</code> | 認証不要 | レート制限: 30req/min, 100K/day</p>
 

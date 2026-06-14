@@ -1,4 +1,4 @@
-# SAO – Situation Awareness Observatory
+# Situation Awareness Observatory
 # Security disclosure policy (RFC 9116)
 
 Contact: https://github.com/surviveasonejp/surviveasone-dashboard/security/advisories/new
