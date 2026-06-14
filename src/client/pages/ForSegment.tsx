@@ -197,7 +197,7 @@ const SEGMENTS: Record<string, Segment> = {
       "/api/validation で最新の精度検証結果を確認",
       "CITATION.cff（GitHubリポジトリ）を学術引用形式として利用可能",
       "API利用・データ可視化への組み込みは surviveasonejp.org/api-docs を参照",
-      "取材・連携のご相談は GitHub Issues または X @surviveasonejp へ",
+      "取材・連携のご相談は GitHub Issues へ",
     ],
     officialLinks: [
       { label: "Methodology — モデル仕様・一次ソース一覧", href: "/methodology" },
