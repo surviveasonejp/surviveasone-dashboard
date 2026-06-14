@@ -18,6 +18,12 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: "deps"
+    # グルーピング方針（ソロ運用での PR 滞留と lockfile 競合連鎖を抑える）:
+    # - 関連パッケージ群は1 PR に集約（同期更新が前提のもの）
+    # - それ以外の minor/patch は全て1 PR に束ね、週次の本数を最小化
+    # - major のみ単発 PR（破壊的変更は個別レビューが必要なため意図的に分離）
+    # dependabot は依存を「最初にマッチしたグループ」に割り当てるため、
+    # 固有グループを先に、catch-all(minor-and-patch) を最後に置く。
     groups:
       # React 19 系は同期更新（react / react-dom / @types/react* を1 PR に集約）
       react:
@@ -26,11 +32,29 @@ updates:
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
+      # React Router（react-router / react-router-dom は連動更新が前提）
+      react-router:
+        patterns:
+          - "react-router"
+          - "react-router-dom"
+      # Tailwind CSS v4（コア + Vite プラグインはバージョン整合が必須）
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
       # Cloudflare ツールチェイン（wrangler / @cloudflare/* を1 PR に集約）
       cloudflare:
         patterns:
           - "wrangler"
           - "@cloudflare/*"
+      # 上記以外の minor/patch を全て1 PR に集約（catch-all）。
+      # major はこのグループに入らず単発 PR となる。
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
