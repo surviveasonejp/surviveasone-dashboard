@@ -55,6 +55,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # vite 8 は @vitejs/plugin-react@4.x が未対応(peer: vite ^4||^5||^6||^7)で
+      # npm ci が ERESOLVE 失敗する(PR#37)。plugin-react が vite 8 対応版を出したら
+      # この ignore を削除して再開する。vite 7 系へのメジャー更新は許可。
+      - dependency-name: "vite"
+        versions: [">=8.0.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
