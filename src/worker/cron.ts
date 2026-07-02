@@ -43,7 +43,7 @@ const KL_TO_BARRELS = 1 / 0.159; // 1 kL ≈ 6.29 barrels
 export async function handleScheduled(
   controller: ScheduledController,
   env: Env,
-  ctx: ExecutionContext,
+  _ctx: ExecutionContext,
 ): Promise<void> {
   // 毎週月曜 UTC 3:00: OWIDデータ取得 + D1更新
   // 毎日 UTC 18:00: 電力需給データ取得
@@ -52,56 +52,65 @@ export async function handleScheduled(
   const dayOfWeek = scheduledDate.getUTCDay();
   const dayOfMonth = scheduledDate.getUTCDate();
 
+  // タスクは ctx.waitUntil に投げず、ハンドラ内で完了まで await する。
+  // waitUntil だとハンドラ return 後 約30秒で強制キャンセルされ、
+  // 月曜枠（OWID 9.2MB取得 + HJKS 1,000件UPSERT）は毎回途中終了していた。
+  // Cron Trigger 自体の実行時間上限は15分あるため await で問題ない。
+  const tasks: Array<[name: string, run: Promise<unknown>]> = [];
+
   if (hour === 3 && dayOfWeek === 1) {
-    ctx.waitUntil(fetchArchiveAndUpdate(env));
+    tasks.push(["owid", fetchArchiveAndUpdate(env)]);
     // 石油製品在庫（週次）— OWID 取得と並行実行
-    ctx.waitUntil(fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    tasks.push(["oil-products", fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE })]);
     // HJKS 発電機停止情報（週次）— 大型火力・原子力の出力制約を追跡
-    ctx.waitUntil(fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE }));
+    tasks.push(["hjks", fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE })]);
   }
 
   if (hour === 18) {
-    ctx.waitUntil(fetchElectricityDemand(env.DB));
+    tasks.push(["electricity", fetchElectricityDemand(env.DB)]);
     // AISタンカー位置取得 → overrides自動同期（電力需給と並行実行）
     if (env.AISSTREAM_API_KEY) {
-      ctx.waitUntil(
-        fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE)),
-      );
+      tasks.push(["ais", fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
     }
     // WTI原油価格取得（日次）
     if (env.EIA_API_KEY) {
-      ctx.waitUntil(fetchOilPrice({ DB: env.DB, CACHE: env.CACHE, EIA_API_KEY: env.EIA_API_KEY }));
+      tasks.push(["oil-price", fetchOilPrice({ DB: env.DB, CACHE: env.CACHE, EIA_API_KEY: env.EIA_API_KEY })]);
     }
     // MLIT VTS 3ルート（浦賀水道/明石海峡/関門海峡）+ 名古屋港EDI
-    ctx.waitUntil(fetchAllVtsArrivalsSafe(env));
-    ctx.waitUntil(fetchNagoyaArrivalsSafe(env));
+    tasks.push(["vts", fetchAllVtsArrivalsSafe(env)]);
+    tasks.push(["nagoya", fetchNagoyaArrivalsSafe(env)]);
   }
 
   // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期（月18日は備蓄更新と相乗り）
   if (hour === 6 && dayOfMonth !== 18) {
     if (env.AISSTREAM_API_KEY) {
-      ctx.waitUntil(
-        fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE)),
-      );
+      tasks.push(["ais", fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
     }
     // MLIT VTS 3ルート（2回目）— AIS と並行して実行
-    ctx.waitUntil(fetchAllVtsArrivalsSafe(env));
+    tasks.push(["vts", fetchAllVtsArrivalsSafe(env)]);
   }
 
   // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW + JOGMEC放出 + 日銀輸入物価 自動更新
   if (hour === 6 && dayOfMonth === 18) {
-    ctx.waitUntil(fetchReservesUpdate(env));
-    ctx.waitUntil(fetchLngUpdate(env));
-    ctx.waitUntil(fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
-    ctx.waitUntil(fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE }));
-    ctx.waitUntil(fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    tasks.push(["reserves", fetchReservesUpdate(env)]);
+    tasks.push(["lng", fetchLngUpdate(env)]);
+    tasks.push(["trade", fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
+    tasks.push(["jpca", fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    tasks.push(["jarw", fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE })]);
     // Phase 25-A: 基地別放出イベント seed + 新規リリース探索
-    ctx.waitUntil(fetchJogmecUpdate(env));
+    tasks.push(["jogmec", fetchJogmecUpdate(env)]);
     // Phase 25-B: 港湾原油・石油製品 月次海上出入貨物（10基地最寄港）
-    ctx.waitUntil(fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID }));
+    tasks.push(["port-cargo", fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
     // 日銀 輸入物価指数（円ベース・契約通貨ベース）月次取得
-    ctx.waitUntil(fetchBojImportPriceUpdate({ DB: env.DB, CACHE: env.CACHE }));
+    tasks.push(["boj", fetchBojImportPriceUpdate({ DB: env.DB, CACHE: env.CACHE })]);
   }
+
+  const settled = await Promise.allSettled(tasks.map(([, run]) => run));
+  settled.forEach((result, i) => {
+    if (result.status === "rejected") {
+      console.error(`Cron task "${tasks[i]?.[0]}" failed: ${result.reason}`);
+    }
+  });
 }
 
 /**

@@ -225,53 +225,57 @@ function parseRecord(record: W2GridRecord, fetchedAt: string): PowerOutageRecord
 
 // ─── D1 UPSERT ─────────────────────────────────────────
 
-async function upsertOutage(db: D1Database, record: PowerOutageRecord): Promise<void> {
-  await db
-    .prepare(`
-      INSERT INTO power_outages (
-        id, area, operator, plant_code, plant_name, fuel_type, unit_name,
-        capacity_kw, outage_type, category, reduction_kw,
-        outage_at, recovery_forecast, recovery_planned_at, cause,
-        source_updated_at, fetched_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(id) DO UPDATE SET
-        area = excluded.area,
-        operator = excluded.operator,
-        plant_name = excluded.plant_name,
-        fuel_type = excluded.fuel_type,
-        unit_name = excluded.unit_name,
-        capacity_kw = excluded.capacity_kw,
-        outage_type = excluded.outage_type,
-        category = excluded.category,
-        reduction_kw = excluded.reduction_kw,
-        outage_at = excluded.outage_at,
-        recovery_forecast = excluded.recovery_forecast,
-        recovery_planned_at = excluded.recovery_planned_at,
-        cause = excluded.cause,
-        source_updated_at = excluded.source_updated_at,
-        fetched_at = excluded.fetched_at
-    `)
-    .bind(
-      record.id,
-      record.area,
-      record.operator,
-      record.plant_code,
-      record.plant_name,
-      record.fuel_type,
-      record.unit_name,
-      record.capacity_kw,
-      record.outage_type,
-      record.category,
-      record.reduction_kw,
-      record.outage_at,
-      record.recovery_forecast,
-      record.recovery_planned_at,
-      record.cause,
-      record.source_updated_at,
-      record.fetched_at,
-    )
-    .run();
+const UPSERT_SQL = `
+  INSERT INTO power_outages (
+    id, area, operator, plant_code, plant_name, fuel_type, unit_name,
+    capacity_kw, outage_type, category, reduction_kw,
+    outage_at, recovery_forecast, recovery_planned_at, cause,
+    source_updated_at, fetched_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ON CONFLICT(id) DO UPDATE SET
+    area = excluded.area,
+    operator = excluded.operator,
+    plant_name = excluded.plant_name,
+    fuel_type = excluded.fuel_type,
+    unit_name = excluded.unit_name,
+    capacity_kw = excluded.capacity_kw,
+    outage_type = excluded.outage_type,
+    category = excluded.category,
+    reduction_kw = excluded.reduction_kw,
+    outage_at = excluded.outage_at,
+    recovery_forecast = excluded.recovery_forecast,
+    recovery_planned_at = excluded.recovery_planned_at,
+    cause = excluded.cause,
+    source_updated_at = excluded.source_updated_at,
+    fetched_at = excluded.fetched_at
+`;
+
+/** 1レコード分のUPSERTステートメントを組み立てる（実行はbatchでまとめる） */
+function bindOutage(db: D1Database, record: PowerOutageRecord): D1PreparedStatement {
+  return db.prepare(UPSERT_SQL).bind(
+    record.id,
+    record.area,
+    record.operator,
+    record.plant_code,
+    record.plant_name,
+    record.fuel_type,
+    record.unit_name,
+    record.capacity_kw,
+    record.outage_type,
+    record.category,
+    record.reduction_kw,
+    record.outage_at,
+    record.recovery_forecast,
+    record.recovery_planned_at,
+    record.cause,
+    record.source_updated_at,
+    record.fetched_at,
+  );
 }
+
+// 1件ずつ .run() すると1,000件でバインディングAPI上限（1,000回/invocation）に
+// 到達するため、batch() でまとめて呼び出し回数を ~20回に抑える
+const UPSERT_BATCH_SIZE = 50;
 
 // ─── バリデーション ────────────────────────────────────
 
@@ -330,14 +334,15 @@ export async function fetchHjksOutages(env: HjksFetchEnv): Promise<void> {
   // バリデーション
   await validateRecordCount(env.DB, parsed.length);
 
-  // D1 UPSERT
+  // D1 UPSERT（batchでチャンク実行）
   let upsertCount = 0;
-  for (const record of parsed) {
+  for (let i = 0; i < parsed.length; i += UPSERT_BATCH_SIZE) {
+    const chunk = parsed.slice(i, i + UPSERT_BATCH_SIZE);
     try {
-      await upsertOutage(env.DB, record);
-      upsertCount++;
+      await env.DB.batch(chunk.map((record) => bindOutage(env.DB, record)));
+      upsertCount += chunk.length;
     } catch (e) {
-      console.error(`HJKS: upsert failed for ${record.plant_name}: ${e}`);
+      console.error(`HJKS: batch upsert failed (${i}〜${i + chunk.length - 1}): ${e}`);
     }
   }
 
