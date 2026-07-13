@@ -41,7 +41,7 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
       <span className="text-[10px] font-mono text-neutral-500 tracking-wider hidden sm:inline">
         SCENARIO
       </span>
-      <div className="flex gap-1" data-no-swipe role="radiogroup" aria-label="シナリオ選択（←→キーで切替）">
+      <div className="flex flex-wrap gap-1" data-no-swipe role="radiogroup" aria-label="シナリオ選択（←→キーで切替）">
         {SCENARIO_LIST.map((s) => {
           const isActive = selected === s.id;
           const color = SCENARIO_COLORS[s.id];

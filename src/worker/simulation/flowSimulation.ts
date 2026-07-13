@@ -334,7 +334,7 @@ const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
     // 断続制約シナリオ（Phase 26）: realistic をベースにする。
     // 緩和窓で調達環境が周期的に回復するため、成功率の低下は realistic(0.002) と
     // ceasefire(0.001) の中間値 0.0015 とし、下限も 0.2 に引き上げる（振動により
-    // 完全な調達枯渇には至りにくい）。他パラメータは realistic と同値。
+    // 調達の完全停止には至りにくい）。他パラメータは realistic と同値。
     startDay: 28,
     fujairahDailyKL: 50000,
     yanbuDailyKL: 40000,
@@ -342,7 +342,7 @@ const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
     nonMideastCompatibilityFactor: 0.4,
     initialSuccessRate: 0.4,
     successRateDecayPerDay: 0.0015,     // realistic と ceasefire の中間（緩和窓で周期的回復）
-    minSuccessRate: 0.2,                // 振動により調達完全枯渇には至りにくい
+    minSuccessRate: 0.2,                // 振動により調達の完全停止には至りにくい
   },
 };
 
