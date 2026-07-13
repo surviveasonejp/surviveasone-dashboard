@@ -1,7 +1,7 @@
 {
   "meta": {
     "description": "ホルムズ海峡封鎖に関連する実際に発生したイベント。シミュレーションのタイムラインに重ねて表示する。",
-    "updatedAt": "2026-05-01T00:00:00+09:00",
+    "updatedAt": "2026-07-13T00:00:00+09:00",
     "note": "dateはISO 8601形式。dayOffsetは封鎖開始日(2026-03-01想定)からの経過日数。"
   },
   "blockadeStartDate": "2026-03-01",
@@ -701,6 +701,42 @@
       "scenario": "ceasefire"
     },
     {
+      "date": "2026-06-28",
+      "dayOffset": 119,
+      "category": "international",
+      "label": "米・イラン、相互攻撃の停止に合意 — 複数回の衝突を経て緊張緩和へ",
+      "source": "Wikipedia: 2026 Iran war ceasefire https://en.wikipedia.org/wiki/2026_Iran_war_ceasefire",
+      "impact": "度重なる攻撃の応酬を経て、米国とイランが相互攻撃の停止で合意。ホルムズ海峡通航や商船の航行判断にとって一時的な好材料となったが、これまでの停戦合意と同様に履行の持続性は不透明で、タンカー保険料・迂回コストは封鎖前水準を上回ったまま高止まりが続いた",
+      "scenarios": [
+        "realistic",
+        "ceasefire"
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "dayOffset": 128,
+      "category": "international",
+      "label": "IRGC、ホルムズ海峡付近で商船3隻をミサイル攻撃 — 米軍がイラン防空網等80箇所に報復",
+      "source": "United Against Nuclear Iran, Iran Shipping Update 2026-07-09 https://www.unitedagainstnucleariran.com/analysis/iran-shipping-update-july-9-2026",
+      "impact": "カタール船社保有LNGタンカーAL REKAYYAT、サウジ籍タンカーWEDYAN、リベリア籍タンカーCYPRUS PROSPERITYがホルムズ海峡付近でIRGCのミサイル攻撃を受け被弾。米軍はイランの防空網・沿岸レーダー・対艦ミサイル拠点・IRGC保有小型艇60隻超を含む計80箇所を報復攻撃。6月末の攻撃停止合意から10日足らずでの再燃となり、LNG・原油タンカーの航行リスクと保険料上昇圧力が再び高まった",
+      "scenarios": [
+        "realistic",
+        "pessimistic"
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "dayOffset": 129,
+      "category": "international",
+      "label": "米大統領、停戦の終了を表明 — 6月MoU後回復していた海峡通航に再び下押し圧力",
+      "source": "Al Jazeera Live Blog 2026-07-10 https://www.aljazeera.com/news/liveblog/2026/7/10/iran-war-live-fresh-attacks-on-iran-as-us-says-talks-still-on",
+      "impact": "米大統領が停戦の終了を表明。6月のMoU合意後、平時138隻/日の約4割にあたる最大54隻/日まで回復していたホルムズ海峡の通航量に、再び下押し圧力がかかる状況となった。タンカーの航行判断・保険引受は再び慎重化する見通し",
+      "scenarios": [
+        "realistic",
+        "pessimistic"
+      ]
+    },
+    {
       "date": "2026-07-10",
       "dayOffset": 131,
       "category": "government",
@@ -708,6 +744,17 @@
       "source": "シミュレーション想定イベント",
       "impact": "放出した国家備蓄の再充填に着手。月次3〜5万kLペースで1〜2年かけて回復見込み。再充填需要が一定の価格下支えに",
       "scenario": "ceasefire"
+    },
+    {
+      "date": "2026-07-10",
+      "dayOffset": 131,
+      "category": "international",
+      "label": "仲介国が緊張緩和を模索 — 米・イラン協議は継続の意向",
+      "source": "CNN Live News 2026-07-10 https://www.cnn.com/2026/07/10/world/live-news/iran-war-trump",
+      "impact": "停戦終了表明の後も、仲介国による緊張緩和への働きかけが継続。米側も協議継続の意向を示しており、外交ルート自体は維持されている状況。ホルムズ海峡の供給リスクは予断を許さないが、対話の窓口は閉じていない",
+      "scenarios": [
+        "realistic"
+      ]
     },
     {
       "date": "2026-07-15",
