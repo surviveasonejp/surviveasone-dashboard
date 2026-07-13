@@ -76,6 +76,14 @@ export const STATUS_BY_SCENARIO: Record<ScenarioId, Record<ResourceKey, Resource
     電力: { status: "normal", note: "供給正常化" },
     "医療・衛生": { status: "tight", note: "パニック買い後の買い控えで在庫回復局面" },
   },
+  // 断続制約（Phase 26）: realistic を一段緩和した中間状態（client 側 resourceStatus.ts と同期）。
+  intermittent: {
+    水: { status: "normal", note: "水道供給は原則継続。ホルムズ直接影響なし" },
+    食料: { status: "tight", note: "緩和窓で流通は回復するが再燃時に価格再上昇。供給は継続" },
+    燃料: { status: "tight", note: "緩和窓で数量制限は緩むが再燃で価格上昇。割当は断続的" },
+    電力: { status: "normal", note: "LNG非ホルムズ供給継続で安定" },
+    "医療・衛生": { status: "allotted", note: "緩和窓で受注制限は一部緩和も、再燃で断続的に割当復活" },
+  },
 };
 
 export const RESOURCE_STATUS_UPDATED_AT = "2026-04-18";

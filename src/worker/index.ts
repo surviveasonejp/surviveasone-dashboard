@@ -439,7 +439,7 @@ async function handleApiRoute(
           "GET /api/docs": "APIドキュメント（HTML）",
           "GET /api/data": "全データソース概要（HTML、研究者・クローラー向け）",
         },
-        scenarios: ["optimistic", "realistic", "pessimistic"],
+        scenarios: ["optimistic", "realistic", "pessimistic", "ceasefire", "intermittent"],
         license: "AGPL-3.0",
         source: "https://github.com/surviveasonejp/surviveasone-dashboard",
       });
@@ -1298,6 +1298,9 @@ function handleMethodology(): Response {
       optimistic: { oilBlockadeRate: 0.50, lngBlockadeRate: 0.03, demandReduction: 0.15, reliefStart: 7, reliefEnd: 30, finalRate: 0.10 },
       realistic: { oilBlockadeRate: 0.94, lngBlockadeRate: 0.063, demandReduction: 0.05, reliefStart: 30, reliefEnd: 120, finalRate: 0.30 },
       pessimistic: { oilBlockadeRate: 1.0, lngBlockadeRate: 0.15, demandReduction: -0.10, reliefStart: 90, reliefEnd: 365, finalRate: 0.60 },
+      ceasefire: { oilBlockadeRate: 0.08, lngBlockadeRate: 0.005, demandReduction: -0.08, reliefStart: 45, reliefEnd: 180, finalRate: 0.08 },
+      // 断続制約（Phase 26）: 代表値は長期平均。Day0-130は実測アンカー、以降は周期60-90日の振動を仮定
+      intermittent: { oilBlockadeRate: 0.60, lngBlockadeRate: 0.05, demandReduction: 0.08, reliefStart: 106, reliefEnd: 540, finalRate: 0.60, oscillating: true, anchoredThroughDay: 130 },
     },
     limitations: [
       "石炭火力(28%)はホルムズ非依存。短期的直接影響は限定的だが価格波及は考慮",
@@ -1677,7 +1680,10 @@ pre{background:#1a2332;padding:1rem;border-radius:6px;overflow-x:auto}</style></
 <tr><td>optimistic</td><td>国際協調</td><td>50%</td><td>3%</td><td>-15%</td></tr>
 <tr><td>realistic</td><td>標準対応</td><td>94%</td><td>6.3%</td><td>-5%</td></tr>
 <tr><td>pessimistic</td><td>需要超過</td><td>100%</td><td>15%</td><td>+10%</td></tr>
+<tr><td>ceasefire</td><td>停戦・回復</td><td>8%*</td><td>0.5%*</td><td>+8%</td></tr>
+<tr><td>intermittent</td><td>断続制約</td><td>60%*</td><td>5%*</td><td>-8%</td></tr>
 </tbody></table>
+<p style="font-size:0.85em;color:#64748b">* ceasefire・intermittent は時間可変プロファイルの代表値。ceasefire は段階的回復の最終到達値、intermittent は振動レジームの長期平均遮断率（Day0-130は実測アンカー、以降は周期60-90日の逼迫⇔緩和窓を仮定）。</p>
 
 <h2>クイックスタート</h2>
 <pre>curl https://surviveasonejp.net/api/simulate?scenario=realistic</pre>

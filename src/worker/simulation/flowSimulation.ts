@@ -67,6 +67,9 @@ const JOINT_STOCK_USABLE_RATIO: Record<string, number> = {
   realistic: 0.5,
   pessimistic: 0.0,
   ceasefire: 0.5,  // 標準対応と同等（停戦後も産油国との交渉継続）
+  // 断続制約: 逼迫と緩和窓が交互に訪れるため、産油国共同備蓄の利用可能性は
+  // 標準対応と同等の中間値。緩和窓での契約進展と再燃での交渉停滞が相殺する。
+  intermittent: 0.5,
 };
 
 // 国家備蓄（原油タンク）の精製変換係数
@@ -133,6 +136,34 @@ const BLOCKADE_PROFILES: Record<ScenarioId, BlockadeProfile> = {
       { startDay: 60,            endDay: 90,            startRate: 0.80, endRate: 0.45 }, // 港湾部分再開・待機タンカー流入
       { startDay: 90,            endDay: 120,           startRate: 0.45, endRate: 0.15 }, // 契約再締結・フォースマジュール解除
       { startDay: 120,           endDay: 180,           startRate: 0.15, endRate: 0.08 }, // 構造的残存（制裁・施設修復ラグ）
+    ],
+  },
+  intermittent: {
+    // 断続制約シナリオ（Phase 26）: 停戦と再燃が交互に訪れるオンオフ型（振動レジーム）。
+    // Day0〜130 は実測アンカーに整合（各セグメント末尾に「実測」と明記）、
+    // Day130 以降は周期60〜90日で逼迫（0.85）⇔緩和窓（0.55〜0.60）を振動させる仮定。
+    //
+    // 実測アンカー3点:
+    //   (1) 封鎖期の通航は平時比で約90%減（遮断率0.94） — 2026-02-28開戦〜04-07停戦の全面阻害期
+    //   (2) MoU部分緩和下でも回復上限は通航39%＝54隻/138隻（遮断率0.61） — 2026-06中旬のMoU署名
+    //   (3) サイクル実績は 封鎖38日 - 停戦・小競り合い68日 - MoU緩和24日 の 38-68-24日
+    // Day130（2026-07-08）に停戦崩壊・再燃。以降は振幅が徐々に減衰し長期平均0.60へ収束すると仮定。
+    initialRate: 0.94,
+    reliefStartDay: 106,  // フォールバック用（MoU部分緩和の起点。segments指定時は未使用）
+    reliefEndDay: 540,
+    finalRate: 0.60,      // 長期平均遮断率（segments最終値と一致）
+    segments: [
+      { startDay: 0,   endDay: 38,  startRate: 0.94, endRate: 0.94 }, // 実測: 全面阻害期（2/28開戦〜4/7停戦）
+      { startDay: 38,  endDay: 106, startRate: 0.94, endRate: 0.85 }, // 実測: 停戦・小競り合い期（保険解除は限定的）
+      { startDay: 106, endDay: 124, startRate: 0.85, endRate: 0.61 }, // 実測: MoU部分緩和（通航39%=遮断61%）
+      { startDay: 124, endDay: 130, startRate: 0.61, endRate: 0.61 }, // 実測: 緩和窓
+      { startDay: 130, endDay: 160, startRate: 0.61, endRate: 0.85 }, // 実測+直近: 停戦崩壊・再逼迫
+      { startDay: 160, endDay: 200, startRate: 0.85, endRate: 0.55 }, // 仮定: 交渉再開・緩和窓（下限は実測0.61を微下回る程度まで）
+      { startDay: 200, endDay: 250, startRate: 0.55, endRate: 0.85 }, // 仮定: 再逼迫
+      { startDay: 250, endDay: 290, startRate: 0.85, endRate: 0.55 }, // 仮定: 緩和窓
+      { startDay: 290, endDay: 340, startRate: 0.55, endRate: 0.85 }, // 仮定: 再逼迫
+      { startDay: 340, endDay: 430, startRate: 0.85, endRate: 0.60 }, // 仮定: 適応進展・振幅減衰
+      { startDay: 430, endDay: 540, startRate: 0.60, endRate: 0.60 }, // 仮定: 長期平均へ収束
     ],
   },
 };
@@ -299,6 +330,20 @@ const ALT_SUPPLY_PROFILES: Record<ScenarioId, AlternativeSupplyProfile> = {
     successRateDecayPerDay: 0.001,      // 回復局面のため低下が緩やか
     minSuccessRate: 0.2,
   },
+  intermittent: {
+    // 断続制約シナリオ（Phase 26）: realistic をベースにする。
+    // 緩和窓で調達環境が周期的に回復するため、成功率の低下は realistic(0.002) と
+    // ceasefire(0.001) の中間値 0.0015 とし、下限も 0.2 に引き上げる（振動により
+    // 完全な調達枯渇には至りにくい）。他パラメータは realistic と同値。
+    startDay: 28,
+    fujairahDailyKL: 50000,
+    yanbuDailyKL: 40000,
+    nonMiddleEastDailyKL: 20000,
+    nonMideastCompatibilityFactor: 0.4,
+    initialSuccessRate: 0.4,
+    successRateDecayPerDay: 0.0015,     // realistic と ceasefire の中間（緩和窓で周期的回復）
+    minSuccessRate: 0.2,                // 振動により調達完全枯渇には至りにくい
+  },
 };
 
 /** 指定日の代替供給量 (kL) を返す */
@@ -364,6 +409,8 @@ const SCENARIO_MAX_DAYS: Record<ScenarioId, number> = {
   realistic: 365,
   pessimistic: 730,
   ceasefire: 365,
+  // 断続制約: 振動プロファイルが長期平均へ収束する Day540 まで観測する
+  intermittent: 540,
 };
 
 /** 製油所改造による非中東原油の互換性係数の上昇分（0〜MAX_GAIN） */
@@ -410,6 +457,33 @@ function buildPhaseTimeline(
       endDay: maxDays,
       label: "回復期",
       description: "段階的な封鎖解除と契約再締結。構造的残存リスクを伴う",
+    });
+    return phases;
+  }
+
+  if (scenarioId === "intermittent") {
+    // 断続制約シナリオ（Phase 26）: 振動レジームを3フェーズで要約。
+    // ScenarioPhase union は拡張せず、既存フェーズ名を意味に合わせて割り当てる。
+    phases.push({
+      phase: "initial",
+      startDay: 0,
+      endDay: PHASE_INITIAL_MAX_DAY,
+      label: "初期ショック期",
+      description: "全面阻害による価格スパイクと買い占め圧力。備蓄放出と代替調達が始動",
+    });
+    phases.push({
+      phase: "rationing",
+      startDay: PHASE_INITIAL_MAX_DAY,
+      endDay: 340,
+      label: "断続制約期",
+      description: "逼迫と緩和窓が交互に訪れる。停戦⇔再燃の振動で供給率が周期的に上下する",
+    });
+    phases.push({
+      phase: "structural",
+      startDay: 340,
+      endDay: maxDays,
+      label: "適応定着期",
+      description: "振幅が減衰し長期平均へ収束。行動変容と調達多様化が構造的に定着した新均衡",
     });
     return phases;
   }

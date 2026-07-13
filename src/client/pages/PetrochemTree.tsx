@@ -57,6 +57,7 @@ const NAPHTHA_DEPLETION_DAYS: Record<ScenarioId, number> = {
   realistic:   30,
   pessimistic: 14,
   ceasefire:   45,
+  intermittent: 40, // 断続制約（Phase 26）: 緩和窓でナフサ調達が周期的に回復
 };
 
 // ─── 色補間 ────────────────────────────────────────────
