@@ -136,7 +136,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
     phase: "Phase 20",
     label: "意思決定支援UIと長期化フェーズモデル",
     status: "completed" as const,
-    items: ["DecisionTriadPanel（事実/解釈/含意）", "MyHypothesisPanel（自仮説を4標準シナリオと並置）", "PhaseIndicator（initial/rationing/structural/recovery）", "UncertaintyBand", "Journal意思決定ログ（localStorage・JSON I/O）", "製油所改造による非中東互換性向上", "構造的需要削減", "pessimistic観測期間730日拡張"],
+    items: ["DecisionTriadPanel（事実/解釈/含意）", "MyHypothesisPanel（自仮説を5標準シナリオと並置）", "PhaseIndicator（initial/rationing/structural/recovery）", "UncertaintyBand", "Journal意思決定ログ（localStorage・JSON I/O）", "製油所改造による非中東互換性向上", "構造的需要削減", "pessimistic観測期間730日拡張"],
   },
   {
     phase: "Phase 21",
@@ -155,7 +155,7 @@ const PHASE_STATUS: Array<{ phase: string; label: string; status: PhaseStatus; i
       "現金購買力カード（備蓄＋購買で実質バッファ日数）",
       "自主判断前提バナー（2026-04-07 高市首相消費自粛要請なし方針明示）",
       "品目別市場ステータス（normal/tight/allotted/restricted 4段階）",
-      "シナリオ連動供給率・インフレ係数・ステータス（4シナリオ別テーブル）",
+      "シナリオ連動供給率・インフレ係数・ステータス（5シナリオ別テーブル）",
       "Prepare/ForSegment への市場ステータス波及",
       "/api/real-events エンドポイント新設（recentDays・category フィルタ）",
       "Dashboard に HouseholdSummaryCard（localStorage 連動の世帯サマリー）",
@@ -227,7 +227,7 @@ const SIMULATION_FEATURES = [
   { label: "代替原油精製互換性", desc: "非中東原油（米国ガルフ/西アフリカ）の精製互換性ペナルティ。API度差・硫黄分差による効率補正。非中東調達が即座に100%補填にならない理由をモデル化" },
   { label: "製油所改造による非中東互換性向上", desc: "Day180-540で線形に最大+0.35の互換係数（Phase 20-A）。代替原油の受入余地を時間経過とともに拡大" },
   { label: "構造的需要削減", desc: "Day90-365で行動変容・産業構造転換により最大10%の恒久的需要減（Phase 20-A）。pessimistic のみ観測期間730日に延長し4フェーズ時系列（initial/rationing/structural/recovery）を出力" },
-  { label: "家計供給余力モデル（供給制約モード）", desc: "HOUSEHOLD SUPPLY CHECK の2モード目。備蓄÷(1-外部供給率)で延命日数を算出（Phase 22）。4シナリオ別に水/食料/燃料/電力/医療・衛生の供給率とインフレ係数（補助金反映の店頭価格 vs 実勢価格）を定義。現金購買力は1人1日1900円×インフレ係数で追加日数を算定" },
+  { label: "家計供給余力モデル（供給制約モード）", desc: "HOUSEHOLD SUPPLY CHECK の2モード目。備蓄÷(1-外部供給率)で延命日数を算出（Phase 22）。5シナリオ別に水/食料/燃料/電力/医療・衛生の供給率とインフレ係数（補助金反映の店頭価格 vs 実勢価格）を定義。現金購買力は1人1日1900円×インフレ係数で追加日数を算定" },
 ];
 
 export const About: FC = () => {
@@ -251,7 +251,7 @@ export const About: FC = () => {
           危機の進行を正しく理解し、素早く行動するための情報を提供する。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
-          公開統計データに基づく19の計算モデルと4つのシナリオで分析。
+          公開統計データに基づく19の計算モデルと5つのシナリオで分析。
           代替供給ルート・経済カスケード・配給制シミュレーション・地域別ロジスティクスを含む。
           予測ではなくリスクシナリオのシミュレーションとして、不確実性を含めて透明に提示する。
         </p>
@@ -315,7 +315,7 @@ export const About: FC = () => {
             <span className="text-success-soft font-bold">① 確認フレーム誘導</span> — 「枯渇」「崩壊」「今すぐ確保」といった恐怖フレームの用語を排除し、「供給可能日数」「過不足を確認」に統一。全ページで用語ガイドラインを強制。
           </li>
           <li>
-            <span className="text-success-soft font-bold">② レンジと不確実性の常時提示</span> — 単一予測値は与えない。4シナリオ（国際協調・標準対応・需要超過・停戦回復）を併記し、UncertaintyBand で結果幅を可視化。境野春彦氏が指摘する「統計4ヶ月 vs 実物0.5ヶ月」のようなマクロ・ミクロのギャップを、DecisionTriadPanel（事実/解釈/含意）で分離提示する。
+            <span className="text-success-soft font-bold">② レンジと不確実性の常時提示</span> — 単一予測値は与えない。5シナリオ（国際協調・標準対応・需要超過・停戦回復・断続制約）を併記し、UncertaintyBand で結果幅を可視化。境野春彦氏が指摘する「統計4ヶ月 vs 実物0.5ヶ月」のようなマクロ・ミクロのギャップを、DecisionTriadPanel（事実/解釈/含意）で分離提示する。
           </li>
           <li>
             <span className="text-success-soft font-bold">③ 一次情報への誘導</span> — realEvents（120件以上）で政府・業界団体・報道の原典を並走表示。SNSシェア文言には必ずシナリオ条件と買い占め抑止メッセージを含める。数字のみの切り取りを防ぐ。

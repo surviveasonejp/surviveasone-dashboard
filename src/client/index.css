@@ -27,6 +27,7 @@
   --color-info: #2563eb;             /* = accent（リンク・情報向け） */
   --color-info-soft: #3b82f6;        /* 情報パネル・淡い青ボーダー向け */
   --color-teal: #0d9488;             /* ceasefire シナリオ専用色 */
+  --color-scenario-intermittent: #7c3aed; /* 断続制約シナリオ専用色（violet-600・Phase 26） */
   --color-x-brand: #1d9bf0;          /* X/Twitter 公式ブランド色（シェアボタン用） */
 
   /* Phase B: ドメイン特化セマンティックカラー */

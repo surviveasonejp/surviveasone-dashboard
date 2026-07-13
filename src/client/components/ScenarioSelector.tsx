@@ -11,7 +11,15 @@ const SCENARIO_COLORS: Record<ScenarioId, string> = {
   realistic: "#16a34a",
   pessimistic: "#d97706",
   ceasefire: "#0d9488",
+  intermittent: "#7c3aed",
 };
+
+/**
+ * ceasefire は 2026-07-08 の停戦終了により、以降は予測検証用アーカイブとして凍結（設計原則12）。
+ * パラメータ・カーブは改変せず、予測と実測の突き合わせ素材として残す。
+ */
+const ARCHIVE_NOTE =
+  "検証アーカイブ: 2026-07-08の停戦終了により、以降は予測検証用アーカイブとして凍結（設計原則12）";
 
 export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange }) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
@@ -37,6 +45,7 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
         {SCENARIO_LIST.map((s) => {
           const isActive = selected === s.id;
           const color = SCENARIO_COLORS[s.id];
+          const isArchived = s.id === "ceasefire";
           return (
             <button
               key={s.id}
@@ -50,9 +59,16 @@ export const ScenarioSelector: FC<ScenarioSelectorProps> = ({ selected, onChange
                   ? { borderColor: color, color, backgroundColor: `${color}15` }
                   : undefined
               }
-              title={s.description}
+              title={isArchived ? `${s.description}\n\n${ARCHIVE_NOTE}` : s.description}
             >
-              {s.label}
+              <span className="inline-flex items-center gap-1">
+                {s.label}
+                {isArchived && (
+                  <span className="text-[9px] text-text-muted border border-border rounded px-1 leading-tight">
+                    検証アーカイブ
+                  </span>
+                )}
+              </span>
             </button>
           );
         })}

@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Situation Awareness Observatory API",
-    "description": "公開データと公開モデルで日本の重要インフラ依存と供給リスクの波及を観測するAPI（第1の観測事例: ホルムズ海峡封鎖）。全エンドポイント認証不要・無料。19の計算モデルと4シナリオ（国際協調/標準対応/需要超過/停戦・回復）で分析。",
+    "description": "公開データと公開モデルで日本の重要インフラ依存と供給リスクの波及を観測するAPI（第1の観測事例: ホルムズ海峡封鎖）。全エンドポイント認証不要・無料。19の計算モデルと5シナリオ（国際協調/標準対応/需要超過/停戦・回復/断続制約）で分析。",
     "version": "0.3.0",
     "license": { "name": "AGPL-3.0", "url": "https://www.gnu.org/licenses/agpl-3.0.html" },
     "contact": { "url": "https://github.com/surviveasonejp/surviveasone-dashboard" }
@@ -37,14 +37,14 @@
     "/api/countdowns": {
       "get": {
         "summary": "残存日数カウントダウン",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } }],
         "responses": { "200": { "description": "石油/LNG/電力の残存日数" } }
       }
     },
     "/api/collapse": {
       "get": {
         "summary": "10エリア供給制約順序",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } }],
         "responses": { "200": { "description": "供給制約順序・連系線融通・原子力補正" } }
       }
     },
@@ -53,7 +53,7 @@
         "summary": "フロー型在庫シミュレーション（365日タイムライン）",
         "description": "日次の在庫推移・閾値イベント・SPR放出・代替供給を含む詳細シミュレーション。大量データ。要約版は /api/simulate を使用。",
         "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } },
           { "name": "maxDays", "in": "query", "schema": { "type": "integer", "default": 365, "minimum": 1, "maximum": 730 } }
         ],
         "responses": { "200": { "description": "日次タイムライン+閾値イベント+枯渇日" } }
@@ -63,7 +63,7 @@
       "get": {
         "summary": "シミュレーション要約（制約到達日・主要イベント・備蓄データ）",
         "description": "/api/simulation の軽量版。制約到達日・主要イベント・備蓄データをコンパクトに返す。LLM・ChatGPT Plugin向け。",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } }],
         "responses": { "200": { "description": "制約到達日・イベント・備蓄概要" } }
       }
     },
@@ -71,7 +71,7 @@
       "get": {
         "summary": "食品カテゴリ別在庫日数予測",
         "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } },
           { "name": "region", "in": "query", "schema": { "type": "string" }, "description": "エリアID（hokkaido〜okinawa）" }
         ],
         "responses": { "200": { "description": "食品別在庫日数" } }
@@ -109,7 +109,7 @@
       "get": {
         "summary": "プレーンテキスト概要（LLM・クローラー向け）",
         "description": "現在の備蓄状況とシミュレーション結果をプレーンテキストで返す。Content-Type: text/plain。",
-        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } }],
+        "parameters": [{ "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } }],
         "responses": { "200": { "description": "テキスト形式の備蓄・シミュレーション概要" } }
       }
     },
@@ -125,7 +125,7 @@
         "summary": "石化樹形図シナリオ別リスクスコア",
         "description": "各ノードにシナリオ別リスクスコア（0–1）と制約到達日を付与。供給制約進行度・制約フラグを含む。",
         "parameters": [
-          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire"], "default": "realistic" } },
+          { "name": "scenario", "in": "query", "schema": { "type": "string", "enum": ["optimistic","realistic","pessimistic","ceasefire","intermittent"], "default": "realistic" } },
           { "name": "day", "in": "query", "schema": { "type": "integer", "default": 0, "minimum": 0, "maximum": 365 }, "description": "シミュレーション日数（0=封鎖開始時点）" }
         ],
         "responses": { "200": { "description": "ノード別リスクスコア・制約フラグ・制約到達日" } }

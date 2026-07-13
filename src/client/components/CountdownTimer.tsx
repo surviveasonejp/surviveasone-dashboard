@@ -22,6 +22,7 @@ const SCENARIO_LABELS: Record<ScenarioId, string> = {
   realistic: "標準対応",
   pessimistic: "需要超過",
   ceasefire: "停戦・回復",
+  intermittent: "断続制約",
 };
 
 const SCENARIO_COLORS: Record<ScenarioId, string> = {
@@ -29,6 +30,7 @@ const SCENARIO_COLORS: Record<ScenarioId, string> = {
   realistic: "#16a34a",
   pessimistic: "#d97706",
   ceasefire: "#0d9488",
+  intermittent: "#7c3aed",
 };
 
 /** 365日以上は年単位で表示 */

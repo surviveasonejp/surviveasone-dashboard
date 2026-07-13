@@ -1,7 +1,7 @@
 /**
  * MyHypothesisPanel — 「私の想定」設定パネル（Phase 20-C）
  *
- * 設計者本人がシナリオパラメータを直接入力し、4標準シナリオと
+ * 設計者本人がシナリオパラメータを直接入力し、5標準シナリオと
  * 並べて含意を比較できるようにする。完全 localStorage、
  * サーバー側コスト増ゼロ。
  *
@@ -256,10 +256,10 @@ export const MyHypothesisPanel: FC<Props> = ({ scenarioRef }) => {
             )}
           </div>
 
-          {/* 4シナリオとの比較表 */}
+          {/* 5シナリオとの比較表 */}
           <div className="space-y-2">
             <SectionHeading tone="warning" size="xs">
-              COMPARISON — 4標準シナリオとの含意比較
+              COMPARISON — 5標準シナリオとの含意比較
             </SectionHeading>
             <div className="overflow-x-auto">
               <table className="w-full text-xs font-mono">

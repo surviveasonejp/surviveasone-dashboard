@@ -44,7 +44,7 @@ const MODEL_EQUATIONS = [
   {
     title: "封鎖解除曲線",
     equation: "blockadeRate(t) = initial + (final - initial) × ((t - start) / (end - start))",
-    description: "国際協調: 7日→30日で解除(残留10%) / 標準対応: 30日→120日段階的(残留30%) / 需要超過: 90日→365日(残留60%)。線形補間。",
+    description: "国際協調: 7日→30日で解除(残留10%) / 標準対応: 30日→120日段階的(残留30%) / 需要超過: 90日→365日(残留60%)。線形補間。停戦・回復と断続制約は区分線形セグメントで定義（後者はDay0-130を実測アンカーとし、以降は周期60〜90日の逼迫⇔緩和窓の振動、長期平均約60%）。",
   },
   {
     title: "需要破壊モデル",
@@ -97,7 +97,7 @@ export const Methodology: FC = () => {
         <SectionHeading as="h2" tone="warning" size="sm" tracking="wider">重要な前提</SectionHeading>
         <p className="text-neutral-300 text-sm leading-relaxed">
           本シミュレーションは<span className="text-neutral-200 font-bold">予測ではなく、リスクシナリオの可視化</span>です。
-          国際協調・標準対応・需要超過の3シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
+          国際協調・標準対応・需要超過・停戦回復・断続制約の5シナリオで分析し、それぞれ異なる遮断率・解除曲線・需要変動を適用します。
         </p>
         <p className="text-neutral-400 text-sm leading-relaxed">
           実際にはIEA協調備蓄放出、代替供給ルートの確保、需要削減政策等の対応が取られます。
@@ -117,7 +117,7 @@ export const Methodology: FC = () => {
           本ツールの情報発信は以下の原則で構築されています:
         </p>
         <ul className="space-y-1.5 text-xs text-neutral-500 leading-relaxed pl-4">
-          <li>・<span className="text-neutral-300 font-bold">単一予測値を与えない</span>: 4シナリオ併記 + UncertaintyBand で結果幅を常時可視化</li>
+          <li>・<span className="text-neutral-300 font-bold">単一予測値を与えない</span>: 5シナリオ併記 + UncertaintyBand で結果幅を常時可視化</li>
           <li>・<span className="text-neutral-300 font-bold">マクロ数値に注釈を付ける</span>: 備蓄日数は法ベース/実効備蓄/生活維持ベースの3段階解釈（上表参照）で分離</li>
           <li>・<span className="text-neutral-300 font-bold">恐怖フレーム語彙を排除</span>: 「崩壊」「枯渇」「詰む」は用いず、「供給制約」「供給可能日数」「逼迫」で統一</li>
           <li>・<span className="text-neutral-300 font-bold">一次情報への誘導</span>: realEvents で政府・業界団体・報道原典を時系列に並走表示</li>
@@ -169,10 +169,10 @@ export const Methodology: FC = () => {
         </div>
       </div>
 
-      {/* 3シナリオ */}
+      {/* 5シナリオ */}
       <div className="bg-panel border border-border rounded-lg overflow-hidden">
         <div className="px-4 py-3 border-b border-border">
-          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">3シナリオ</SectionHeading>
+          <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">5シナリオ</SectionHeading>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -200,15 +200,38 @@ export const Methodology: FC = () => {
                 <td className="px-4 py-2 text-right font-mono">-5%</td>
                 <td className="px-4 py-2 text-right text-neutral-400 text-xs">30日→120日で段階的</td>
               </tr>
-              <tr>
+              <tr className="border-b border-border">
                 <td className="px-4 py-2 text-primary-soft font-bold">悲観</td>
                 <td className="px-4 py-2 text-right font-mono">100%</td>
                 <td className="px-4 py-2 text-right font-mono">15%</td>
                 <td className="px-4 py-2 text-right font-mono">+10%</td>
                 <td className="px-4 py-2 text-right text-neutral-400 text-xs">90日→365日</td>
               </tr>
+              <tr className="border-b border-border">
+                <td className="px-4 py-2 text-teal font-bold">停戦・回復<br /><span className="text-[10px] text-neutral-600 font-normal">検証アーカイブ</span></td>
+                <td className="px-4 py-2 text-right font-mono">8%*</td>
+                <td className="px-4 py-2 text-right font-mono">0.5%*</td>
+                <td className="px-4 py-2 text-right font-mono">+8%</td>
+                <td className="px-4 py-2 text-right text-neutral-400 text-xs">45日→180日で段階的正常化</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 text-scenario-intermittent font-bold">断続制約</td>
+                <td className="px-4 py-2 text-right font-mono">60%*</td>
+                <td className="px-4 py-2 text-right font-mono">5%*</td>
+                <td className="px-4 py-2 text-right font-mono">-8%</td>
+                <td className="px-4 py-2 text-right text-neutral-400 text-xs">周期60〜90日で振動（Day0-130は実測）</td>
+              </tr>
             </tbody>
           </table>
+        </div>
+        <div className="px-4 py-3 border-t border-border">
+          <p className="text-[11px] text-neutral-600 leading-relaxed">
+            ※ 停戦・回復と断続制約の遮断率は時間可変プロファイルの代表値です。
+            <span className="text-teal">停戦・回復</span>は2026-07-08の停戦終了により以降は予測検証用アーカイブとして凍結（設計原則12）。
+            <span className="text-scenario-intermittent">断続制約</span>は停戦と再燃が交互に訪れるオンオフ型で、
+            <span className="text-neutral-400">Day0〜130は実測アンカー（封鎖38日→停戦・小競り合い68日→MoU部分緩和24日で通航は平時比最大39%まで回復）</span>、
+            Day130以降は周期60〜90日の逼迫⇔緩和窓の振動を仮定します。長期平均遮断率は約60%。
+          </p>
         </div>
       </div>
 

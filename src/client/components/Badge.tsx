@@ -16,6 +16,7 @@ export type BadgeTone =
   | "primary"
   | "info"
   | "teal"
+  | "violet"
   | "neutral"
   | "x-brand";
 
@@ -39,6 +40,7 @@ const TONE_OUTLINED: Record<BadgeTone, string> = {
   primary: "bg-primary-soft/15 text-primary-soft border border-primary-soft/30",
   info: "bg-info/15 text-info border border-info/30",
   teal: "bg-teal/15 text-teal border border-teal/30",
+  violet: "bg-scenario-intermittent/15 text-scenario-intermittent border border-scenario-intermittent/30",
   neutral: "bg-neutral-500/15 text-neutral-500 border border-neutral-500/30",
   "x-brand": "bg-x-brand/15 text-x-brand border border-x-brand/30",
 };
@@ -50,6 +52,7 @@ const TONE_FILLED: Record<BadgeTone, string> = {
   primary: "bg-primary-soft/15 text-primary-soft",
   info: "bg-info/15 text-info",
   teal: "bg-teal/15 text-teal",
+  violet: "bg-scenario-intermittent/15 text-scenario-intermittent",
   neutral: "bg-neutral-500/15 text-neutral-500",
   "x-brand": "bg-x-brand/15 text-x-brand",
 };

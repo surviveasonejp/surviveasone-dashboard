@@ -1,8 +1,8 @@
 /**
- * UncertaintyBand — 4シナリオの結果幅を可視化（Phase 20-D）
+ * UncertaintyBand — 全標準シナリオの結果幅を可視化（Phase 20-D / Phase 26で5シナリオ化）
  *
  * 「単一値は確定感を与えて危険」（CLAUDE.md 設計原則#2）に基づき、
- * 4標準シナリオの oil/lng/power 日数を横バーで重ね、現選択を強調する。
+ * 全標準シナリオの oil/lng/power 日数を横バーで重ね、現選択を強調する。
  *
  * 確認フレーム: 「不確実性の幅」を視覚化し、「○日で枯渇する」という
  * 断定的な印象を回避する。
@@ -27,14 +27,16 @@ const SCENARIO_TONE: Record<ScenarioId, BadgeTone> = {
   realistic: "warning",
   pessimistic: "primary",
   ceasefire: "teal",
+  intermittent: "violet",
 };
 
-/** 4シナリオの色（バー上のマーカー用） */
+/** シナリオの色（バー上のマーカー用） */
 const SCENARIO_DOT_COLOR: Record<ScenarioId, string> = {
   optimistic: "bg-success-soft",
   realistic: "bg-warning-soft",
   pessimistic: "bg-primary-soft",
   ceasefire: "bg-teal",
+  intermittent: "bg-scenario-intermittent",
 };
 
 function formatDays(d: number): string {
@@ -153,7 +155,7 @@ export const UncertaintyBand: FC<Props> = ({ scenario, maxScaleDays = 730 }) => 
       {/* 凡例 */}
       <div className="flex items-center gap-3 flex-wrap text-[10px] font-mono pt-1 border-t border-border">
         <span className="text-text-muted">凡例:</span>
-        {(["optimistic", "realistic", "pessimistic", "ceasefire"] as const).map((id) => (
+        {(["optimistic", "realistic", "pessimistic", "ceasefire", "intermittent"] as const).map((id) => (
           <span key={id} className="flex items-center gap-1">
             <span className={`w-2 h-2 rounded-full ${SCENARIO_DOT_COLOR[id]}`} />
             <span className="text-text-muted">{SCENARIOS[id].label}</span>

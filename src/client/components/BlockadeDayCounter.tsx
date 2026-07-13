@@ -14,6 +14,8 @@ const SCENARIO_MILESTONE: Record<ScenarioId, { day: number; label: string } | nu
   realistic:  { day: 120, label: "解除推定" },
   pessimistic: null,
   ceasefire:  { day: 180, label: "正常化完了" },
+  // 断続制約: 単一の解除日は定まらない。次の緩和窓を目安として提示
+  intermittent: { day: 200, label: "次の緩和窓" },
 };
 
 const SCENARIO_COLORS: Record<ScenarioId, string> = {
@@ -21,6 +23,7 @@ const SCENARIO_COLORS: Record<ScenarioId, string> = {
   realistic:   "#16a34a",
   pessimistic: "#d97706",
   ceasefire:   "#0d9488",
+  intermittent: "#7c3aed",
 };
 
 const SCENARIO_LABELS: Record<ScenarioId, string> = {
@@ -28,6 +31,7 @@ const SCENARIO_LABELS: Record<ScenarioId, string> = {
   realistic:   "標準対応",
   pessimistic: "需要超過",
   ceasefire:   "停戦・回復",
+  intermittent: "断続制約",
 };
 
 export const BlockadeDayCounter: FC<BlockadeDayCounterProps> = ({
