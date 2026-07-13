@@ -73,6 +73,16 @@ export const SUPPLY_RATE_BY_SCENARIO: Record<ScenarioId, Record<ResourceKey, num
     電力: 0.95,
     "医療・衛生": 0.75,
   },
+  // 断続制約（Phase 26）: realistic と ceasefire の間・realistic寄り。
+  // 長期平均遮断率0.60はrealistic(0.94)より軽く、各リソースの供給率をrealisticより
+  // 一段良く・ceasefireより悪く設定（緩和窓と再燃の反復による中間状態）。
+  intermittent: {
+    水: 0.96,           // realistic 0.95 / ceasefire 0.97
+    食料: 0.85,         // realistic 0.80 / ceasefire 0.92
+    燃料: 0.68,         // realistic 0.60 / ceasefire 0.80
+    電力: 0.92,         // realistic 0.90 / ceasefire 0.95
+    "医療・衛生": 0.60, // realistic 0.50 / ceasefire 0.75
+  },
 };
 
 /**
@@ -129,6 +139,16 @@ export const STATUS_BY_SCENARIO: Record<ScenarioId, Record<ResourceKey, Resource
     電力: { status: "normal", note: "供給正常化" },
     "医療・衛生": { status: "tight", note: "パニック買い後の買い控えで在庫回復局面" },
   },
+  // 断続制約（Phase 26）: realistic を一段緩和した中間状態。
+  // 緩和窓では割当が解けるが再燃で再逼迫するため、realistic の allotted/restricted を
+  // 一段軽い tight/allotted に置く。
+  intermittent: {
+    水: { status: "normal", note: "水道供給は原則継続。ホルムズ直接影響なし" },
+    食料: { status: "tight", note: "緩和窓で流通は回復するが再燃時に価格再上昇。供給は継続" },
+    燃料: { status: "tight", note: "緩和窓で数量制限は緩むが再燃で価格上昇。割当は断続的" },
+    電力: { status: "normal", note: "LNG非ホルムズ供給継続で安定" },
+    "医療・衛生": { status: "allotted", note: "緩和窓で受注制限は一部緩和も、再燃で断続的に割当復活" },
+  },
 };
 
 /**
@@ -140,6 +160,8 @@ export const INFLATION_BY_SCENARIO: Record<ScenarioId, { water: number; food: nu
   realistic: { water: 1.10, food: 1.25, gas: 1.30, battery: 1.05, medical: 1.40, overall: 1.25 },
   pessimistic: { water: 1.25, food: 1.60, gas: 1.80, battery: 1.15, medical: 1.90, overall: 1.55 },
   ceasefire: { water: 1.05, food: 1.08, gas: 1.15, battery: 1.02, medical: 1.10, overall: 1.08 },
+  // 断続制約（Phase 26）: realistic と ceasefire の間・realistic寄り。
+  intermittent: { water: 1.08, food: 1.18, gas: 1.22, battery: 1.04, medical: 1.28, overall: 1.18 },
 };
 
 export const RESOURCE_STATUS_UPDATED_AT = "2026-04-18";

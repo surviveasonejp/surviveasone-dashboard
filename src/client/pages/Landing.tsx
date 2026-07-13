@@ -74,7 +74,7 @@ export const Landing: FC = () => {
     <div className="space-y-8">
       <AlertBanner
         level="warning"
-        message="公開データと公開モデルで重要インフラ依存を観測する基盤です。下記は第1の観測事例（ホルムズ海峡封鎖）— 国際協調/標準対応/需要超過/停戦・回復の4シナリオで分析"
+        message="公開データと公開モデルで重要インフラ依存を観測する基盤です。下記は第1の観測事例（ホルムズ海峡封鎖）— 国際協調/標準対応/需要超過/停戦・回復/断続制約の5シナリオで分析"
       />
 
       {/* ヒーロー */}
@@ -96,7 +96,7 @@ export const Landing: FC = () => {
         <span className="font-mono text-xs font-bold tracking-widest text-warning-soft whitespace-nowrap">
           CASE STUDY #1
         </span>
-        <span className="text-xs text-text-muted">ホルムズ海峡封鎖シナリオ — 公開統計データに基づく4シナリオ分析</span>
+        <span className="text-xs text-text-muted">ホルムズ海峡封鎖シナリオ — 公開統計データに基づく5シナリオ分析</span>
         <span className="flex-1 border-t border-border" />
       </div>
 

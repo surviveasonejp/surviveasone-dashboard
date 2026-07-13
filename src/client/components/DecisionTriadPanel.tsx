@@ -4,7 +4,7 @@
  * 「データを示し、判断を支援する」ミッションを構造化する。
  * - FACTS: 中立的な事実数値（変動少・出典明示）
  * - INTERPRETATION: 現シナリオの解釈（信頼区間込み）
- * - SCENARIO IMPLICATIONS: 4シナリオの含意比較
+ * - SCENARIO IMPLICATIONS: 5シナリオの含意比較
  *
  * 既存の SUPPLY BUFFER + CountdownTimer×3 を吸収・統合する。
  * 確認フレーム: 「もしこの仮説なら〇〇日まで持つ」と仮説的に提示。
@@ -41,6 +41,7 @@ const SCENARIO_TONE: Record<ScenarioId, BadgeTone> = {
   realistic: "warning",
   pessimistic: "primary",
   ceasefire: "teal",
+  intermittent: "violet",
 };
 
 const EMPTY_SIM: FlowSimulationResult = {
@@ -199,7 +200,7 @@ export const DecisionTriadPanel: FC<Props> = ({ scenario }) => {
         {/* ─── SCENARIO IMPLICATIONS（含意）─── */}
         <div className="space-y-3 lg:pl-6">
           <SectionHeading tone="warning" size="xs">
-            IMPLICATIONS — 4シナリオの含意
+            IMPLICATIONS — 5シナリオの含意
           </SectionHeading>
 
           <div className="overflow-x-auto">
@@ -258,7 +259,7 @@ export const DecisionTriadPanel: FC<Props> = ({ scenario }) => {
         </div>
       </div>
 
-      {/* Phase 20-D: 不確実性バンド — 4シナリオの幅を視覚化 */}
+      {/* Phase 20-D: 不確実性バンド — 5シナリオの幅を視覚化 */}
       <div className="border-t border-border pt-4 mt-4">
         <UncertaintyBand scenario={scenario} />
       </div>

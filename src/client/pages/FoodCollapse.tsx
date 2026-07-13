@@ -216,7 +216,7 @@ export const FoodCollapse: FC = () => {
                 {formatDecimal(product.collapseDays)}
               </div>
               <div className="text-neutral-400 font-mono text-xs">
-                日分の店頭在庫（{scenario === "optimistic" ? "楽観" : scenario === "pessimistic" ? "悲観" : "現実"}シナリオ）
+                日分の店頭在庫（{scenario === "optimistic" ? "楽観" : scenario === "pessimistic" ? "悲観" : scenario === "ceasefire" ? "停戦回復" : scenario === "intermittent" ? "断続制約" : "現実"}シナリオ）
               </div>
               <p className="text-xs text-neutral-600 leading-relaxed">
                 {product.collapseReason}

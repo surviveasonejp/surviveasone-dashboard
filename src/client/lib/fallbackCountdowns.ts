@@ -102,7 +102,7 @@ export function calcScenarioRanges(): ScenarioRange[] {
 
 export const SCENARIO_RANGES: ScenarioRange[] = calcScenarioRanges();
 
-// ─── Phase 20-B: 4シナリオ枯渇日数表（DecisionTriadPanel用） ─────
+// ─── Phase 20-B: 全シナリオ枯渇日数表（DecisionTriadPanel用） ─────
 
 /** 1シナリオ分の oil/lng/power 日数 */
 export interface ScenarioDays {
@@ -113,13 +113,13 @@ export interface ScenarioDays {
 }
 
 /**
- * 4シナリオ全件の枯渇日数を返す（静的計算ベース）。
+ * 全シナリオの枯渇日数を返す（静的計算ベース）。
  *
- * SCENARIO_RANGES は3シナリオ固定構造のため、ceasefire 含む4シナリオ比較が必要な
- * 用途（DecisionTriadPanel）はこちらを使用する。
+ * SCENARIO_RANGES は3シナリオ固定構造のため、ceasefire・intermittent 含む
+ * 全シナリオ比較が必要な用途（DecisionTriadPanel）はこちらを使用する。
  */
 export function calcAllScenarioDays(): ScenarioDays[] {
-  return (["optimistic", "realistic", "pessimistic", "ceasefire"] as const).map((id) => {
+  return (["optimistic", "realistic", "pessimistic", "ceasefire", "intermittent"] as const).map((id) => {
     const days = calcDaysForScenario(id);
     return {
       id,

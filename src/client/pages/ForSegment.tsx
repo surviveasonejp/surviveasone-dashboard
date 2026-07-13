@@ -26,6 +26,7 @@ const SCENARIO_LABELS: Record<ScenarioId, string> = {
   realistic:  "現実シナリオ",
   pessimistic: "悲観シナリオ",
   ceasefire:  "停戦シナリオ",
+  intermittent: "断続制約シナリオ",
 };
 
 interface ExternalLink {
@@ -182,7 +183,7 @@ const SEGMENTS: Record<string, Segment> = {
     subtitle: "報道・取材・コンテンツ制作に携わる方",
     heroStat: "16",
     heroUnit: "式",
-    heroLabel: "シミュレーションモデル数（3シナリオ・全データ公開）",
+    heroLabel: "シミュレーションモデル数（5シナリオ・全データ公開）",
     heroColor: "var(--color-logistics)",
     alertMessage: "全データ・シミュレーション結果・ソースコードはAGPL-3.0で公開しています。引用・報道に自由にご利用ください。",
     risks: [

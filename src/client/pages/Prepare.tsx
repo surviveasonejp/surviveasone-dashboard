@@ -695,9 +695,9 @@ export const Prepare: FC = () => {
             <span
               className="font-mono text-[11px] font-bold px-2 py-0.5 rounded border"
               style={{
-                color: scenario === "ceasefire" ? "#0d9488" : scenario === "optimistic" ? "#16a34a" : scenario === "pessimistic" ? "#dc2626" : "#d97706",
-                backgroundColor: scenario === "ceasefire" ? "#0d948812" : scenario === "optimistic" ? "#16a34a12" : scenario === "pessimistic" ? "#dc262612" : "#d9770612",
-                borderColor: scenario === "ceasefire" ? "#0d948840" : scenario === "optimistic" ? "#16a34a40" : scenario === "pessimistic" ? "#dc262640" : "#d9770640",
+                color: scenario === "ceasefire" ? "#0d9488" : scenario === "intermittent" ? "#7c3aed" : scenario === "optimistic" ? "#16a34a" : scenario === "pessimistic" ? "#dc2626" : "#d97706",
+                backgroundColor: scenario === "ceasefire" ? "#0d948812" : scenario === "intermittent" ? "#7c3aed12" : scenario === "optimistic" ? "#16a34a12" : scenario === "pessimistic" ? "#dc262612" : "#d9770612",
+                borderColor: scenario === "ceasefire" ? "#0d948840" : scenario === "intermittent" ? "#7c3aed40" : scenario === "optimistic" ? "#16a34a40" : scenario === "pessimistic" ? "#dc262640" : "#d9770640",
               }}
             >
               {SCENARIOS[scenario].label}

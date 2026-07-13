@@ -49,6 +49,7 @@ const SCENARIO_MAX_DAYS_FOR_REQUEST: Record<ScenarioId, number> = {
   realistic: 365,
   pessimistic: 730,
   ceasefire: 365,
+  intermittent: 540, // 断続制約: 振動が長期平均へ収束する Day540 まで観測
 };
 
 export const PhaseIndicator: FC<Props> = ({ scenario, currentDay = 0 }) => {
@@ -81,7 +82,11 @@ export const PhaseIndicator: FC<Props> = ({ scenario, currentDay = 0 }) => {
   }
 
   const hasStructural = phases.some((p) => p.phase === "structural");
-  const observationLabel = scenario === "pessimistic" ? "2年観測" : "1年観測";
+  const observationLabel = scenario === "pessimistic"
+    ? "2年観測"
+    : scenario === "intermittent"
+      ? "1.5年観測"
+      : "1年観測";
 
   return (
     <div className="bg-panel border border-border rounded-lg p-4 space-y-4">
@@ -157,7 +162,7 @@ export const PhaseIndicator: FC<Props> = ({ scenario, currentDay = 0 }) => {
         })}
       </div>
 
-      {/* Phase 20-D: 4シナリオ比較ビュー（折り畳み） */}
+      {/* Phase 20-D: 全シナリオ比較ビュー（折り畳み） */}
       <PhaseComparisonView activeScenario={scenario} />
 
       {/* フッター注記 */}
@@ -170,10 +175,10 @@ export const PhaseIndicator: FC<Props> = ({ scenario, currentDay = 0 }) => {
   );
 };
 
-// ─── Phase 20-D: 4シナリオ比較ビュー ─────────────────
+// ─── Phase 20-D: 全シナリオ比較ビュー（Phase 26で5シナリオ化） ─────
 
 const COMPARISON_SCALE_DAYS = 730;
-const ALL_SCENARIOS: readonly ScenarioId[] = ["optimistic", "realistic", "pessimistic", "ceasefire"] as const;
+const ALL_SCENARIOS: readonly ScenarioId[] = ["optimistic", "realistic", "pessimistic", "ceasefire", "intermittent"] as const;
 
 interface PhaseComparisonViewProps {
   activeScenario: ScenarioId;
@@ -218,7 +223,7 @@ const PhaseComparisonView: FC<PhaseComparisonViewProps> = ({ activeScenario }) =
         aria-expanded={open}
       >
         <SectionHeading tone="info" size="xs" tracking="widest">
-          PHASE COMPARISON — 4シナリオの境界比較
+          PHASE COMPARISON — 5シナリオの境界比較
         </SectionHeading>
         <span className="text-[10px] font-mono text-text-muted shrink-0">
           {open ? "▲ 閉じる" : "▼ 全シナリオ比較を開く"}
@@ -252,7 +257,7 @@ const PhaseComparisonView: FC<PhaseComparisonViewProps> = ({ activeScenario }) =
               </div>
               <p className="text-[10px] text-text-muted leading-relaxed">
                 共通スケール（最大{COMPARISON_SCALE_DAYS}日）。シナリオによってフェーズ移行時期が大きくズレることが見て取れます。
-                pessimistic は唯一構造的適応期に到達、optimistic と realistic は制限期で観測終了します。
+                pessimistic（構造的適応期）と intermittent（適応定着期）は長期均衡に到達、optimistic と realistic は制限期で観測終了します。
               </p>
             </>
           )}
