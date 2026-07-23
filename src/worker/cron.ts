@@ -14,7 +14,6 @@ import { fetchLngUpdate } from "./lng-fetcher";
 import { fetchAisPositions, applyAisToOverrides } from "./ais-tracker";
 import { fetchOilPrice } from "./oil-price-fetcher";
 import { fetchTradeUpdate } from "./trade-fetcher";
-import { fetchOilProductsUpdate } from "./oil-products-fetcher";
 import { fetchJpcaUpdate } from "./jpca-fetcher";
 import { fetchJarwUpdate } from "./jarw-fetcher";
 import { fetchHjksOutages } from "./hjks-fetcher";
@@ -34,7 +33,7 @@ interface Env {
 }
 
 // ─── Cron 実行ビーコン ────────────────────────────────
-// 月曜枠（OWID + oil-products + HJKS）は2026-03-21以降 D1 に書き込みを残しておらず、
+// 月曜枠（OWID + HJKS）は2026-03-21以降 D1 に書き込みを残しておらず、
 // 「発火していない」のか「発火したが invocation ごと落ちた」のかを外部から切り分けられなかった。
 // スロット開始時と終了時に KV へ痕跡を残し、/api/cron-status で観測できるようにする。
 
@@ -124,8 +123,7 @@ export async function handleScheduled(
     sequential = true;
     // HJKS 発電機停止情報（週次）— 大型火力・原子力の出力制約を追跡
     tasks.push(["hjks", () => fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE })]);
-    // 石油製品在庫（週次）
-    tasks.push(["oil-products", () => fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    // 石油製品在庫（週次）は 2026-07-23 に凍結。理由は oil-products-fetcher.ts 冒頭を参照
     // OWID（最重量）は最後に回す
     tasks.push(["owid", () => fetchArchiveAndUpdate(env)]);
   }

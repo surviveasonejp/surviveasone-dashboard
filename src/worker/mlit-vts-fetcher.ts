@@ -21,7 +21,7 @@ interface Env {
   CACHE: KVNamespace;
 }
 
-const USER_AGENT = "SurviveAsOne-Bot/1.0 (surviveasonejp.org)";
+const USER_AGENT = "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)";
 
 /** タンカー系船種（部分一致キーワード） */
 const TANKER_KEYWORDS = ["油タンカー", "ガスタンカー", "ケミカルタンカー"] as const;
