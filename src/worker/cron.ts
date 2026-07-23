@@ -33,6 +33,63 @@ interface Env {
   ESTAT_APP_ID?: string;
 }
 
+// ─── Cron 実行ビーコン ────────────────────────────────
+// 月曜枠（OWID + oil-products + HJKS）は2026-03-21以降 D1 に書き込みを残しておらず、
+// 「発火していない」のか「発火したが invocation ごと落ちた」のかを外部から切り分けられなかった。
+// スロット開始時と終了時に KV へ痕跡を残し、/api/cron-status で観測できるようにする。
+
+const BEACON_PREFIX = "cron:beacon:";
+const BEACON_TTL_SECONDS = 60 * 60 * 24 * 60; // 60日
+
+export type CronSlot = "weekly-monday" | "daily-06" | "daily-18" | "monthly-18";
+
+export const CRON_SLOTS: readonly CronSlot[] = ["weekly-monday", "daily-06", "daily-18", "monthly-18"];
+
+export interface CronTaskResult {
+  name: string;
+  status: "fulfilled" | "rejected";
+  durationMs: number;
+  error?: string;
+}
+
+export interface CronBeacon {
+  slot: CronSlot;
+  /** started = 開始のみ記録された状態（この値が残っていれば invocation が完走していない） */
+  phase: "started" | "finished";
+  scheduledAt: string;
+  startedAt: string;
+  finishedAt?: string;
+  durationMs?: number;
+  tasks: string[];
+  results?: CronTaskResult[];
+}
+
+export const beaconKey = (slot: CronSlot): string => `${BEACON_PREFIX}${slot}`;
+
+async function writeBeacon(cache: KVNamespace, beacon: CronBeacon): Promise<void> {
+  try {
+    await cache.put(beaconKey(beacon.slot), JSON.stringify(beacon), {
+      expirationTtl: BEACON_TTL_SECONDS,
+    });
+  } catch (err) {
+    // ビーコン書き込み失敗でデータ取得本体を止めない
+    console.warn(`Cron beacon write failed (${beacon.slot}): ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
+/** タスクを実行し、成否を必ず値として返す（reject させない） */
+async function runTask(name: string, run: () => Promise<unknown>): Promise<CronTaskResult> {
+  const start = Date.now();
+  try {
+    await run();
+    return { name, status: "fulfilled", durationMs: Date.now() - start };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`Cron task "${name}" failed: ${message}`);
+    return { name, status: "rejected", durationMs: Date.now() - start, error: message.slice(0, 200) };
+  }
+}
+
 const OWID_CSV_URL = "https://raw.githubusercontent.com/owid/energy-data/master/owid-energy-data.csv";
 
 // OWID CSV → D1 単位換算係数
@@ -56,60 +113,96 @@ export async function handleScheduled(
   // waitUntil だとハンドラ return 後 約30秒で強制キャンセルされ、
   // 月曜枠（OWID 9.2MB取得 + HJKS 1,000件UPSERT）は毎回途中終了していた。
   // Cron Trigger 自体の実行時間上限は15分あるため await で問題ない。
-  const tasks: Array<[name: string, run: Promise<unknown>]> = [];
+  const tasks: Array<[name: string, run: () => Promise<unknown>]> = [];
+  let slot: CronSlot | null = null;
+  // 月曜枠のみ直列実行する。OWID は 9.2MB の decode/split で CPU・メモリを最も食うため、
+  // ここで invocation ごと打ち切られても軽量な HJKS / 石油製品在庫は書き込み済みにする。
+  let sequential = false;
 
   if (hour === 3 && dayOfWeek === 1) {
-    tasks.push(["owid", fetchArchiveAndUpdate(env)]);
-    // 石油製品在庫（週次）— OWID 取得と並行実行
-    tasks.push(["oil-products", fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    slot = "weekly-monday";
+    sequential = true;
     // HJKS 発電機停止情報（週次）— 大型火力・原子力の出力制約を追跡
-    tasks.push(["hjks", fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE })]);
+    tasks.push(["hjks", () => fetchHjksOutages({ DB: env.DB, CACHE: env.CACHE })]);
+    // 石油製品在庫（週次）
+    tasks.push(["oil-products", () => fetchOilProductsUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    // OWID（最重量）は最後に回す
+    tasks.push(["owid", () => fetchArchiveAndUpdate(env)]);
   }
 
   if (hour === 18) {
-    tasks.push(["electricity", fetchElectricityDemand(env.DB)]);
+    slot = "daily-18";
+    tasks.push(["electricity", () => fetchElectricityDemand(env.DB)]);
     // AISタンカー位置取得 → overrides自動同期（電力需給と並行実行）
     if (env.AISSTREAM_API_KEY) {
-      tasks.push(["ais", fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
+      tasks.push(["ais", () => fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
     }
     // WTI原油価格取得（日次）
-    if (env.EIA_API_KEY) {
-      tasks.push(["oil-price", fetchOilPrice({ DB: env.DB, CACHE: env.CACHE, EIA_API_KEY: env.EIA_API_KEY })]);
+    // thunk 化でクロージャ内の再参照になるため、ナローイング済みの値をローカルに束縛する
+    const eiaApiKey = env.EIA_API_KEY;
+    if (eiaApiKey) {
+      tasks.push(["oil-price", () => fetchOilPrice({ DB: env.DB, CACHE: env.CACHE, EIA_API_KEY: eiaApiKey })]);
     }
     // MLIT VTS 3ルート（浦賀水道/明石海峡/関門海峡）+ 名古屋港EDI
-    tasks.push(["vts", fetchAllVtsArrivalsSafe(env)]);
-    tasks.push(["nagoya", fetchNagoyaArrivalsSafe(env)]);
+    tasks.push(["vts", () => fetchAllVtsArrivalsSafe(env)]);
+    tasks.push(["nagoya", () => fetchNagoyaArrivalsSafe(env)]);
   }
 
   // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期（月18日は備蓄更新と相乗り）
   if (hour === 6 && dayOfMonth !== 18) {
+    slot = "daily-06";
     if (env.AISSTREAM_API_KEY) {
-      tasks.push(["ais", fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
+      tasks.push(["ais", () => fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
     }
     // MLIT VTS 3ルート（2回目）— AIS と並行して実行
-    tasks.push(["vts", fetchAllVtsArrivalsSafe(env)]);
+    tasks.push(["vts", () => fetchAllVtsArrivalsSafe(env)]);
   }
 
   // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW + JOGMEC放出 + 日銀輸入物価 自動更新
   if (hour === 6 && dayOfMonth === 18) {
-    tasks.push(["reserves", fetchReservesUpdate(env)]);
-    tasks.push(["lng", fetchLngUpdate(env)]);
-    tasks.push(["trade", fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
-    tasks.push(["jpca", fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE })]);
-    tasks.push(["jarw", fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    slot = "monthly-18";
+    tasks.push(["reserves", () => fetchReservesUpdate(env)]);
+    tasks.push(["lng", () => fetchLngUpdate(env)]);
+    tasks.push(["trade", () => fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
+    tasks.push(["jpca", () => fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    tasks.push(["jarw", () => fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE })]);
     // Phase 25-A: 基地別放出イベント seed + 新規リリース探索
-    tasks.push(["jogmec", fetchJogmecUpdate(env)]);
+    tasks.push(["jogmec", () => fetchJogmecUpdate(env)]);
     // Phase 25-B: 港湾原油・石油製品 月次海上出入貨物（10基地最寄港）
-    tasks.push(["port-cargo", fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
+    tasks.push(["port-cargo", () => fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
     // 日銀 輸入物価指数（円ベース・契約通貨ベース）月次取得
-    tasks.push(["boj", fetchBojImportPriceUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    tasks.push(["boj", () => fetchBojImportPriceUpdate({ DB: env.DB, CACHE: env.CACHE })]);
   }
 
-  const settled = await Promise.allSettled(tasks.map(([, run]) => run));
-  settled.forEach((result, i) => {
-    if (result.status === "rejected") {
-      console.error(`Cron task "${tasks[i]?.[0]}" failed: ${result.reason}`);
+  if (!slot || tasks.length === 0) return;
+
+  const startedAt = new Date();
+  const beacon: CronBeacon = {
+    slot,
+    phase: "started",
+    scheduledAt: scheduledDate.toISOString(),
+    startedAt: startedAt.toISOString(),
+    tasks: tasks.map(([name]) => name),
+  };
+  // 開始時点で先に書く。これが "started" のまま残っていれば invocation が完走していない証跡になる
+  await writeBeacon(env.CACHE, beacon);
+
+  const results: CronTaskResult[] = [];
+  if (sequential) {
+    for (const [name, run] of tasks) {
+      results.push(await runTask(name, run));
     }
+  } else {
+    results.push(...(await Promise.all(tasks.map(([name, run]) => runTask(name, run)))));
+  }
+
+  const finishedAt = new Date();
+  await writeBeacon(env.CACHE, {
+    ...beacon,
+    phase: "finished",
+    finishedAt: finishedAt.toISOString(),
+    durationMs: finishedAt.getTime() - startedAt.getTime(),
+    results,
   });
 }
 
