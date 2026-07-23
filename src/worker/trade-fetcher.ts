@@ -289,7 +289,7 @@ async function fetchFromMetiHtml(): Promise<TradeExtract[]> {
     let html: string;
     try {
       const res = await fetch(url, {
-        headers: { "User-Agent": "SurviveAsOne-Bot/1.0" },
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)" },
       });
       if (!res.ok) continue;
       html = await res.text();

@@ -46,7 +46,7 @@ export async function fetchReservesUpdate(env: Env): Promise<void> {
 
   for (const url of candidates) {
     try {
-      const res = await fetch(url, { headers: { "User-Agent": "SurviveAsOne-Bot/1.0" } });
+      const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)" } });
       if (res.ok) {
         pdfBytes = await res.arrayBuffer();
         pdfUrl = url;

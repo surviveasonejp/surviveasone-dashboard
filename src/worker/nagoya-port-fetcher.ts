@@ -18,7 +18,7 @@ interface Env {
 }
 
 const NAGOYA_URL = "https://www2.port-of-nagoya.jp/select/selarrivallist.aspx?PageCd=01";
-const USER_AGENT = "SurviveAsOne-Bot/1.0 (surviveasonejp.org)";
+const USER_AGENT = "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)";
 
 /** 対象船種キーワード（部分一致） */
 const TANKER_KEYWORDS = ["タンカー", "油送船", "LNG", "ケミカル"] as const;

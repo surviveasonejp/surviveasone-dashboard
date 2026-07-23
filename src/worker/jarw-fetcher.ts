@@ -25,7 +25,7 @@ interface Env {
 }
 
 const JARW_STATS_BASE = "https://www.jarw.or.jp/know/statistics";
-const USER_AGENT = "SurviveAsOne-Bot/1.0 (surviveasonejp.org)";
+const USER_AGENT = "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)";
 
 /** 月次統計の抽出結果 */
 interface JarwExtract {

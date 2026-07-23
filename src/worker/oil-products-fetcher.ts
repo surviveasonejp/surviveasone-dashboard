@@ -1,19 +1,35 @@
 /**
- * 石油製品在庫 週次自動取得
+ * 石油製品在庫 週次自動取得 — 【凍結中 2026-07-23】
  *
- * 資源エネルギー庁「石油製品需給動態統計（pl007）」の概況ページから
- * ガソリン・灯油・軽油・重油・ナフサの週次在庫量を取得し D1 を更新する。
+ * cron からの呼び出しを外した。以下の調査で、この実装は前提から誤っており
+ * 修正しても動かないことが確定したため。復活させる場合は必ずこの記録を読むこと。
  *
- * URL パターン:
- *   https://www.enecho.meti.go.jp/statistics/petroleum_and_lpgas/pl007/results.html
- *   (概況ページ): https://www.enecho.meti.go.jp/statistics/petroleum_and_lpgas/pl007/{YYYY}/{YYYY}{WW}.html
+ * 1. **UA が 403 で弾かれていた**
+ *    `SurviveAsOne-Bot/1.0` は enecho で HTTP 403。`Mozilla/5.0` で始まる UA なら 200。
+ *    全 fetch が同一 UA だったため「URL 候補もフォールバックも全滅」する症状になり、
+ *    中身の誤り（下記2〜3）が長期間露呈しなかった。
  *
- * Cron: 毎週月曜 UTC 3:00（OWID 取得と相乗り）
+ * 2. **統計コードの取り違え**
+ *    pl007 は「石油製品**価格**調査」であり在庫統計ではない。
+ *    週次在庫の正しいコードは pl004「石油製品需給動態統計調査」。
+ *    したがって下の parseOilProductsHtml が探す品目在庫は、そもそも当該ページに存在しない。
  *
- * 週次在庫データの活用:
- *  - 供給制約シミュレーションのナフサ在庫パラメータを動的更新
- *  - フロータイムライン（FlowTimeline）の石油製品バッファ期間表示
- *  - 食料サプライチェーン影響試算の精度向上（ナフサ→石化製品→包装材）
+ * 3. **配信形式が HTML ではない**
+ *    pl007 の実データは xlsx 配信（例: /statistics/petroleum_and_lpgas/pl007/xlsx/260723.xlsx）。
+ *    HTML テーブルを正規表現で舐める本実装は原理的に空振りする。
+ *
+ * 4. **代替データ源も全て Excel/PDF**
+ *    - e-Stat DB（API/JSON）: 年報のみ・2007-01〜2024-03（公開 2025-02-10）で鮮度不足
+ *    - e-Stat ファイル: 2026年5月分を 2026-07-14 公開だが Excel/PDF のみ
+ *    - 石油連盟(PAJ): xlsx/xls/PDF のみ
+ *    JSON/CSV で取得できる鮮度のある在庫データは存在しない。Worker に Excel パーサを
+ *    入れる案は、CPU 上限が疑われている月曜枠に重い処理を足すことになるため見送った。
+ *
+ * 再構築する場合の候補: GitHub Actions の週次 schedule で xlsx を落として Node 側で
+ * パースし、wrangler 経由で D1 に書く（Worker の CPU・バンドルに影響しない）。
+ * 判断は月曜枠の cron 復旧（→ /api/cron-status）を確認してから。
+ *
+ * D1 テーブル oil_products_inventory とスキーマは復活に備えて残置（現在 0 行）。
  */
 
 import { invalidateCache, CACHE_KEYS } from "./kv-cache";
@@ -25,7 +41,7 @@ interface Env {
 
 const ENECHO_PL007_BASE =
   "https://www.enecho.meti.go.jp/statistics/petroleum_and_lpgas/pl007";
-const USER_AGENT = "SurviveAsOne-Bot/1.0";
+const USER_AGENT = "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)";
 
 /** 在庫抽出結果 */
 interface OilProductsExtract {

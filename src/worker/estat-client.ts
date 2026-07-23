@@ -11,7 +11,7 @@
  */
 
 const BASE_URL = "https://api.e-stat.go.jp/rest/3.0/app/json";
-const USER_AGENT = "SurviveAsOne-Bot/1.0 (surviveasonejp.org)";
+const USER_AGENT = "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)";
 
 // ─── レスポンス型定義 ──────────────────────────────────
 

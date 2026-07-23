@@ -107,7 +107,7 @@ export async function fetchBojImportPriceUpdate(env: Env): Promise<void> {
   let response: Response;
   try {
     response = await fetch(url.toString(), {
-      headers: { "User-Agent": "SurviveAsOne-Bot/1.0 (surviveasonejp.org)" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; surviveasonejp-DataBot/1.0; +https://surviveasonejp.org)" },
     });
   } catch (e) {
     console.error("BOJ API fetch failed:", e);
