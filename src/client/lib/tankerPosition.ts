@@ -88,6 +88,7 @@ const PORT_ROUTE_MAP: Record<string, string> = {
   "USGC-Drake": "usgc-drakepassage",
   "Ain Sukhna": "ain-sukhna-babel",
   "Sohar": "fujairah-malacca",
+  "Qalhat": "fujairah-malacca",
   "PortMoresby": "australia-east",
   "Freeport": "us-pacific",
 };
