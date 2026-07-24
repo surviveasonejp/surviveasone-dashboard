@@ -19,7 +19,7 @@ import { UpdateLog } from "../components/UpdateLog";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
 import staticReserves from "../../worker/data/reserves.json";
-import staticConsumption from "../data/consumption.json";
+import staticConsumption from "../../worker/data/consumption.json";
 import { formatNumber } from "../lib/formatters";
 
 export const SurvivalClock: FC = () => {
