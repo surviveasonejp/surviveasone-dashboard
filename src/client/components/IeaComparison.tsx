@@ -42,7 +42,7 @@ interface CountryStock {
 const COUNTRIES: CountryStock[] = [
   // IEA加盟国（3/11協調放出進行中・2026年4月24日時点）
   { country: "日本", days: 0, isJapan: true, group: "iea" },
-  { country: "米国", days: 185, note: "SPR 4/17時点405.0MB（前週比▲4.2MB・4/3比▲8.3MB）。172mb放出計画を1.43mbpdで継続中・7月中旬完了予定。純輸出国でIEA義務免除。輸入量ベース換算約185日（EIA WPSR 2026-04-22）", group: "iea" },
+  { country: "米国", days: 142, note: "SPR 7/22時点311.45MB（EIA週報・前週比▲1.9%・1983年4月以来の低水準）。172mb放出計画を1.43mbpdで実施。純輸出国でIEA義務免除。輸入量ベース換算約142日（EIA WPSR 2026-07-22）", group: "iea" },
   { country: "韓国", days: 187, note: "KNOC 9拠点。22.46mb放出後IEA公式187日。3/31開始のスワップ制度（4-5月・月次延長可）に国内4大精製会社が2,000万バレル超の需要。輸出精製分除外の実質余力は68日（S&P Global / KED Global 2026-03〜04）", group: "iea" },
   { country: "フランス", days: 70, note: "SAGESS + 事業者。14.6mb放出後70日推定（DropThe 2026-03）。協調放出で90日義務を下回る", group: "iea" },
   { country: "ドイツ", days: 76, note: "EBV管理。19.5mb放出後76日推定（DropThe 2026-03）。90日義務をわずかに上回る", group: "iea" },

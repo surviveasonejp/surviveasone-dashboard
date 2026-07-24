@@ -46,18 +46,18 @@
     },
     "countries": {
       "US": {
-        "reserveMb": 405.0,
-        "baselineDate": "2026-04-17",
-        "reserveMbPrevious": 413.3,
-        "reserveMbPreviousDate": "2026-04-03",
+        "reserveMb": 311.45,
+        "baselineDate": "2026-07-22",
+        "reserveMbPrevious": 405.0,
+        "reserveMbPreviousDate": "2026-04-17",
         "releaseCommittedMb": 172,
         "releaseStartDate": "2026-03-20",
         "releaseDurationDays": 120,
         "releaseRateMbpd": 1.43,
         "shareOfIeaRelease": 0.43,
         "capacityMaxMb": 725.5,
-        "source": "EIA Weekly Petroleum Status Report 2026-04-22（4/17時点）/ DOE 2026-03-16",
-        "note": "4/17時点SPR 405.0MB（前週比▲4.2MB・計画通り1.43mbpd減）。IEA全体の43%を単独担当。放出前水準は約4.36億バレル。最大容量725.5MBから320.5MB下回る水準。完了予定2026年7月中旬"
+        "source": "EIA Weekly Petroleum Status Report 2026-07-22時点 / DOE 2026-03-16",
+        "note": "7/22時点SPR 311.45MB（EIA週報・前週比▲1.9%）。1983年4月以来の低水準。IEA全体の43%を単独担当。172MB放出計画（1.43mbpd・完了予定7月中旬）を経て放出前水準約4.36億バレルから大幅低下。最大容量725.5MBの約43%。▼4/17時点は405.0MBで、以降3ヶ月で約93.5MB取り崩した"
       },
       "Korea": {
         "reserveMbBeforeRelease": 100.1,
