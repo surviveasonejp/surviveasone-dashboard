@@ -6,7 +6,7 @@
  */
 
 import { type FC } from "react";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 
 interface UpdateEntry {
   date: string;

@@ -8,7 +8,7 @@
 
 import type { ResourceCountdown } from "../../shared/types";
 import type { ScenarioId } from "../../shared/scenarios";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 import { SCENARIOS, DEFAULT_SCENARIO } from "../../shared/scenarios";
 

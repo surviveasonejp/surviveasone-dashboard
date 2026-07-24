@@ -1,6 +1,6 @@
 import { type FC, useState } from "react";
 import { Link } from "react-router-dom";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 import { SensitivityChart } from "../components/SensitivityChart";
 import { PageHero } from "../components/PageHero";
 import { ScenarioSelector } from "../components/ScenarioSelector";
