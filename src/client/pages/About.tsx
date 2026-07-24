@@ -1,6 +1,6 @@
 import { type FC } from "react";
 import { Link } from "react-router-dom";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 import { usePwaInstall } from "../hooks/usePwaInstall";
 import { Badge } from "../components/Badge";
 import { PageHero } from "../components/PageHero";

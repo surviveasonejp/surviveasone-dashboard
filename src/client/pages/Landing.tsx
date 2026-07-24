@@ -10,7 +10,7 @@ import { IeaComparison } from "../components/IeaComparison";
 import { BlockadeDayCounter } from "../components/BlockadeDayCounter";
 import { SectionHeading } from "../components/SectionHeading";
 import type { ResourceCountdown } from "../../shared/types";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 
 type Tone = "success" | "success-soft" | "warning-soft" | "primary-soft" | "info" | "info-lighter" | "neutral";
 

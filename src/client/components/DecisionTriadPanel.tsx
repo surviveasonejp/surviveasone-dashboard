@@ -17,7 +17,7 @@ import { useApiData } from "../hooks/useApiData";
 import { SectionHeading } from "./SectionHeading";
 import { Badge, type BadgeTone } from "./Badge";
 import { UncertaintyBand } from "./UncertaintyBand";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 import { FALLBACK_COUNTDOWNS, ALL_SCENARIO_DAYS } from "../lib/fallbackCountdowns";
 
 interface Props {

@@ -18,7 +18,7 @@ import { DataFreshness } from "../components/DataFreshness";
 import { UpdateLog } from "../components/UpdateLog";
 import { useApiData } from "../hooks/useApiData";
 import type { ReservesRow, ConsumptionRow } from "../hooks/useApiData";
-import staticReserves from "../data/reserves.json";
+import staticReserves from "../../worker/data/reserves.json";
 import staticConsumption from "../data/consumption.json";
 import { formatNumber } from "../lib/formatters";
 
