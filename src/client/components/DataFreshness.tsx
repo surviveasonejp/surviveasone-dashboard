@@ -7,7 +7,7 @@
 
 import { type FC } from "react";
 import staticReserves from "../../worker/data/reserves.json";
-import staticConsumption from "../data/consumption.json";
+import staticConsumption from "../../worker/data/consumption.json";
 
 interface FreshnessEntry {
   label: string;

@@ -52,7 +52,7 @@ function getSizeClass(cargo_t: number): { label: string; color: string } {
 }
 
 export const TankerTracker: FC = () => {
-  const { tankers, meta } = useTankerData();
+  const { tankers, meta, isFallback } = useTankerData();
   const isBlocked = (t: { departurePort: string; hormuzPassed?: boolean }) =>
     HORMUZ_PORTS.has(t.departurePort) && !t.hormuzPassed;
   const isNotJapanBound = (t: { destinationPort: string }) => !JAPAN_DEST_PORTS.has(t.destinationPort);
@@ -111,7 +111,11 @@ export const TankerTracker: FC = () => {
         subtitle="ホルムズ封鎖シナリオ下での日本向けタンカー入港追跡 — 代替ルート・非ホルムズ便の到着見通しと封鎖影響を航路別に可視化"
         right={
           <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[11px] font-mono text-neutral-500">
-            <span>データ基準日: {meta.updatedAt}</span>
+            {isFallback ? (
+              <span className="text-warning-soft">サンプル{tankers.length}隻を表示中（実データ取得待ち）</span>
+            ) : (
+              <span>データ基準日: {meta.updatedAt}</span>
+            )}
             {meta.lastAisFetch ? (
               <span>AIS最終取得: {new Intl.DateTimeFormat("ja-JP", {
                 timeZone: "Asia/Tokyo",
