@@ -12,3 +12,6 @@ credentials.json
 .DS_Store
 .claude/
 .vscode/
+
+# Windows(WSL) がダウンロード時に生成するメタデータ
+*:Zone.Identifier
