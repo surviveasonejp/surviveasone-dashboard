@@ -1,0 +1,70 @@
+name: Update oil reserves data
+
+# 資源エネルギー庁「石油備蓄の状況（推計値の速報）」PDF から備蓄日数を日次で取り込む。
+#
+# Worker 内のフェッチャー（reserves-fetcher.ts）ではなく CI で処理する理由:
+# 当該 PDF は FlateDecode + CID エンコードで ToUnicode CMap を持たず、Worker では
+# テキストを抽出できない。poppler(pdftotext) が必要なため CI 側で処理する。
+#
+# 値に変化があった時だけ main へ直接コミットする。src/** への push は deploy.yml が
+# 拾って自動デプロイするため、サイト表示・OGP・API まで自動で追随する。
+
+on:
+  schedule:
+    # 毎日 UTC 23:30（JST 08:30）。速報は平日に更新されるため朝までに取り込む
+    - cron: '30 23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write # reserves.json のコミット・push
+  actions: write  # deploy.yml の workflow_dispatch 起動
+
+# 同時実行を防ぐ（push 競合の回避）
+concurrency:
+  group: update-reserves
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+
+      - name: Install poppler-utils
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils
+
+      # 抽出値が検証に通らない場合、スクリプトは非ゼロ終了して以降を止める
+      # （誤ったデータが自動コミットされるのを防ぐ）
+      - name: Fetch and update reserves.json
+        id: update
+        run: node scripts/update-reserves.mjs
+
+      - name: Commit and push
+        if: steps.update.outputs.changed == 'true'
+        env:
+          SUMMARY: ${{ steps.update.outputs.summary }}
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/worker/data/reserves.json
+          git commit -m "data(reserves): ${SUMMARY}
+
+          資源エネルギー庁「石油備蓄の状況（推計値の速報）」より自動取得
+          (.github/workflows/update-reserves.yml)"
+          git push
+
+      # GITHUB_TOKEN による push は他ワークフローを起動しない（GitHub の再帰防止）。
+      # そのままでは deploy.yml が発火せず reserves.json の更新がサイトに反映されない。
+      # workflow_dispatch はこの制限の明示的な例外なので、デプロイを直接起動する。
+      - name: Trigger deploy
+        if: steps.update.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main
