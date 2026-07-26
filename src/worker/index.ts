@@ -68,7 +68,7 @@ import {
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
-import { getAisPositions, AIS_LAST_SUCCESS_KEY } from "./ais-tracker";
+import { getAisPositions, getAisDiagnostic, TRACKED_VESSELS, AIS_LAST_SUCCESS_KEY } from "./ais-tracker";
 import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
 import {
   fetchVtsArrivals,
@@ -1012,6 +1012,15 @@ async function handleTankers(env: Env): Promise<Response> {
   const aisPositions = await getAisPositions(env.CACHE);
   const aisCount = Object.keys(aisPositions).length;
 
+  // aisTracked は「実際にAIS位置を保持しているか」を表す。
+  // tankers.json の静的値は 161隻中155隻が true だが、AIS購読対象は
+  // TRACKED_VESSELS の一部のみで、受信が無い日は位置を持たない。
+  // 静的値のままだと UI の「AIS」バッジが実際には無い裏付けを主張してしまうため、
+  // 実データの有無で上書きする（データが無い船は「推定」表示になる）。
+  for (const tanker of baseTankers) {
+    tanker.aisTracked = aisPositions[tanker.id] != null;
+  }
+
   await setCache(env.CACHE, CACHE_KEYS.TANKERS, baseTankers, CACHE_TTL.SIMULATION);
   return jsonResponse({
     data: baseTankers,
@@ -1092,12 +1101,30 @@ async function handleTankerUpdate(request: Request | undefined, env: Env): Promi
 async function handleAis(env: Env): Promise<Response> {
   const positions = await getAisPositions(env.CACHE);
   const count = Object.keys(positions).length;
+  // 直近の取得結果。取得自体は成功しても受信0件のことがあるため実態を併記する
+  // （旧実装は count=0 のとき「Cron取得後に反映されます」と案内していたが、
+  //   実際には毎回0件で反映されず、無収穫が長期間気付かれない状態だった）
+  const diagnostic = await getAisDiagnostic(env.CACHE);
+
+  let note: string;
+  if (count > 0) {
+    note = `${count}隻のAIS位置データ（1日2回更新）`;
+  } else if (diagnostic && diagnostic.received === 0) {
+    note =
+      `AIS位置データなし。直近の取得（${diagnostic.fetchedAt}）では${diagnostic.tracked}隻を購読したが` +
+      `有効メッセージ0件だった。APIキーの失効、または追跡対象が就航中の船を含んでいない可能性がある`;
+  } else if (diagnostic) {
+    note = `AIS位置データなし。直近の取得（${diagnostic.fetchedAt}）は受信${diagnostic.received}件・更新${diagnostic.updated}隻`;
+  } else {
+    note = "AIS位置データなし。取得実績の記録もまだない（1日2回のCronで取得）";
+  }
+
   return jsonResponse({
     data: positions,
     count,
-    note: count === 0
-      ? "AIS位置データなし。日次Cronで取得後に反映されます。"
-      : `${count}隻のAIS位置データ（日次更新）`,
+    tracked: TRACKED_VESSELS.length,
+    lastFetch: diagnostic,
+    note,
   });
 }
 
