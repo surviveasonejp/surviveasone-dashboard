@@ -31,7 +31,11 @@
     }
   ],
   "triggers": {
-    "crons": ["0 3 * * 1", "0 6 * * *", "0 18 * * *", "0 6 18 * *"]
+    // monthly-18 スロット用の "0 6 18 * *" は追加しないこと。
+    // handleScheduled は controller.cron を見ず UTC 時刻のみで分岐するため（cron.ts:150,160）、
+    // "0 6 * * *" 一本で 18日は monthly-18 分岐に入る。両方登録すると invocation が2本立ち、
+    // 月次取得の二重実行とビーコン（cron:beacon:monthly-18）の上書きレースを起こす。
+    "crons": ["0 3 * * 1", "0 6 * * *", "0 18 * * *"]
   },
   "observability": {
     "logs": {
