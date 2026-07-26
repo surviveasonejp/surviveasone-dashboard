@@ -40,9 +40,16 @@ interface Env {
 const BEACON_PREFIX = "cron:beacon:";
 const BEACON_TTL_SECONDS = 60 * 60 * 24 * 60; // 60日
 
-export type CronSlot = "weekly-monday" | "daily-06" | "daily-18" | "monthly-18";
+export type CronSlot = "weekly-monday" | "daily-06" | "daily-18" | "monthly-18" | "monthly-19" | "monthly-20";
 
-export const CRON_SLOTS: readonly CronSlot[] = ["weekly-monday", "daily-06", "daily-18", "monthly-18"];
+export const CRON_SLOTS: readonly CronSlot[] = [
+  "weekly-monday",
+  "daily-06",
+  "daily-18",
+  "monthly-18",
+  "monthly-19",
+  "monthly-20",
+];
 
 export interface CronTaskResult {
   name: string;
@@ -146,8 +153,10 @@ export async function handleScheduled(
     tasks.push(["nagoya", () => fetchNagoyaArrivalsSafe(env)]);
   }
 
-  // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期（月18日は備蓄更新と相乗り）
-  if (hour === 6 && dayOfMonth !== 18) {
+  // 毎日 UTC 6:00 (JST 15:00): AIS 2回目取得 → overrides自動同期
+  // 月次枠のある18〜20日も同じ invocation に相乗りする（slot は後段の月次側で上書きされ、
+  // ais / vts の結果は monthly-NN のビーコンに記録される）。
+  if (hour === 6) {
     slot = "daily-06";
     if (env.AISSTREAM_API_KEY) {
       tasks.push(["ais", () => fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))]);
@@ -156,18 +165,40 @@ export async function handleScheduled(
     tasks.push(["vts", () => fetchAllVtsArrivalsSafe(env)]);
   }
 
-  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計 + JPCA + JARW + JOGMEC放出 + 日銀輸入物価 自動更新
+  // ─── 月次枠は18/19/20日に3分割する（subrequest 予算の都合）───────────────
+  // Workers Free の subrequest 上限は 50/invocation。月次8タスクを18日に束ねると
+  //   port-cargo 40（10港 × 4品目）+ jogmec 30（SCAN_RANGE）+ trade 8 + その他 8 = 86
+  // となり51本目以降が必ず落ちる。日をずらして各 invocation を上限内に収める。
+  // 3日とも "0 6 * * *" が担うので Cron 枠は増えない（枠は 3/5 のまま）。
+  //
+  //   18日 = reserves 1 + lng 1 + trade 8         + ais 1 + vts 3 ≈ 14
+  //   19日 = port-cargo 40                        + ais 1 + vts 3 ≈ 44
+  //   20日 = jogmec 30 + jpca 2 + jarw 3 + boj 1  + ais 1 + vts 3 ≈ 40
+  //
+  // タスクを追加・増量するときはこの見積りを更新し、50 を超えないことを確認すること。
+
+  // 毎月18日 UTC 6:00 (JST 15:00): 石油備蓄 + LNG在庫 + 貿易統計
   if (hour === 6 && dayOfMonth === 18) {
     slot = "monthly-18";
     tasks.push(["reserves", () => fetchReservesUpdate(env)]);
     tasks.push(["lng", () => fetchLngUpdate(env)]);
     tasks.push(["trade", () => fetchTradeUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
-    tasks.push(["jpca", () => fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE })]);
-    tasks.push(["jarw", () => fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE })]);
-    // Phase 25-A: 基地別放出イベント seed + 新規リリース探索
-    tasks.push(["jogmec", () => fetchJogmecUpdate(env)]);
+  }
+
+  // 毎月19日 UTC 6:00 (JST 15:00): 港湾貨物のみ（単独で 40 subrequest を使うため専有させる）
+  if (hour === 6 && dayOfMonth === 19) {
+    slot = "monthly-19";
     // Phase 25-B: 港湾原油・石油製品 月次海上出入貨物（10基地最寄港）
     tasks.push(["port-cargo", () => fetchPortCargoUpdate({ DB: env.DB, CACHE: env.CACHE, ESTAT_APP_ID: env.ESTAT_APP_ID })]);
+  }
+
+  // 毎月20日 UTC 6:00 (JST 15:00): JOGMEC放出 + JPCA + JARW + 日銀輸入物価
+  if (hour === 6 && dayOfMonth === 20) {
+    slot = "monthly-20";
+    // Phase 25-A: 基地別放出イベント seed + 新規リリース探索
+    tasks.push(["jogmec", () => fetchJogmecUpdate(env)]);
+    tasks.push(["jpca", () => fetchJpcaUpdate({ DB: env.DB, CACHE: env.CACHE })]);
+    tasks.push(["jarw", () => fetchJarwUpdate({ DB: env.DB, CACHE: env.CACHE })]);
     // 日銀 輸入物価指数（円ベース・契約通貨ベース）月次取得
     tasks.push(["boj", () => fetchBojImportPriceUpdate({ DB: env.DB, CACHE: env.CACHE })]);
   }
