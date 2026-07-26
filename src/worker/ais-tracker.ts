@@ -120,6 +120,9 @@ const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string; destPort?
 ];
 
 const AIS_POSITIONS_KEY = "ais_positions";
+
+/** WebSocket の待機時間。全船分の受信に余裕を持たせる */
+const AIS_TIMEOUT_MS = 20000;
 const AISSTREAM_URL = "wss://stream.aisstream.io/v0/stream";
 
 // ─── 日本向け判定 ─────────────────────────────────────
@@ -208,7 +211,7 @@ export async function fetchAisPositions(env: Env): Promise<{
       const timeout = setTimeout(() => {
         ws.close();
         resolve({ received, updated });
-      }, 20000); // 20秒でタイムアウト（全船取得に余裕を持たせる）
+      }, AIS_TIMEOUT_MS);
 
       ws.addEventListener("open", () => {
         // サブスクリプションメッセージ送信（3秒以内に必須）
@@ -306,7 +309,23 @@ export async function fetchAisPositions(env: Env): Promise<{
       expirationTtl: 86400,
     });
 
-    console.log(`AIS: ${result.updated.length} vessels updated, ${result.received} messages received`);
+    // 収穫ゼロを可視化する。received=0 でも Promise は resolve するため
+    // cron からは «fulfilled» に見え、無収穫が長期間気付かれない状態だった。
+    // 診断記録を残して /api/ais から観測できるようにする。
+    await writeAisDiagnostic(env.CACHE, {
+      tracked: mmsiList.length,
+      received: result.received,
+      updated: result.updated.length,
+    });
+
+    if (result.received === 0) {
+      console.warn(
+        `AIS: 収穫ゼロ — ${mmsiList.length}隻を購読したが ${AIS_TIMEOUT_MS / 1000}秒間で有効メッセージ0件。` +
+        `APIキーの失効、または TRACKED_VESSELS が就航中の船を含んでいない可能性がある`,
+      );
+    } else {
+      console.log(`AIS: ${result.updated.length} vessels updated, ${result.received} messages received`);
+    }
     return { connected: true, ...result };
 
   } catch (e) {
@@ -318,6 +337,45 @@ export async function fetchAisPositions(env: Env): Promise<{
 /** KVからAIS位置データを取得 */
 export async function getAisPositions(cache: KVNamespace): Promise<Record<string, AisPosition>> {
   return await cache.get<Record<string, AisPosition>>(AIS_POSITIONS_KEY, "json") ?? {};
+}
+
+// ─── 取得結果の診断記録 ──────────────────────────────
+// 「取得は成功したが中身が空」を外から判別できるようにする。
+
+const AIS_DIAGNOSTIC_KEY = "ais:last_result";
+
+export interface AisDiagnostic {
+  /** 購読した MMSI 数（= TRACKED_VESSELS の件数） */
+  tracked: number;
+  /** 受信した有効 AIS メッセージ数 */
+  received: number;
+  /** 位置を更新できた船の数 */
+  updated: number;
+  fetchedAt: string;
+}
+
+async function writeAisDiagnostic(
+  cache: KVNamespace,
+  r: Omit<AisDiagnostic, "fetchedAt">,
+): Promise<void> {
+  try {
+    const record: AisDiagnostic = { ...r, fetchedAt: new Date().toISOString() };
+    await cache.put(AIS_DIAGNOSTIC_KEY, JSON.stringify(record), { expirationTtl: 86400 * 30 });
+  } catch (err) {
+    // 診断記録の失敗で本体を止めない
+    console.warn(`AIS diagnostic write failed: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
+/** 直近の AIS 取得結果（未取得なら null） */
+export async function getAisDiagnostic(cache: KVNamespace): Promise<AisDiagnostic | null> {
+  const raw = await cache.get(AIS_DIAGNOSTIC_KEY, "text");
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as AisDiagnostic;
+  } catch {
+    return null;
+  }
 }
 
 /** 追跡対象船舶の一覧 */
