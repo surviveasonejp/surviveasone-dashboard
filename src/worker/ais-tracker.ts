@@ -11,6 +11,8 @@
  * - 無料枠のCPU時間制限（30秒）内で完了させる
  */
 
+import tankersData from "./data/tankers.json";
+
 interface Env {
   CACHE: KVNamespace;
   AISSTREAM_API_KEY?: string;
@@ -87,37 +89,53 @@ export interface AisPosition {
   calculatedEtaDays?: number; // AIS位置+SOGから算出したETA
 }
 
-// ─── 船舶MMSI一覧 ────────────────────────────────────
-// IMO→MMSI対応（MarineTraffic/VesselFinder公開データより）
-// AISStream.ioはMMSIフィルタのみ対応
+// ─── AIS 追跡対象の導出 ──────────────────────────────
+// AISStream は MMSI でしかフィルタできない。以前はこのファイルに 21 隻を
+// ハードコードしていたが、船が到着しても更新されず 2026-07-26 時点で
+// 20/21 隻が既に到着済み（eta_days<=0）という陳腐化を起こしていた。
+// 結果 AIS は有効メッセージ 0 件のまま「成功」と報告し続け、タンカー routine が
+// 位置変化を検知できない状態が長期間続いた。
+//
+// そこで追跡対象は tankers.json から動的に導出する。通常のタンカー更新で
+// mmsi を入れておけば AIS 追跡範囲が自動的に追随し、二度と陳腐化しない。
 
-const TRACKED_VESSELS: Array<{ id: string; mmsi: string; name: string; destPort?: string }> = [
-  // ─── VLCC ────────────────────────────────────────────────────────────
-  { id: "vlcc-alt-06", mmsi: "636021014", name: "TATESHINA",       destPort: "Ehime" },       // IMO 9910117 米国ガルフ→喜望峰→愛媛
-  { id: "vlcc-02",     mmsi: "538003869", name: "KAZUSA",          destPort: "Mizushima" },    // IMO 9513402
-  { id: "vlcc-03",     mmsi: "354919000", name: "TAKASAGO",        destPort: "Mizushima" },    // IMO 9770696
-  { id: "vlcc-05",     mmsi: "477254200", name: "ENEOS OCEAN",     destPort: "Oita" },         // IMO 9662875 JX Ocean
-  { id: "vlcc-alt-04", mmsi: "303521000", name: "KHURAIS",         destPort: "Yokkaichi" },    // IMO 9783679 Bahri/スエズ経由
-  { id: "vlcc-alt-07", mmsi: "352002979", name: "ENEOS GLORY",     destPort: "Oita" },         // IMO 9851608 JX Ocean/STS転送
-  // ─── VLCCサイズ以外の代替ルート ──────────────────────────────────────
-  { id: "tanker-alt-05", mmsi: "403494000", name: "NCC HUDA",      destPort: "Yokohama" },     // IMO 9399272 Bahri MRタンカー
-  // ─── LNG ────────────────────────────────────────────────────────────
-  { id: "lng-01",      mmsi: "432807000", name: "ENERGY HORIZON",  destPort: "Yokohama" },     // IMO 9483877 Gorgon→横浜
-  { id: "lng-02",      mmsi: "311000261", name: "SEISHU MARU",     destPort: "Kawasaki" },     // IMO 9666558
-  { id: "lng-03",      mmsi: "212883000", name: "GRAND ANIVA",     destPort: "Kitakyushu" },   // IMO 9338955 サハリン2
-  { id: "lng-04",      mmsi: "563099000", name: "DIAMOND GAS ORCHID", destPort: "Yokkaichi" }, // IMO 9779226
-  { id: "lng-05",      mmsi: "432634000", name: "ENERGY NAVIGATOR",destPort: "Hiroshima" },    // IMO 9355264
-  { id: "lng-06",      mmsi: "432884000", name: "ENERGY ADVANCE",  destPort: "Hitachi" },      // IMO 9269180 サハリン2→日立
-  { id: "lng-07",      mmsi: "432924000", name: "LNG MARS",        destPort: "Sakai" },        // IMO 9645748 Darwin→堺
-  { id: "lng-08",      mmsi: "311058200", name: "ASIA VENTURE",    destPort: "Yokkaichi" },    // IMO 9680190 Ashburton→四日市
-  { id: "lng-09",      mmsi: "357186000", name: "SOHAR LNG",       destPort: "Japan" },        // IMO 9210816 ホルムズ通過第1号
-  { id: "lng-10",      mmsi: "355037000", name: "DIAMOND GAS ROSE",destPort: "Futtsu" },       // IMO 9355252 サハリン2→富津
-  { id: "lng-11",      mmsi: "352965000", name: "PACIFIC NOTUS",   destPort: "Sodegaura" },    // IMO 9309688 Bintulu→袖ケ浦
-  { id: "lng-12",      mmsi: "432820000", name: "ENERGY FRONTIER", destPort: "Chiba" },        // IMO 9422908 Gladstone→千葉
-  // ─── 引き返し/監視対象 ────────────────────────────────────────────────
-  { id: "lng-cat-01",  mmsi: "311133000", name: "AL DAAYEN",       destPort: "Japan" },        // IMO 9325702 カタール/引き返し
-  { id: "lng-cat-02",  mmsi: "538006284", name: "RASHEEDA",        destPort: "Japan" },        // IMO 9443413 カタール/引き返し
-];
+
+/** AISStream の MMSI フィルタ上限 */
+const AIS_MAX_VESSELS = 50;
+
+interface TrackedVessel {
+  id: string;
+  mmsi: string;
+  name: string;
+  destPort?: string;
+}
+
+/**
+ * tankers.json から AIS 追跡対象を選ぶ。
+ * mmsi を持つ船のうち、到着が近い＝観測価値の高い航行中の船を優先する。
+ * 到着済み（eta_days<=0）の船は位置情報の価値が低いので後回しにし、
+ * 上限に収まらない分は落とす。
+ */
+function deriveTrackedVessels(): TrackedVessel[] {
+  const withMmsi = tankersData.vessels.filter(
+    (v): v is typeof v & { mmsi: string } => typeof v.mmsi === "string" && v.mmsi.length > 0,
+  );
+
+  const inFlight = withMmsi
+    .filter((v) => v.eta_days > 0)
+    .sort((a, b) => a.eta_days - b.eta_days);
+  const arrived = withMmsi.filter((v) => v.eta_days <= 0);
+
+  return [...inFlight, ...arrived].slice(0, AIS_MAX_VESSELS).map((v) => ({
+    id: v.id,
+    mmsi: v.mmsi,
+    name: v.name,
+    // destinationPort は JAPAN_PORT_COORDS のキーと対応する（ETA 再計算用）
+    ...(v.destinationPort ? { destPort: v.destinationPort } : {}),
+  }));
+}
+
+const TRACKED_VESSELS: TrackedVessel[] = deriveTrackedVessels();
 
 const AIS_POSITIONS_KEY = "ais_positions";
 
