@@ -42,6 +42,7 @@ import {
   getPortOilThroughputByPort,
   getLatestImportPrice,
   getImportPriceHistory,
+  type ReservesRow,
 } from "./db";
 import { ALL_BASES, NATIONAL_BASES, PRIVATE_BASES } from "./jogmec-fetcher";
 import { PORT_REGISTRY } from "./port-cargo-fetcher";
@@ -465,6 +466,35 @@ async function handleHealth(requestCount: number): Promise<Response> {
 
 // ─── /api/reserves ─────────────────────────────────────
 
+/**
+ * reserves.json を D1 の reserves 行と同じ形へ変換する。
+ *
+ * D1 の reserves テーブルは月次 fetcher が停止していた期間に取り残され、
+ * 最新行が 2025-12-31（254日）のまま古い。一方 reserves.json は
+ * scripts/update-reserves.mjs が日次で更新するため、こちらが実質の SSOT。
+ * API が D1 のみを見ていると画面（reserves.json 由来）と値が食い違うため、
+ * 両者を同じ形に揃えて新しい方を返せるようにする。
+ */
+function staticReservesAsRow(): ReservesRow {
+  const { meta, oil, lng, electricity } = staticReserves;
+  return {
+    date: meta.baselineDate,
+    oil_national_kL: oil.nationalReserve_kL,
+    oil_private_kL: oil.privateReserve_kL,
+    oil_joint_kL: oil.jointReserve_kL,
+    oil_total_kL: oil.totalReserve_kL,
+    oil_total_days: oil.totalReserveDays,
+    oil_hormuz_rate: oil.hormuzDependencyRate,
+    lng_inventory_t: lng.inventory_t,
+    lng_hormuz_rate: lng.hormuzDependencyRate,
+    thermal_share: electricity.thermalShareRate,
+    nuclear_share: electricity.nuclearShareRate,
+    renewable_share: electricity.renewableShareRate,
+    source: meta.source,
+    updated_at: meta.updatedAt,
+  };
+}
+
 async function handleReserves(url: URL, env: Env): Promise<Response> {
   const history = url.searchParams.get("history") === "true";
 
@@ -479,16 +509,24 @@ async function handleReserves(url: URL, env: Env): Promise<Response> {
     return jsonResponse({ data, cache: "miss" });
   }
 
-  const cached = await getFromCache<unknown>(env.CACHE, CACHE_KEYS.RESERVES_LATEST);
+  // キャッシュキーに reserves.json の基準日を含める。データ更新→デプロイで
+  // キーが変わるため、旧値が cache hit で返り続けるのを防げる（KV の手動パージ不要）。
+  const staticRow = staticReservesAsRow();
+  const cacheKey = `${CACHE_KEYS.RESERVES_LATEST}:${staticRow.date}`;
+
+  const cached = await getFromCache<unknown>(env.CACHE, cacheKey);
   if (cached) {
     return jsonResponse({ data: cached.data, cache: "hit" });
   }
-  const data = await getLatestReserves(env.DB);
-  if (!data) {
-    return jsonResponse({ error: "no_data", message: "備蓄データが見つかりません" }, 404);
-  }
-  await setCache(env.CACHE, CACHE_KEYS.RESERVES_LATEST, data, CACHE_TTL.RESERVES);
-  return jsonResponse({ data, cache: "miss" });
+
+  // D1 と reserves.json の基準日を比べて新しい方を採用する。
+  // 将来 D1 の月次 fetcher が復旧して date が上回れば、自動的に D1 優先へ戻る。
+  const d1Row = await getLatestReserves(env.DB);
+  const data = d1Row && d1Row.date > staticRow.date ? d1Row : staticRow;
+  const origin = data === staticRow ? "reserves.json" : "d1";
+
+  await setCache(env.CACHE, cacheKey, data, CACHE_TTL.RESERVES);
+  return jsonResponse({ data, origin, cache: "miss" });
 }
 
 // ─── /api/consumption ──────────────────────────────────
