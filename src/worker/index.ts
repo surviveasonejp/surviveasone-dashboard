@@ -685,11 +685,13 @@ async function handleCronStatus(env: Env): Promise<Response> {
     data: beacons,
     schedule: {
       "weekly-monday": "月曜 UTC 3:00 — HJKS / 石油製品在庫 / OWID",
-      "daily-06": "毎日 UTC 6:00 — AIS / VTS（18日は月次枠）",
+      "daily-06": "毎日 UTC 6:00 — AIS / VTS（18〜20日は月次枠のビーコンに相乗り）",
       "daily-18": "毎日 UTC 18:00 — 電力需給 / AIS / WTI / VTS / 名古屋港",
-      "monthly-18": "毎月18日 UTC 6:00 — 備蓄 / LNG / 貿易統計 / JPCA / JARW / JOGMEC / 港湾貨物 / 日銀",
+      "monthly-18": "毎月18日 UTC 6:00 — 備蓄 / LNG / 貿易統計（+ AIS / VTS）",
+      "monthly-19": "毎月19日 UTC 6:00 — 港湾貨物（+ AIS / VTS）",
+      "monthly-20": "毎月20日 UTC 6:00 — JOGMEC / JPCA / JARW / 日銀（+ AIS / VTS）",
     },
-    note: "phase が started のまま残っている場合、そのスロットは実行途中で打ち切られている。ビーコン自体が null の場合は該当スロットが発火していない（または60日以上未実行）。",
+    note: "phase が started のまま残っている場合、そのスロットは実行途中で打ち切られている。ビーコン自体が null の場合は該当スロットが発火していない（または60日以上未実行）。月次枠は Workers Free の subrequest 上限（50/invocation）に収めるため18/19/20日へ分割している。",
   });
 }
 
@@ -1745,7 +1747,7 @@ function handleApiDocsHtml(): Response {
     { method: "GET", path: "/api/port-arrivals", desc: "VTS/港湾EDI入航予定タンカー + 未登録便検出", params: "?port=uraga|akashi|kanmon|nagoya&refresh=true" },
     { method: "GET", path: "/api/resource-status", desc: "品目別市場ステータス（4段階）シナリオ別", params: "?scenario=realistic" },
     { method: "GET", path: "/api/sources", desc: "全データソース一覧（更新頻度・自動/手動・信頼度）", params: "" },
-    { method: "GET", path: "/api/cron-status", desc: "自動データパイプライン4スロットの直近実行結果（開始/完了ビーコン）", params: "" },
+    { method: "GET", path: "/api/cron-status", desc: "自動データパイプライン6スロットの直近実行結果（開始/完了ビーコン）", params: "" },
     { method: "GET", path: "/api/summary", desc: "プレーンテキスト概要（LLM・クローラー向け）", params: "?scenario=realistic" },
     { method: "GET", path: "/api/data", desc: "全データ概要（HTML、研究者向け）", params: "" },
     { method: "GET", path: "/api/docs", desc: "APIドキュメント（このページ）", params: "" },
