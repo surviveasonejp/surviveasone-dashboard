@@ -46,7 +46,15 @@ export interface TankerInfo {
   status: string;
   /** IMO番号（公開情報で確認済みの場合） */
   imo?: string;
-  /** AISで位置追跡可能か（IMO確認済み＝AIS受信可能） */
+  /**
+   * MMSI番号。AISStream は MMSI でしかフィルタできないため、これがある船だけ
+   * AIS 追跡対象になる（IMO からは機械変換できない別体系のため個別に裏取りが必要）。
+   */
+  mmsi?: string;
+  /**
+   * 実際に AIS 位置データを保持しているか。/api/tankers が実データの有無で
+   * 上書きするため、tankers.json 側の値は初期値にすぎない。
+   */
   aisTracked?: boolean;
   /** ホルムズ海峡を既に通過済みの便（出発港がホルムズ内側でも封鎖時到達不可扱いから除外） */
   hormuzPassed?: boolean;
