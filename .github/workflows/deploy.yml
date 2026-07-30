@@ -39,8 +39,41 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Cloudflare API は一時的に失敗することがある（2026-07-30 に
+      # 「An unknown error has occurred [code: 10013]」でデプロイが落ち、
+      # bot が更新した備蓄データが本番へ届かないまま放置された）。
+      # 再試行で一過性のものを吸収する。
       - name: Deploy
-        run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          for attempt in 1 2 3; do
+            if npx wrangler deploy; then
+              echo "デプロイ成功（試行 ${attempt} 回目）"
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "::warning::デプロイ失敗（試行 ${attempt}/3）。30秒後に再試行する"
+              sleep 30
+            fi
+          done
+          echo "::error::デプロイが3回とも失敗した"
+          exit 1
+
+      # デプロイが成功を返しても実際に配信できているとは限らない。
+      # 最低限の疎通を確認して、壊れた状態で緑になるのを防ぐ。
+      - name: Smoke check
+        run: |
+          for attempt in 1 2 3; do
+            CODE=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 20 \
+              "https://surviveasonejp.net/api/health?ci=${GITHUB_RUN_ID}" || echo 000)
+            if [ "$CODE" = "200" ]; then
+              echo "疎通確認 OK (HTTP 200)"
+              exit 0
+            fi
+            echo "::warning::/api/health が HTTP ${CODE}（試行 ${attempt}/3）"
+            sleep 15
+          done
+          echo "::error::デプロイ後に /api/health が 200 を返さない"
+          exit 1

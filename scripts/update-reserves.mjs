@@ -343,10 +343,16 @@ async function main() {
   writeFileSync(RESERVES_PATH, updated);
   console.log(`${RESERVES_PATH} を更新した`);
 
-  // GitHub Actions に変更ありを伝える
+  // GitHub Actions に変更ありを伝える。
+  // baselineDate / totalDays はワークフロー側が「本番へ実際に届いたか」を
+  // 検証するのに使う（デプロイが失敗しても誰も気付かない状態を避けるため）。
   if (process.env.GITHUB_OUTPUT) {
     const summary = `備蓄日数を${extract.totalDays}日へ更新（${extract.baselineDate}時点・国家${extract.nationalDays}/民間${extract.privateDays}/共同${extract.jointDays}）`;
-    writeFileSync(process.env.GITHUB_OUTPUT, `changed=true\nsummary=${summary}\n`, { flag: "a" });
+    writeFileSync(
+      process.env.GITHUB_OUTPUT,
+      `changed=true\nsummary=${summary}\nbaselineDate=${extract.baselineDate}\ntotalDays=${extract.totalDays}\n`,
+      { flag: "a" },
+    );
   }
 }
 

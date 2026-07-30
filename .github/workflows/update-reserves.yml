@@ -91,3 +91,30 @@ jobs:
           git commit -m "data(reserves): ${SUMMARY}" \
                      -m "資源エネルギー庁「石油備蓄の状況（推計値の速報）」より自動取得 (.github/workflows/update-reserves.yml)"
           git push origin HEAD:main
+
+      # push しても deploy.yml が落ちればサイトには届かない（2026-07-30 に
+      # Cloudflare API の一時障害で実際に起きた）。リポジトリだけ新しく本番が
+      # 古いという食い違いを検知するため、本番 API に反映されるまで確認する。
+      - name: Verify production reflects the update
+        if: steps.update.outputs.changed == 'true'
+        env:
+          EXPECTED_DATE: ${{ steps.update.outputs.baselineDate }}
+          EXPECTED_DAYS: ${{ steps.update.outputs.totalDays }}
+        run: |
+          echo "期待値: ${EXPECTED_DAYS}日 (${EXPECTED_DATE}時点)"
+          # deploy.yml のビルド〜デプロイ〜伝播を待つ（最大約8分）
+          for attempt in $(seq 1 32); do
+            BODY=$(curl -sS --max-time 20 \
+              "https://surviveasonejp.net/api/reserves?ci=${GITHUB_RUN_ID}-${attempt}" || echo '{}')
+            DATE=$(echo "$BODY" | jq -r '.data.date // empty')
+            DAYS=$(echo "$BODY" | jq -r '.data.oil_total_days // empty')
+            if [ "$DATE" = "$EXPECTED_DATE" ] && [ "$DAYS" = "$EXPECTED_DAYS" ]; then
+              echo "本番反映を確認（試行 ${attempt} 回目）: ${DAYS}日 (${DATE}時点)"
+              exit 0
+            fi
+            echo "待機中 (${attempt}/32): 本番は ${DAYS}日 (${DATE}時点)"
+            sleep 15
+          done
+          echo "::error::reserves.json は更新・push されたが、本番 API に反映されていない。" \
+               "deploy.yml の実行結果を確認すること（期待 ${EXPECTED_DAYS}日/${EXPECTED_DATE}時点）"
+          exit 1
