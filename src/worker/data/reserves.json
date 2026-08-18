@@ -1,16 +1,16 @@
 {
   "meta": {
-    "source": "資源エネルギー庁「石油備蓄の状況（推計値の速報）」2026年8月17日公表・8月14日時点 (pl001/pdf-oil-res/oil_daily.pdf) + IEA(2026年3月) + ISEP電力調査統計(2024年暦年) + METI(2026年) + 官報告示(2026年4月15日・民間備蓄延長) + 経産省プレスリリース 20260424009(第2弾国家備蓄原油放出・2026年4月24日)",
-    "updatedAt": "2026-08-17",
-    "baselineDate": "2026-08-14"
+    "source": "資源エネルギー庁「石油備蓄の状況（推計値の速報）」2026年8月18日公表・8月15日時点 (pl001/pdf-oil-res/oil_daily.pdf) + IEA(2026年3月) + ISEP電力調査統計(2024年暦年) + METI(2026年) + 官報告示(2026年4月15日・民間備蓄延長) + 経産省プレスリリース 20260424009(第2弾国家備蓄原油放出・2026年4月24日)",
+    "updatedAt": "2026-08-18",
+    "baselineDate": "2026-08-15"
   },
   "oil": {
     "nationalReserve_kL": 30476670,
-    "privateReserve_kL": 29293110,
+    "privateReserve_kL": 28997220,
     "jointReserve_kL": 1183560,
     "totalReserve_kL": 60657450,
     "nationalReserveDays": 103,
-    "privateReserveDays": 99,
+    "privateReserveDays": 98,
     "jointReserveDays": 4,
     "totalReserveDays": 205,
     "hormuzDependencyRate": 0.94,
@@ -106,7 +106,7 @@
       "Japan": {
         "reserveMb_equivalent": 381,
         "legalBasisDays": 205,
-        "baselineDate": "2026-08-14",
+        "baselineDate": "2026-08-15",
         "releaseCommittedMb_equivalent": 80,
         "releaseStartDate": "2026-03-16",
         "releasePhase2Mb_equivalent": 36.5,
