@@ -174,6 +174,15 @@ const JAPAN_PORT_COORDS: Record<string, { lat: number; lon: number }> = {
   Himeji: { lat: 34.78, lon: 134.67 },
   Sakai: { lat: 34.57, lon: 135.47 },
   Chita: { lat: 34.97, lon: 136.87 },
+  Anegasaki: { lat: 35.48, lon: 140.03 },
+  Nagoya: { lat: 35.08, lon: 136.88 },
+  Ogishima: { lat: 35.50, lon: 139.76 },
+  Sakaide: { lat: 34.32, lon: 133.86 },
+  Yokohama: { lat: 35.45, lon: 139.66 },
+  Tomakomai: { lat: 42.63, lon: 141.62 },
+  Hitachi: { lat: 36.62, lon: 140.70 },
+  Ehime: { lat: 34.06, lon: 132.85 },
+  Oita: { lat: 33.25, lon: 131.70 },
   Japan: { lat: 33.95, lon: 133.00 },
 };
 
