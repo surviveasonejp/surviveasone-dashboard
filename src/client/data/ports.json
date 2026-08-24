@@ -52,5 +52,8 @@
   "Yokosuka": { "lat": 35.28, "lon": 139.67 },
   "Fukuyama": { "lat": 34.47, "lon": 133.40 },
   "Nagoya": { "lat": 34.95, "lon": 136.88 },
-  "Yokohama": { "lat": 35.40, "lon": 139.65 }
+  "Yokohama": { "lat": 35.40, "lon": 139.65 },
+  "Kashima": { "lat": 35.93, "lon": 140.70 },
+  "Niihama": { "lat": 33.96, "lon": 133.28 },
+  "Kobe": { "lat": 34.68, "lon": 135.22 }
 }
