@@ -57,5 +57,10 @@
   "Niihama": { "lat": 33.96, "lon": 133.28 },
   "Kobe": { "lat": 34.68, "lon": 135.22 },
   "Duqm": { "lat": 19.67, "lon": 57.71 },
-  "Shimizu": { "lat": 35.02, "lon": 138.52 }
+  "Shimizu": { "lat": 35.02, "lon": 138.52 },
+  "Sikka": { "lat": 22.43, "lon": 69.84 },
+  "Yeosu": { "lat": 34.74, "lon": 127.75 },
+  "Gwangyang": { "lat": 34.90, "lon": 127.70 },
+  "Darwin": { "lat": -12.47, "lon": 130.85 },
+  "PointFortin": { "lat": 10.17, "lon": -61.68 }
 }
