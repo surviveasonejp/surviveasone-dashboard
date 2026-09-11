@@ -139,8 +139,15 @@ const TRACKED_VESSELS: TrackedVessel[] = deriveTrackedVessels();
 
 const AIS_POSITIONS_KEY = "ais_positions";
 
-/** WebSocket の待機時間。全船分の受信に余裕を持たせる */
-const AIS_TIMEOUT_MS = 20000;
+/**
+ * WebSocket の待機時間。
+ * AISStream は地上局ベースで、錨泊・係留中の船は AIS を約3分に1回しか発信しない。
+ * 旧値 20 秒では受信圏内の船でも取りこぼしが常態化していた（2026-09-11 の対照実験:
+ * 東京湾で発信中の7隻を MMSI フィルタで購読しても 25 秒で 1〜2 件）。
+ * Cron Trigger の実行時間上限は 15 分、Free の CPU 10ms は I/O 待ちを含まないので、
+ * 2 分の待機はどちらの制限にも触れない。
+ */
+const AIS_TIMEOUT_MS = 120000;
 const AISSTREAM_URL = "wss://stream.aisstream.io/v0/stream";
 
 // ─── 日本向け判定 ─────────────────────────────────────
@@ -229,10 +236,19 @@ export async function fetchAisPositions(env: Env): Promise<{
 
   const updated: string[] = [];
   let received = 0;
+  /** 受信した全フレーム数（購読確認・非AISメッセージ含む） */
+  let frames = 0;
+  /** JSON として解釈できなかったフレーム数。フレーム形式が変わるとこの値が増える */
+  let unparsed = 0;
 
   try {
     // WebSocket接続
     const ws = new WebSocket(AISSTREAM_URL);
+    // AISStream はフレームをバイナリで送る（購読確認に CompressionEnabled:true が付く）。
+    // Workers の WebSocket クライアントはバイナリフレームを既定で Blob として渡すため、
+    // 旧実装の JSON.parse(event.data) は "[object Blob]" で例外になり、全フレームを黙って捨てて
+    // 「接続は維持・有効0件」のまま待つ状態が 2026-07 以降続いていた（2026-09-11 特定）。
+    ws.binaryType = "arraybuffer";
 
     const result = await new Promise<{ received: number; updated: string[] }>((resolve) => {
       const timeout = setTimeout(() => {
@@ -252,9 +268,9 @@ export async function fetchAisPositions(env: Env): Promise<{
         console.log(`AIS: WebSocket connected, tracking ${mmsiList.length} vessels`);
       });
 
-      ws.addEventListener("message", (event) => {
+      const processAisText = (text: string): void => {
         try {
-          const parsed: unknown = JSON.parse(event.data as string);
+          const parsed: unknown = JSON.parse(text);
           if (!isValidAisMessage(parsed)) return;
           const msg = parsed;
           received++;
@@ -315,7 +331,22 @@ export async function fetchAisPositions(env: Env): Promise<{
             console.log(`AIS: ${vesselId} destination="${dest}" japanBound=${japanBound}`);
           }
         } catch {
-          // パースエラーは無視
+          unparsed++;
+        }
+      };
+
+      // フレーム形式（文字列 / ArrayBuffer / Blob）に関わらずテキストへ正規化してから処理する
+      ws.addEventListener("message", (event) => {
+        frames++;
+        const data: unknown = event.data;
+        if (typeof data === "string") {
+          processAisText(data);
+        } else if (data instanceof ArrayBuffer) {
+          processAisText(new TextDecoder().decode(data));
+        } else if (data instanceof Blob) {
+          data.text().then(processAisText).catch(() => { unparsed++; });
+        } else {
+          unparsed++;
         }
       });
 
@@ -343,12 +374,16 @@ export async function fetchAisPositions(env: Env): Promise<{
       tracked: mmsiList.length,
       received: result.received,
       updated: result.updated.length,
+      frames,
+      unparsed,
     });
 
     if (result.received === 0) {
       console.warn(
-        `AIS: 収穫ゼロ — ${mmsiList.length}隻を購読したが ${AIS_TIMEOUT_MS / 1000}秒間で有効メッセージ0件。` +
-        `APIキーの失効、または TRACKED_VESSELS が就航中の船を含んでいない可能性がある`,
+        `AIS: 収穫ゼロ — ${mmsiList.length}隻を購読したが ${AIS_TIMEOUT_MS / 1000}秒間で有効メッセージ0件` +
+        `（受信フレーム${frames}件・未解釈${unparsed}件）。` +
+        `フレーム0件ならAPIキーか購読の問題、未解釈が多ければフレーム形式の変更、` +
+        `どちらも無ければ追跡対象が地上局の受信圏外にいる`,
       );
     } else {
       console.log(`AIS: ${result.updated.length} vessels updated, ${result.received} messages received`);
@@ -378,6 +413,10 @@ export interface AisDiagnostic {
   received: number;
   /** 位置を更新できた船の数 */
   updated: number;
+  /** 受信した全フレーム数（購読確認・非AISメッセージ含む）。旧レコードには無い */
+  frames?: number;
+  /** JSON として解釈できなかったフレーム数。旧レコードには無い */
+  unparsed?: number;
   fetchedAt: string;
 }
 
