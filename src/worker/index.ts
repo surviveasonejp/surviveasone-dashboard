@@ -1150,9 +1150,13 @@ async function handleAis(env: Env): Promise<Response> {
   if (count > 0) {
     note = `${count}隻のAIS位置データ（1日2回更新）`;
   } else if (diagnostic && diagnostic.received === 0) {
+    const frameInfo = diagnostic.frames === undefined
+      ? ""
+      : `（受信フレーム${diagnostic.frames}件・未解釈${diagnostic.unparsed ?? 0}件）`;
     note =
       `AIS位置データなし。直近の取得（${diagnostic.fetchedAt}）では${diagnostic.tracked}隻を購読したが` +
-      `有効メッセージ0件だった。APIキーの失効、または追跡対象が就航中の船を含んでいない可能性がある`;
+      `有効メッセージ0件だった${frameInfo}。追跡対象が地上局の受信圏外にいる可能性が高い。` +
+      `フレーム0件ならAPIキー・購読の問題、未解釈が多ければフレーム形式の変更を疑う`;
   } else if (diagnostic) {
     note = `AIS位置データなし。直近の取得（${diagnostic.fetchedAt}）は受信${diagnostic.received}件・更新${diagnostic.updated}隻`;
   } else {
