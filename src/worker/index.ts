@@ -69,7 +69,7 @@ import {
 import { runFlowSimulation } from "./simulation/flowSimulation";
 import staticReserves from "./data/reserves.json";
 import staticRealEvents from "./data/realEvents.json";
-import { getAisPositions, getAisDiagnostic, TRACKED_VESSELS, AIS_LAST_SUCCESS_KEY } from "./ais-tracker";
+import { getAisPositions, getAisDiagnostic, getTrackedVessels, AIS_LAST_SUCCESS_KEY } from "./ais-tracker";
 import { handlePetrochemTree, handlePetrochemRisk } from "./petrochem";
 import {
   fetchVtsArrivals,
@@ -1054,7 +1054,7 @@ async function handleTankers(env: Env): Promise<Response> {
 
   // aisTracked は「実際にAIS位置を保持しているか」を表す。
   // tankers.json の静的値は 161隻中155隻が true だが、AIS購読対象は
-  // TRACKED_VESSELS の一部のみで、受信が無い日は位置を持たない。
+  // getTrackedVessels() の一部のみで、受信が無い日は位置を持たない。
   // 静的値のままだと UI の「AIS」バッジが実際には無い裏付けを主張してしまうため、
   // 実データの有無で上書きする（データが無い船は「推定」表示になる）。
   for (const tanker of baseTankers) {
@@ -1166,7 +1166,7 @@ async function handleAis(env: Env): Promise<Response> {
   return jsonResponse({
     data: positions,
     count,
-    tracked: TRACKED_VESSELS.length,
+    tracked: getTrackedVessels().length,
     lastFetch: diagnostic,
     note,
   });
