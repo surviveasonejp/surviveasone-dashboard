@@ -100,8 +100,8 @@ export interface AisPosition {
 // mmsi を入れておけば AIS 追跡範囲が自動的に追随し、二度と陳腐化しない。
 
 
-/** AISStream の MMSI フィルタ上限 */
-const AIS_MAX_VESSELS = 50;
+/** AISStream の MMSI フィルタ上限（公式ドキュメント: 200 件/購読） */
+const AIS_MAX_VESSELS = 200;
 
 interface TrackedVessel {
   id: string;
@@ -112,42 +112,43 @@ interface TrackedVessel {
 
 /**
  * tankers.json から AIS 追跡対象を選ぶ。
- * mmsi を持つ船のうち、到着が近い＝観測価値の高い航行中の船を優先する。
- * 到着済み（eta_days<=0）の船は位置情報の価値が低いので後回しにし、
- * 上限に収まらない分は落とす。
+ * AISStream は地上局ベースなので、実際に受信できるのは日本沿岸・シンガポール/マラッカ・
+ * 湾岸の港に近い船だけ。mmsi を持つ船は上限（200）まで全て購読し、上限を超える場合は
+ * meta.updatedAt からの経過日数を差し引いた実効 ETA が 0 に近い船（到着間近・到着直後＝
+ * 日本沿岸で受信圏内にいる可能性が高い）を優先する。
+ * 旧実装は JSON 生値の eta_days で「航行中」を判定し、モジュール読み込み時に固定していたため、
+ * 棚卸しから日が経つほど到着済みの船を航行中として優先し続ける陳腐化があった。
+ * 呼び出しのたびに算出するので、長寿命の isolate でも古くならない。
  */
-function deriveTrackedVessels(): TrackedVessel[] {
-  const withMmsi = tankersData.vessels.filter(
-    (v): v is typeof v & { mmsi: string } => typeof v.mmsi === "string" && v.mmsi.length > 0,
-  );
-
-  const inFlight = withMmsi
-    .filter((v) => v.eta_days > 0)
-    .sort((a, b) => a.eta_days - b.eta_days);
-  const arrived = withMmsi.filter((v) => v.eta_days <= 0);
-
-  return [...inFlight, ...arrived].slice(0, AIS_MAX_VESSELS).map((v) => ({
-    id: v.id,
-    mmsi: v.mmsi,
-    name: v.name,
-    // destinationPort は JAPAN_PORT_COORDS のキーと対応する（ETA 再計算用）
-    ...(v.destinationPort ? { destPort: v.destinationPort } : {}),
-  }));
+export function getTrackedVessels(now: Date = new Date()): TrackedVessel[] {
+  const updatedAt = new Date(tankersData.meta.updatedAt + "T00:00:00Z");
+  const elapsedDays = Math.max(0, (now.getTime() - updatedAt.getTime()) / 86_400_000);
+  return tankersData.vessels
+    .filter((v): v is typeof v & { mmsi: string } => typeof v.mmsi === "string" && v.mmsi.length > 0)
+    .map((v) => ({ v, proximity: Math.abs(v.eta_days - elapsedDays) }))
+    .sort((a, b) => a.proximity - b.proximity)
+    .slice(0, AIS_MAX_VESSELS)
+    .map(({ v }) => ({
+      id: v.id,
+      mmsi: v.mmsi,
+      name: v.name,
+      // destinationPort は JAPAN_PORT_COORDS のキーと対応する（ETA 再計算用）
+      ...(v.destinationPort ? { destPort: v.destinationPort } : {}),
+    }));
 }
-
-const TRACKED_VESSELS: TrackedVessel[] = deriveTrackedVessels();
 
 const AIS_POSITIONS_KEY = "ais_positions";
 
 /**
  * WebSocket の待機時間。
- * AISStream は地上局ベースで、錨泊・係留中の船は AIS を約3分に1回しか発信しない。
+ * AISStream は地上局ベースで、錨泊・係留中の Class A 船は AIS を約3分に1回しか発信しない。
  * 旧値 20 秒では受信圏内の船でも取りこぼしが常態化していた（2026-09-11 の対照実験:
  * 東京湾で発信中の7隻を MMSI フィルタで購読しても 25 秒で 1〜2 件）。
+ * 3 分待てば受信圏内の係留船でもほぼ 1 回は拾える。
  * Cron Trigger の実行時間上限は 15 分、Free の CPU 10ms は I/O 待ちを含まないので、
- * 2 分の待機はどちらの制限にも触れない。
+ * 3 分の待機はどちらの制限にも触れない。
  */
-const AIS_TIMEOUT_MS = 120000;
+const AIS_TIMEOUT_MS = 180000;
 const AISSTREAM_URL = "wss://stream.aisstream.io/v0/stream";
 
 // ─── 日本向け判定 ─────────────────────────────────────
@@ -227,8 +228,9 @@ export async function fetchAisPositions(env: Env): Promise<{
     return { connected: false, received: 0, updated: [] };
   }
 
-  const mmsiList = TRACKED_VESSELS.map((v) => v.mmsi);
-  const mmsiToId = new Map(TRACKED_VESSELS.map((v) => [v.mmsi, v.id]));
+  const tracked = getTrackedVessels();
+  const mmsiList = tracked.map((v) => v.mmsi);
+  const mmsiToId = new Map(tracked.map((v) => [v.mmsi, v.id]));
 
   // 既存のAIS位置データを読み込み
   const existing: Record<string, AisPosition> =
@@ -279,7 +281,7 @@ export async function fetchAisPositions(env: Env): Promise<{
           const vesselId = mmsiToId.get(mmsi);
           if (!vesselId) return;
 
-          const vessel = TRACKED_VESSELS.find((v) => v.id === vesselId);
+          const vessel = tracked.find((v) => v.id === vesselId);
           const prev = existing[vesselId];
 
           if (msg.Message.PositionReport) {
@@ -407,7 +409,7 @@ export async function getAisPositions(cache: KVNamespace): Promise<Record<string
 const AIS_DIAGNOSTIC_KEY = "ais:last_result";
 
 export interface AisDiagnostic {
-  /** 購読した MMSI 数（= TRACKED_VESSELS の件数） */
+  /** 購読した MMSI 数（= getTrackedVessels() の件数） */
   tracked: number;
   /** 受信した有効 AIS メッセージ数 */
   received: number;
@@ -445,7 +447,6 @@ export async function getAisDiagnostic(cache: KVNamespace): Promise<AisDiagnosti
 }
 
 /** 追跡対象船舶の一覧 */
-export { TRACKED_VESSELS };
 
 // ─── AIS → tanker_overrides 自動同期 ─────────────────────────
 
