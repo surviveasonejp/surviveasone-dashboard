@@ -97,7 +97,6 @@ gh secret set CLOUDFLARE_API_TOKEN
 |---|---|---|
 | Cloudflare | Workers/D1/KV/R2/DNS | メインアカウント |
 | AISStream.io | タンカーAIS追跡 | 無料ベータ。APIキー再発行可能 |
-| GitHub Sponsors | 資金調達 | github.com/sponsors/idx |
 | X (Twitter) | @surviveasonejp | API v2 Free tier |
 | Discord | 通知先 | Webhook URL再発行可能 |
 
@@ -108,19 +107,7 @@ gh secret set CLOUDFLARE_API_TOKEN
 | surviveasonejp.org | UI（メイン） | Cloudflare Registrar |
 | surviveasonejp.net | API専用 | Cloudflare Registrar |
 
-## 6. GitHub Sponsors ティア設計
-
-| ティア | 月額 | メッセージ |
-|---|---|---|
-| Watcher | $3 (¥500) | ダッシュボードの継続運用を応援 |
-| Supporter | $10 (¥1,500) | データ更新とシミュレーション精度向上を支援 |
-| Sponsor | $30 (¥4,500) | リアルタイムタンカー追跡の実現を支える |
-| 一回限り | 任意額 | — |
-
-目標: 月$150〜$300（Phase 3 AIS API費カバー）
-資金用途: 衛星AIS APIの月額費用。開発は個人の時間で行い人件費として使用しない。
-
-## 7. デザイン仕様（コードにもあるが明示）
+## 6. デザイン仕様（コードにもあるが明示）
 
 | 用途 | Hex |
 |---|---|
@@ -134,7 +121,7 @@ gh secret set CLOUDFLARE_API_TOKEN
 | 数値フォント | JetBrains Mono |
 | UIフォント | Noto Sans JP |
 
-## 8. Phase 3 AIS API費用試算
+## 7. Phase 3 AIS API費用試算
 
 | フェーズ | API月額 | 総固定費/月 |
 |---|---|---|
@@ -142,7 +129,7 @@ gh secret set CLOUDFLARE_API_TOKEN
 | 衛星AIS追加 | $150〜$250 | ~$153〜$253 |
 | 全ルート追跡 | $250〜$400 | ~$253〜$403 |
 
-## 9. 復旧手順
+## 8. 復旧手順
 
 ```bash
 # 1. リポジトリをクローン
@@ -169,7 +156,7 @@ cd ../surviveasone-notify && npx wrangler deploy
 # 7. Cronが自動でデータを再取得（最大1週間で全データ復旧）
 ```
 
-## 10. Claude Code設定
+## 9. Claude Code設定
 
 グローバルCLAUDE.md (`~/.claude/CLAUDE.md`):
 - 日本語で応答
