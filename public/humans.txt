@@ -8,7 +8,6 @@ Repo: https://github.com/surviveasonejp/surviveasone-dashboard
 
 /* THANKS */
 
-Sponsors: https://github.com/sponsors/idx
 Open data sources: e-Stat (METI/MIC), 経済産業省, 資源エネルギー庁,
                    JPCA, JARW, 海上保安庁 VTS, 名古屋港管理組合 EDI,
                    AISStream.io, EIA (RWTC), OWID, Natural Earth

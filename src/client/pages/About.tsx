@@ -291,7 +291,7 @@ export const About: FC = () => {
           </div>
           <div className="flex gap-3">
             <span className="text-neutral-400 font-mono w-28 shrink-0">財務</span>
-            <span>広告・トラッキング・個人情報収集なし。インフラ費は運営者が自己負担（GitHub Sponsors で任意支援を受付）</span>
+            <span>広告・トラッキング・個人情報収集なし。インフラ費は運営者が自己負担</span>
           </div>
         </div>
         <p className="text-xs text-neutral-500 leading-relaxed">
@@ -569,27 +569,6 @@ export const About: FC = () => {
           <p>Cronパイプライン: 4/5枠使用（OWID週次 + 電力日次+WTI原油 + AIS 1日2回 + 石油備蓄/LNG月次）+ Discord通知(日次サマリ+差分検知+RSS監視)Worker + Workers AI LLM要約</p>
           <p>コスト: インフラ ~$3/月（ドメイン2件。Cloudflare無料枠）+ 開発ツール（AI支援）~$100-200/月</p>
         </div>
-      </div>
-
-      {/* 支援 */}
-      <div className="bg-panel border border-border rounded-lg p-6 space-y-4">
-        <SectionHeading as="h2" tone="neutral-muted" size="sm" tracking="wider">SUPPORT THIS PROJECT</SectionHeading>
-        <p className="text-neutral-300 text-sm leading-relaxed">
-          広告なし・トラッキングなし・個人情報収集なしのオープンソースプロジェクトです。
-          全てのデータ・シミュレーション・APIはスポンサーの有無にかかわらず完全に無料で公開されています。
-        </p>
-        <div className="text-xs text-neutral-500 space-y-2 leading-relaxed">
-          <p>インフラ: ドメイン2件（月額約$3）。Cloudflare Workers/D1/KV/R2は全て無料枠内。開発にはAI支援ツールを使用しており（月額$100-200）、これが実質的な最大の支出です。</p>
-          <p>スポンサーシップは、このプロジェクトの継続的な開発と運営に使われます。</p>
-        </div>
-        <a
-          href="https://github.com/sponsors/idx"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block px-6 py-2 border border-neutral-600 text-neutral-300 hover:bg-white/5 font-mono text-xs tracking-wider rounded transition-colors"
-        >
-          GitHub Sponsors で支援する &rarr;
-        </a>
       </div>
 
       {/* PWAインストール */}
