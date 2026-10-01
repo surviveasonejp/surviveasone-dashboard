@@ -155,7 +155,7 @@
         "military": 0.3,
         "combined": 0.018
       },
-      "note": "出光タンカー系VLCC。「日章丸」は出光興産の歴史的船名(1953年日章丸事件)。4/17四日市入港確認（ETA達成）。ハルグ島はペルシャ湾奥のためホルムズ依存度最大。封鎖中のホルムズを通過して到達した稀な事例（AIS追跡外のため詳細不明）"
+      "note": "出光タンカー系VLCC。「日章丸」は出光興産の歴史的船名(1953年日章丸事件)。4/17四日市入港確認（ETA達成）。ハルグ島はペルシャ湾奥のためホルムズ依存度最大。封鎖中のホルムズを通過して到達した稀な事例（AIS追跡外のため詳細不明）【10/1照合】**本レコードの実在を確認できない**。出光タンカーの5代目日章丸（IMO 9264881・2004年建造）は改名を重ね、NEREIDES → COSMOS（2024年7月）→ VANI（2025年1月）→ OMRA（2025年9月・コモロ籍・米OFAC制裁対象）となっている（VesselFinder）。6代目は2025年9月に命名が決まったばかりで竣工は2028年の予定。**2026年4月時点で出光系の VLCC「NISSHO MARU」は存在せず、4/17 四日市入港と「封鎖中のホルムズを通過して到達した」とする記述には裏付けが無い**。同名の小型内航タンカーはあるがVLCCではない。旧日章丸（9264881）は制裁対象船のため、取り違えて IMO を付けないこと"
     },
     {
       "id": "vlcc-05",
@@ -508,8 +508,7 @@
     {
       "id": "lng-12",
       "name": "ENERGY FRONTIER",
-      "imo": "9422908",
-      "mmsi": "432820000",
+      "imo": "要照合",
       "aisTracked": false,
       "type": "LNG",
       "departure": "グラッドストン（豪州QLD）",
@@ -528,7 +527,7 @@
         "military": 0.97,
         "combined": 0.895
       },
-      "note": "商船三井(MOL)保有LNG船。豪州APLNG（オリジン/コノコフィリップス）専属配船。4/2グラッドストン出港→フィリピン海→千葉向け。ETA 4/21（達成済み）。豪州は日本最大のLNG供給国（約40%シェア）。ホルムズ封鎖の影響なし。【5/1注記】「ENERGY FRONTIER」名は MOL系豪州APLNG船として複数IMOが流通しており本エントリのIMO 9422908は要再照合（VesselFinderで同名異IMO 9245720のARUNIKA JAYAインドネシア籍へ改名済船を別途確認）"
+      "note": "商船三井(MOL)保有LNG船。豪州APLNG（オリジン/コノコフィリップス）専属配船。4/2グラッドストン出港→フィリピン海→千葉向け。ETA 4/21（達成済み）。豪州は日本最大のLNG供給国（約40%シェア）。ホルムズ封鎖の影響なし。【5/1注記】「ENERGY FRONTIER」名は MOL系豪州APLNG船として複数IMOが流通しており本エントリのIMO 9422908は要再照合（VesselFinderで同名異IMO 9245720のARUNIKA JAYAインドネシア籍へ改名済船を別途確認）【10/1照合】**本レコードの実在を確認できない**。同名船は IMO 9245720（2003年川崎坂出建造・147,599m³）の1隻しか見つからず、この船は2025年5〜6月にバハマ籍へ移り、2025年9月までに ARUNIKA JAYA（インドネシア籍）へ改名している。ENERGY FRONTIER 名での公開AISの最終受信は2025年6月1日で、2026年4月に同名船は確認できない（VesselFinder・MyShipTracking・ClassNK・MagicPort）。**登録していた IMO 9422908 はチェックディジット不正、MMSI 432820000 は別船 VLCC HAKKAISAN（IMO 9376878）のもの**だったため、IMO を「要照合」に戻し MMSI を外した（AIS購読から除外される）。4/21 千葉入港の記録そのものに裏付けが無い"
     },
     {
       "id": "vlcc-alt-07",
@@ -2490,7 +2489,8 @@
     {
       "id": "lng-23",
       "name": "WOODSIDE BARRUMBARA",
-      "imo": "9962420",
+      "imo": "9962433",
+      "mmsi": "310853000",
       "aisTracked": true,
       "type": "LNG",
       "departure": "Dampier, Australia（Scarborough/NW Shelf LNG・推定）",
@@ -2509,12 +2509,13 @@
         "military": 0.97,
         "combined": 0.913
       },
-      "note": "Woodside運航/GasLogチャーターLNG carrier。IMO 9962420（要照合・sister WOODSIDE JIRRUBAKURA IMO 9962421と連番想定）。英国籍（GBR）・Hanwha Ocean（韓国・旧Daewoo）建造・174,000m³・P-2S ME-GI dual-fuel+full reliquefaction。LOA 294.9m・Beam 46.4m・115,183GT・93,900DWT。Woodside Scarborough $12.5B LNG project向け新造船。海保VTS浦賀 5/15 14:30袖ヶ浦到着予定（5/14検出）。Dampier-Asia LNGトレード専属。ホルムズ完全回避。Woodside公式/Hanwha/VesselFinder 2026-05-14 確認。5/21更新: 5/15入港済"
+      "note": "Woodside運航/GasLogチャーターLNG carrier。IMO 9962420（要照合・sister WOODSIDE JIRRUBAKURA IMO 9962421と連番想定）。英国籍（GBR）・Hanwha Ocean（韓国・旧Daewoo）建造・174,000m³・P-2S ME-GI dual-fuel+full reliquefaction。LOA 294.9m・Beam 46.4m・115,183GT・93,900DWT。Woodside Scarborough $12.5B LNG project向け新造船。海保VTS浦賀 5/15 14:30袖ヶ浦到着予定（5/14検出）。Dampier-Asia LNGトレード専属。ホルムズ完全回避。Woodside公式/Hanwha/VesselFinder 2026-05-14 確認。5/21更新: 5/15入港済【10/1照合】IMO 9962433／MMSI 310853000／Call sign ZCHG5 で確定。VesselFinder で **GT 115,183（VTS掲載値と完全一致）・LOA 295m** を確認し、MyShipTracking でMMSIから船名とIMOを逆引き確認した。**登録していた IMO 9962420 はチェックディジット不正で、姉妹船からの連番想定は誤りだった**。旗国は英国ではなくバミューダ。姉妹船 WOODSIDE JIRRUBAKURA（IMO 9962421・MMSI 310852000）とは GT が同一のため、決め手は船名になる"
     },
     {
       "id": "chem-nagoya-21",
       "name": "GLORISEA",
-      "imo": "9999999",
+      "imo": "9917402",
+      "mmsi": "477664300",
       "aisTracked": false,
       "type": "Product",
       "departure": "東アジア（要AIS確認）",
@@ -2533,7 +2534,7 @@
         "military": 0.97,
         "combined": 0.875
       },
-      "note": "Oil Products Tanker（油送船）。Call sign VRTV7（香港籍想定）。5,530GT・LOA 117m。IMO番号は公開DBでの照合未完で要確認（dummy 9999999）。名古屋港管理組合EDI 5/15 15:00名古屋入港予定（5/14検出）。エージェント: 丸中興産株式会社。東アジア〜日本沿岸プロダクトオイル便と推定。ホルムズ非経由。MarineTraffic要再照合 2026-05-14。5/21更新: 5/15入港済"
+      "note": "Oil Products Tanker（油送船）。Call sign VRTV7（香港籍想定）。5,530GT・LOA 117m。IMO番号は公開DBでの照合未完で要確認（dummy 9999999）。名古屋港管理組合EDI 5/15 15:00名古屋入港予定（5/14検出）。エージェント: 丸中興産株式会社。東アジア〜日本沿岸プロダクトオイル便と推定。ホルムズ非経由。MarineTraffic要再照合 2026-05-14。5/21更新: 5/15入港済【10/1照合】IMO 9917402／MMSI 477664300 で確定（仮値 9999999 を置き換えた）。**名古屋港EDIの Call sign VRTV7 が完全一致**し、GT 5,530・LOA 117.80m も一致。香港籍の Oil Products Tanker・2021年建造（VesselFinder・MyShipTracking）"
     },
     {
       "id": "chem-nagoya-22",
@@ -2898,9 +2899,10 @@
     {
       "id": "mr-14",
       "name": "NAVE ATROPOS",
-      "imo": "要照合",
+      "imo": "9638563",
+      "mmsi": "538005060",
       "aisTracked": true,
-      "type": "Aframax",
+      "type": "MR",
       "departure": "東アジア（要AIS確認）",
       "departurePort": "NonMideast",
       "destination": "姉崎（姉崎航路・千葉）",
@@ -2917,12 +2919,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "Oil Tanker（LR1/Aframax境界級）。マーシャル諸島籍・LOA 228m・42,341GT。海保VTS浦賀 5/28 07:10姉崎到着予定（5/27検出）。Navios Maritime系の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 6/1入港確認済。"
+      "note": "Oil Tanker（LR1/Aframax境界級）。マーシャル諸島籍・LOA 228m・42,341GT。海保VTS浦賀 5/28 07:10姉崎到着予定（5/27検出）。Navios Maritime系の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 6/1入港確認済。【10/1照合】IMO 9638563／MMSI 538005060／Call sign V7AS4 で確定。**GT 42,341（VTS掲載値と完全一致）・LOA 228m**。マーシャル諸島籍・2013年 Sungdong 建造・74,695DWT で、**船型は Aframax ではなく Panamax/LR1**のため type を MR（LR1 の慣例）へ改めた。管理 Navios Tankers Management（VesselFinder・MyShipTracking・MaritimeOptima）。MyShipTracking には 9/10-11 の姉崎寄港記録もある（本照合の範囲外）"
     },
     {
       "id": "lng-29",
       "name": "BISHU MARU",
-      "imo": "要照合",
+      "imo": "9691137",
+      "mmsi": "374216000",
       "aisTracked": true,
       "type": "LNG",
       "departure": "中東/豪州/米国いずれか（要AIS確認）",
@@ -2941,12 +2944,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LNG carrier。パナマ籍・LOA 293m・127,088GT・155,000m³級。海保VTS浦賀 5/28 07:30富津到着予定（5/27検出）。東京電力富津LNG基地向け。船名「美州丸」から日本企業運航の可能性（NYK/MOL系）。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LNG carrier。パナマ籍・LOA 293m・127,088GT・155,000m³級。海保VTS浦賀 5/28 07:30富津到着予定（5/27検出）。東京電力富津LNG基地向け。船名「美州丸」から日本企業運航の可能性（NYK/MOL系）。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9691137／MMSI 374216000／Call sign 3FSS4 で確定。**GT 127,088（VTS掲載値と完全一致）・LOA 293m**。パナマ籍・2017年川崎重工坂出建造（VesselFinder・MaritimeOptima・MyShipTracking）。MyShipTracking に残る別MMSI 374216096（2024年10月で受信途絶）は採用しない"
     },
     {
       "id": "lpg-06",
       "name": "MUSANAH",
-      "imo": "要照合",
+      "imo": "9415648",
+      "mmsi": "372470000",
       "aisTracked": true,
       "type": "LPG",
       "departure": "中東/豪州（要AIS確認・VLGC）",
@@ -2965,12 +2969,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LPG Tanker（VLGC）。パナマ籍・LOA 230m・48,249GT。海保VTS浦賀 5/28 10:00千葉到着予定（5/27検出）。VTSは「ガスタンカー」分類だがGT/LOAからLPG VLGCと推定。船名はオマーンの港名Musanah由来でOman Shipping系の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LPG Tanker（VLGC）。パナマ籍・LOA 230m・48,249GT。海保VTS浦賀 5/28 10:00千葉到着予定（5/27検出）。VTSは「ガスタンカー」分類だがGT/LOAからLPG VLGCと推定。船名はオマーンの港名Musanah由来でOman Shipping系の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9415648／MMSI 372470000（Call sign 3FLT5・パナマ籍・2009年建造）。ClassNK 船級登録と VesselFinder で **GT 48,249・LOA 230m がVTS掲載値と完全一致**し、MaritimeOptima／MyShipTracking でMMSIから同名同IMOを確認。登録船主 AL-MUSANAH MARITIME TRANSPORTATION CO. S.A.・管理 MOL Global Ship Management（ClassNK）で、Oman Shipping/Asyad 系という従来の推測は裏付けが無い。5月航海の積地は日付付きの寄港履歴が取れず未確定（過去1年の寄港はヒューストン4回・テルヌーゼン3回など）"
     },
     {
       "id": "lpg-07",
       "name": "BW KIZOKU",
-      "imo": "要照合",
+      "imo": "9810032",
+      "mmsi": "563094300",
       "aisTracked": true,
       "type": "LPG",
       "departure": "中東/米国（要AIS確認・BW LPGフリート）",
@@ -2989,12 +2994,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LPG Tanker（VLGC）。シンガポール籍・LOA 230m・48,122GT。海保VTS浦賀 5/28 10:30川崎到着予定（5/27検出）。BW LPGフリート（BW Group運航）系。船名「貴族」は和風命名でMOL/NYKチャーターの可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LPG Tanker（VLGC）。シンガポール籍・LOA 230m・48,122GT。海保VTS浦賀 5/28 10:30川崎到着予定（5/27検出）。BW LPGフリート（BW Group運航）系。船名「貴族」は和風命名でMOL/NYKチャーターの可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9810032／MMSI 563094300（Call sign 9V5837・シンガポール籍・2019年建造）。ClassNK 船級登録で **GT 48,122・LOA 230m がVTS掲載値と完全一致**し、VesselFinder／MaritimeOptima／MyShipTracking でMMSIから同名同IMOを確認。登録船主 BW CONSTELLATION II PTE. LTD.（ClassNK）。**留保: MyShipTracking の過去1年の寄港にルワイス（UAE・ホルムズ海峡内側）が1回あり、日付が取れないため5月航海が中東積みだった可能性を否定できない**（departurePort の NonMideast は裏付けなし）"
     },
     {
       "id": "lpg-08",
       "name": "ENEOS MIRAI",
-      "imo": "要照合",
+      "imo": "9957892",
+      "mmsi": "352003182",
       "aisTracked": true,
       "type": "LPG",
       "departure": "中東/米国（要AIS確認・ENEOS Ocean）",
@@ -3013,12 +3019,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LPG Tanker（VLGC）。パナマ籍・LOA 229m・49,541GT。海保VTS浦賀 5/28 10:45川崎到着予定（5/27検出）。ENEOS Ocean運航・ENEOS Holdings系の自社運用LPG便。船名「ENEOS MIRAI」（未来）。ホルムズ依存便の代替確保上重要。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LPG Tanker（VLGC）。パナマ籍・LOA 229m・49,541GT。海保VTS浦賀 5/28 10:45川崎到着予定（5/27検出）。ENEOS Ocean運航・ENEOS Holdings系の自社運用LPG便。船名「ENEOS MIRAI」（未来）。ホルムズ依存便の代替確保上重要。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9957892／MMSI 352003182（Call sign 3E6056・パナマ籍・2023年12月川崎重工竣工）。ClassNK 船級登録で **GT 49,541・LOA 229.9m がVTS掲載値と一致**。管理 NYK Energy Ocean Shipmanagement。**現在の船名は FUTURE LUMINOUS**（ClassNK・VesselFinder・MaritimeOptima・vesseltracker。IMO・MMSI・コールサインは不変、改名時期は未確認）。5/28 のVTS表記に合わせ name は ENEOS MIRAI のままとする。**VTS/EDI で FUTURE LUMINOUS として検出されても本レコードと同一船であり、新規登録すると重複になる**"
     },
     {
       "id": "lng-30",
       "name": "NEW OASIS",
-      "imo": "要照合",
+      "imo": "9947512",
+      "mmsi": "636024358",
       "aisTracked": true,
       "type": "LNG",
       "departure": "中東/豪州/米国いずれか（要AIS確認）",
@@ -3037,12 +3044,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LNG carrier。リベリア籍・LOA 299m・114,221GT・160,000m³級。海保VTS浦賀 5/28 11:30扇島到着予定（5/27検出）。新造船級のサイズ。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LNG carrier。リベリア籍・LOA 299m・114,221GT・160,000m³級。海保VTS浦賀 5/28 11:30扇島到着予定（5/27検出）。新造船級のサイズ。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9947512／MMSI 636024358／Call sign 5LSF2 で確定。**GT 114,221（VTS掲載値と完全一致）・LOA 298.97m**。リベリア籍・2025年 HHI 建造の Pan Ocean 船・174,000m³（VesselFinder・MyShipTracking）"
     },
     {
       "id": "lpg-09",
       "name": "SURYA VEERYA",
-      "imo": "要照合",
+      "imo": "9405887",
+      "mmsi": "636020799",
       "aisTracked": true,
       "type": "LPG",
       "departure": "中東/インド（要AIS確認・VLGC）",
@@ -3061,12 +3069,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LPG Tanker（VLGC）。リベリア籍・LOA 226m・45,811GT。海保VTS浦賀 5/28 20:30川崎沖到着予定（5/27検出）。船名「Surya Veerya」はサンスクリット語「太陽の力」・インド系船社（Bharat Petroleum/IOCL等）運航の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LPG Tanker（VLGC）。リベリア籍・LOA 226m・45,811GT。海保VTS浦賀 5/28 20:30川崎沖到着予定（5/27検出）。船名「Surya Veerya」はサンスクリット語「太陽の力」・インド系船社（Bharat Petroleum/IOCL等）運航の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9405887／MMSI 636020799（Call sign 5LAT9・リベリア籍・2008年建造・旧名 LOTUS GAS）。ClassNK 船級登録で **GT 45,811・LOA 226m がVTS掲載値と完全一致**し、MyShipTracking／VesselFinder でMMSIから同名同IMOを確認。管理は Wilhelmsen Ship Management Sdn. Bhd.（ClassNK）で、インド系船社運航という従来の推測は裏付けが無い"
     },
     {
       "id": "lpg-10",
       "name": "HLS AMBER",
-      "imo": "要照合",
+      "imo": "9883819",
+      "mmsi": "636020121",
       "aisTracked": true,
       "type": "LPG",
       "departure": "アメリカ（米湾岸LPG輸出基地）",
@@ -3085,12 +3094,13 @@
         "military": 0.99,
         "combined": 0.961
       },
-      "note": "LPG Tanker（VLGC・米国産LPG便）。リベリア籍・LOA 228m・49,567GT。海保VTS明石 5/28 03:15坂出到着予定（5/27検出）。departure「ｱﾒﾘｶ」明示・米湾岸→パナマ運河経由・ホルムズ完全回避。米国産LPGスポット便で四国電力坂出基地向け。CONSTELLATION(4/29坂出)に続く米湾岸LPG便。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "LPG Tanker（VLGC・米国産LPG便）。リベリア籍・LOA 228m・49,567GT。海保VTS明石 5/28 03:15坂出到着予定（5/27検出）。departure「ｱﾒﾘｶ」明示・米湾岸→パナマ運河経由・ホルムズ完全回避。米国産LPGスポット便で四国電力坂出基地向け。CONSTELLATION(4/29坂出)に続く米湾岸LPG便。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9883819／MMSI 636020121（Call sign D5XT8・リベリア籍・2020年建造）。VesselFinder で **GT 49,567 がVTS掲載値と完全一致**・LOA 228.4m、MyShipTracking／MarineTraffic でMMSIから同名同IMOを確認。過去1年の寄港上位は SUNOCO LOGISTICS（米）5回・フリーポート（米テキサス）などで、VTSの「ｱﾒﾘｶ」発と整合する（5月航海の積地は日付付きの履歴が取れず未確定）"
     },
     {
       "id": "chem-nagoya-28",
       "name": "E CHEMIST",
-      "imo": "要照合",
+      "imo": "9809655",
+      "mmsi": "372524000",
       "aisTracked": true,
       "type": "Chemical",
       "departure": "東アジア（要AIS確認）",
@@ -3109,12 +3119,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "外航ケミカル船。Call sign 3FHO2（パナマ籍想定）。2,993GT・LOA 91m。名古屋港管理組合EDI 5/28 11:30入港予定→23:50出港（5/27検出）。エージェント: 中部船舶。短期寄港の沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "外航ケミカル船。Call sign 3FHO2（パナマ籍想定）。2,993GT・LOA 91m。名古屋港管理組合EDI 5/28 11:30入港予定→23:50出港（5/27検出）。エージェント: 中部船舶。短期寄港の沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9809655／MMSI 372524000（パナマ籍・2018年建造）。**名古屋港EDIの Call sign 3FHO2 が VesselFinder・MaritimeOptima・vesseltracker と完全一致**し、GT 2,993（完全一致）・LOA 91.4m も整合。9月にも名古屋・袖ケ浦に寄港しており、日韓沿岸のケミカル便として運用が続いている（MaritimeOptima）"
     },
     {
       "id": "chem-nagoya-29",
       "name": "GOLDEN SKY HANA",
-      "imo": "要照合",
+      "imo": "9310226",
+      "mmsi": "440250000",
       "aisTracked": true,
       "type": "Chemical",
       "departure": "韓国沿岸（要AIS確認）",
@@ -3133,12 +3144,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "外航ケミカル船。Call sign D7NM（韓国籍）。3,285GT・LOA 103m。名古屋港管理組合EDI 5/27 17:00入港予定→5/28 07:30出港（5/27検出）。エージェント: ACマリン株式会社。韓国〜日本沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/27入港確認済。"
+      "note": "外航ケミカル船。Call sign D7NM（韓国籍）。3,285GT・LOA 103m。名古屋港管理組合EDI 5/27 17:00入港予定→5/28 07:30出港（5/27検出）。エージェント: ACマリン株式会社。韓国〜日本沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/27入港確認済。【10/1照合】IMO 9310226／MMSI 440250000（韓国籍・2005年建造・旧名 MINITANK TWO）。**名古屋港EDIの Call sign D7NM が VesselFinder・MagicPort・vesseltracker と完全一致**し、LOA 103.4m も整合。所有・管理 HANA MARINE CO LTD（GOLDEN KEY HANA・GOLDEN BRIDGE HANA と同社の別船）。公開DBのGT 3,936 はEDIの 3,285 と一致しない（計測体系の違いの可能性・未検証）が、主キーのコールサインと船名・全長が一致するため同定は確定とした"
     },
     {
       "id": "chem-nagoya-30",
       "name": "EASTERN POSEIDON",
-      "imo": "要照合",
+      "imo": "9883546",
+      "mmsi": "636019761",
       "aisTracked": true,
       "type": "Chemical",
       "departure": "東アジア（要AIS確認）",
@@ -3157,12 +3169,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "外航ケミカル船。Call sign D5WA6（韓国籍想定）。3,313GT・LOA 97m。名古屋港管理組合EDI 5/28 08:00入港予定→12:30出港（5/27検出）。エージェント: 五洋海運株式会社。短期寄港の沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。"
+      "note": "外航ケミカル船。Call sign D5WA6（韓国籍想定）。3,313GT・LOA 97m。名古屋港管理組合EDI 5/28 08:00入港予定→12:30出港（5/27検出）。エージェント: 五洋海運株式会社。短期寄港の沿岸ケミカル便。ホルムズ非経由。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/28入港確認済。【10/1照合】IMO 9883546／MMSI 636019761（**リベリア籍**・2020年下ノ江造船建造・溶融硫黄運搬仕様のケミカル船）。**名古屋港EDIの Call sign D5WA6 が ClassNK・MagicPort・vesseltracker と完全一致**し、LOA 97.16m も整合。従来の「韓国籍想定」は誤りで、D5 はリベリアのコールサイン。管理 SANSHO KAIUN CO., LTD.（ClassNK）。ClassNK のGT 3,491 はEDIの 3,313 と一致しない（原因未確認）"
     },
     {
       "id": "lng-31",
       "name": "ENERGY PROGRESS",
-      "imo": "要照合",
+      "imo": "9274226",
+      "mmsi": "431608000",
       "aisTracked": true,
       "type": "LNG",
       "departure": "中東/豪州/米国いずれか（要AIS確認）",
@@ -3181,12 +3194,13 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LNG carrier。Call sign 7KKU（日本籍想定）。119,131GT・LOA 289m・160,000m³級。名古屋港管理組合EDI 5/27 11:30知多入港予定→5/28 14:30出港（5/27検出）。エージェント: 知多桟橋管理(株)。中部電力知多LNG基地向け。船名「ENERGY PROGRESS」はNYK/MOL系JERA向け長期チャーター船の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/27入港確認済。"
+      "note": "LNG carrier。Call sign 7KKU（日本籍想定）。119,131GT・LOA 289m・160,000m³級。名古屋港管理組合EDI 5/27 11:30知多入港予定→5/28 14:30出港（5/27検出）。エージェント: 知多桟橋管理(株)。中部電力知多LNG基地向け。船名「ENERGY PROGRESS」はNYK/MOL系JERA向け長期チャーター船の可能性。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 5/27入港確認済。【10/1照合】IMO 9274226／MMSI 431608000 で確定。**名古屋港EDIの Call sign 7KKU が完全一致**し、GT 119,131・LOA 289.53m も一致。2006年建造の商船三井所有船で、2022年4月にバハマ籍から日本籍へ移った（VesselFinder・MyShipTracking）。旧バハマ籍時代のMMSI 309463000 は採用しない"
     },
     {
       "id": "lng-32",
       "name": "GRAND ELENA",
-      "imo": "要照合",
+      "imo": "9332054",
+      "mmsi": "209407000",
       "aisTracked": true,
       "type": "LNG",
       "departure": "中東/豪州/米国いずれか（要AIS確認）",
@@ -3205,7 +3219,7 @@
         "military": 0.97,
         "combined": 0.893
       },
-      "note": "LNG carrier。Call sign C4YF2（キプロス籍想定）。122,239GT・LOA 288m・160,000m³級。名古屋港管理組合EDI 6/1 11:50知多入港予定→6/2 14:00出港（5/27検出）。エージェント: 知多桟橋管理(株)。中部電力知多LNG基地向け。先行する GRAND MEREYA(lng-21・キプロス籍4/29 知多)と同船社系列（Maran Gas/Angelicoussis Group推定）。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 6/1入港確認済。"
+      "note": "LNG carrier。Call sign C4YF2（キプロス籍想定）。122,239GT・LOA 288m・160,000m³級。名古屋港管理組合EDI 6/1 11:50知多入港予定→6/2 14:00出港（5/27検出）。エージェント: 知多桟橋管理(株)。中部電力知多LNG基地向け。先行する GRAND MEREYA(lng-21・キプロス籍4/29 知多)と同船社系列（Maran Gas/Angelicoussis Group推定）。起点要AIS確認。VesselFinder/MarineTraffic 2026-05-27 要照合 → [6/1更新] 6/1入港確認済。【10/1照合】IMO 9332054／MMSI 209407000 で確定。**名古屋港EDIの Call sign C4YF2 が完全一致**し、GT 122,239・LOA 288m も一致。キプロス籍・2007年建造。MyShipTracking の最多寄港地はプリゴロドノエ（サハリン2）で、**サハリン2 専用に近い配船**。Maran Gas 系という従来の推定は公開DBでは裏付けられなかった（VesselFinder・MyShipTracking・vesseltracker）"
     },
     {
       "id": "vlcc-uraga-12",
