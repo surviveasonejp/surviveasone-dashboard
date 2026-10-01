@@ -46,8 +46,8 @@ interface AisMessage {
   };
   Message: {
     PositionReport?: {
-      Sog: number;     // Speed Over Ground (knots × 10)
-      Cog: number;     // Course Over Ground (degrees × 10)
+      Sog: number;     // Speed Over Ground（ノット。AISStream はデコード済みの実数で送る）
+      Cog: number;     // Course Over Ground（度。同上）
       TrueHeading: number;
       NavigationalStatus: number;
       Latitude: number;
@@ -132,8 +132,9 @@ export function getTrackedVessels(now: Date = new Date()): TrackedVessel[] {
       id: v.id,
       mmsi: v.mmsi,
       name: v.name,
-      // destinationPort は JAPAN_PORT_COORDS のキーと対応する（ETA 再計算用）
-      ...(v.destinationPort ? { destPort: v.destinationPort } : {}),
+      // destinationPort は JAPAN_PORT_COORDS のキーと対応する（ETA 再計算用）。
+      // 入港済の船は日本での揚荷を終えて次の航海に出ていることが多く、旧仕向港までの ETA は無意味なので渡さない
+      ...(v.destinationPort && v.status !== "入港済" ? { destPort: v.destinationPort } : {}),
     }));
 }
 
@@ -149,6 +150,8 @@ const AIS_POSITIONS_KEY = "ais_positions";
  * 3 分の待機はどちらの制限にも触れない。
  */
 const AIS_TIMEOUT_MS = 180000;
+/** override に使う位置の鮮度上限。cron は12時間ごとで、取得直後に override を作るので6時間あれば足りる */
+const AIS_OVERRIDE_MAX_AGE_MS = 6 * 60 * 60 * 1000;
 const AISSTREAM_URL = "wss://stream.aisstream.io/v0/stream";
 
 // ─── 日本向け判定 ─────────────────────────────────────
@@ -287,7 +290,9 @@ export async function fetchAisPositions(env: Env): Promise<{
           if (msg.Message.PositionReport) {
             const lat = msg.Message.PositionReport.Latitude ?? msg.MetaData.latitude;
             const lon = msg.Message.PositionReport.Longitude ?? msg.MetaData.longitude;
-            const sog = (msg.Message.PositionReport.Sog ?? 0) / 10;
+            // AISStream の JSON は Sog/Cog をデコード済みの実数で送る。生 AIS の 1/10 単位ではないので割らない
+            // （旧実装は /10 しており、SOG が1/10＝ETA が約10倍になっていた。COG×10 が TrueHeading と一致することで判明）
+            const sog = msg.Message.PositionReport.Sog ?? 0;
 
             const pos: AisPosition = {
               mmsi: msg.MetaData.MMSI,
@@ -295,7 +300,7 @@ export async function fetchAisPositions(env: Env): Promise<{
               lat,
               lon,
               sog,
-              cog: (msg.Message.PositionReport.Cog ?? 0) / 10,
+              cog: msg.Message.PositionReport.Cog ?? 0,
               heading: msg.Message.PositionReport.TrueHeading ?? 0,
               timestamp: msg.MetaData.time_utc,
               fetchedAt: new Date().toISOString(),
@@ -459,6 +464,9 @@ export async function getAisDiagnostic(cache: KVNamespace): Promise<AisDiagnosti
  *
  * 更新条件:
  *   - calculatedEtaDays が 0.3〜60日の範囲 → eta_days を上書き
+ *   - 位置の取得（fetchedAt）が AIS_OVERRIDE_MAX_AGE_MS より古い → スキップ
+ *     （KV には過去の受信位置が残り続けるため、今回の取得で更新された位置だけを使う。
+ *      旧実装は 9/12 の位置から毎回 override を作り直し、到着済みの船に古い ETA を出し続けていた）
  *   - SOG < 0.3kn かつ calculatedEtaDays が未算出 → 現在の override を維持（上書きしない）
  *
  * cron.ts からは `fetchAisPositions(env).then(() => applyAisToOverrides(env.CACHE))` で呼ぶ
@@ -479,6 +487,11 @@ export async function applyAisToOverrides(
 
   for (const [vesselId, pos] of Object.entries(positions)) {
     const etaDays = pos.calculatedEtaDays;
+
+    if (Date.now() - new Date(pos.fetchedAt).getTime() > AIS_OVERRIDE_MAX_AGE_MS) {
+      skipped.push(vesselId);
+      continue;
+    }
 
     // ETAが算出できない（停泊中・速度不足）はスキップ（既存overrideを保護）
     if (etaDays == null || etaDays < 0.3 || etaDays > 60) {
