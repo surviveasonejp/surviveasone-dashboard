@@ -1,11 +1,11 @@
 {
   "meta": {
     "source": "公開船舶登録・海運会社プレスリリース・ports.com/SeaRoutes航路データに基づく開発用データ",
-    "updatedAt": "2026-09-20",
+    "updatedAt": "2026-10-01",
     "distanceSource": "ports.com / SeaRoutes.com 航路計算ベース",
     "speedSource": "VLCC laden: AIS実運航データ平均12.0-12.5kn。LNG DFDE/ME-GI: 18-19.5kn、MOSS型: 17-18kn",
-    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, VesselTracker, MarinePublic, MagicPort, MaritimeOptima, 各社プレスリリース）から取得。2026-06-07追加便はKOOL FIRN(IMO 9864746・ex-SCF Barents)/TORM TIMOTHY(IMO 9726487・米国籍)/KEOYOUNG DREAM 1(IMO 9764192)のIMO確認済、MARAN GAS ANTIPAROS(lng-36)は2026年1月就航の最新Maran Gas船でIMO要照合。2026-07-23追加13便のIMOはVesselFinder船舶DBで確認済（LAKE MODRO 9974606／QUEST KIRISHIMA 9963853／ESSHU MARU 9666560／OAK EXPRESS 9405916／HAFNIA KIRSTEN 9732682／GLORIOUS SUNSHINE 9858840／TORM EMMA 9592680／とうきょう丸 9617038／PACIFIC RUBY 9893034／SUN QUEEN 9826392／SILVER LEO 9895329／KEOYOUNG BLUE 5 9866160／CRANE AVANCE 9844148）。MARAN GAS ANTIPAROS（lng-36）は要照合を解消しIMO 9963827 を確定。2026-08-21追加15便のIMO/MMSIはVesselFinder・MarineTraffic・MagicPort・MaritimeOptima・MyShipTracking等の公開船舶DBで裏取り済（NEW HONOR 9799159／KOOL BLIZZARD 9635315／YASA PANTHER 1056214／LUNA PATHFINDER 9980150／GRAND WINNER 2 9906697／MH NORIKURA 9994694／PACIFIC INDIGO 9994539／HAFNIA SHANNON 9766217／新生丸 9759850／KODAIJISAN 9249049／GRAN COUVA 9380520／CHALLENGE PRELUDE 9333278／KEOYOUNG SUN 3 9321782／KEOYOUNG BLUE 1 9765988／SILVER ARIES 9820439）。照合の主キーは原則として総トン数の一致とし、海保VTS由来の10便は全便GTが完全一致した。一方 名古屋港EDI 由来の便はEDI掲載の総トン数が国際総トン数と体系的に異なり（GRAN COUVA 22,130対29,293、CHALLENGE PRELUDE 22,561対28,823ほか）GTでは照合できないため、EDIが併記するコールサイン（VREK4／VRQC9等）を主キーとして同定した。EDIの「総トン数」列は日本法（船舶のトン数の測度に関する法律）の国内総トン数とみられるが未検証の仮説であり、数値フィールドには公開DBの国際総トン数側のみを採用している。YASA PANTHER の IMO 1056214 は誤記ではなく9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）。GRAND WINNER 2 のMMSIは2026年6月の船籍変更（パナマ→韓国）で 372298000 から 440825000 へ変わっており、AIS購読には新MMSIを使う2026-08-24追加8便のIMO/MMSIはVesselFinder・MarineTraffic・MyShipTracking・MagicPort・MaritimeOptima・vesseltracker等の公開船舶DBで裏取り済（CASTILLO DE VILLALBA 9236418／SEAWAYS MOMENT 9391438／UNIQUE HARMONY 9609914／STENA IMPECCABLE 9693020／BEI HAI QI LIN 9868132／SEONGHO GALAXY 9427251／GOLDEN KEY HANA 9540170／スターフェニックス(STAR PHENIX) 9122253）。照合の主キーは 8/21 と同じく、海保VTS由来の便は総トン数、名古屋港EDI由来の便はコールサインとした。VTS由来6便はいずれもGTが完全一致し（90,835／29,293／29,411→29,441／29,680／43,551／2,927）、EDI由来2便はコールサイン D8QR・D7OO が一致した。SEAWAYS MOMENT のMMSIは公開DB間で 538011334 と 477185800 が併存するが、VTS掲載の旗国マーシャル諸島（MID 538）と整合する前者を採用した。2026-08-25追加10便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・VesselsValue・marinetraffic等の公開船舶DBで裏取り済（KHK EMPRESS 9830965／LONDON VOYAGER 9834454／NAVE TEMPO 9876426／CASTILLO DE SANTISTEBAN 9433717／LNG MALEO 8701791／TSUBAKI 9940978／PYXIS ALFA 9765457／PACIFIC DEBBIE 9772058／PIONEER VENTURE 1084467／KEOYOUNG BLUE 7 9939151）。海保VTS浦賀由来の9便は総トン数がVTS掲載値と全件完全一致した（163,214／160,682／160,115／111,665／106,717／64,316／48,605／46,884／42,968）。名古屋港EDI由来の KEOYOUNG BLUE 7 はEDI掲載GT 1,119 と公開DBの国際総トン数 1,494 が体系差で一致しないため、8/21・8/24 と同じくコールサイン D7XD を主キーとして同定した。**LONDON VOYAGER のMMSIは船籍変更（バハマ→マーシャル諸島）で 311000743 から 538011005 へ変わっており、旧MMSIの公開DBレコードは2024年で更新が止まっている。AIS購読には新MMSIを使う**（GRAND WINNER 2 と同種の事例）。PIONEER VENTURE の IMO 1084467 は誤記ではなく9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）で、YASA PANTHER（1056214）と同じ。RASHEEDA（lng-cat-02）は公開DB間でMMSIが 538006284 と 461001013 で割れており、登録値は変更せず留保する。2026-09-01追加8便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・marinetraffic・vesseltracker等の公開船舶DBで裏取り済（NORD VICTOR 9982536／LARGO EMERALD 9935935／BETELGEUSE 9987744／KOHZAN MARU 6 9889045／ENERGY GLORY 9752565／CELSIUS GENEVA 9945435／LNG VENUS 9645736／オリエンタル エース(ORIENTAL ACE) 9203241）。海保VTS由来の6便はGTが全件完全一致し（29,777／28,630／29,438／121,981／119,063／2,614）、名古屋港EDI由来の LNG VENUS はコールサイン 7JQG が一致した。**VTS掲載名「NORD VICTER」は公開DBの「NORD VICTOR」の綴り揺れで、GT・全長・旗国の一致から同一船と判断した**。BETELGEUSE のVTS旗国表記「GBR」はMMSIのMID 319（ケイマン諸島＝英国海外領土）をVTS側が英国へ集約したものとみられる。**RASHEEDA（lng-cat-02）のMMSIを 538006284 から 538003362 へ修正した。旧値は別船 SILVER CAITRIONA（IMO 9692313）のMMSIで、誤登録のままAIS購読枠を消費していた**。FRONT SINGAPORE（suezmax-us-02）に MMSI 477539200、OAK EXPRESS（mr-18）に 477043900 を追加済み。2026-09-20追加4便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・marinetraffic・vesseltracker等の公開船舶DBで裏取り済（CHANG HANG SHAN HU 9406348／MIDNIGHT GLORY 9877808／YC COSMOS 9409364／SUN EAGLE 1073315）。海保VTS由来の CHANG HANG SHAN HU はGT 31,534 が完全一致し、名古屋港EDI由来の3便はコールサイン（V7A2809／DSRJ2／3E9554）が全て完全一致した。**SUN EAGLE の IMO 1073315 は新採番系列（10xxxxx）**で YASA PANTHER 1056214・PIONEER VENTURE 1084467 と同じ。**登録を見送った2便**: SH OLIVIA（名古屋港EDI 9/24）はEDI掲載コールサイン D8HH に対し公開DBが 3E2137（パナマ籍・IMO 9934448）を返し、KOHSEI MARU（同 9/20）はEDI A8SJ3 に対し公開DBが 3EJM6（パナマ籍・IMO 9831543）を返すため、同定の主キーが一致せず見送った。**同名別船の確認**: 名古屋港EDI の KEOYOUNG STAR は既登録3件（chem-nagoya-15／17／19）と船名が重なるが、IMOは 9798090／9435301／9362798 と全て異なる姉妹船群であり重複登録ではない。EDI掲載のコールサイン DSPH2・GT 1,530 は chem-nagoya-17 に一致する。",
-    "note": "205隻の追跡船舶。【9/20更新・全便棚卸し（前回9/1から19日ぶり）】■背景: **9/11 の PR#80／#81 で AIS 受信が復旧した**。2026-07〜09 の「受信0」はAPIキーではなく、AISStream がメッセージをバイナリフレームで送るようになり Workers 側が Blob として受け取って JSON.parse が黙って失敗していたことが真因だった。`/api/ais` は 9/12〜9/19 に14隻の実位置を保持しており、外洋は依然 VTS/EDI と手動棚卸しが担うものの、沿岸の受信圏内にいる船は自動で拾えるようになった。■**ただしAISのSOG/COGに10倍のスケール誤差が残っている（要修正）**: `ais-tracker.ts` が `Sog`／`Cog` を10で割っているが、AISStream のJSON APIは既に実数（ノット・度）で送るため二重除算になっている。**証拠は2つ**: (1) 同一電文内で10除算していない `TrueHeading` と桁が合わない（STAR PHENIX は cog 25.42 に対し heading 254、CRANE AVANCE は cog 4.17 に対し heading 42 で、COG×10 がheadingと一致する）。(2) LARGO EMERALD は当基盤のAISが 9/19 に sog 1.32 と記録した同じ日に、MyShipTracking が 13.2 knots を示した。**緯度経度は正しく、LARGO EMERALD の当基盤位置（26.662／121.818）は公開DBの同日位置（26.117／121.362）と整合する**。影響は `calculatedEtaDays` が約10倍に膨らむことで（GRAND WINNER 2 で128日、LARGO EMERALD で33.6日）、**本更新ではAISのETA値を一切採用せず、位置のみを公開DBの裏取りに用いた**。■最大の所見: **9/1 に日本向けとして追跡していた11便のうち9便が、この19日間で揚荷を終えて離日した**。いずれも喫水の変化で裏付けている: MAYASAN は苫小牧→四日市→京葉シーバースの3港揚げを終えて満載20.1m→14.4m→9.0mと下がり中国・蛇口で係留中、KAZUSA は12.0m→10.4mでオマーン・ソハールへ、ENERGY NAVIGATOR は11.5m→9.8mでダンピアへ、CASTILLO 系に続き ENERGY GLORY・LNG VENUS も積地へ戻った。**「ホルムズがほぼ閉じたまま、非ホルムズ調達が受入基地で揚がり切って積地へ戻る」という循環が、3回目の棚卸しでも維持されている**。■**除外扱いの洗い直しが3回連続で当たった**: **ESSHU MARU（lng-40）は 9/1 に「日本向けではない」として combined=0.0 のままにしていたが、実際にはアシュバートン（豪州WA・Wheatstone LNG）で 9/4-5 に積み取り、四日市に 9/15 着・9/16 発で揚荷していた**。放置していれば豪州発の非中東LNGの到着実績を丸ごと取りこぼしていた。8/25 の ENERGY NAVIGATOR、9/1 の KAZUSA に続く3件目で、**この運用は恒久化すべき**と判断する。■非ホルムズ積地での積み込みを初めて観測: **DIAMOND GAS ORCHID（lng-04）が 9/15 にカルハット（オマーンLNG・ホルムズ海峡外側）を出港し、喫水が 9.6m（バラスト）から 11.1m（満載相当）へ上がった**。9/1 に「空船でオマーンへ向かっている」と記録した動きが積み取りとして完結した。AIS目的地はシンガポール（ETA 9/24）で日本向けは未確定のため combined=0.0 を維持するが、**次回の棚卸しで最優先の追跡対象とする**。■9/1 の登録内容が実測で覆った2件（モデル検証原則に基づき明示する）: (1) **BETELGEUSE（mr-33）の揚地は海保VTSが掲げた扇島シーバースではなく名古屋だった**（9/2 着・9/4 発）。さらに積地としたシッカ（インド）の前にダルエスサラーム（タンザニア）7/23-27 の寄港があり、シッカは中継だった可能性が高い。(2) **ENERGY GLORY（lng-45）のVTS 9/2 扇島入航は公開DB 2社の寄港履歴のいずれにも現れず**、実際の揚地は 8/8 の姉崎だった。**VTS掲載が実測と食い違う事例はこれで累計5件目で、VTSは「予定」であって「実績」ではないという前提を崩してはならない**。■新規登録4隻: CHANG HANG SHAN HU（mr-35・海保VTS浦賀）、MIDNIGHT GLORY（mr-36・四日市揚荷済→名古屋）、YC COSMOS（chem-nagoya-46・韓国発）、SUN EAGLE（chem-nagoya-47・タイ バンコク発の2026年新造船）。うち3便が非ホルムズ調達に該当する。■登録見送り2隻: SH OLIVIA と KOHSEI MARU は名古屋港EDI掲載のコールサイン（D8HH／A8SJ3）と公開船舶DBの値（3E2137／3EJM6）が一致せず、同定の主キーを満たさないため見送った。■同名別船の確認1件: 名古屋港EDI の KEOYOUNG STAR は既登録3件と船名が重なるがIMOは全て異なる姉妹船群で、**9/1 に統合した新生丸のような重複登録ではない**。IMO重複は 9/1 の統合以降ゼロを維持している。■データ品質上の留保: **海保VTS浦賀水道航路の掲載が全5件（うちタンカー1件）と異常に少なく**、通常の55〜61件から大きく外れている（取得時刻が JST 22:23 で翌日分が未掲載だった可能性）。CHANG HANG SHAN HU はVTSの 9/20 23:10 姉崎入航予定とAISの同日 21:04 JST 姉崎出港が2時間差で矛盾し、喫水12.4mも満載に近いため揚荷の有無を判定できていない。RASHEEDA は MyShipTracking の最終受信が 6/19（喫水12.1m）、VesselFinder が 8/25（喫水9.6m）と3か月ずれており、両ソースの整合は取れていない。SOHAR LNG は公開AISの最終受信が114日前で5か月近く現況不明。NAVE TEMPO・PIONEER VENTURE・LARGO EMERALD・LAKE MODRO・MIDNIGHT GLORY は積地を特定できていない。cargo_t は載貨重量トンまたはタンク容量からの概算で公表実績値ではない"
+    "vesselSource": "船名・IMO番号は公開船舶データベース（Equasis, ClassNK, MarineTraffic, VesselFinder, VesselTracker, MarinePublic, MagicPort, MaritimeOptima, 各社プレスリリース）から取得。2026-06-07追加便はKOOL FIRN(IMO 9864746・ex-SCF Barents)/TORM TIMOTHY(IMO 9726487・米国籍)/KEOYOUNG DREAM 1(IMO 9764192)のIMO確認済、MARAN GAS ANTIPAROS(lng-36)は2026年1月就航の最新Maran Gas船でIMO要照合。2026-07-23追加13便のIMOはVesselFinder船舶DBで確認済（LAKE MODRO 9974606／QUEST KIRISHIMA 9963853／ESSHU MARU 9666560／OAK EXPRESS 9405916／HAFNIA KIRSTEN 9732682／GLORIOUS SUNSHINE 9858840／TORM EMMA 9592680／とうきょう丸 9617038／PACIFIC RUBY 9893034／SUN QUEEN 9826392／SILVER LEO 9895329／KEOYOUNG BLUE 5 9866160／CRANE AVANCE 9844148）。MARAN GAS ANTIPAROS（lng-36）は要照合を解消しIMO 9963827 を確定。2026-08-21追加15便のIMO/MMSIはVesselFinder・MarineTraffic・MagicPort・MaritimeOptima・MyShipTracking等の公開船舶DBで裏取り済（NEW HONOR 9799159／KOOL BLIZZARD 9635315／YASA PANTHER 1056214／LUNA PATHFINDER 9980150／GRAND WINNER 2 9906697／MH NORIKURA 9994694／PACIFIC INDIGO 9994539／HAFNIA SHANNON 9766217／新生丸 9759850／KODAIJISAN 9249049／GRAN COUVA 9380520／CHALLENGE PRELUDE 9333278／KEOYOUNG SUN 3 9321782／KEOYOUNG BLUE 1 9765988／SILVER ARIES 9820439）。照合の主キーは原則として総トン数の一致とし、海保VTS由来の10便は全便GTが完全一致した。一方 名古屋港EDI 由来の便はEDI掲載の総トン数が国際総トン数と体系的に異なり（GRAN COUVA 22,130対29,293、CHALLENGE PRELUDE 22,561対28,823ほか）GTでは照合できないため、EDIが併記するコールサイン（VREK4／VRQC9等）を主キーとして同定した。EDIの「総トン数」列は日本法（船舶のトン数の測度に関する法律）の国内総トン数とみられるが未検証の仮説であり、数値フィールドには公開DBの国際総トン数側のみを採用している。YASA PANTHER の IMO 1056214 は誤記ではなく9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）。GRAND WINNER 2 のMMSIは2026年6月の船籍変更（パナマ→韓国）で 372298000 から 440825000 へ変わっており、AIS購読には新MMSIを使う2026-08-24追加8便のIMO/MMSIはVesselFinder・MarineTraffic・MyShipTracking・MagicPort・MaritimeOptima・vesseltracker等の公開船舶DBで裏取り済（CASTILLO DE VILLALBA 9236418／SEAWAYS MOMENT 9391438／UNIQUE HARMONY 9609914／STENA IMPECCABLE 9693020／BEI HAI QI LIN 9868132／SEONGHO GALAXY 9427251／GOLDEN KEY HANA 9540170／スターフェニックス(STAR PHENIX) 9122253）。照合の主キーは 8/21 と同じく、海保VTS由来の便は総トン数、名古屋港EDI由来の便はコールサインとした。VTS由来6便はいずれもGTが完全一致し（90,835／29,293／29,411→29,441／29,680／43,551／2,927）、EDI由来2便はコールサイン D8QR・D7OO が一致した。SEAWAYS MOMENT のMMSIは公開DB間で 538011334 と 477185800 が併存するが、VTS掲載の旗国マーシャル諸島（MID 538）と整合する前者を採用した。2026-08-25追加10便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・VesselsValue・marinetraffic等の公開船舶DBで裏取り済（KHK EMPRESS 9830965／LONDON VOYAGER 9834454／NAVE TEMPO 9876426／CASTILLO DE SANTISTEBAN 9433717／LNG MALEO 8701791／TSUBAKI 9940978／PYXIS ALFA 9765457／PACIFIC DEBBIE 9772058／PIONEER VENTURE 1084467／KEOYOUNG BLUE 7 9939151）。海保VTS浦賀由来の9便は総トン数がVTS掲載値と全件完全一致した（163,214／160,682／160,115／111,665／106,717／64,316／48,605／46,884／42,968）。名古屋港EDI由来の KEOYOUNG BLUE 7 はEDI掲載GT 1,119 と公開DBの国際総トン数 1,494 が体系差で一致しないため、8/21・8/24 と同じくコールサイン D7XD を主キーとして同定した。**LONDON VOYAGER のMMSIは船籍変更（バハマ→マーシャル諸島）で 311000743 から 538011005 へ変わっており、旧MMSIの公開DBレコードは2024年で更新が止まっている。AIS購読には新MMSIを使う**（GRAND WINNER 2 と同種の事例）。PIONEER VENTURE の IMO 1084467 は誤記ではなく9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）で、YASA PANTHER（1056214）と同じ。RASHEEDA（lng-cat-02）は公開DB間でMMSIが 538006284 と 461001013 で割れており、登録値は変更せず留保する。2026-09-01追加8便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・marinetraffic・vesseltracker等の公開船舶DBで裏取り済（NORD VICTOR 9982536／LARGO EMERALD 9935935／BETELGEUSE 9987744／KOHZAN MARU 6 9889045／ENERGY GLORY 9752565／CELSIUS GENEVA 9945435／LNG VENUS 9645736／オリエンタル エース(ORIENTAL ACE) 9203241）。海保VTS由来の6便はGTが全件完全一致し（29,777／28,630／29,438／121,981／119,063／2,614）、名古屋港EDI由来の LNG VENUS はコールサイン 7JQG が一致した。**VTS掲載名「NORD VICTER」は公開DBの「NORD VICTOR」の綴り揺れで、GT・全長・旗国の一致から同一船と判断した**。BETELGEUSE のVTS旗国表記「GBR」はMMSIのMID 319（ケイマン諸島＝英国海外領土）をVTS側が英国へ集約したものとみられる。**RASHEEDA（lng-cat-02）のMMSIを 538006284 から 538003362 へ修正した。旧値は別船 SILVER CAITRIONA（IMO 9692313）のMMSIで、誤登録のままAIS購読枠を消費していた**。FRONT SINGAPORE（suezmax-us-02）に MMSI 477539200、OAK EXPRESS（mr-18）に 477043900 を追加済み。2026-09-20追加4便のIMO/MMSIはVesselFinder・MyShipTracking・MaritimeOptima・MagicPort・marinetraffic・vesseltracker等の公開船舶DBで裏取り済（CHANG HANG SHAN HU 9406348／MIDNIGHT GLORY 9877808／YC COSMOS 9409364／SUN EAGLE 1073315）。海保VTS由来の CHANG HANG SHAN HU はGT 31,534 が完全一致し、名古屋港EDI由来の3便はコールサイン（V7A2809／DSRJ2／3E9554）が全て完全一致した。**SUN EAGLE の IMO 1073315 は新採番系列（10xxxxx）**で YASA PANTHER 1056214・PIONEER VENTURE 1084467 と同じ。**登録を見送った2便**: SH OLIVIA（名古屋港EDI 9/24）はEDI掲載コールサイン D8HH に対し公開DBが 3E2137（パナマ籍・IMO 9934448）を返し、KOHSEI MARU（同 9/20）はEDI A8SJ3 に対し公開DBが 3EJM6（パナマ籍・IMO 9831543）を返すため、同定の主キーが一致せず見送った。**同名別船の確認**: 名古屋港EDI の KEOYOUNG STAR は既登録3件（chem-nagoya-15／17／19）と船名が重なるが、IMOは 9798090／9435301／9362798 と全て異なる姉妹船群であり重複登録ではない。EDI掲載のコールサイン DSPH2・GT 1,530 は chem-nagoya-17 に一致する。2026-10-01追加10便のIMO/MMSIはVesselFinder・MaritimeOptima・MagicPort・MyShipTracking・tankermap等の公開船舶DBで裏取り済（KOOL KELVIN 9654701／SERI CEMPAKA 9714290／CLIPPER GALLEON 1026829／GOLDEN BRIDGE HANA 9816244／NADESHIKO GAS 9534810／TARANGER 9524762／JAG VIJAY 9726061／HAFNIA TAGUS 9766205／BU NAKHLAH 9986063／LV ESTIA 9327035）。海保VTS由来の8便はGTがVTS掲載値と完全一致し、名古屋港EDI由来の2便はコールサイン（9MWM8／D7RV）が完全一致した。**CLIPPER GALLEON は姉妹船 CLIPPER GALIOT（IMO 1026817）と GT・全長が同一で、検索結果が姉妹船を返したため Solvang 公式のHull番号で確定した**。**2026-10-01 のMMSI訂正4件**: ENEOS OCEAN（vlcc-05）477254200→432986000（旧値は別船 FENG DA HAI）／PACIFIC NOTUS（lng-11）352965000→311573000（旧値は別船 YAKOOT。IMO も 9309688→9247962 へ訂正・旧IMOはチェックディジット不正）／DIAMOND GAS ORCHID（lng-04）563099000→563189600（旧値は別船 EAGLE VERONA）／RASHEEDA（lng-cat-02）538003362→461001013（オマーン籍で発信）。4件とも VesselFinder で IMO と MMSI の対応を確認した。前2件は当基盤AISが受信した船名（FENG DA HAI／YAKOOT）が登録船名と一致しないことでも裏付けられる。FUTURE DIAMOND（lpg-03）に MMSI 374651000 を追加。**登録を見送った5便**: SH UNITY（姉崎着だが喫水9.0mで積載状況を判別できない）／SEAWAYS REYES（中国→パナマ→日本の航跡で積地を説明できない）／CRANE SOL（名古屋EDI・コールサイン一致だが積地不明）／ALTMANN（堺積みの輸出向けとみられる）／DUCHESS OF DORIA（バラストでの寄港）。",
+    "note": "215隻の追跡船舶。【10/1更新・全便棚卸し（前回9/20から11日ぶり）】■背景: 9/20 に実施した棚卸しが作業ツリーに未コミットのまま残り、本番データは 9/1 時点のまま30日経過していた。あわせて、クラウド上の日次保守ジョブは実行環境のネットワーク許可リストで本基盤のAPIドメインに到達できず空振りしていた。今回は 9/20 分を記録として先にコミットし、その上に 10/1 の棚卸しを重ねた。■最大の所見: **MMSIの誤登録を4件発見し訂正した**。ENEOS OCEAN と PACIFIC NOTUS は、**当基盤AISが受信した船名（FENG DA HAI／YAKOOT）が登録船名と食い違っていたことが決め手になった**（9/26 バレンシア・9/30 タンパ湾の位置はいずれも別船のもの）。DIAMOND GAS ORCHID の旧値は別船 EAGLE VERONA、RASHEEDA は 9/1 に訂正した値では発信が無くオマーン籍の番号で発信していた。**AISで受信した船名と登録船名の照合を、登録後の検算に加えるべき**である。■非ホルムズ経路の日本着が続いている: 豪州NWS産LNG（LNG VENUS が 10/1 姫路着。9/20 に除外扱いにしていた便で、除外の洗い直しが4回連続で当たった）、パプアニューギニア産LNG（BU NAKHLAH が 9/30 富津着）、米国産LPG（CLIPPER GALLEON が 9/29 水島着、JAG VIJAY が堺で一部を揚げ川崎へ、NADESHIKO GAS が袖ケ浦へ、FUTURE DIAMOND が唐津・川崎・水島の3港揚げ＝積地は推定）、韓国発の石油製品（GLORIOUS SUNSHINE 横浜・SUN QUEEN 三田尻・GRAN COUVA 仙台・MIDNIGHT GLORY 沖縄・LV ESTIA 姉崎）、オマーン・ソハール（ホルムズ海峡外側）発の石油製品（HAFNIA TAGUS が 10/1 五井着）。さらに米国産LNGの KOOL KELVIN（水島 10/2 予定）とマレーシア産LNGの SERI CEMPAKA（知多 10/5 予定）が日本へ向かっている。■日本向けの実績・試みがある船の次の積荷が中国・東南アジアへ向かう例が4件あった: DIAMOND GAS ORCHID のオマーン産LNG→フィリピン（9/20 に最優先で追跡するとした便）、ENERGY NAVIGATOR の豪州産LNG→深圳、AL DAAYEN のカタール産LNG→唐山、NEW HONOR のソハール積み原油→舟山。**同じ積地でも配船先は日本に限られない**。ENEOS OCEAN は米国産原油を積んで喜望峰回りでマレーシアへ向かっており、日本向けかどうかを次回の最優先で追跡する。■SOHAR LNG は2026年6月にインド・アランで解撤されていた（7月以降「現況不明」としてきた原因）。■新規登録10隻はいずれもホルムズ海峡を通らない積地（HAFNIA TAGUS はソハール以前の海峡通過を否定できない留保付き）。登録見送り5隻（SH UNITY・SEAWAYS REYES・CRANE SOL・ALTMANN・DUCHESS OF DORIA）は vesselSource に理由を記した。■データ品質上の留保: 海保VTS浦賀の 10/2 掲載のうち5隻は 10/1 時点でAIS上すでに着桟済みで、VTS一覧がシフト（港内移動）を含むか掲載日がずれている可能性がある。VTSは予定であって実績ではないという前提を維持する。MyShipTracking は 10/1 に直接取得できず、寄港履歴は MaritimeOptima（直近3寄港のみ表示）・VesselFinder・MagicPort で補った。AISの SOG/COG が10分の1になる不具合は未修正で、AIS由来のETAは今回も採用していない。cargo_t は載貨重量トンまたはタンク容量からの概算で公表実績値ではない"
   },
   "chokepoints": [
     {
@@ -13,7 +13,7 @@
       "name": "ホルムズ海峡",
       "lat": 26.567,
       "lon": 56.25,
-      "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。【9/20更新・封鎖Day203】straits.live 2026-09-20: 商業通航の最新値は **9/13 の8隻**（同サイトの平時基準85隻/日の約9%）で、9/1 の3隻（8/23時点・約4%）から増えた。海峡域内で着岸せず待機する船は **358隻** と 9/1 の520隻から減少している。戦争リスク保険料は封鎖前の40.0倍（VLCC1隻あたり約1,000万ドル）で横ばい。Crisis Pressure 指数は **88**（Extreme）で 9/1 の91から低下した。**ところが Brent は 103.87ドルと、9/1 の91.99ドルから12.9%上昇し、封鎖前水準（約72ドル）に対する上乗せは44.3%へ拡大している**。**通航が増え・待機が減り・圧力指数が下がったのに価格だけが急騰するという乖離が生じており、海峡の物理的な通航量だけでは価格形成を説明できない局面に入った**（在庫水準・OPEC+の供給判断・金融要因のいずれが効いているかは本データでは判別できない）。同サイトは「PortWatch はAISを発信している通航のみ数える」と明記しており、発信を止めた船の分だけ実際の通航は多い可能性がある。数値はいずれも straits.live 単独ソースで、他系統の統計とは突き合わせていない。【日本関係】経済産業省の見通しとして、調達が前年平月比75%へ落ちても備蓄で減少分を補い2028年3月末まで安定供給が可能と報じられている（日経・時事）。【供給の主軸】**この19日間で、9/1 に追跡していた日本向け11便のうち9便が揚荷を終えて積地へ戻った**（MAYASAN＝苫小牧→四日市→京葉の3港揚げ後に中国へ、KAZUSA＝京浜揚荷後にオマーンへ、ENERGY NAVIGATOR／LNG VENUS＝名古屋・知多揚荷後に豪州ダンピアへ、BETELGEUSE＝名古屋、MIDNIGHT GLORY＝四日市）。さらに **9/1 に「日本向けでない」と判定していた ESSHU MARU が、豪州 Wheatstone で積んで四日市に 9/15-16 で揚げていた**ことが判明した。**非ホルムズ調達は単発の到着ではなく、揚げて戻って再び積む反復サイクルとして定着しつつある**。加えて **DIAMOND GAS ORCHID がオマーンのカルハット（海峡外側）で 9/15 に実際に積み込んだ**ことを喫水変化で確認しており、積地側でも非ホルムズ経路が動き出している"
+      "note": "幅55-95km。日量2,100万バレル通過。日本の原油80-90%が依存。【10/1更新・封鎖Day214】**通航隻数と原油フロー量が大きく食い違う局面に入った**。(1) 隻数: straits.live（出所 IMF PortWatch）の商業通航は **9/27 に1隻**（平時基準85隻/日の約1%・7日移動平均3.14隻）。Kpler の集計でも 9/23 14隻・9/24 9隻（戦前は約125隻/日）にとどまる。(2) 量: **Kpler の 9/28 時点の7日平均では、ホルムズ経由の原油が日量1,350万バレルと戦前水準に並んだ**（CNBC 9/30）。ただし石油製品は日量67.7万バレル（戦前360万の約19%）、原油と製品の合計は1,420万バレル（戦前約1,700万の約80%）で、同じ Kpler の9月の月間見込みは日量約970万バレル。IEA 9月月報は8月の湾岸輸出を戦前の約半分とし、完全な回復は2027年にずれ込むと見ている。(3) 食い違いの理由: VLCCは1隻で約200万バレルを運ぶため日量1,350万バレルはVLCC約7隻分に相当すること、AISを切った通航が多いこと（PortWatch はAIS発信船しか数えない。Vortexa は3/1以降の通航の57%をダークと推計）、8月の原油の7割超がUAE・オマーン沖の船間積み替え（STS）を経る米軍護衛下のシャトル輸送であること、9月にサウジ東西パイプラインが一時停止しサウジ産が海峡経由に戻ったこと。**原油の量の回復は護衛と迂回路の停止に依存した構造的に限定されたもので、海峡が平時に戻ったことを意味しない**。商船への攻撃は9月下旬も続き、新たな停戦・合意・海峡再開は 10/1 時点で確認できない。カタールLNGは9月に少なくとも8隻の動きが確認された（本データの AL DAAYEN も9月に海峡を出て中国へ向かっている）が、QatarEnergy は不可抗力を12月上旬まで延長しており、日本向けカーゴは見当たらない。戦争リスク保険料は封鎖前の40.0倍で横ばい（straits.live 推定）。Brent は 10/1 に100.40ドル（12月限。9/30 に11月限が満期を迎えたため、9/20 の103.87ドルとは限月が異なり単純比較できない）。【集計上の注意】straits.live の待機隻数は 9/26 に算出方法が変わった（最終AIS位置が60分超古い船を除外）ため、9/1 の520隻・9/20 の358隻と 10/1 の値は比較できない。Crisis Pressure 指数88は入力の基準日が 9/08 のまま更新されていない。【モデル検証】9月下旬の原油フローの増加は intermittent シナリオが仮定した最初の緩和窓（Day190〜220）の時期に重なるが、通航隻数・石油製品・LNG・保険料はいずれも緩和を示しておらず、**緩和窓の到来とは判定しない**（設計原則12に基づき、判定が確定した時点で予測との乖離を記録する）。【日本関係】経済産業大臣は 9/29 の閣議後会見で、ホルムズ海峡を通らない原油調達を支える法案を臨時国会に提出する準備を進めていると述べた。ガソリン全国平均は 9/28 時点で170.2円/L（補助は 10/1〜7 が50.7円/L）。配給・購入制限・給油制限の公的な発動は確認されていない。【供給の主軸】この11日間で、非ホルムズ経路の日本着が新たに複数確認された（豪州NWS産LNG＝LNG VENUS の姫路、パプアニューギニア産LNG＝BU NAKHLAH の富津、米国産LPG＝CLIPPER GALLEON の水島・JAG VIJAY の堺、韓国発の石油製品＝GLORIOUS SUNSHINE・SUN QUEEN・GRAN COUVA・MIDNIGHT GLORY・LV ESTIA、オマーン・ソハール（海峡外側）発の石油製品＝HAFNIA TAGUS の五井）。米国産LNGの KOOL KELVIN、マレーシア産LNGの SERI CEMPAKA、米国産LPGの NADESHIKO GAS も日本へ向かっている"
     },
     {
       "id": "malacca",
@@ -116,12 +116,12 @@
       "mmsi": "354919000",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "LOOPターミナル（米国ルイジアナ）",
-      "departurePort": "USGC",
-      "destination": "シンガポール",
-      "destinationPort": "Singapore",
+      "departure": "アングラ・ドス・レイス錨地（ブラジル）9/30発",
+      "departurePort": "NonMideast",
+      "destination": "サントスSTS海域（ブラジル）",
+      "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
-      "speed_knots": 14.5,
+      "speed_knots": 11.2,
       "eta_days": 0,
       "cargo_t": 314000,
       "cargoType": "バラスト（空荷）",
@@ -132,7 +132,7 @@
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "日本郵船VLCC。IMO 9770696。313,989DWT。パナマ籍。2017年建造。3月29日AIS: インド沿岸をウォルビスベイ（ナミビア）向け航行中。3/24 Vadinar出港。喫水10.7m（バラスト）。日本向けではない。ETA 4/13【7/23更新】VesselFinder 2026-07-23（AIS 11日前）: 7/6 00:54 UTC LOOPターミナル（米国ルイジアナ）出港→シンガポール向け12.1kn・喫水19.2m（満載）・ETA 8/17。米国産原油をアジアへ運ぶ配船に転じたが仕向地はシンガポールで日本向けではない【8/25更新】VesselFinder 2026-08-25（AIS 7分前）: シンガポール第4錨地を 8/23 23:12 UTC 出港し、**AIS目的地「COGH」（喜望峰）・ETA 9/10 11:00**・13.4kn・喫水11.2mで東南アジア海域を西航中。米国湾岸〜喜望峰の長距離ルートへ戻る往復サイクルに入ったとみられるが、次の積地は未確認。日本向け航海ではないため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（AIS 7日前）の寄港履歴で航海の全体像が判明した: **イングルサイド（米国）6/25 発 → ジュロン島（シンガポール）8/19-22 で揚荷 → 空船で喜望峰（COGH）へ ETA 9/10**・喫水11.3m（バラスト相当）・13.0kn でマラッカ海峡を西航中。**米国湾岸の原油をシンガポールへ運ぶ往復サイクルであり、日本向けではない**ことが確定した。combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: ジュロン島（シンガポール）8/19-22 の揚荷後、**喜望峰を回って南大西洋（-30.452°／9.536°）に入り、サントス（ブラジル）向け ETA 9/21**・14.5kn・喫水11.2m（バラスト相当）。9/1 に記録した「COGH（喜望峰）向け ETA 9/10」は実現した。米国湾岸〜シンガポールの往復サイクルから大西洋側へ移っており、日本向けではないため combined=0.0 を維持する"
+      "note": "日本郵船VLCC。IMO 9770696。313,989DWT。パナマ籍。2017年建造。3月29日AIS: インド沿岸をウォルビスベイ（ナミビア）向け航行中。3/24 Vadinar出港。喫水10.7m（バラスト）。日本向けではない。ETA 4/13【7/23更新】VesselFinder 2026-07-23（AIS 11日前）: 7/6 00:54 UTC LOOPターミナル（米国ルイジアナ）出港→シンガポール向け12.1kn・喫水19.2m（満載）・ETA 8/17。米国産原油をアジアへ運ぶ配船に転じたが仕向地はシンガポールで日本向けではない【8/25更新】VesselFinder 2026-08-25（AIS 7分前）: シンガポール第4錨地を 8/23 23:12 UTC 出港し、**AIS目的地「COGH」（喜望峰）・ETA 9/10 11:00**・13.4kn・喫水11.2mで東南アジア海域を西航中。米国湾岸〜喜望峰の長距離ルートへ戻る往復サイクルに入ったとみられるが、次の積地は未確認。日本向け航海ではないため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（AIS 7日前）の寄港履歴で航海の全体像が判明した: **イングルサイド（米国）6/25 発 → ジュロン島（シンガポール）8/19-22 で揚荷 → 空船で喜望峰（COGH）へ ETA 9/10**・喫水11.3m（バラスト相当）・13.0kn でマラッカ海峡を西航中。**米国湾岸の原油をシンガポールへ運ぶ往復サイクルであり、日本向けではない**ことが確定した。combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: ジュロン島（シンガポール）8/19-22 の揚荷後、**喜望峰を回って南大西洋（-30.452°／9.536°）に入り、サントス（ブラジル）向け ETA 9/21**・14.5kn・喫水11.2m（バラスト相当）。9/1 に記録した「COGH（喜望峰）向け ETA 9/10」は実現した。米国湾岸〜シンガポールの往復サイクルから大西洋側へ移っており、日本向けではないため combined=0.0 を維持する【10/1更新】VesselFinder／MaritimeOptima 2026-10-01（地上局AIS約8時間前）: アングラ・ドス・レイス錨地（ブラジル）に 9/20〜9/30 停泊した後、AIS目的地「SANTOS STS AREA」へ11.2kn で南西に向かっている。喫水は10.7m（バラスト相当）のままで、ブラジルではまだ積み取っていない。当基盤AISの 9/23 の位置（-23.112／-44.421）もアングラ錨地での停泊と整合する。日本向けではないため combined=0.0 を維持する"
     },
     {
       "id": "vlcc-04",
@@ -161,26 +161,26 @@
       "id": "vlcc-05",
       "name": "ENEOS OCEAN",
       "imo": "9662875",
-      "mmsi": "477254200",
+      "mmsi": "432986000",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "青方（長崎）",
-      "departurePort": "Aokata",
-      "destination": "大分",
-      "destinationPort": "Oita",
-      "distanceToJapan_nm": 0,
-      "speed_knots": 0.0,
-      "eta_days": 0,
+      "departure": "LOOP（米国ルイジアナ）8/24発→喜望峰・ポートルイス（モーリシャス）経由",
+      "departurePort": "USGC-Cape",
+      "destination": "タンジュンペラパス（マレーシア・AIS目的地）※日本向けは未確定",
+      "destinationPort": "Malaysia Hub",
+      "distanceToJapan_nm": 12700,
+      "speed_knots": 12.7,
+      "eta_days": 8,
       "cargo_t": 300000,
-      "cargoType": "原油（積載中）",
-      "status": "入港済",
+      "cargoType": "原油（米国産・LOOP積み・喜望峰回り）",
+      "status": "航行中",
       "arrivalProbability": {
-        "insurance": 0.99,
-        "route": 0.99,
-        "military": 0.99,
-        "combined": 0.97
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
+        "combined": 0.0
       },
-      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。2014年建造。4/6 23:30大分入港確認。国家備蓄放出原油（経産省発表: 月内130万kL放出予定）を大分製油所へ揚荷。SPR放出第2弾として機能"
+      "note": "JX Ocean(ENEOSグループ)VLCC。IMO 9662875。312,181DWT。日本船籍。2014年建造。4/6 23:30大分入港確認。国家備蓄放出原油（経産省発表: 月内130万kL放出予定）を大分製油所へ揚荷。SPR放出第2弾として機能【10/1更新】**登録していたMMSI 477254200 は別船 FENG DA HAI（IMO 1133787・香港籍バルカー）のもので、当基盤AISが 9/30 にタンパ湾で受信した位置はこの別船だった**（受信した船名が FENG DA HAI で登録船名と一致しないことを当基盤のAIS記録でも確認）。正しいMMSI **432986000（コールサイン 7JQP・日本籍）** を VesselFinder・MaritimeOptima・MagicPort で裏取りし訂正した。MaritimeOptima の寄港履歴: ヒューストン 8/15-18 → **LOOP（米国ルイジアナ）8/19-24 で積み取り** → ポートルイス（モーリシャス）9/26。VesselFinder 2026-10-01（AIS 5日前）: 喫水19.1m（満載）・**AIS目的地タンジュンペラパス（マレーシア）ETA 10/9**。喜望峰回りの米国産原油で、過去12か月の寄港は水島・川崎・塩釜・大分など ENEOS 系製油所の港に集中しているが、**日本向けは未確定のため combined=0.0 とし、次回の最優先追跡対象とする**。distanceToJapan_nm 12,700 はLOOP→喜望峰→タンジュンペラパスの概算"
     },
     {
       "id": "lng-01",
@@ -255,24 +255,24 @@
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "サハリンII LNG船。IMO 9338955。147,000m3 Moss型。三菱重工長崎建造(2008)。キプロス籍。Sovkomflot/NYK合弁。1Cアイスクラス。4/3 AIS: 東アジア海域で錨泊中（数分前更新）。3/18洋口（中国）出港後、プリゴロドノエ（サハリン）向けバラスト回航中。喫水9.3m。日本向けではない【7/23更新】VesselFinder 2026-07-23（AIS 2時間前）: 7/23 07:25 UTC プリゴロドノエ（サハリンII）着・係留中・喫水9.3m。サハリンII積地でのローテーション継続。日本向けではない"
+      "note": "サハリンII LNG船。IMO 9338955。147,000m3 Moss型。三菱重工長崎建造(2008)。キプロス籍。Sovkomflot/NYK合弁。1Cアイスクラス。4/3 AIS: 東アジア海域で錨泊中（数分前更新）。3/18洋口（中国）出港後、プリゴロドノエ（サハリン）向けバラスト回航中。喫水9.3m。日本向けではない【7/23更新】VesselFinder 2026-07-23（AIS 2時間前）: 7/23 07:25 UTC プリゴロドノエ（サハリンII）着・係留中・喫水9.3m。サハリンII積地でのローテーション継続。日本向けではない【10/1更新】VesselFinder 2026-10-01（AIS 1分前）: プリゴロドノエ（サハリン2）沖のアニワ湾で錨泊中・喫水9.3m（バラスト）。MaritimeOptima の寄港履歴は保寧（韓国）9/4 → ナホトカ 9/15-17 → プリゴロドノエ 9/19 着で、9/4 の揚げ地は日本ではなく韓国だった。9/19 から12日間バラストのまま待機しており、積み込みも次の仕向地も確認できないため combined=0.0 を維持する"
     },
     {
       "id": "lng-04",
       "name": "DIAMOND GAS ORCHID",
       "imo": "9779226",
-      "mmsi": "563099000",
+      "mmsi": "563189600",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "カルハット（オマーンLNG・ホルムズ海峡外側）",
+      "departure": "シンガポール錨地（9/24発）※積地: カルハット（オマーンLNG・ホルムズ海峡外側）9/14-15",
       "departurePort": "Qalhat",
-      "destination": "シンガポール（日本向けは未確定）",
-      "destinationPort": "Singapore",
+      "destination": "バタンガス（フィリピン）",
+      "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
-      "speed_knots": 16.1,
+      "speed_knots": 13.6,
       "eta_days": 0,
       "cargo_t": 177000,
-      "cargoType": "LNG（オマーン産・非ホルムズ積地／仕向地未確定）",
+      "cargoType": "LNG（オマーン産・非ホルムズ積地／フィリピン向け）",
       "status": "航行中",
       "arrivalProbability": {
         "insurance": 0.0,
@@ -280,7 +280,7 @@
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "三菱商事/NYK系LNG船。IMO 9779226。シンガポール籍。2018年建造。LOA 294m。4/3 AIS: 東アジア海域（16時間前更新）→米国フリーポート向け17.3knで加速回航中。喫水9.6m（バラスト）。ETA 5/12。四日市荷揚げ後（3/31出港）のミッション完了便【7/23更新】VesselFinder 2026-07-23（AIS 5日前）: 7/18 04:10 UTC 木更津出港→豪州向け14.2kn（AIS Destination「AU ASB」＝アシュバートン/オンスロー沖と解釈）・喫水9.6m（バラスト）・ETA 7/29。日本での荷揚げを終えて豪州積地へ復航中＝非ホルムズLNGの往復サイクルが定常化【8/25更新】VesselFinder 2026-08-25（AIS 8分前）: シンガポール第3錨地を 8/24 22:32 UTC 出港し、**AIS目的地「Qalhat, Oman」（オマーンLNG基地）・ETA 9/14 02:00**・15.3kn・喫水9.6m（バラスト）で西航中。**カルハットはホルムズ海峡の外側・オマーン湾に面する積出基地であり、日本のLNG船が非ホルムズ積地へ空船で向かっている段階を示す**。積み取り後の仕向地はまだ確定していないため combined=0.0 のままとし、destination のみ実測に合わせて更新した【9/1更新】VesselFinder 2026-09-01（AIS 2日前）: インド沿岸を14.5kn で西航中・**カルハット（オマーンLNG・ホルムズ海峡外側）向け ETA 9/14**・喫水9.6m（バラスト）。8/25 の判定が維持された。積み取り後の仕向地はまだ確定していないため combined=0.0 のままとする【9/20更新】**9/1 に「空船でオマーンへ向かっている」と記録した積み取りが実現した。** VesselFinder 2026-09-20（AIS 35時間前）: **カルハット（オマーンLNG）を 9/15 05:54 UTC 出港**し、インド沿岸を16.1kn で東航中・**喫水は 9.6m（バラスト）から 11.1m（満載相当）へ上がっている**。AIS目的地はシンガポール ETA 9/24。**カルハットはホルムズ海峡の外側・オマーン湾に面する積出基地であり、日本のLNG船が非ホルムズ積地で実際に積み込んだ最初の観測例に当たる**。ただし仕向地がシンガポール表示のため日本向けは未確定で、combined=0.0 を維持する。**次回の棚卸しで最優先の追跡対象とする**"
+      "note": "三菱商事/NYK系LNG船。IMO 9779226。シンガポール籍。2018年建造。LOA 294m。4/3 AIS: 東アジア海域（16時間前更新）→米国フリーポート向け17.3knで加速回航中。喫水9.6m（バラスト）。ETA 5/12。四日市荷揚げ後（3/31出港）のミッション完了便【7/23更新】VesselFinder 2026-07-23（AIS 5日前）: 7/18 04:10 UTC 木更津出港→豪州向け14.2kn（AIS Destination「AU ASB」＝アシュバートン/オンスロー沖と解釈）・喫水9.6m（バラスト）・ETA 7/29。日本での荷揚げを終えて豪州積地へ復航中＝非ホルムズLNGの往復サイクルが定常化【8/25更新】VesselFinder 2026-08-25（AIS 8分前）: シンガポール第3錨地を 8/24 22:32 UTC 出港し、**AIS目的地「Qalhat, Oman」（オマーンLNG基地）・ETA 9/14 02:00**・15.3kn・喫水9.6m（バラスト）で西航中。**カルハットはホルムズ海峡の外側・オマーン湾に面する積出基地であり、日本のLNG船が非ホルムズ積地へ空船で向かっている段階を示す**。積み取り後の仕向地はまだ確定していないため combined=0.0 のままとし、destination のみ実測に合わせて更新した【9/1更新】VesselFinder 2026-09-01（AIS 2日前）: インド沿岸を14.5kn で西航中・**カルハット（オマーンLNG・ホルムズ海峡外側）向け ETA 9/14**・喫水9.6m（バラスト）。8/25 の判定が維持された。積み取り後の仕向地はまだ確定していないため combined=0.0 のままとする【9/20更新】**9/1 に「空船でオマーンへ向かっている」と記録した積み取りが実現した。** VesselFinder 2026-09-20（AIS 35時間前）: **カルハット（オマーンLNG）を 9/15 05:54 UTC 出港**し、インド沿岸を16.1kn で東航中・**喫水は 9.6m（バラスト）から 11.1m（満載相当）へ上がっている**。AIS目的地はシンガポール ETA 9/24。**カルハットはホルムズ海峡の外側・オマーン湾に面する積出基地であり、日本のLNG船が非ホルムズ積地で実際に積み込んだ最初の観測例に当たる**。ただし仕向地がシンガポール表示のため日本向けは未確定で、combined=0.0 を維持する。**次回の棚卸しで最優先の追跡対象とする**【10/1更新】VesselFinder 2026-10-01（地上局AIS 4日前）: カルハット（オマーンLNG）を 9/15 05:52 UTC に出港した後、シンガポール錨地に 9/24 07:50〜22:14 UTC 寄港し、**AIS目的地「PH BTG」（バタンガス・フィリピン）ETA 10/3** で南シナ海を13.6kn・喫水11.1m（満載相当）で航行していた。シンガポールの前後で喫水が変わっておらず揚荷はしていない。**9/20 に最優先で追跡するとしたオマーン産LNGは日本ではなくフィリピンへ向かっている**ため combined=0.0 を維持する。**登録していたMMSI 563099000 は別船（VLCC EAGLE VERONA・IMO 9597264）のもの**で、9/1 に MyShipTracking のURLが EAGLE VERONA を返した件もURLの誤りではなくMMSIの誤りが原因だった。VesselFinder・MaritimeOptima・MagicPort が一致する **563189600（コールサイン 9V7872）** へ改めた"
     },
     {
       "id": "lng-05",
@@ -305,7 +305,7 @@
         "military": 1.0,
         "combined": 0.0
       },
-      "note": "商船三井(30%)/東京LNGタンカー(東京ガス100%子会社、70%)共同保有LNG船。IMO 9355264。155,000m3(MOSS型)。2008年建造。日本船籍。4/3 AIS: 東アジア海域（3日前更新）をシンガポール向け10.6knで航行中（鈍化）。3/27広島出港。喫水9.8m（バラスト）。ETA 4/5 22:00。日本向けではない【7/23更新】VesselFinder 2026-07-23（AIS 10時間前）: 7/20 00:38 UTC 温山（韓国）出港→ダンピア（豪州）向け10.4kn・喫水9.9m（バラスト）・ETA 8/22。北西豪州積地への復航中で日本向けではない【8/25更新】**日本向けに転換したため到着計算へ復帰させた**。VesselFinder 2026-08-25（AIS 5時間前）: **ウィズネルベイ（豪州WA・North West Shelf LNG）を 8/24 11:11 UTC 出港し名古屋向け11.2kn・ETA 9/10 20:00**・喫水11.5m（満載相当）。8/21・8/24 の棚卸しでは「温山（韓国）発ダンピア向け」＝日本向けではないとして combined=0.0 にしていたが、豪州で積み取りを終えて日本向けの復航に入った。**除外扱いの便も毎回洗い直さないと日本向けへの転換を取りこぼす**ことを示す事例【9/1更新】MyShipTracking 2026-09-01（AIS 5日前）: **ダンピア（豪州）8/23-24 の積み取りを終え、8/27 06:38 UTC 時点でサブ海（-9.453°／123.325°）を針路61.5°・9.8kn で北上中**・喫水11.5m（満載相当）・名古屋向け ETA 9/10 20:00。8/25 に「日本向けへ転換」と判定した内容が実測で維持された。豪州NWS発の非中東LNGとして日本向け航海が継続している【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: 9/12 09:16 UTC に遠州灘（33.417°N／136.997°E）を針路196.9°・9.2kn で南下しており、**喫水が満載相当の11.5mからバラスト相当の9.8mへ下がっていた**。AIS目的地は**ダンピア（豪州）ETA 9/26** で、名古屋での揚荷を終えて積地へ戻る復航に入ったと判断できる（寄港履歴に名古屋は現れないが、LNG基地の寄港を公開DBが落とす既知の傾向と喫水変化が根拠）。**8/25 に「日本向けへ転換」と判定して combined=1.0 へ戻した読みは、揚荷完了まで実測で追跡できた**。日本向け航海は終了したため combined=0.0 とする"
+      "note": "商船三井(30%)/東京LNGタンカー(東京ガス100%子会社、70%)共同保有LNG船。IMO 9355264。155,000m3(MOSS型)。2008年建造。日本船籍。4/3 AIS: 東アジア海域（3日前更新）をシンガポール向け10.6knで航行中（鈍化）。3/27広島出港。喫水9.8m（バラスト）。ETA 4/5 22:00。日本向けではない【7/23更新】VesselFinder 2026-07-23（AIS 10時間前）: 7/20 00:38 UTC 温山（韓国）出港→ダンピア（豪州）向け10.4kn・喫水9.9m（バラスト）・ETA 8/22。北西豪州積地への復航中で日本向けではない【8/25更新】**日本向けに転換したため到着計算へ復帰させた**。VesselFinder 2026-08-25（AIS 5時間前）: **ウィズネルベイ（豪州WA・North West Shelf LNG）を 8/24 11:11 UTC 出港し名古屋向け11.2kn・ETA 9/10 20:00**・喫水11.5m（満載相当）。8/21・8/24 の棚卸しでは「温山（韓国）発ダンピア向け」＝日本向けではないとして combined=0.0 にしていたが、豪州で積み取りを終えて日本向けの復航に入った。**除外扱いの便も毎回洗い直さないと日本向けへの転換を取りこぼす**ことを示す事例【9/1更新】MyShipTracking 2026-09-01（AIS 5日前）: **ダンピア（豪州）8/23-24 の積み取りを終え、8/27 06:38 UTC 時点でサブ海（-9.453°／123.325°）を針路61.5°・9.8kn で北上中**・喫水11.5m（満載相当）・名古屋向け ETA 9/10 20:00。8/25 に「日本向けへ転換」と判定した内容が実測で維持された。豪州NWS発の非中東LNGとして日本向け航海が継続している【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: 9/12 09:16 UTC に遠州灘（33.417°N／136.997°E）を針路196.9°・9.2kn で南下しており、**喫水が満載相当の11.5mからバラスト相当の9.8mへ下がっていた**。AIS目的地は**ダンピア（豪州）ETA 9/26** で、名古屋での揚荷を終えて積地へ戻る復航に入ったと判断できる（寄港履歴に名古屋は現れないが、LNG基地の寄港を公開DBが落とす既知の傾向と喫水変化が根拠）。**8/25 に「日本向けへ転換」と判定して combined=1.0 へ戻した読みは、揚荷完了まで実測で追跡できた**。日本向け航海は終了したため combined=0.0 とする【10/1更新】MaritimeOptima 2026-10-01 の寄港履歴に **名古屋 9/11 01:30〜23:54 UTC** が現れ、9/20 に喫水変化から判定した名古屋での揚荷が公開DBでも確認できた。その後ダンピア（ウィズネルベイ）で 9/26-27 に再び積み取ったが、VesselFinder（AIS 23時間前）の目的地は **深圳（中国）ETA 10/11**・喫水11.5m で、今回の豪州産LNGは日本向けではない。**同じダンピア積みでも LNG VENUS は姫路、本船は深圳と、豪州NWS産の配船先が日中に分かれている**。combined=0.0 を維持する"
     },
     {
       "id": "vlcc-alt-01",
@@ -483,8 +483,8 @@
     {
       "id": "lng-11",
       "name": "PACIFIC NOTUS",
-      "imo": "9309688",
-      "mmsi": "352965000",
+      "imo": "9247962",
+      "mmsi": "311573000",
       "aisTracked": false,
       "type": "LNG",
       "departure": "ビントゥル（マレーシア）",
@@ -498,12 +498,12 @@
       "cargoType": "LNG（マレーシアMLNG産）",
       "status": "入港済",
       "arrivalProbability": {
-        "insurance": 0.95,
-        "route": 0.97,
-        "military": 0.95,
-        "combined": 0.876
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
+        "combined": 0.0
       },
-      "note": "日本郵船(NYK)保有LNG船。MLNG（マレーシアLNG）専属配船。4/16袖ケ浦（東電袖ケ浦LNG基地）入港確認（ETA達成・AIS「Japan/Korea Range」確認済み）。4/1ビントゥル出港→マラッカ海峡→袖ケ浦着。マレーシアは日本のLNG輸入先2位（約15%シェア）。ホルムズ封鎖の影響なし"
+      "note": "日本郵船(NYK)保有LNG船。MLNG（マレーシアLNG）専属配船。4/16袖ケ浦（東電袖ケ浦LNG基地）入港確認（ETA達成・AIS「Japan/Korea Range」確認済み）。4/1ビントゥル出港→マラッカ海峡→袖ケ浦着。マレーシアは日本のLNG輸入先2位（約15%シェア）。ホルムズ封鎖の影響なし【10/1更新】**登録していたIMO 9309688（チェックディジット不正・VesselFinder 404）とMMSI 352965000 はいずれも誤り**で、352965000 は別船 YAKOOT（IMO 9143790・パナマ籍一般貨物船）のもの。当基盤AISが 9/26 にバレンシアで受信した位置はこの別船で、受信した船名も YAKOOT だった。VesselFinder で **IMO 9247962／MMSI 311573000（バハマ籍・コールサイン C6TC2）** の対応を確認し訂正した。同DB（AIS 14日前）では麗水（韓国）を 8/30 に出て **由良（和歌山）に 9/15 着**・喫水6.0m で、通常のバラスト喫水（9m台）より浅く、修繕入渠の可能性が高い（推論）。日本向けのLNG配送ではないため combined=0.0 とする"
     },
     {
       "id": "lng-12",
@@ -562,23 +562,23 @@
       "mmsi": "357186000",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "ムンドラ（インド）→ペルシャ湾内停泊→ホルムズ通過",
-      "departurePort": "Mundra",
-      "destination": "カラハット（オマーン）",
-      "destinationPort": "Qalhat",
+      "departure": "バーヴナガル錨地（インド）6/2-9",
+      "departurePort": "NonMideast",
+      "destination": "アラン解撤ヤード（インド・グジャラート州）",
+      "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 135000,
-      "cargoType": "バラスト（空荷）",
-      "status": "錨泊中",
+      "cargoType": "なし（2026年6月に解撤売船）",
+      "status": "入港済",
       "arrivalProbability": {
         "insurance": 0.0,
         "route": 0.0,
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "商船三井(MOL)/オマーンAyad社(Oman Ship Management)共同保有LNG船。IMO 9210816。MMSI 357186000。パナマ籍。2001年建造（25年）。298m×46m。111,203GT。【歴史的事象】4/2 2026: 紛争開始（2/28）以来初めてホルムズ海峡を通過した日本関連船舶・初のLNG船。AISを一時消灯して通過。4/6 AIS（32分前更新）: オマーン湾（Mina al Fahl Anchorage）に錨泊継続中（4/5 07:27 UTC着）。喫水9.5m（バラスト）。カラハットLNGターミナルで積荷後の行き先は未確認。日本向け不明。ペルシャ湾内約42隻滞留のうち脱出第1号（続く商船三井LPG2隻GREEN SANVI 4/4・GREEN ASHA 4/6もホルムズ通過・インド向け）【7/23更新・AIS途絶】VesselFinder 2026-07-23: 最終AIS受信は55日前（インド沿岸・2.7kn・喫水6.5m）、最終寄港はミナアルファハル錨地（オマーン）4/25 07:19 UTC出港。以後2か月近くAIS更新がなく現況は未確認。ホルムズ通過第1号（4/2）の記録として保持するが、現在位置は追跡不能【8/25更新】VesselFinder 2026-08-25（**AIS 88日前**）: ミナ・アル・ファハル錨地（オマーン）を 4/25 07:19 UTC 出港した記録を最後にAISが途切れたままで、最終受信時は2.7kn・喫水6.5m、仕向地表示なし。3か月近く公開AISに現れておらず位置・状態とも不明であるため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01: 公開AISの最終受信は **4/2 04:23 UTC のペルシャ湾内（26.018°N／55.725°E・針路18°・16.3kn・喫水9.7m）**で、VesselFinder が示す「ミナ・アル・ファハル（オマーン）4/25 出港」とも食い違ったまま5か月が経過した。**2つの公開DBで最終受信の時刻も場所も一致しない状態が続いており、本船の現況は判定できない**。combined=0.0 を維持する【9/20更新】VesselFinder 2026-09-20: 公開AISの最終受信は**114日前**で、ミナ・アル・ファハル錨地（オマーン）4/25 07:19 UTC 出港が最後の寄港記録という状態が 9/1 から変わっていない。**5か月近く公開AISに現れておらず現況を判定できない**。combined=0.0 を維持する"
+      "note": "商船三井(MOL)/オマーンAyad社(Oman Ship Management)共同保有LNG船。IMO 9210816。MMSI 357186000。パナマ籍。2001年建造（25年）。298m×46m。111,203GT。【歴史的事象】4/2 2026: 紛争開始（2/28）以来初めてホルムズ海峡を通過した日本関連船舶・初のLNG船。AISを一時消灯して通過。4/6 AIS（32分前更新）: オマーン湾（Mina al Fahl Anchorage）に錨泊継続中（4/5 07:27 UTC着）。喫水9.5m（バラスト）。カラハットLNGターミナルで積荷後の行き先は未確認。日本向け不明。ペルシャ湾内約42隻滞留のうち脱出第1号（続く商船三井LPG2隻GREEN SANVI 4/4・GREEN ASHA 4/6もホルムズ通過・インド向け）【7/23更新・AIS途絶】VesselFinder 2026-07-23: 最終AIS受信は55日前（インド沿岸・2.7kn・喫水6.5m）、最終寄港はミナアルファハル錨地（オマーン）4/25 07:19 UTC出港。以後2か月近くAIS更新がなく現況は未確認。ホルムズ通過第1号（4/2）の記録として保持するが、現在位置は追跡不能【8/25更新】VesselFinder 2026-08-25（**AIS 88日前**）: ミナ・アル・ファハル錨地（オマーン）を 4/25 07:19 UTC 出港した記録を最後にAISが途切れたままで、最終受信時は2.7kn・喫水6.5m、仕向地表示なし。3か月近く公開AISに現れておらず位置・状態とも不明であるため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01: 公開AISの最終受信は **4/2 04:23 UTC のペルシャ湾内（26.018°N／55.725°E・針路18°・16.3kn・喫水9.7m）**で、VesselFinder が示す「ミナ・アル・ファハル（オマーン）4/25 出港」とも食い違ったまま5か月が経過した。**2つの公開DBで最終受信の時刻も場所も一致しない状態が続いており、本船の現況は判定できない**。combined=0.0 を維持する【9/20更新】VesselFinder 2026-09-20: 公開AISの最終受信は**114日前**で、ミナ・アル・ファハル錨地（オマーン）4/25 07:19 UTC 出港が最後の寄港記録という状態が 9/1 から変わっていない。**5か月近く公開AISに現れておらず現況を判定できない**。combined=0.0 を維持する【10/1更新】**本船は 2026年6月にインド・アランの解撤ヤードへ売却された**（The Week 6/11・売却額2,300万ドル・Asyad と商船三井の共同保有）。MaritimeOptima の寄港記録もバーヴナガル 6/2〜6/9 の後にアランの解撤区域で止まっており、公開AISの最終受信は 5/29（VesselFinder・125日前）。**7月以降「現況不明」としてきた状態は解撤によるもの**と判明した。4/2 にホルムズ海峡を通過した最初の日本関係LNG船という記録として保持し、航海を終えた扱い（status=入港済・combined=0.0）とする"
     },
     {
       "id": "lng-08",
@@ -612,15 +612,15 @@
       "mmsi": "311133000",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "ラスラファン（カタール）→シンガポール",
+      "departure": "ラスラファン（カタール）9/13錨地発・9月にホルムズ海峡通過",
       "departurePort": "Ras Laffan",
-      "destination": "ペルシャ湾内（仕向地未定・FOR ORDERS）",
+      "destination": "唐山（中国河北省・AIS「CN TGS」）",
       "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
-      "speed_knots": 4.5,
+      "speed_knots": 10.9,
       "eta_days": 0,
       "cargo_t": 90617,
-      "cargoType": "LNG（カタール産・揚荷済みとみられる）",
+      "cargoType": "LNG（カタール産・中国向け）",
       "status": "航行中",
       "arrivalProbability": {
         "insurance": 0.0,
@@ -628,24 +628,24 @@
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "Teekay Shipping管理LNG船。IMO 9325702。MMSI 311133000。バハマ籍。2007年建造（Daewoo Shipbuilding）。LOA 288m。90,617DWT。【重大4/7】2/28紛争開始後初のカタールLNG輸出試み。4/6 ホルムズ海峡に向けて進行したが、IRGCが停止命令→引き返し。次の寄港地をパキスタンに変更（AIS）。日本向けでない。同時に引き返したRASHEEDA（IMO 9443413）と共に、ホルムズ依然封鎖継続の証左。カタールは世界LNG供給の約20%を占める。Bloomberg/The National報道(2026-04-06)【7/23更新・ペルシャ湾脱出を確認】VesselFinder 2026-07-23（AIS 9日前）: 7/8 17:23 UTC シンガポール錨地出港→7/14 09:49 UTC ゴール錨地（スリランカ）着・喫水9.2m（バラスト）。4/6のIRGC停止命令による引き返しから、6月のMoU下での通航再開局面でホルムズ海峡を脱出したとみられる（通過日時の直接確認は取れていない＝推定）。現在はインド洋〜東南アジアで運用中。日本向けではない【8/25更新】VesselFinder 2026-08-25（**AIS 28日前**）: ゴール錨地（スリランカ）を 7/27 16:35 UTC 出港し、最終受信時はインド沿岸を「FOR ORDERS」（仕向地未定）向け15.0knで航行中だった。**喫水9.0mはQ-Flex型のバラスト相当であり、4月にホルムズ海峡で引き返したカタール産LNGは日本以外の仕向地で揚げられたとみられる**（喫水からの推定で、揚地は特定できていない）。これに伴い cargoType の「積荷あり」を改めた。1か月近くAISが途切れており現在位置は不明【9/1更新】MyShipTracking 2026-09-01: 公開AISの位置は 7/28 07:23 UTC のラッカディブ海（7.383°N／76.600°E・15.0kn・**喫水9.2m**）が最後だが、同サイトは **8/25 14:12 UTC にアラビア海（23.567°N／65.833°E）で移動イベント**を記録している。**ラスラファン（カタール）を 6/2 に出港してから7,768海里を走っており、4月にホルムズ海峡で引き返した積荷は日本以外で揚げられたとする 8/25 の判断（喫水がバラスト相当）が維持された**。日本向けの動きはなく combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 6日前）: **ペルシャ湾内（25.800°N／51.986°E・ラスラファン近傍）へ戻り、4.5kn・喫水9.0m（バラスト相当）で「FOR ORDERS」（仕向地未定）のまま漂っている**。8/25・9/1 に喫水から判定した「引き返したカタール産LNGは日本以外で揚げられた」という読みは維持される。積地の目前まで戻りながら次の仕向地が決まっていない状態で、combined=0.0 を維持する"
+      "note": "Teekay Shipping管理LNG船。IMO 9325702。MMSI 311133000。バハマ籍。2007年建造（Daewoo Shipbuilding）。LOA 288m。90,617DWT。【重大4/7】2/28紛争開始後初のカタールLNG輸出試み。4/6 ホルムズ海峡に向けて進行したが、IRGCが停止命令→引き返し。次の寄港地をパキスタンに変更（AIS）。日本向けでない。同時に引き返したRASHEEDA（IMO 9443413）と共に、ホルムズ依然封鎖継続の証左。カタールは世界LNG供給の約20%を占める。Bloomberg/The National報道(2026-04-06)【7/23更新・ペルシャ湾脱出を確認】VesselFinder 2026-07-23（AIS 9日前）: 7/8 17:23 UTC シンガポール錨地出港→7/14 09:49 UTC ゴール錨地（スリランカ）着・喫水9.2m（バラスト）。4/6のIRGC停止命令による引き返しから、6月のMoU下での通航再開局面でホルムズ海峡を脱出したとみられる（通過日時の直接確認は取れていない＝推定）。現在はインド洋〜東南アジアで運用中。日本向けではない【8/25更新】VesselFinder 2026-08-25（**AIS 28日前**）: ゴール錨地（スリランカ）を 7/27 16:35 UTC 出港し、最終受信時はインド沿岸を「FOR ORDERS」（仕向地未定）向け15.0knで航行中だった。**喫水9.0mはQ-Flex型のバラスト相当であり、4月にホルムズ海峡で引き返したカタール産LNGは日本以外の仕向地で揚げられたとみられる**（喫水からの推定で、揚地は特定できていない）。これに伴い cargoType の「積荷あり」を改めた。1か月近くAISが途切れており現在位置は不明【9/1更新】MyShipTracking 2026-09-01: 公開AISの位置は 7/28 07:23 UTC のラッカディブ海（7.383°N／76.600°E・15.0kn・**喫水9.2m**）が最後だが、同サイトは **8/25 14:12 UTC にアラビア海（23.567°N／65.833°E）で移動イベント**を記録している。**ラスラファン（カタール）を 6/2 に出港してから7,768海里を走っており、4月にホルムズ海峡で引き返した積荷は日本以外で揚げられたとする 8/25 の判断（喫水がバラスト相当）が維持された**。日本向けの動きはなく combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 6日前）: **ペルシャ湾内（25.800°N／51.986°E・ラスラファン近傍）へ戻り、4.5kn・喫水9.0m（バラスト相当）で「FOR ORDERS」（仕向地未定）のまま漂っている**。8/25・9/1 に喫水から判定した「引き返したカタール産LNGは日本以外で揚げられた」という読みは維持される。積地の目前まで戻りながら次の仕向地が決まっていない状態で、combined=0.0 を維持する【10/1更新】VesselFinder 2026-10-01（AIS約20分前）: ラスラファン錨地を 9/13 21:00 UTC に出港し、**喫水は 9.0m から 11.5m（満載相当）に上がっている**。AIS目的地「CN TGS」（唐山・中国）ETA 10/5 で、東シナ海南部を10.9kn で北上中。Euronews 9/29（Kpler／LSEG の船舶追跡データ）も本船が中国向け貨物を載せてホルムズ海峡を出たと報じている（通過日は未確認）。**4月にIRGCの停止命令で引き返した船が、カタール産LNGを積んで海峡を抜けた事例**になる。日本向けではないため combined=0.0 を維持する"
     },
     {
       "id": "lng-cat-02",
       "name": "RASHEEDA",
       "imo": "9443413",
-      "mmsi": "538003362",
+      "mmsi": "461001013",
       "aisTracked": true,
       "type": "LNG",
       "departure": "ラスラファン（カタール）→シンガポール",
       "departurePort": "Ras Laffan",
-      "destination": "シンガポール沖（OPL）",
+      "destination": "シンガポール東方沖（EOPL）錨地",
       "destinationPort": "Singapore",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 95000,
-      "cargoType": "LNG（カタール産・揚荷済みとみられる）",
+      "cargoType": "バラスト（空荷・曹妃甸で揚荷済み）",
       "status": "錨泊中",
       "arrivalProbability": {
         "insurance": 0.0,
@@ -653,7 +653,7 @@
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "マーシャル諸島籍LNG船。IMO 9443413。【重大4/7】AL DAAYENと同時にホルムズ通過を試みるもIRGCに停止命令→引き返し。2/28紛争開始後、約42日間ラスラファン港で滞留後の脱出試みが失敗。イランは「仮停戦でも海峡は再開しない」と表明。日本向けでない。カタールLNG輸出施設はイランの攻撃で輸出能力の約17%が5年間オフライン（Bloomberg）。Bloomberg/World Oil報道(2026-04-06)【7/23更新・ペルシャ湾脱出を確認】VesselFinder 2026-07-23（AIS 6分前）: 7/13 07:10 UTC シンガポール東方沖OPL錨地着・錨泊中・喫水9.6m（バラスト）・オマーン籍表示。AL DAAYEN と同じく6月のMoU下でホルムズ海峡を脱出したとみられる（通過日時の直接確認は取れていない＝推定）。日本向けではない【8/25更新】VesselFinder 2026-08-25（AIS 8分前）: シンガポール沖EOPL錨地を 8/17 12:16 UTC 出港後、東南アジア海域で錨泊中・AIS目的地「SG E OPL」・喫水9.6m。**Q-Max型の満載喫水（約12m）に対し9.6mはバラスト相当で、AL DAAYEN と同じく引き返したカタール産LNGは日本以外で揚げられたとみられる**（喫水からの推定）。同ページの MMSI 表記は 461001013 で、本データの登録値 538006284 と食い違う。旗国と整合するMMSIを特定できていないため登録値は変更せず留保する【9/1更新】**MMSI を 538006284 から 538003362 へ修正した。8/25 に「公開DB間でMMSIが割れている」として留保した件の決着で、登録していた 538006284 は別船（SILVER CAITRIONA・IMO 9692313）のものだった**（MyShipTracking で 538006284 を引くと同船が返る）。MarineTraffic／MaritimeOptima／MagicPort／vesseltracker の4ソースが 538003362（コールサイン V7QH2・マーシャル諸島籍・Nakilat所有／Qatargas運航）で一致する。**誤ったMMSIはAIS購読を空振りさせるため、購読対象50隻の枠を無駄に消費していた可能性がある**。日本向けの動きはなく combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20: シンガポール海峡（1.178°N／103.693°E）で錨泊中と表示されるが、**同サイトの最終AIS受信は 6/19 05:47 UTC で3か月前**であり、その時点の喫水は 12.1m（Q-Max の満載相当）だった。**8/25 に VesselFinder で確認した喫水 9.6m（バラスト相当）と食い違うが、受信時刻は VesselFinder 側が新しいため「6/19 満載 → 8/25 までにどこかで揚荷」という順序で矛盾しない**。両ソースの最終受信時刻が大きく異なる点は留保として残す。combined=0.0 を維持する"
+      "note": "マーシャル諸島籍LNG船。IMO 9443413。【重大4/7】AL DAAYENと同時にホルムズ通過を試みるもIRGCに停止命令→引き返し。2/28紛争開始後、約42日間ラスラファン港で滞留後の脱出試みが失敗。イランは「仮停戦でも海峡は再開しない」と表明。日本向けでない。カタールLNG輸出施設はイランの攻撃で輸出能力の約17%が5年間オフライン（Bloomberg）。Bloomberg/World Oil報道(2026-04-06)【7/23更新・ペルシャ湾脱出を確認】VesselFinder 2026-07-23（AIS 6分前）: 7/13 07:10 UTC シンガポール東方沖OPL錨地着・錨泊中・喫水9.6m（バラスト）・オマーン籍表示。AL DAAYEN と同じく6月のMoU下でホルムズ海峡を脱出したとみられる（通過日時の直接確認は取れていない＝推定）。日本向けではない【8/25更新】VesselFinder 2026-08-25（AIS 8分前）: シンガポール沖EOPL錨地を 8/17 12:16 UTC 出港後、東南アジア海域で錨泊中・AIS目的地「SG E OPL」・喫水9.6m。**Q-Max型の満載喫水（約12m）に対し9.6mはバラスト相当で、AL DAAYEN と同じく引き返したカタール産LNGは日本以外で揚げられたとみられる**（喫水からの推定）。同ページの MMSI 表記は 461001013 で、本データの登録値 538006284 と食い違う。旗国と整合するMMSIを特定できていないため登録値は変更せず留保する【9/1更新】**MMSI を 538006284 から 538003362 へ修正した。8/25 に「公開DB間でMMSIが割れている」として留保した件の決着で、登録していた 538006284 は別船（SILVER CAITRIONA・IMO 9692313）のものだった**（MyShipTracking で 538006284 を引くと同船が返る）。MarineTraffic／MaritimeOptima／MagicPort／vesseltracker の4ソースが 538003362（コールサイン V7QH2・マーシャル諸島籍・Nakilat所有／Qatargas運航）で一致する。**誤ったMMSIはAIS購読を空振りさせるため、購読対象50隻の枠を無駄に消費していた可能性がある**。日本向けの動きはなく combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20: シンガポール海峡（1.178°N／103.693°E）で錨泊中と表示されるが、**同サイトの最終AIS受信は 6/19 05:47 UTC で3か月前**であり、その時点の喫水は 12.1m（Q-Max の満載相当）だった。**8/25 に VesselFinder で確認した喫水 9.6m（バラスト相当）と食い違うが、受信時刻は VesselFinder 側が新しいため「6/19 満載 → 8/25 までにどこかで揚荷」という順序で矛盾しない**。両ソースの最終受信時刻が大きく異なる点は留保として残す。combined=0.0 を維持する【10/1更新】VesselFinder 2026-10-01（AIS 4分前）: シンガポール東方OPL錨地で喫水9.5m（バラスト相当）のまま錨泊を続けている。MaritimeOptima の寄港履歴に **曹妃甸（中国）7/1 03:30〜7/3 01:32 UTC** があり、6/19 の喫水12.1m（満載）から 9.5m へ下がっていることと合わせ、**4月に引き返したカタール産LNGの揚げ地は中国**と判断できる。**現在のAISはオマーン籍の MMSI 461001013（コールサイン A4HI3）で発信されており、9/1 に訂正した 538003362 では受信できない**（旧マーシャル諸島籍時代の番号とみられる）。VesselFinder で IMO 9443413 と 461001013 の対応を確認し改めた。combined=0.0 を維持する"
     },
     {
       "id": "chem-us-01",
@@ -709,23 +709,23 @@
       "mmsi": "477539200",
       "aisTracked": true,
       "type": "Suezmax",
-      "departure": "ロッテルダム（オランダ）",
+      "departure": "フォルカドス（ナイジェリア）9/23発",
       "departurePort": "NonMideast",
-      "destination": "ロメ（トーゴ）",
-      "destinationPort": "Freeport",
+      "destination": "ロッテルダム（オランダ）",
+      "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
-      "speed_knots": 14.0,
+      "speed_knots": 12.2,
       "eta_days": 0,
       "cargo_t": 135000,
-      "cargoType": "原油（米国産WTI系・パナマ運河経由）",
+      "cargoType": "原油（ナイジェリア産・欧州向け）",
       "status": "航行中",
       "arrivalProbability": {
-        "insurance": 1.0,
-        "route": 1.0,
-        "military": 1.0,
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
         "combined": 0.0
       },
-      "note": "香港籍Suezmaxタンカー。IMO 9832248。MMSI 477539200。2019年建造。150,000DWT。275m。チャーター料1,400万ドル（封鎖前の約2倍）。4/9時点: 米国ガルフ→パナマ運河→太平洋経由で日本向け航行中（Bloomberg 4/8-9報道）。Front Line（フロントライン）傘下。【5/1更新・要警戒】VesselFinder 2026-05-01 AIS確認: Nederland 4/6出港・Cape Town向け5/5 ETA表示で日本航路に乗っていない。Bloomberg報道時点と乖離があり、本IMO番号でのFRONT SINGAPORE紐付けが誤同定の可能性高い。同名別船または途中で運用変更の可能性を含めて要再調査。combined確度を0.347に低減【6/6更新】VesselFinder 2026-06-06: 5/31 Singapore発・12.0knで南ア Cape Town向け西航中（日本と逆方向）。IMO 9832248でのFRONT SINGAPORE紐付けは別便取り違えの可能性が極めて高い。日本向け便としては不成立の公算大・カウント参考外。【7/23更新・日本向けでないことが確定】VesselFinder 2026-07-23（AIS 2時間前）: 7/20 01:23 UTC ロッテルダム出港→フリーポート（バハマ）向け13.3kn・喫水9.5m（バラスト）・ETA 8/4。5月以降の「日本航路に乗っていない」観測が確定し、Bloomberg 4/8-9報道と本IMO（9832248）の紐付けは誤同定だったと結論。カウントダウン計算からは除外（combined=0.0）するが、予測と実測の乖離事例として記録を残す【8/25更新】VesselFinder 2026-08-25（AIS 1分前）: コーパスクリスティ（米国）を 8/10 13:31 UTC 出港し、**北東大西洋をロッテルダム向け13.0kn・ETA 8/26 16:00**・喫水13.5mで航行中。米国〜欧州航路に入っており日本向けではないため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（AIS 5分前）: ロッテルダム 8/26 18:01〜8/27 17:02 の寄港を終え、ケルト海（49.041°N／-5.547°E）を**ジブラルタル向け ETA 9/4**・13.9kn・喫水9.5m で南下中。米国〜欧州航路のサイクルに入っており日本向けではない。今回 MMSI 477539200（MID 477＝香港・船籍と整合）を裏取りして追加した。combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: ロッテルダム 8/27 出港後、北大西洋（13.819°N／-18.509°E・セネガル沖）を**ロメ（トーゴ）向け ETA 9/17**・14.0kn・喫水9.3m で南下した。西アフリカ航路に入っており日本向けではないため combined=0.0 を維持する"
+      "note": "香港籍Suezmaxタンカー。IMO 9832248。MMSI 477539200。2019年建造。150,000DWT。275m。チャーター料1,400万ドル（封鎖前の約2倍）。4/9時点: 米国ガルフ→パナマ運河→太平洋経由で日本向け航行中（Bloomberg 4/8-9報道）。Front Line（フロントライン）傘下。【5/1更新・要警戒】VesselFinder 2026-05-01 AIS確認: Nederland 4/6出港・Cape Town向け5/5 ETA表示で日本航路に乗っていない。Bloomberg報道時点と乖離があり、本IMO番号でのFRONT SINGAPORE紐付けが誤同定の可能性高い。同名別船または途中で運用変更の可能性を含めて要再調査。combined確度を0.347に低減【6/6更新】VesselFinder 2026-06-06: 5/31 Singapore発・12.0knで南ア Cape Town向け西航中（日本と逆方向）。IMO 9832248でのFRONT SINGAPORE紐付けは別便取り違えの可能性が極めて高い。日本向け便としては不成立の公算大・カウント参考外。【7/23更新・日本向けでないことが確定】VesselFinder 2026-07-23（AIS 2時間前）: 7/20 01:23 UTC ロッテルダム出港→フリーポート（バハマ）向け13.3kn・喫水9.5m（バラスト）・ETA 8/4。5月以降の「日本航路に乗っていない」観測が確定し、Bloomberg 4/8-9報道と本IMO（9832248）の紐付けは誤同定だったと結論。カウントダウン計算からは除外（combined=0.0）するが、予測と実測の乖離事例として記録を残す【8/25更新】VesselFinder 2026-08-25（AIS 1分前）: コーパスクリスティ（米国）を 8/10 13:31 UTC 出港し、**北東大西洋をロッテルダム向け13.0kn・ETA 8/26 16:00**・喫水13.5mで航行中。米国〜欧州航路に入っており日本向けではないため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（AIS 5分前）: ロッテルダム 8/26 18:01〜8/27 17:02 の寄港を終え、ケルト海（49.041°N／-5.547°E）を**ジブラルタル向け ETA 9/4**・13.9kn・喫水9.5m で南下中。米国〜欧州航路のサイクルに入っており日本向けではない。今回 MMSI 477539200（MID 477＝香港・船籍と整合）を裏取りして追加した。combined=0.0 を維持する【9/20更新】MyShipTracking 2026-09-20（AIS 8日前）: ロッテルダム 8/27 出港後、北大西洋（13.819°N／-18.509°E・セネガル沖）を**ロメ（トーゴ）向け ETA 9/17**・14.0kn・喫水9.3m で南下した。西アフリカ航路に入っており日本向けではないため combined=0.0 を維持する【10/1更新】VesselFinder／MaritimeOptima 2026-10-01（AIS数分前）: ロメ（トーゴ）9/17-18 の後、フォルカドス石油ターミナル（ナイジェリア）に 9/19〜9/23 寄港して喫水を 9.3m から 15.1m に上げ、ロッテルダム向け ETA 10/7 で西サハラ沖を北上中。西アフリカの原油を欧州へ運ぶ航海で、日本向けではないため combined=0.0 を維持する"
     },
     {
       "id": "vlcc-jap-01",
@@ -1912,25 +1912,26 @@
       "id": "lpg-03",
       "name": "FUTURE DIAMOND",
       "imo": "9853864",
+      "mmsi": "374651000",
       "aisTracked": true,
       "type": "LPG",
-      "departure": "起点要AIS確認（直近川崎接岸中・前航海再開）",
-      "departurePort": "NonMideast",
-      "destination": "川崎沖",
-      "destinationPort": "Kawasaki",
-      "distanceToJapan_nm": 0,
-      "speed_knots": 0.0,
-      "eta_days": 0,
+      "departure": "ヒューストン（米国テキサス・推定）→パナマ運河経由",
+      "departurePort": "USGC",
+      "destination": "水島（岡山）※唐津→川崎→水島の3港揚げ",
+      "destinationPort": "Mizushima",
+      "distanceToJapan_nm": 9300,
+      "speed_knots": 10.8,
+      "eta_days": 1,
       "cargo_t": 50900,
-      "cargoType": "LPG（VLGC・前航海起点要確認）",
-      "status": "入港済",
+      "cargoType": "LPG（米国産推定・パナマ運河経由／非中東調達）",
+      "status": "航行中",
       "arrivalProbability": {
-        "insurance": 0.95,
-        "route": 0.97,
-        "military": 0.97,
-        "combined": 0.893
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
       },
-      "note": "VLGC（Very Large Gas Carrier・LPG・Fully refrigerated）。IMO 9853864。パナマ籍・2020年HD Hyundai Heavy Industries群山造船建造・46,863GT・50,900DWT・LOA 229.94m。海保VTS浦賀水道航路 5/2 17:20川崎沖到着予定（5/1検出）。VTSは「ガスタンカー」分類だが本船はLNGではなくLPG VLGCで分類訂正。直近5/1川崎接岸中の同船継続またはバース移動の可能性。前航海起点はAIS追跡で要確認。VesselFinder 2026-05-01 確認 【5/4更新】入港済確認。"
+      "note": "VLGC（Very Large Gas Carrier・LPG・Fully refrigerated）。IMO 9853864。パナマ籍・2020年HD Hyundai Heavy Industries群山造船建造・46,863GT・50,900DWT・LOA 229.94m。海保VTS浦賀水道航路 5/2 17:20川崎沖到着予定（5/1検出）。VTSは「ガスタンカー」分類だが本船はLNGではなくLPG VLGCで分類訂正。直近5/1川崎接岸中の同船継続またはバース移動の可能性。前航海起点はAIS追跡で要確認。VesselFinder 2026-05-01 確認 【5/4更新】入港済確認。【10/1更新】MaritimeOptima 2026-10-01 の寄港履歴: **パナマ運河 8/28〜9/1 → 唐津 9/25-26 → 川崎 9/29-30 UTC**。MagicPort の過去12か月の寄港にヒューストンがあり、運河を西行きで通過した日程と合わせて**米国湾岸積みの非中東LPGと推定する**（積み日時は未取得）。VesselFinder（AIS 17分前）では水島へ 10.8kn で航行中・喫水8.3m で、2港で大半を揚げた後とみられる。海保VTS明石は 10/2 03:40 川崎発水島入航を掲載している（予定）。**MMSI 374651000（コールサイン 3ETX9）を VesselFinder・MaritimeOptima・MagicPort とMID（パナマ）で裏取りし新たに付与した**。distanceToJapan_nm 9,300 はヒューストン→パナマ運河→日本の概算"
     },
     {
       "id": "chem-nagoya-11",
@@ -3621,23 +3622,23 @@
       "mmsi": "311001681",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "Ashburton（豪州WA・Wheatstone LNG）",
-      "departurePort": "Ashburton",
-      "destination": "太平洋（仕向地未確定）",
+      "departure": "プラクミンLNG（米国ルイジアナ）9/30着",
+      "departurePort": "USGC",
+      "destination": "BERMUDA FOR ORDER（仕向地未定）",
       "destinationPort": "NonMideast",
       "distanceToJapan_nm": 0,
-      "speed_knots": 16.0,
+      "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 80000,
-      "cargoType": "LNG",
-      "status": "航行中",
+      "cargoType": "LNG（米国産・仕向地未定）",
+      "status": "錨泊中",
       "arrivalProbability": {
         "insurance": 0.0,
         "route": 0.0,
         "military": 0.0,
         "combined": 0.0
       },
-      "note": "LNG carrier。バハマ籍・2026年建造の新造船・115,118GT・LOA 295m×47m・DWT 93,087・174,000m³級。IMO 9974606。海保VTS浦賀 7/24 07:00 富津入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 2時間前）: 7/13 02:12 UTC Ashburton（豪州）出港→JP FTS（富津）向け13.8kn・喫水11.5m・ETA 7/23 21:45。豪州Wheatstone LNG発でホルムズ海峡を通過しない供給ルート【8/21更新・日本向けから除外】VesselFinder 2026-08-21（AIS 3分前）: 8/21 08:54 UTC パナマ運河太平洋側錨地を出港→バルボア（パナマ）向け8.8kn・Under way。日本向け航海ではないため combined=0.0 で到着計算から除外する（記録は保持）。7/23に記録した豪州Wheatstone発・富津 7/24 着の航海が完了したか否かは Last port がパナマに更新されており確認できない【8/24更新】VesselFinder 2026-08-24（AIS 23時間前）: パナマ運河錨地（太平洋側）を 8/21 08:54 UTC 出港→**アルタミラ（メキシコ・カリブ海側）**・ETA 8/26 00:01・16.8kn でカリブ海を航行中。運河を東航しており日本向けからの離脱が確定した。8/21の combined=0.0 判断は維持する【8/25更新】VesselFinder 2026-08-25（AIS 2日前）: パナマ運河太平洋側錨地を 8/21 08:54 UTC 出港し、**カリブ海をアルタミラ（メキシコ）向け16.8kn・ETA 8/26 00:01**で航行中・喫水9.7m。8/21・8/24 に判断した「日本向けではない」が3回連続で裏付けられたため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（**AIS 11日前**）: 8/21 00:40 UTC にバルボア（パナマ・太平洋側／8.828°N／-79.482°E）で錨泊しているのが最後の受信。同サイトは玉浦（OKPO・韓国）6/10 発から12,611海里としており、8/25 に VesselFinder で確認した「パナマ運河太平洋側錨地 8/21 発→アルタミラ（メキシコ）ETA 8/26」と時系列が接続する。**2ソースとも日本向けでないことで一致するため combined=0.0 を維持する**【9/20更新】MyShipTracking 2026-09-20（AIS 3日前）: 北太平洋東部（19.306°N／-106.370°E・メキシコ沖）を16.0kn で南下中・**喫水は 9.7m から 11.3m（満載相当）へ上がっており、どこかで積み取りを終えている**が、公開DBの寄港履歴は 6/10 の玉浦（韓国）出港以降が空で積地を特定できない。仕向地表示も「Pacific Basin」で確定しない。日本向けの動きは確認できず combined=0.0 を維持する"
+      "note": "LNG carrier。バハマ籍・2026年建造の新造船・115,118GT・LOA 295m×47m・DWT 93,087・174,000m³級。IMO 9974606。海保VTS浦賀 7/24 07:00 富津入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 2時間前）: 7/13 02:12 UTC Ashburton（豪州）出港→JP FTS（富津）向け13.8kn・喫水11.5m・ETA 7/23 21:45。豪州Wheatstone LNG発でホルムズ海峡を通過しない供給ルート【8/21更新・日本向けから除外】VesselFinder 2026-08-21（AIS 3分前）: 8/21 08:54 UTC パナマ運河太平洋側錨地を出港→バルボア（パナマ）向け8.8kn・Under way。日本向け航海ではないため combined=0.0 で到着計算から除外する（記録は保持）。7/23に記録した豪州Wheatstone発・富津 7/24 着の航海が完了したか否かは Last port がパナマに更新されており確認できない【8/24更新】VesselFinder 2026-08-24（AIS 23時間前）: パナマ運河錨地（太平洋側）を 8/21 08:54 UTC 出港→**アルタミラ（メキシコ・カリブ海側）**・ETA 8/26 00:01・16.8kn でカリブ海を航行中。運河を東航しており日本向けからの離脱が確定した。8/21の combined=0.0 判断は維持する【8/25更新】VesselFinder 2026-08-25（AIS 2日前）: パナマ運河太平洋側錨地を 8/21 08:54 UTC 出港し、**カリブ海をアルタミラ（メキシコ）向け16.8kn・ETA 8/26 00:01**で航行中・喫水9.7m。8/21・8/24 に判断した「日本向けではない」が3回連続で裏付けられたため combined=0.0 を維持する【9/1更新】MyShipTracking 2026-09-01（**AIS 11日前**）: 8/21 00:40 UTC にバルボア（パナマ・太平洋側／8.828°N／-79.482°E）で錨泊しているのが最後の受信。同サイトは玉浦（OKPO・韓国）6/10 発から12,611海里としており、8/25 に VesselFinder で確認した「パナマ運河太平洋側錨地 8/21 発→アルタミラ（メキシコ）ETA 8/26」と時系列が接続する。**2ソースとも日本向けでないことで一致するため combined=0.0 を維持する**【9/20更新】MyShipTracking 2026-09-20（AIS 3日前）: 北太平洋東部（19.306°N／-106.370°E・メキシコ沖）を16.0kn で南下中・**喫水は 9.7m から 11.3m（満載相当）へ上がっており、どこかで積み取りを終えている**が、公開DBの寄港履歴は 6/10 の玉浦（韓国）出港以降が空で積地を特定できない。仕向地表示も「Pacific Basin」で確定しない。日本向けの動きは確認できず combined=0.0 を維持する【10/1更新】VesselFinder／MaritimeOptima 2026-10-01（AIS 1分前）: ラパス（メキシコ）9/13-16 とパナマ運河バルボア 9/22-23 を経て、**9/30 10:24 UTC に米国ルイジアナ州のプラクミンLNG基地に着き係留中**。AIS目的地は「BERMUDA FOR ORDER」（ETA 10/16）で、積み取り後の仕向地は決まっていない。喫水は 9/17 頃から 11.3〜11.8m の手入力値が続いており、積む前か後かを喫水では判定できない。combined=0.0 を維持する"
     },
     {
       "id": "lng-40",
@@ -3721,15 +3722,15 @@
       "mmsi": "636019714",
       "aisTracked": true,
       "type": "MR",
-      "departure": "四日市（三重）",
-      "departurePort": "Yokkaichi",
-      "destination": "川崎沖（東京湾）",
-      "destinationPort": "Kawasaki",
+      "departure": "温山（韓国）9/23-25積み",
+      "departurePort": "NonMideast",
+      "destination": "横浜→根岸（海保VTS 10/2 根岸入航予定）",
+      "destinationPort": "Yokohama",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 49000,
-      "cargoType": "化学品/石油製品（MR2）",
+      "cargoType": "化学品/石油製品（MR2・韓国温山発／非中東調達）",
       "status": "入港済",
       "arrivalProbability": {
         "insurance": 1.0,
@@ -3737,7 +3738,7 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "Chemical/Oil Products Tanker（MR2）。リベリア籍・2020年建造・29,462GT・DWT 49,996・LOA 182m×32m。IMO 9858840。海保VTS浦賀 7/24 11:30 川崎沖入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 3時間前）: 7/20 01:48 UTC 四日市出港→川崎向け・喫水8.0m。伊勢湾→東京湾の国内二次輸送便【8/21更新】7/23時点のETA（1日）を経過したため入港済と判定。個別のAIS再確認は未実施"
+      "note": "Chemical/Oil Products Tanker（MR2）。リベリア籍・2020年建造・29,462GT・DWT 49,996・LOA 182m×32m。IMO 9858840。海保VTS浦賀 7/24 11:30 川崎沖入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 3時間前）: 7/20 01:48 UTC 四日市出港→川崎向け・喫水8.0m。伊勢湾→東京湾の国内二次輸送便【8/21更新】7/23時点のETA（1日）を経過したため入港済と判定。個別のAIS再確認は未実施【10/1更新】MaritimeOptima 2026-10-01 の寄港履歴: ティルベリー島（カナダ）9/6-7 → **温山（韓国）9/23 09:01〜9/25 05:44 → 横浜 9/28 12:40 UTC 着**（9/29 にいったん出て 9/30 04:26 に再着岸）。VesselFinder（AIS 2分前）では横浜に係留中で、喫水は満載級の12.0m、AIS目的地「JP YOK XX NGI」（横浜→根岸）。海保VTS浦賀は 10/2 09:30 の根岸入航を掲載している（予定）。7月の国内輸送（四日市→川崎）とは別の、韓国発の新たな日本向け便。揚荷の完了は根岸の後の喫水変化で確認する"
     },
     {
       "id": "mr-21",
@@ -3787,7 +3788,7 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "Crude Oil Tanker。日本籍・2013年建造・66,541GT・DWT 119,999・LOA 246.8m×44.4m。IMO 9617038。海保VTS浦賀 7/24 11:00 根岸入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 15時間前）: 7/21 03:02 UTC 喜入出港→横浜向け11.5kn・喫水15.3m。喜入原油中継基地から関東の製油所へ配分する国内二次輸送便で、中東からの一次輸送とは別レイヤー。AIS上のETA表示（6/24）は入力更新漏れ【8/21更新】7/23時点のETA（1日）を経過したため入港済と判定。個別のAIS再確認は未実施"
+      "note": "Crude Oil Tanker。日本籍・2013年建造・66,541GT・DWT 119,999・LOA 246.8m×44.4m。IMO 9617038。海保VTS浦賀 7/24 11:00 根岸入航予定（7/23検出）。VesselFinder 2026-07-23（AIS 15時間前）: 7/21 03:02 UTC 喜入出港→横浜向け11.5kn・喫水15.3m。喜入原油中継基地から関東の製油所へ配分する国内二次輸送便で、中東からの一次輸送とは別レイヤー。AIS上のETA表示（6/24）は入力更新漏れ【8/21更新】7/23時点のETA（1日）を経過したため入港済と判定。個別のAIS再確認は未実施【10/1更新】MaritimeOptima 2026-10-01（AIS 10分以内）の寄港履歴: **川崎 9/24 → 堺泉北 9/27-28 → 喜入 9/29 着**。MagicPort では喜入基地に係留中で、AIS目的地は水島（ETA 10/3 06:00 UTC）。喜入の原油中継基地と製油所を結ぶ国内二次輸送が続いている。VesselFinder の喫水14.7m（9/28）は入力未更新の可能性があり判定に使っていない"
     },
     {
       "id": "aframax-jp-03",
@@ -3845,15 +3846,15 @@
       "mmsi": "374112000",
       "aisTracked": true,
       "type": "Chemical",
-      "departure": "温山/蔚山（韓国）",
+      "departure": "温山（韓国）9/29-30積み",
       "departurePort": "NonMideast",
-      "destination": "名古屋港（伊勢湾）",
-      "destinationPort": "Nagoya",
+      "destination": "三田尻（山口・防府）",
+      "destinationPort": "Japan",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 3000,
-      "cargoType": "石油製品（小型プロダクトオイル便）",
+      "cargoType": "石油製品（小型プロダクトオイル便・韓国温山積み）",
       "status": "入港済",
       "arrivalProbability": {
         "insurance": 1.0,
@@ -3861,7 +3862,7 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "Chemical/Oil Products Tanker（プロダクトオイル）。パナマ籍・2018年建造・2,993GT（EDI表記2,511GT）・DWT 3,482・LOA 91m×14m。IMO 9826392。名古屋港管理組合EDI 入港予定（7/23検出）。VesselFinder 2026-07-23（AIS 0分前）: 7/23 05:34 UTC 温山（韓国）出港→7/23 06:14 UTC 蔚山着・係留中・喫水6.0m。日韓近海便でホルムズ非経由。EDIとDBのGT表記差は小型船に共通する国内/国際総トン数の差（KEOYOUNG DREAM 1 と同パターン）【8/21更新】7/23時点のETA（4日）を経過したため入港済と判定。個別のAIS再確認は未実施"
+      "note": "Chemical/Oil Products Tanker（プロダクトオイル）。パナマ籍・2018年建造・2,993GT（EDI表記2,511GT）・DWT 3,482・LOA 91m×14m。IMO 9826392。名古屋港管理組合EDI 入港予定（7/23検出）。VesselFinder 2026-07-23（AIS 0分前）: 7/23 05:34 UTC 温山（韓国）出港→7/23 06:14 UTC 蔚山着・係留中・喫水6.0m。日韓近海便でホルムズ非経由。EDIとDBのGT表記差は小型船に共通する国内/国際総トン数の差（KEOYOUNG DREAM 1 と同パターン）【8/21更新】7/23時点のETA（4日）を経過したため入港済と判定。個別のAIS再確認は未実施【10/1更新】MaritimeOptima 2026-10-01（AIS 10分以内）の寄港履歴: **大井川（静岡）9/26-27 → 温山（韓国）9/29 09:00〜9/30 19:46 → 三田尻（山口・防府）10/1 09:40 UTC 着**。MagicPort では三田尻沖で錨泊中、VesselFinder では喫水6.0m（満載相当）。当基盤AISの 9/27 の目的地「JP KWS OFF」は未更新の値で、実際には温山へ向かっていた。韓国との小口の往復便で、1週間に2回日本の港へ寄港している。三田尻は ports.json に未定義のため destinationPort は Japan とした"
     },
     {
       "id": "chem-nagoya-38",
@@ -3945,23 +3946,23 @@
       "mmsi": "477237400",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "フジャイラ錨地（UAE・ホルムズ海峡外側）",
-      "departurePort": "Fujairah",
-      "destination": "テルヌーゼン（オランダ）",
-      "destinationPort": "Anegasaki",
+      "departure": "ソハール錨地（オマーン・ホルムズ海峡外側）9/24発",
+      "departurePort": "Sohar",
+      "destination": "舟山（中国）",
+      "destinationPort": "Zhoushan",
       "distanceToJapan_nm": 15,
-      "speed_knots": 12.8,
+      "speed_knots": 13.8,
       "eta_days": 0,
       "cargo_t": 300000,
-      "cargoType": "原油",
-      "status": "錨泊中",
+      "cargoType": "原油（ソハール積み・中国向け）",
+      "status": "航行中",
       "arrivalProbability": {
-        "insurance": 1.0,
-        "route": 1.0,
-        "military": 1.0,
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
         "combined": 0.0
       },
-      "note": "VLCC。香港籍・2019年建造・160,178GT・DWT 311,080・Call sign VRSH7。IMO 9799159。海保VTS浦賀 8/22 08:00 京葉シーバース入航予定（8/21検出）。VesselFinder/MarineTraffic 2026-08-21: 7/13 19:07 UTC フジャイラ錨地（UAE）出港→AIS目的地「OUT OF TOKYO BAY」・ETA 8/5・東アジア海域を3.6kn Drifting（漂泊）。**フジャイラはホルムズ海峡の外側に位置する積出港であり、本船は海峡を通過しない代替ルート便に該当する**。GT 160,178 がVTS値と完全一致し同定は確実【8/24更新】VesselFinder 2026-08-24（AIS 1分前）: **姉崎京葉シーバースへ実入港し 8/23 00:21 UTC 出港**。現在 AIS目的地「URAGA P/S」（浦賀水道パイロットステーション）・ETA 8/24 22:45・2.8kn で東京湾内を移動中。海保VTS浦賀は 8/25 08:00 京葉シーバース入航予定を掲載しており、揚荷後に再度シーバースへ着ける二航海目に入っている。**フジャイラ発（ホルムズ海峡外側）のVLCCが日本で実際に陸揚げを完了したことが確認でき、8/21に記録した『代替ルート便』の到達が実証された**【8/25更新】VesselFinder／MyShipTracking 2026-08-25（AIS 1分前）: **姉崎京葉シーバースでの2度目の揚荷を終えて 8/25 01:52 UTC 出港**し、千葉沖錨地（35.511°N／139.936°E）で 0kn 待機中。AIS目的地は「Chiba（JPCHB）」、喫水は16.5mで満載時（約22m）より軽いが空船（約10m）でもなく、**積荷を残したまま東京湾内で複数バースに分けて揚荷している段階**とみられる。8/22 京葉シーバース→8/23 出港→8/25 再度京葉シーバース出港と、フジャイラ発（ホルムズ海峡外側）VLCCの陸揚げが継続している【9/1更新】MyShipTracking 2026-09-01（AIS 3日前）: 8/29 までに東京湾を出て相模湾沖（34.988°N／139.672°E）を13.8kn で南下し、**シンガポール向け ETA 9/6**・喫水15.0m。フジャイラ（ホルムズ海峡外側）発VLCCの日本での揚荷は 8/22〜8/25 の複数バースで完了した。日本向け航海は終了したため combined=0.0 とする【9/20更新】MyShipTracking 2026-09-20（AIS 6日前）: ラッカディブ海（6.581°N／77.333°E）を針路288.8°・12.8kn・喫水11.0m（バラスト相当）で西航し、**テルヌーゼン（オランダ）向け ETA 9/25**。フジャイラ発（ホルムズ海峡外側）で日本へ原油を届けたVLCCが、空船で欧州へ渡った。combined=0.0 を維持する"
+      "note": "VLCC。香港籍・2019年建造・160,178GT・DWT 311,080・Call sign VRSH7。IMO 9799159。海保VTS浦賀 8/22 08:00 京葉シーバース入航予定（8/21検出）。VesselFinder/MarineTraffic 2026-08-21: 7/13 19:07 UTC フジャイラ錨地（UAE）出港→AIS目的地「OUT OF TOKYO BAY」・ETA 8/5・東アジア海域を3.6kn Drifting（漂泊）。**フジャイラはホルムズ海峡の外側に位置する積出港であり、本船は海峡を通過しない代替ルート便に該当する**。GT 160,178 がVTS値と完全一致し同定は確実【8/24更新】VesselFinder 2026-08-24（AIS 1分前）: **姉崎京葉シーバースへ実入港し 8/23 00:21 UTC 出港**。現在 AIS目的地「URAGA P/S」（浦賀水道パイロットステーション）・ETA 8/24 22:45・2.8kn で東京湾内を移動中。海保VTS浦賀は 8/25 08:00 京葉シーバース入航予定を掲載しており、揚荷後に再度シーバースへ着ける二航海目に入っている。**フジャイラ発（ホルムズ海峡外側）のVLCCが日本で実際に陸揚げを完了したことが確認でき、8/21に記録した『代替ルート便』の到達が実証された**【8/25更新】VesselFinder／MyShipTracking 2026-08-25（AIS 1分前）: **姉崎京葉シーバースでの2度目の揚荷を終えて 8/25 01:52 UTC 出港**し、千葉沖錨地（35.511°N／139.936°E）で 0kn 待機中。AIS目的地は「Chiba（JPCHB）」、喫水は16.5mで満載時（約22m）より軽いが空船（約10m）でもなく、**積荷を残したまま東京湾内で複数バースに分けて揚荷している段階**とみられる。8/22 京葉シーバース→8/23 出港→8/25 再度京葉シーバース出港と、フジャイラ発（ホルムズ海峡外側）VLCCの陸揚げが継続している【9/1更新】MyShipTracking 2026-09-01（AIS 3日前）: 8/29 までに東京湾を出て相模湾沖（34.988°N／139.672°E）を13.8kn で南下し、**シンガポール向け ETA 9/6**・喫水15.0m。フジャイラ（ホルムズ海峡外側）発VLCCの日本での揚荷は 8/22〜8/25 の複数バースで完了した。日本向け航海は終了したため combined=0.0 とする【9/20更新】MyShipTracking 2026-09-20（AIS 6日前）: ラッカディブ海（6.581°N／77.333°E）を針路288.8°・12.8kn・喫水11.0m（バラスト相当）で西航し、**テルヌーゼン（オランダ）向け ETA 9/25**。フジャイラ発（ホルムズ海峡外側）で日本へ原油を届けたVLCCが、空船で欧州へ渡った。combined=0.0 を維持する【10/1更新】VesselFinder／MaritimeOptima 2026-10-01（地上局AIS約2日前）: 9/20 に記録したテルヌーゼン（オランダ）には向かわず、**ソハール錨地（オマーン・ホルムズ海峡外側）に 9/19〜9/24 停泊して喫水を 11.0m から 20.4m（満載）に上げ**、AIS目的地「CNZOS」（舟山・中国）ETA 10/12 でベンガル湾を東航中（岸壁積みかSTSかは未確認）。日本で揚荷を終えたVLCCが次の航海でホルムズ外側で積んで中国へ向かった形で、combined=0.0 を維持する"
     },
     {
       "id": "lng-41",
@@ -4195,15 +4196,15 @@
       "mmsi": "477141600",
       "aisTracked": true,
       "type": "Product",
-      "departure": "大山（テサン・韓国）",
-      "departurePort": "NonMideast",
-      "destination": "四日市（三重）",
-      "destinationPort": "Yokkaichi",
+      "departure": "光陽／麗水（韓国・光陽湾）9/19-24積み",
+      "departurePort": "Gwangyang",
+      "destination": "仙台（仙台塩釜港）",
+      "destinationPort": "Sendai",
       "distanceToJapan_nm": 0,
       "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 45000,
-      "cargoType": "化学品/石油製品",
+      "cargoType": "化学品/石油製品（韓国光陽湾積み／非中東調達）",
       "status": "入港済",
       "arrivalProbability": {
         "insurance": 1.0,
@@ -4211,7 +4212,7 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "MR（Medium Range）プロダクト/ケミカル兼用タンカー・エポキシ塗装。香港籍・2008年建造・国際総トン数29,293・DWT 47,128・LOA 183m・Call sign VREK4。IMO 9380520。ISM管理 Executive Ship Management、商業管理 Cido Shipping HK、登録船主 Heroic Grus Inc。名古屋港管理組合EDI 8/23 12:30着・8/24 09:30出・岸壁K5（8/21検出）。VesselFinder 2026-08-21: 8/19 10:57 UTC 大山（韓国）出港→名古屋向け12.3kn（33.709N/127.373E付近）・ETA 8/22 20:00。**同定はコールサインで確定**: 名古屋港EDIが記載する VREK4 がIMO 9380520のコールサインと完全一致し、全長もEDI 183.21m と実船183mが一致。なおEDI掲載の総トン数22,130は国際総トン数29,293と一致しない（EDIの「総トン数」は日本法の国内総トン数とみられるが未検証）【8/24更新】VesselFinder 2026-08-24（AIS 18分前）: **8/21に記録した『名古屋 8/23入港予定』は実測と異なり、四日市に 8/24 04:41 UTC 着岸（moored）**。AIS目的地も「JP YKK IS」（四日市）。名古屋港EDIの入港予定リストから本船が消えたのは、揚地が伊勢湾内で四日市へ振り替わったためとみられる"
+      "note": "MR（Medium Range）プロダクト/ケミカル兼用タンカー・エポキシ塗装。香港籍・2008年建造・国際総トン数29,293・DWT 47,128・LOA 183m・Call sign VREK4。IMO 9380520。ISM管理 Executive Ship Management、商業管理 Cido Shipping HK、登録船主 Heroic Grus Inc。名古屋港管理組合EDI 8/23 12:30着・8/24 09:30出・岸壁K5（8/21検出）。VesselFinder 2026-08-21: 8/19 10:57 UTC 大山（韓国）出港→名古屋向け12.3kn（33.709N/127.373E付近）・ETA 8/22 20:00。**同定はコールサインで確定**: 名古屋港EDIが記載する VREK4 がIMO 9380520のコールサインと完全一致し、全長もEDI 183.21m と実船183mが一致。なおEDI掲載の総トン数22,130は国際総トン数29,293と一致しない（EDIの「総トン数」は日本法の国内総トン数とみられるが未検証）【8/24更新】VesselFinder 2026-08-24（AIS 18分前）: **8/21に記録した『名古屋 8/23入港予定』は実測と異なり、四日市に 8/24 04:41 UTC 着岸（moored）**。AIS目的地も「JP YKK IS」（四日市）。名古屋港EDIの入港予定リストから本船が消えたのは、揚地が伊勢湾内で四日市へ振り替わったためとみられる【10/1更新】MaritimeOptima 2026-10-01 の寄港履歴: 川崎 9/13-15 → **麗水／光陽（韓国）9/19 02:22〜9/24 08:50 → 仙台 9/28 06:50 UTC 着**。MagicPort では仙台塩釜港に係留中で、VesselFinder（AIS 12時間前）の喫水9.7m から揚荷が進んでいるとみられる（着岸時の喫水は未取得）。8/24 四日市に続く韓国発の日本向け便。川崎 9/13-15 の貨物の積地は未確認"
     },
     {
       "id": "mr-27",
@@ -4495,10 +4496,10 @@
       "mmsi": "431100206",
       "aisTracked": true,
       "type": "LPG",
-      "departure": "堺（大阪）",
+      "departure": "堺（大阪）9/30発",
       "departurePort": "Sakai",
-      "destination": "播磨灘錨地（兵庫）",
-      "destinationPort": "Himeji",
+      "destination": "神戸沖→岩国（海保VTS明石 10/2 予定）",
+      "destinationPort": "Kobe",
       "distanceToJapan_nm": 600,
       "speed_knots": 0.0,
       "eta_days": 1,
@@ -4511,7 +4512,7 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "LPG Coaster。日本籍・1995年建造・2,927GT・タンク容量 2,432m³・Call sign JG5422。IMO 9122253／MMSI 431100206。海保VTS明石海峡航路 8/25 08:30 千葉入航予定・出発地「徳山」として検出（8/24・GT 2,927 がVTS掲載値と完全一致）。**徳山→千葉の内航LPG輸送便であり、輸入便ではなく国内配分段階を示す**。cargo_t はタンク容量 2,432m³ から冷凍プロパン密度で換算した概算値で、公表実績値ではない。輸入便と混同されないよう cargoType に「内航」を明記した【8/25更新】VesselFinder 2026-08-25（AIS 2分前）: 徳山下松を 8/24 09:13 UTC 出港→13.6kn・喫水4.5mで航行中。**AIS目的地は「Anegasaki（姉崎）」・ETA 8/26 09:00 で、海保VTS明石海峡が掲げる「千葉」より具体的な揚地を示している**。姉崎は千葉県市原市内にあり両者は矛盾しない。内航LPG輸送便として国内配分段階を示す点は変わらない【9/1更新】MyShipTracking 2026-09-01（AIS 6時間前）: **姉崎に 8/26 着・8/29 09:52 UTC 発**（8/25 に記録したAIS目的地「Anegasaki」どおりの着岸）。その後いったん西へ向かい、現在は紀伊半島南方（33.897°N／136.555°E）を針路53.3°・13.2kn で北東へ戻り、**AIS目的地「URAYASU OFF」（浦安沖・東京湾）・ETA 9/2 06:00**。過去1年の最多寄港は堺34回・姉崎21回で、内航LPGの国内配分を高頻度で回している【9/20更新】MyShipTracking 2026-09-20（AIS 1分前）: **堺に 9/19 着・9/20 03:02 UTC 発**、現在は播磨灘（34.700°N／134.782°E）で錨泊中・喫水5.5m。AIS目的地は「>JP HHR OFF」で、**この3文字コードは公開の港コード体系と対応が取れず未解決**（→ AIS Destination のウェイポイント慣習）。直近の寄港は堺・大竹・姉崎で、過去1年の最多寄港は堺36回。**内航LPGの国内配分を19日間途切れず回しており、日本国内の二次輸送は平常運転が続いている**"
+      "note": "LPG Coaster。日本籍・1995年建造・2,927GT・タンク容量 2,432m³・Call sign JG5422。IMO 9122253／MMSI 431100206。海保VTS明石海峡航路 8/25 08:30 千葉入航予定・出発地「徳山」として検出（8/24・GT 2,927 がVTS掲載値と完全一致）。**徳山→千葉の内航LPG輸送便であり、輸入便ではなく国内配分段階を示す**。cargo_t はタンク容量 2,432m³ から冷凍プロパン密度で換算した概算値で、公表実績値ではない。輸入便と混同されないよう cargoType に「内航」を明記した【8/25更新】VesselFinder 2026-08-25（AIS 2分前）: 徳山下松を 8/24 09:13 UTC 出港→13.6kn・喫水4.5mで航行中。**AIS目的地は「Anegasaki（姉崎）」・ETA 8/26 09:00 で、海保VTS明石海峡が掲げる「千葉」より具体的な揚地を示している**。姉崎は千葉県市原市内にあり両者は矛盾しない。内航LPG輸送便として国内配分段階を示す点は変わらない【9/1更新】MyShipTracking 2026-09-01（AIS 6時間前）: **姉崎に 8/26 着・8/29 09:52 UTC 発**（8/25 に記録したAIS目的地「Anegasaki」どおりの着岸）。その後いったん西へ向かい、現在は紀伊半島南方（33.897°N／136.555°E）を針路53.3°・13.2kn で北東へ戻り、**AIS目的地「URAYASU OFF」（浦安沖・東京湾）・ETA 9/2 06:00**。過去1年の最多寄港は堺34回・姉崎21回で、内航LPGの国内配分を高頻度で回している【9/20更新】MyShipTracking 2026-09-20（AIS 1分前）: **堺に 9/19 着・9/20 03:02 UTC 発**、現在は播磨灘（34.700°N／134.782°E）で錨泊中・喫水5.5m。AIS目的地は「>JP HHR OFF」で、**この3文字コードは公開の港コード体系と対応が取れず未解決**（→ AIS Destination のウェイポイント慣習）。直近の寄港は堺・大竹・姉崎で、過去1年の最多寄港は堺36回。**内航LPGの国内配分を19日間途切れず回しており、日本国内の二次輸送は平常運転が続いている**【10/1更新】MaritimeOptima／VesselFinder 2026-10-01（AIS数分前）: 高砂 9/24-25 → 神戸 9/25-28 → 堺泉北 9/29-30 に寄港し、現在は大阪湾で AIS目的地「>JP UKB OFF」（神戸沖）として錨泊中・喫水5.4m。海保VTS明石は 10/2 10:30 に神戸→岩国の入航予定を掲載している（予定であり実績ではない）。**9/20 に未解決とした「>JP HHR OFF」は UN/LOCODE で東播磨（JPHHR）を指し、当時の播磨灘の錨泊位置と一致した**。内航LPGの国内配分が続いている"
     },
     {
       "id": "vlcc-us-06",
@@ -4570,23 +4571,23 @@
       "mmsi": "636020413",
       "aisTracked": true,
       "type": "VLCC",
-      "departure": "名古屋錨地（前航海の積地は未確認）",
-      "departurePort": "NonMideast",
-      "destination": "姉崎京葉シーバース（千葉）",
-      "destinationPort": "Anegasaki",
+      "departure": "千葉（姉崎京葉シーバース）9/12発→東シナ海で待機→四日市 ※積地未確認",
+      "departurePort": "Anegasaki",
+      "destination": "四日市（三重）",
+      "destinationPort": "Yokkaichi",
       "distanceToJapan_nm": 0,
-      "speed_knots": 15.3,
-      "eta_days": 0,
+      "speed_knots": 13.7,
+      "eta_days": 4.5,
       "cargo_t": 313486,
-      "cargoType": "原油（積地未確認）",
-      "status": "入港済",
+      "cargoType": "原油（積地未確認・出光タンカー運航）",
+      "status": "航行中",
       "arrivalProbability": {
         "insurance": 1.0,
         "route": 1.0,
         "military": 1.0,
-        "combined": 0.0
+        "combined": 1.0
       },
-      "note": "VLCC。リベリア籍・2021年建造・160,115GT・DWT 313,486・339m×60m。IMO 9876426／MMSI 636020413。旧船名 ERBIL。海保VTS浦賀水道航路 8/26 11:30 京葉シーバース入航予定として検出（8/25・GT 160,115 がVTS掲載値と完全一致）。VesselFinder／MyShipTracking 2026-08-25（AIS 35時間前）: 名古屋錨地を 8/22 01:35 UTC 出港→姉崎京葉シーバース向けで 8/24 02:46 UTC に到着圏へ入り、千葉沖錨地（35.510°N／139.937°E）で 0.1kn 待機中・喫水18.3m。**喫水18.3mは積荷ありを示すが、公開船舶DBの寄港履歴は直近3か月が空で、確定できる寄港は 5/25 23:11 UTC の麦寮（台湾）出港が最後。積地を特定できていない**ため cargoType は「積地未確認」とし、departurePort も起点不明扱い（NonMideast）に置いた。ホルムズ通過の有無も判定できておらず、供給量の解釈では非中東調達便と区別する必要がある【9/1更新】VesselFinder／MyShipTracking 2026-09-01（**AIS 6日前**）: **姉崎京葉シーバースを 8/26 00:22 UTC 出港**し、8/26 04:26 UTC に相模湾（34.887°N／139.643°E）を南下（針路174.7°・15.3kn）したのを最後に受信が途絶えている。喫水は18.3m→13.5mへ下がっており姉崎で部分揚荷したとみられるが、**残貨の行き先も積地も最後まで特定できなかった**（確定寄港は 5/25 の麦寮＝台湾が最後のまま）。日本での揚荷実績は確認できたので入港済とし、以後の日本向け航海は確認できないため combined=0.0 とする"
+      "note": "VLCC。リベリア籍・2021年建造・160,115GT・DWT 313,486・339m×60m。IMO 9876426／MMSI 636020413。旧船名 ERBIL。海保VTS浦賀水道航路 8/26 11:30 京葉シーバース入航予定として検出（8/25・GT 160,115 がVTS掲載値と完全一致）。VesselFinder／MyShipTracking 2026-08-25（AIS 35時間前）: 名古屋錨地を 8/22 01:35 UTC 出港→姉崎京葉シーバース向けで 8/24 02:46 UTC に到着圏へ入り、千葉沖錨地（35.510°N／139.937°E）で 0.1kn 待機中・喫水18.3m。**喫水18.3mは積荷ありを示すが、公開船舶DBの寄港履歴は直近3か月が空で、確定できる寄港は 5/25 23:11 UTC の麦寮（台湾）出港が最後。積地を特定できていない**ため cargoType は「積地未確認」とし、departurePort も起点不明扱い（NonMideast）に置いた。ホルムズ通過の有無も判定できておらず、供給量の解釈では非中東調達便と区別する必要がある【9/1更新】VesselFinder／MyShipTracking 2026-09-01（**AIS 6日前**）: **姉崎京葉シーバースを 8/26 00:22 UTC 出港**し、8/26 04:26 UTC に相模湾（34.887°N／139.643°E）を南下（針路174.7°・15.3kn）したのを最後に受信が途絶えている。喫水は18.3m→13.5mへ下がっており姉崎で部分揚荷したとみられるが、**残貨の行き先も積地も最後まで特定できなかった**（確定寄港は 5/25 の麦寮＝台湾が最後のまま）。日本での揚荷実績は確認できたので入港済とし、以後の日本向け航海は確認できないため combined=0.0 とする【10/1更新】MaritimeOptima の寄港履歴: 四日市 8/20-23 → 千葉 8/24-26 に続き、**千葉（姉崎京葉シーバース）9/11-12 に2回目の寄港**があった。shipnext 10/1 10:50 UTC では九州西方（31.01N／129.74E）を東へ進み、VesselFinder（AIS 5日前）の **AIS目的地は四日市 ETA 10/5 23:00 UTC**・喫水15.6m。9/12 以降は寄港が無く東シナ海でほぼ停止していたため、**同一積荷を洋上待機を挟んで分割揚げしているとみられる（推論）**。喫水が 9/1 の13.5m から増えた理由は未確定。商業管理は出光タンカーで、積地は未確認（過去12か月の寄港にアンゴラ・マロンゴがあるが日付は不明）。積地不明で総航程を置けないため、departurePort を姉崎とし地図上の推定位置は描画しない"
     },
     {
       "id": "lng-43",
@@ -4811,7 +4812,7 @@
         "military": 1.0,
         "combined": 0.0
       },
-      "note": "Chemical/Oil Products Tanker（MR）。リベリア籍・2023年建造・28,630GT・DWT 49,999・183m×32m。IMO 9935935／MMSI 636021385。海保VTS浦賀水道航路 9/1 21:00 川崎沖入航予定として検出（9/1・**GT 28,630 がVTS掲載値と完全一致**）。VesselFinder／MyShipTracking 2026-09-01（AIS 現在）: **川崎に 8/30 00:25 UTC 着・9/1 01:09 UTC 発**（2日間の在港）→東京湾内（35.459°N／139.793°E）を4.1kn・喫水8.2mで移動中、AIS目的地「JP KWS DU」。**公開DBの寄港履歴で川崎の前に現れるのはコリント（ニカラグア）7/19 発のみで、積地は特定できていない**（コリントは太平洋側の小港で、給油・通過寄港の可能性がある）。cargoType を「積地未確認」とした【9/20更新】MyShipTracking 2026-09-20（AIS 1日前）: 川崎を 9/1 に出た後、**嵐山（中国）9/9-11 → 連雲港（中国）9/12-14** と回り、現在は東シナ海（26.117°N／121.362°E）をシンガポール向け13.2kn・喫水12.0m・ETA 9/25 で南下中。**積地未確認のまま日本向け航海が終了した**ため combined=0.0 とする。なお本船は当基盤のAIS受信でも 9/19 に 26.662/121.818 で捉えられており、公開DBの位置と一致した（→ AIS再開後の初の突合例）"
+      "note": "Chemical/Oil Products Tanker（MR）。リベリア籍・2023年建造・28,630GT・DWT 49,999・183m×32m。IMO 9935935／MMSI 636021385。海保VTS浦賀水道航路 9/1 21:00 川崎沖入航予定として検出（9/1・**GT 28,630 がVTS掲載値と完全一致**）。VesselFinder／MyShipTracking 2026-09-01（AIS 現在）: **川崎に 8/30 00:25 UTC 着・9/1 01:09 UTC 発**（2日間の在港）→東京湾内（35.459°N／139.793°E）を4.1kn・喫水8.2mで移動中、AIS目的地「JP KWS DU」。**公開DBの寄港履歴で川崎の前に現れるのはコリント（ニカラグア）7/19 発のみで、積地は特定できていない**（コリントは太平洋側の小港で、給油・通過寄港の可能性がある）。cargoType を「積地未確認」とした【9/20更新】MyShipTracking 2026-09-20（AIS 1日前）: 川崎を 9/1 に出た後、**嵐山（中国）9/9-11 → 連雲港（中国）9/12-14** と回り、現在は東シナ海（26.117°N／121.362°E）をシンガポール向け13.2kn・喫水12.0m・ETA 9/25 で南下中。**積地未確認のまま日本向け航海が終了した**ため combined=0.0 とする。なお本船は当基盤のAIS受信でも 9/19 に 26.662/121.818 で捉えられており、公開DBの位置と一致した（→ AIS再開後の初の突合例）【10/1更新】VesselFinder 2026-10-01（AIS 8時間前）: シンガポールを 9/25 に出てインド洋をアントワープ（ETA 11/3）へ向かっており、喫水12.1m。日本向けではない。MagicPort の過去12か月寄港にポートアーサー（米国）とパナマ運河があり、8/30 川崎揚げの積地候補になるが、日付が取れないため未確定のまま"
     },
     {
       "id": "mr-33",
@@ -4920,12 +4921,12 @@
       "mmsi": "432994000",
       "aisTracked": true,
       "type": "LNG",
-      "departure": "ダンピア（豪州WA・North West Shelf LNG）",
+      "departure": "ダンピア（豪州WA・North West Shelf LNG）9/16-17積み",
       "departurePort": "Dampier",
-      "destination": "知多（中部電力知多LNG基地）",
-      "destinationPort": "Chita",
+      "destination": "姫路（飾磨・姫路LNG基地）",
+      "destinationPort": "Himeji",
       "distanceToJapan_nm": 3978,
-      "speed_knots": 13.9,
+      "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 86241,
       "cargoType": "LNG（豪州産・非中東代替供給）",
@@ -4934,9 +4935,9 @@
         "insurance": 1.0,
         "route": 1.0,
         "military": 1.0,
-        "combined": 0.0
+        "combined": 1.0
       },
-      "note": "LNG Tanker。日本籍・2014年建造・136,710GT（名古屋港EDI掲載値）・DWT 86,241・288m×49m・**Call sign 7JQG がEDI掲載値と完全一致**。IMO 9645736／MMSI 432994000。船主 大阪ガス／商船三井、運航 MOL LNG Transport。名古屋港管理組合EDI 9/2 11:30 入港・9/3 09:30 出港予定・代理店「知多桟橋管理(株)」として検出（9/1）。MyShipTracking 2026-09-01（AIS 8時間前）: **ダンピア（豪州）に 8/17 00:47 着・8/18 04:23 発**→3,978海里を14日・平均11.9ktで走り、遠州灘沖（32.493°N／137.367°E）を13.5kn・喫水10.0mで航行中。**ダンピア（North West Shelf LNG）はホルムズ海峡を通過しない積出港であり、知多向けの非中東LNG供給便に該当する**。前航海は相馬（福島）8/1-2。**留保: AIS上の針路91°（東）は知多の方位と合わず、目的地表示も豪州のまま更新されていない。到着日はEDIの 9/2 11:30 を主根拠とする**【9/20更新】MyShipTracking 2026-09-20（AIS 7日前）: **ダンピア（豪州）に 9/16 着・9/17 03:47 UTC 発**で次の積み取りサイクルに入り、現在はサブ海を針路222.3°・13.9kn・喫水9.8m（バラスト相当）で南下中。**同サイトの寄港履歴に知多は現れないが、名古屋港EDIの 9/2 11:30 入港・9/3 09:30 出港予定に対し、知多→ダンピア 3,978海里を 9/3 発・9/16 着＝13日・平均12.7kt で走ったことになり航程と日数が整合する**ため、知多での揚荷は成立したとみなす（LNG基地の寄港を公開DBが落とす例は ENERGY GLORY・SEISHU MARU でも確認済み）。日本向け航海は終了したため combined=0.0 とする"
+      "note": "LNG Tanker。日本籍・2014年建造・136,710GT（名古屋港EDI掲載値）・DWT 86,241・288m×49m・**Call sign 7JQG がEDI掲載値と完全一致**。IMO 9645736／MMSI 432994000。船主 大阪ガス／商船三井、運航 MOL LNG Transport。名古屋港管理組合EDI 9/2 11:30 入港・9/3 09:30 出港予定・代理店「知多桟橋管理(株)」として検出（9/1）。MyShipTracking 2026-09-01（AIS 8時間前）: **ダンピア（豪州）に 8/17 00:47 着・8/18 04:23 発**→3,978海里を14日・平均11.9ktで走り、遠州灘沖（32.493°N／137.367°E）を13.5kn・喫水10.0mで航行中。**ダンピア（North West Shelf LNG）はホルムズ海峡を通過しない積出港であり、知多向けの非中東LNG供給便に該当する**。前航海は相馬（福島）8/1-2。**留保: AIS上の針路91°（東）は知多の方位と合わず、目的地表示も豪州のまま更新されていない。到着日はEDIの 9/2 11:30 を主根拠とする**【9/20更新】MyShipTracking 2026-09-20（AIS 7日前）: **ダンピア（豪州）に 9/16 着・9/17 03:47 UTC 発**で次の積み取りサイクルに入り、現在はサブ海を針路222.3°・13.9kn・喫水9.8m（バラスト相当）で南下中。**同サイトの寄港履歴に知多は現れないが、名古屋港EDIの 9/2 11:30 入港・9/3 09:30 出港予定に対し、知多→ダンピア 3,978海里を 9/3 発・9/16 着＝13日・平均12.7kt で走ったことになり航程と日数が整合する**ため、知多での揚荷は成立したとみなす（LNG基地の寄港を公開DBが落とす例は ENERGY GLORY・SEISHU MARU でも確認済み）。日本向け航海は終了したため combined=0.0 とする【10/1更新】MaritimeOptima 2026-10-01（AIS 10分以内）の寄港履歴: 名古屋 9/2-3 → **ダンピア（豪州）9/16 00:42〜9/17 03:42 UTC で積み取り → 姫路（飾磨）10/1 00:32 UTC 着**。VesselFinder（AIS 44分前）では姫路LNG第1バースに係留中で、喫水は 9/13 頃のバラスト9.8m から満載相当の11.6m へ上がっており、**豪州NWS産LNGの揚荷中**と判断できる。**9/20 に「次の積み取りサイクル」として combined=0.0 にした航海は日本向けの配送だった**（除外扱いの洗い直しが4回連続で当たった）。9/20 に留保した名古屋寄港も同DBで確認でき解消した。海保VTS明石は 10/2 16:40 に姫路発オーストラリア向けを掲載している（予定）。揚荷後の出港を確認したら combined=0.0 とする"
     },
     {
       "id": "lpg-17",
@@ -4945,23 +4946,23 @@
       "mmsi": "431526000",
       "aisTracked": true,
       "type": "LPG",
-      "departure": "徳山（山口）",
-      "departurePort": "Tokuyama",
-      "destination": "瀬戸内東行（次港未確定）",
-      "destinationPort": "Anegasaki",
+      "departure": "波方（愛媛）9/26発",
+      "departurePort": "Ehime",
+      "destination": "徳山下松（AIS「>JP TXD/TOSOH S-2」）",
+      "destinationPort": "Tokuyama",
       "distanceToJapan_nm": 300,
-      "speed_knots": 5.1,
+      "speed_knots": 0.0,
       "eta_days": 1,
       "cargo_t": 3000,
       "cargoType": "LPG（内航・国内配分段階）",
-      "status": "航行中",
+      "status": "錨泊中",
       "arrivalProbability": {
         "insurance": 1.0,
         "route": 1.0,
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "LPG/Chemical Coaster。日本籍・1999年建造・2,614GT（VTS掲載値）・全長90m・Call sign 7LVS。IMO 9203241／MMSI 431526000。海保VTS明石海峡航路 9/2 07:40 入航予定・**出発地「神戸」／行先「広島」**として検出（9/1・GT 2,614・全長90m がVTS掲載値と一致）。**神戸→広島の内航LPG輸送便であり、輸入便ではなく国内配分段階を示す**（スターフェニックス lpg-14 と同じ性格）。cargo_t はGTからの概算で公表実績値ではない【9/20更新】MyShipTracking 2026-09-20（AIS 10時間前）: **徳山に 9/19 00:24 着・08:07 UTC 発**、現在は瀬戸内海（34.125°N／132.887°E）を針路56.3°・5.1kn・喫水4.0m で東進中。AIS目的地「>JP TXD OFF」はETA表示が 9/14 のまま更新されておらず次港は確定できない。**過去1年の寄港は徳山53回・姉崎28回で、瀬戸内と東京湾を結ぶ内航シャトルであることが判明した**（9/1 に登録した「神戸→広島」は同船の多数ある区間の一つにすぎない）。国内配分段階として combined=1.0 を維持する"
+      "note": "LPG/Chemical Coaster。日本籍・1999年建造・2,614GT（VTS掲載値）・全長90m・Call sign 7LVS。IMO 9203241／MMSI 431526000。海保VTS明石海峡航路 9/2 07:40 入航予定・**出発地「神戸」／行先「広島」**として検出（9/1・GT 2,614・全長90m がVTS掲載値と一致）。**神戸→広島の内航LPG輸送便であり、輸入便ではなく国内配分段階を示す**（スターフェニックス lpg-14 と同じ性格）。cargo_t はGTからの概算で公表実績値ではない【9/20更新】MyShipTracking 2026-09-20（AIS 10時間前）: **徳山に 9/19 00:24 着・08:07 UTC 発**、現在は瀬戸内海（34.125°N／132.887°E）を針路56.3°・5.1kn・喫水4.0m で東進中。AIS目的地「>JP TXD OFF」はETA表示が 9/14 のまま更新されておらず次港は確定できない。**過去1年の寄港は徳山53回・姉崎28回で、瀬戸内と東京湾を結ぶ内航シャトルであることが判明した**（9/1 に登録した「神戸→広島」は同船の多数ある区間の一つにすぎない）。国内配分段階として combined=1.0 を維持する【10/1更新】MaritimeOptima／VesselFinder 2026-10-01（地上局AIS14時間前）: 徳山下松 9/22-24 → 波方（愛媛）9/24-26 に寄港した後、9/27 から徳山下松錨地に停泊している（喫水4.0m）。AIS目的地は「>JP TXD/TOSOH S-2」（ETA 10/2 08:45）で、**「JP TXD」は UN/LOCODE で徳山下松港と確定した**。当基盤AISの 9/25 の位置（34.130N／132.898E）は波方での滞在と整合する。徳山・波方・姉崎を回る内航シャトルの運航が続いている"
     },
     {
       "id": "mr-35",
@@ -4995,23 +4996,23 @@
       "mmsi": "538008831",
       "aisTracked": true,
       "type": "MR",
-      "departure": "四日市（三重）※前航海: ダニーデン／ブラフ（ニュージーランド）",
-      "departurePort": "Yokkaichi",
-      "destination": "名古屋",
-      "destinationPort": "Nagoya",
-      "distanceToJapan_nm": 0,
-      "speed_knots": 13.3,
+      "departure": "麗水・光陽（韓国）9/29発 ※積地: 温山 9/24-27・麗水 9/28-29",
+      "departurePort": "Yeosu",
+      "destination": "沖縄（うるま市沖錨地・AIS「JPOKA」）",
+      "destinationPort": "Naha",
+      "distanceToJapan_nm": 520,
+      "speed_knots": 0.0,
       "eta_days": 0,
       "cargo_t": 50324,
-      "cargoType": "石油製品（LR1・積地未確認）",
-      "status": "航行中",
+      "cargoType": "石油製品（LR1・韓国積み／非中東調達）",
+      "status": "錨泊中",
       "arrivalProbability": {
         "insurance": 1.0,
         "route": 1.0,
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "Chemical/Oil Products Tanker（LR1・パナマックス）。マーシャル諸島籍・2020年建造・23,074GT（名古屋港EDI掲載値）・DWT 50,324・183m×32m・**Call sign V7A2809 がEDI掲載値と完全一致**。IMO 9877808／MMSI 538008831。ISM管理 V SHIPS NORWAY、商業管理 SINOKOR MERCHANT MARINE。名古屋港管理組合EDI 9/20 12:30 入港・9/21 09:00 出港予定・代理店 五洋海運として検出（9/20）。MyShipTracking 2026-09-20（AIS 4日前）: 8月下旬にダニーデン・ブラフ（ニュージーランド）へ寄港した後、**四日市に 9/16 着・9/18 00:57 UTC 発**、9/15 時点で伊勢湾（34.696°N／136.845°E）を13.3kn・喫水8.0m で航行し麗水（韓国）向け ETA 9/18 を表示していた。**AISの麗水向け表示とEDIの名古屋 9/20 入港は、麗水→名古屋が約350海里で13ktなら27時間と、9/18 麗水着→9/19 発→9/20 名古屋着の順序で矛盾なく接続する**。四日市での揚荷は寄港履歴で確認済みで、名古屋区間はEDI掲載を根拠とする"
+      "note": "Chemical/Oil Products Tanker（LR1・パナマックス）。マーシャル諸島籍・2020年建造・23,074GT（名古屋港EDI掲載値）・DWT 50,324・183m×32m・**Call sign V7A2809 がEDI掲載値と完全一致**。IMO 9877808／MMSI 538008831。ISM管理 V SHIPS NORWAY、商業管理 SINOKOR MERCHANT MARINE。名古屋港管理組合EDI 9/20 12:30 入港・9/21 09:00 出港予定・代理店 五洋海運として検出（9/20）。MyShipTracking 2026-09-20（AIS 4日前）: 8月下旬にダニーデン・ブラフ（ニュージーランド）へ寄港した後、**四日市に 9/16 着・9/18 00:57 UTC 発**、9/15 時点で伊勢湾（34.696°N／136.845°E）を13.3kn・喫水8.0m で航行し麗水（韓国）向け ETA 9/18 を表示していた。**AISの麗水向け表示とEDIの名古屋 9/20 入港は、麗水→名古屋が約350海里で13ktなら27時間と、9/18 麗水着→9/19 発→9/20 名古屋着の順序で矛盾なく接続する**。四日市での揚荷は寄港履歴で確認済みで、名古屋区間はEDI掲載を根拠とする【10/1更新】VesselFinder／MaritimeOptima 2026-10-01（AIS数分前）: **温山（韓国）9/24〜27 と麗水・光陽 9/28〜29 で積み取り、喫水を 8.0m から 11.6m に上げて、10/1 08:38 UTC に沖縄・うるま市沖の錨地に着いた**（AIS目的地「JPOKA」）。韓国の製油所で積んだ石油製品を沖縄へ運ぶ輸入便で、揚荷待ちの段階。9/20 に名古屋港EDIを根拠とした名古屋寄港は、公開DBの履歴（直近3件）では確認できなかった。distanceToJapan_nm 520 は麗水→沖縄の概算"
     },
     {
       "id": "chem-nagoya-46",
@@ -5026,17 +5027,17 @@
       "destinationPort": "Nagoya",
       "distanceToJapan_nm": 400,
       "speed_knots": 10.7,
-      "eta_days": 2,
+      "eta_days": 0,
       "cargo_t": 5631,
       "cargoType": "化学品/石油製品（韓国発・非中東調達）",
-      "status": "航行中",
+      "status": "入港済",
       "arrivalProbability": {
-        "insurance": 1.0,
-        "route": 1.0,
-        "military": 1.0,
-        "combined": 1.0
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
+        "combined": 0.0
       },
-      "note": "Oil/Chemical Tanker。韓国籍・2008年建造・4,060GT（名古屋港EDI掲載値 3,338）・DWT 5,631・105m×16m・**Call sign DSRJ2 がEDI掲載値と完全一致**。IMO 9409364／MMSI 441878000。船主・管理 Young Chang Enterprise（釜山）、建造 三湖造船（統営）、船籍港 済州。名古屋港管理組合EDI 9/22 13:00 入港・9/23 08:00 出港予定・代理店 五洋海運として検出（9/20）。MyShipTracking 2026-09-20（AIS 4日前）の寄港履歴: **大山 9/9-10 → 光陽 9/14-15 → 温山 9/16 → 蔚山 9/16-17 出港**と韓国内の製油所を回り、現在は日本海（35.41°N／129.42°E・蔚山沖）を10.7kn・喫水7.2m で航行中。**韓国発の化学品/石油製品輸入便で、ホルムズ海峡を通過しない調達ルートに該当する**。GTはEDI掲載値と公開DBの国際総トン数で体系が異なるため、8/21 以降と同じくコールサインを主キーとして同定した"
+      "note": "Oil/Chemical Tanker。韓国籍・2008年建造・4,060GT（名古屋港EDI掲載値 3,338）・DWT 5,631・105m×16m・**Call sign DSRJ2 がEDI掲載値と完全一致**。IMO 9409364／MMSI 441878000。船主・管理 Young Chang Enterprise（釜山）、建造 三湖造船（統営）、船籍港 済州。名古屋港管理組合EDI 9/22 13:00 入港・9/23 08:00 出港予定・代理店 五洋海運として検出（9/20）。MyShipTracking 2026-09-20（AIS 4日前）の寄港履歴: **大山 9/9-10 → 光陽 9/14-15 → 温山 9/16 → 蔚山 9/16-17 出港**と韓国内の製油所を回り、現在は日本海（35.41°N／129.42°E・蔚山沖）を10.7kn・喫水7.2m で航行中。**韓国発の化学品/石油製品輸入便で、ホルムズ海峡を通過しない調達ルートに該当する**。GTはEDI掲載値と公開DBの国際総トン数で体系が異なるため、8/21 以降と同じくコールサインを主キーとして同定した【10/1更新】MaritimeOptima／VesselFinder 2026-10-01（AIS約4時間前）: **名古屋に 9/23 04:58〜21:44 UTC 寄港**しており、EDIの予定（9/22 入港）より約1日遅れて入港が実現した。その後は温山（韓国）9/27〜10/1 に寄港し、喫水は 7.2m から 5.0m に下がっている。途中で温山にも寄っているため喫水低下だけで名古屋の揚荷量は判定できないが、名古屋入港は実績で確認できた。現在のAIS目的地は「KR USN」（蔚山）で日本向けの航海は終了したため、陸揚げ後に離日した便の慣例どおり combined=0.0 とする"
     },
     {
       "id": "chem-nagoya-47",
@@ -5047,13 +5048,38 @@
       "type": "Chemical",
       "departure": "川崎（東京湾）※前航海: バンコク（タイ）",
       "departurePort": "Kawasaki",
-      "destination": "名古屋",
+      "destination": "名古屋（9/25）→川崎（9/25-26）",
       "destinationPort": "Nagoya",
       "distanceToJapan_nm": 900,
       "speed_knots": 12.4,
-      "eta_days": 5,
+      "eta_days": 0,
       "cargo_t": 3998,
       "cargoType": "化学品/石油製品（タイ発・非中東調達）",
+      "status": "入港済",
+      "arrivalProbability": {
+        "insurance": 0.0,
+        "route": 0.0,
+        "military": 0.0,
+        "combined": 0.0
+      },
+      "note": "Chemical/Oil Products Tanker（小型）。パナマ籍・**2026年建造の新造船**・2,698GT（名古屋港EDI掲載値）・DWT 3,998・89m×14m・**Call sign 3E9554 がEDI掲載値と完全一致**。IMO 1073315／MMSI 352006769。**IMO 1073315 は誤記ではなく、9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）**（YASA PANTHER 1056214・PIONEER VENTURE 1084467 と同系列）。名古屋港管理組合EDI 9/25 08:40 入港・9/25 13:30 出港予定・代理店 中部船舶として検出（9/20）。MyShipTracking 2026-09-20（AIS 24時間前）の寄港履歴: **バンコク（タイ）7/18-19 → 堺 8/9 → 川崎 8/17 01:32 UTC 出港**、現在は津軽海峡付近（41.587°N／140.850°E）を針路240.2°・12.4kn・喫水6.5m で南西進中。**タイ発の化学品輸入便で、ホルムズ海峡を通過しない調達ルートに該当する**。**留保: AIS目的地は「SHIMABARA（島原）」でEDIの名古屋 9/25 と一致しない**ため、到着日はEDI掲載を主根拠とする【10/1更新】MaritimeOptima／VesselFinder 2026-10-01（AIS 1分前）: **名古屋に 9/25 00:54〜05:20 UTC、川崎に 9/25 22:48〜9/26 22:16 UTC 寄港**し、喫水を 6.5m から 5.3m に下げて 9/30 に蔚山錨地（韓国）に着いた。**9/20 に留保した AIS目的地「SHIMABARA」と EDI の名古屋の食い違いは、名古屋寄港の実績で解消した**（EDIが正しかった）。ただし今回の積荷の積地（8/17 川崎発から 9/25 名古屋着の間）は未確認で、「タイ発」は前航海についての記述。日本向けの航海は終了したため combined=0.0 とする"
+    },
+    {
+      "id": "lng-48",
+      "name": "KOOL KELVIN",
+      "imo": "9654701",
+      "mmsi": "538005374",
+      "aisTracked": true,
+      "type": "LNG",
+      "departure": "フリーポート（米国テキサス・Freeport LNG）→パナマ運河経由",
+      "departurePort": "Freeport",
+      "destination": "水島（岡山）",
+      "destinationPort": "Mizushima",
+      "distanceToJapan_nm": 9300,
+      "speed_knots": 16.5,
+      "eta_days": 1,
+      "cargo_t": 72000,
+      "cargoType": "LNG（米国産・非中東代替供給）",
       "status": "航行中",
       "arrivalProbability": {
         "insurance": 1.0,
@@ -5061,7 +5087,232 @@
         "military": 1.0,
         "combined": 1.0
       },
-      "note": "Chemical/Oil Products Tanker（小型）。パナマ籍・**2026年建造の新造船**・2,698GT（名古屋港EDI掲載値）・DWT 3,998・89m×14m・**Call sign 3E9554 がEDI掲載値と完全一致**。IMO 1073315／MMSI 352006769。**IMO 1073315 は誤記ではなく、9xxxxxx枠の枯渇に伴う新採番系列（10xxxxx）**（YASA PANTHER 1056214・PIONEER VENTURE 1084467 と同系列）。名古屋港管理組合EDI 9/25 08:40 入港・9/25 13:30 出港予定・代理店 中部船舶として検出（9/20）。MyShipTracking 2026-09-20（AIS 24時間前）の寄港履歴: **バンコク（タイ）7/18-19 → 堺 8/9 → 川崎 8/17 01:32 UTC 出港**、現在は津軽海峡付近（41.587°N／140.850°E）を針路240.2°・12.4kn・喫水6.5m で南西進中。**タイ発の化学品輸入便で、ホルムズ海峡を通過しない調達ルートに該当する**。**留保: AIS目的地は「SHIMABARA（島原）」でEDIの名古屋 9/25 と一致しない**ため、到着日はEDI掲載を主根拠とする"
+      "note": "LNG Tanker（メンブレン Mark III Flex・TFDE）。マーシャル諸島籍・2015年 Hyundai Samho 建造・105,832GT・DWT 90,580・289m×46m・162,000m³・Call sign V7DE2。IMO 9654701／MMSI 538005374（MID 538 が旗国と整合）。旧名 GOLAR KELVIN（2023年10月改名）、管理 Cool Company Management。海保VTS明石 10/2 01:55 水島入航予定・発地「アメリカ」として検出（10/1・**GT 105,832 がVTS掲載値と完全一致**）。MaritimeOptima の寄港履歴: バルボア 8/27-28 → **フリーポート（米国テキサス）9/4 10:38〜9/6 18:32 UTC** → **パナマ運河 9/11**。VesselFinder 2026-10-01（AIS 1分前）: 最終港フリーポート・16.5kn・喫水11.5m（満載相当）・AIS目的地「FOR ORDERS」。tankermap 10/1 07:58 UTC: 33.264°N／135.753°E（潮岬沖）。フリーポートでLNGを出荷する設備は Freeport LNG であることから**米国産LNGと判断した（設備からの推論）**。パナマ運河経由でホルムズ海峡を通過しない。**留保: AIS目的地は FOR ORDERS のままで、揚地の水島はVTS単独の掲載**。distanceToJapan_nm 9,300 は大圏区間の積算による推定値、cargo_t は 162,000m³×充填98%×0.45 t/m³ の概算"
+    },
+    {
+      "id": "lng-49",
+      "name": "SERI CEMPAKA",
+      "imo": "9714290",
+      "mmsi": "533130607",
+      "aisTracked": true,
+      "type": "LNG",
+      "departure": "ビンツル（マレーシア・サラワク・MLNG）",
+      "departurePort": "Bintulu",
+      "destination": "知多（知多LNG基地）",
+      "destinationPort": "Chita",
+      "distanceToJapan_nm": 2400,
+      "speed_knots": 14.5,
+      "eta_days": 4,
+      "cargo_t": 66000,
+      "cargoType": "LNG（マレーシアMLNG産・非中東）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "LNG Tanker（Moss型 Seri Cクラス）。マレーシア籍・2017年 HHI 建造・133,948GT・DWT 84,311・290m×49m・150,200m³。**Call sign 9MWM8 が名古屋港EDI掲載値と完全一致**（GT も一致）。IMO 9714290／MMSI 533130607（MID 533 が旗国と整合）。商業管理 MISC Bhd・PETRONAS 長期傭船。名古屋港管理組合EDI 10/5 11:50 入港・10/6 09:30 出港予定・代理店「知多桟橋管理(株)」として検出（10/1）。寄港履歴（MaritimeOptima・tankermap）: ビンツル 8/28〜9/5 → 東家口（中国）9/14-15 → **ビンツル 9/24 着・9/27 04:49 UTC 発**。VesselFinder 2026-10-01（AIS 34分前）: **AIS目的地 JP CTA（知多）**・ETA 10/4 23:00 UTC・14.5kn・喫水11.3m（満載相当）。AIS目的地がEDIの代理店（知多）と一致し、ETAもEDIの入港予定と整合する。ビンツル発でホルムズ海峡を通過しない。distanceToJapan_nm 2,400 は推定値、cargo_t は 150,200m³×98%×0.45 t/m³ の概算"
+    },
+    {
+      "id": "lpg-18",
+      "name": "CLIPPER GALLEON",
+      "imo": "1026829",
+      "mmsi": "257492850",
+      "aisTracked": true,
+      "type": "LPG",
+      "departure": "ヒューストン（米国テキサス・Greens Bayou）→パナマ運河経由",
+      "departurePort": "USGC",
+      "destination": "水島（岡山）",
+      "destinationPort": "Mizushima",
+      "distanceToJapan_nm": 9300,
+      "speed_knots": 0.0,
+      "eta_days": 0,
+      "cargo_t": 48000,
+      "cargoType": "LPG（米国産・パナマ運河経由／非中東調達）",
+      "status": "入港済",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "VLGC（全冷式LPG船）。ノルウェー（NIS）籍・2026年 HD Hyundai Heavy 建造（Hull 3460）・50,498GT・DWT 56,171・229.85m×32.25m・88,056m³・Call sign LAZG8。IMO 1026829／MMSI 257492850（MID 257 が旗国と整合）。商業・ISM管理 Solvang ASA。**IMO 1026829 は 10xxxxx の新採番系列**。**姉妹船 CLIPPER GALIOT（IMO 1026817・MMSI 258233000）は GT・全長が同一で GT だけでは識別できないため、Solvang 公式のHull番号とAIS上の水島係留で本船と確定した**。海保VTS明石 10/2 12:00 水島→シンガポールの出航予定として検出（10/1・GT 50,498 がVTS掲載値と完全一致）。shipnext: Greens Bayou（ヒューストン・シップチャネル）8/31 発・水島向け。MaritimeOptima の寄港履歴: クリストバル 9/5 → バルボア 9/5-6 → **水島 9/29 23:50 UTC 着**。VesselFinder 2026-10-01（AIS 3分前）: 水島 Moored・喫水11.8m。米国湾岸で積んだLPGを水島で揚げ、シンガポールへ回航する航海とみられる。**留保: AIS喫水は手入力で揚荷後も未更新の可能性があり、揚荷完了は 10/2 出港後の喫水変化で確認が必要**。distanceToJapan_nm 9,300 は推定値、cargo_t は 88,056m³×98%×約0.56 t/m³ の概算"
+    },
+    {
+      "id": "chem-nagoya-48",
+      "name": "GOLDEN BRIDGE HANA",
+      "imo": "9816244",
+      "mmsi": "440506000",
+      "aisTracked": true,
+      "type": "Chemical",
+      "departure": "高雄（台湾）9/28発→神戸",
+      "departurePort": "NonMideast",
+      "destination": "神戸→名古屋港（伊勢湾）",
+      "destinationPort": "Nagoya",
+      "distanceToJapan_nm": 1400,
+      "speed_knots": 11.5,
+      "eta_days": 3,
+      "cargo_t": 3546,
+      "cargoType": "化学品/石油製品（台湾発・非中東調達）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "Chemical/Oil Products Tanker。韓国籍・2018年建造・2,990GT（名古屋港EDI掲載値 2,688）・DWT 3,546・91.4m×14.4m・**Call sign D7RV がEDI掲載値と完全一致**。IMO 9816244／MMSI 440506000（MID 440 が旗国と整合）。所有・管理 HANA MARINE CO LTD（GOLDEN KEY HANA と同社）。名古屋港管理組合EDI 10/4 13:00 入港・17:00 出港予定・代理店「中部船舶」・プロダクトオイル船として検出（10/1）。GTの差はEDIと国際総トン数の体系の違いで、8/21 以降と同じくコールサインを主キーとして同定した。MaritimeOptima の寄港履歴: 高雄 9/23 → 香港 9/25 → **高雄 9/26 23:46〜9/28 05:40 UTC**。VesselFinder 2026-10-01（AIS 1時間前）: AIS目的地 神戸・ETA 10/2 12:00 UTC・11.5kn・喫水6.5m。神戸で揚げた後に名古屋へ回る2港揚げとみられる（GOLDEN KEY HANA と同型の航海）。**留保: 名古屋区間はEDI単独の掲載で、積荷の品目は不明**。ports.json に高雄のキーが無いため departurePort は NonMideast とした。distanceToJapan_nm 1,400 は推定値"
+    },
+    {
+      "id": "lpg-19",
+      "name": "NADESHIKO GAS",
+      "imo": "9534810",
+      "mmsi": "370313000",
+      "aisTracked": true,
+      "type": "LPG",
+      "departure": "ヒューストン（米国テキサス）→パナマ運河経由",
+      "departurePort": "USGC",
+      "destination": "袖ケ浦（千葉）",
+      "destinationPort": "Sodegaura",
+      "distanceToJapan_nm": 9200,
+      "speed_knots": 9.6,
+      "eta_days": 1,
+      "cargo_t": 53003,
+      "cargoType": "LPG（米国産・パナマ運河経由／非中東調達）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "VLGC（大型LPG船・全冷式）。パナマ籍・2013年建造・45,812GT・DWT 53,003・226m×37m・Call sign 3FIJ3。IMO 9534810／MMSI 370313000（MID 370 がパナマ籍と整合）。登録船主 LPG NADESHIKO/TOKYO LNG、管理 IINO MARINE SERVICE（MagicPort）。海保VTS浦賀水道航路 10/2 07:00 袖ヶ浦入航予定として検出（10/1・**GT 45,812 がVTS掲載値と完全一致**）。寄港履歴（MaritimeOptima）: **ヒューストン（米国）8/21-29** → パナマ運河 9/8-9 → 袖ケ浦。MyShipTracking はヒューストン出港直後の 8/30 に喫水11.1m を記録。VesselFinder 2026-10-01 11:18 UTC（AIS受信直後）: 房総沖を針路263°・9.6kn で西進、喫水10.8m（満載喫水11.2m）、AIS目的地「JP SDU」（袖ケ浦）ETA 10/2 13:00。**AIS目的地とVTS掲載の袖ヶ浦が一致**。TSUBAKI（lpg-15）・PYXIS ALFA（lpg-16）と同じ米国湾岸〜パナマ運河ルートの非中東調達便。distanceToJapan_nm 9,200 はヒューストン〜東京湾の総航程の概算、cargo_t はDWT"
+    },
+    {
+      "id": "lpg-20",
+      "name": "JAG VIJAY",
+      "imo": "9726061",
+      "mmsi": "538012251",
+      "aisTracked": true,
+      "type": "LPG",
+      "departure": "ヒューストン（米国テキサス）→パナマ運河経由→堺泉北（一部揚荷）",
+      "departurePort": "USGC",
+      "destination": "川崎",
+      "destinationPort": "Kawasaki",
+      "distanceToJapan_nm": 9200,
+      "speed_knots": 15.7,
+      "eta_days": 1,
+      "cargo_t": 54564,
+      "cargoType": "LPG（米国産・パナマ運河経由／非中東調達）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "VLGC（大型LPG船）。マーシャル諸島籍・2015年建造・47,347GT・DWT 54,564・225m×37m・Call sign V7B2583。IMO 9726061／MMSI 538012251（MID 538 が旗国と整合）。船主・商業管理 GREAT EASTERN SHIPPING、ISM管理 ANGLO-EASTERN（MagicPort）。海保VTS浦賀水道航路 10/2 12:45 川崎入航予定として検出（10/1・**GT 47,347 がVTS掲載値と完全一致**）。寄港履歴（MaritimeOptima／MyShipTracking）: **ヒューストン 8/20-25** → パナマ運河 8/30〜9/5 → **堺泉北 9/29 01:41〜10/1 00:11 UTC**。喫水は 9/28 の11.6m から**堺で9.8m へ下がっており、堺で一部を揚げた**。出港後にAIS目的地を「JPSBK」から「JPKWS」（川崎）へ変更。2026-10-01 11:07〜11:18 UTC（AIS 0〜11分前）: 紀伊半島沖（33.205°N／136.412°E）を15.7kn で東進、川崎まで残り約235海里。**AIS目的地とVTSの川崎が一致**。TSUBAKI（lpg-15）と同じく堺・川崎に分けて揚げる米国産LPGの輸入便。cargo_t はDWTで、川崎揚げ分はこれより少ない。distanceToJapan_nm は総航程の概算"
+    },
+    {
+      "id": "lng-50",
+      "name": "BU NAKHLAH",
+      "imo": "9986063",
+      "mmsi": "636025336",
+      "aisTracked": true,
+      "type": "LNG",
+      "departure": "コーションベイ（パプアニューギニア・PNG LNG）",
+      "departurePort": "PortMoresby",
+      "destination": "富津（千葉・東京湾）",
+      "destinationPort": "Futtsu",
+      "distanceToJapan_nm": 3000,
+      "speed_knots": 0.0,
+      "eta_days": 0,
+      "cargo_t": 94326,
+      "cargoType": "LNG（パプアニューギニア産・非中東代替供給）",
+      "status": "入港済",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "LNG船（2025年竣工）。リベリア籍・114,983GT・DWT 94,326・295m×47m・Call sign 5LWX9。IMO 9986063／MMSI 636025336（MID 636 が旗国と整合）。船主 KCS 4 SA、管理 SK SHIPPING（MagicPort）。海保VTS浦賀水道航路 10/2 16:10 富津入航予定として検出（10/1・**GT 114,983 がVTS掲載値と完全一致**）。寄港履歴（MaritimeOptima／MyShipTracking）: **コーションベイ（PNG LNG）9/19-20 → 富津 9/30 23:48 UTC 着**。7月以降は PNG LNG（7/14・8/6-7・8/31〜9/1・9/19-20）と君津・富津（8/19-20）・永安（台湾）を往復するシャトル運航。VesselFinder 2026-10-01 11:17 UTC（AIS受信直後）: 富津で係留、AIS目的地「JP_KZU」、喫水11.7m（LNGの満載域）。**AIS上は 9/30 23:48 UTC に着桟済みで、VTS掲載の 10/2 より先行している**。過去1年にラスラファン（カタール）寄港2回の記録があるが、今航海の積地はPNGでホルムズ海峡を経由しない。distanceToJapan_nm は概算（MyShipTracking の実航跡は3,652海里）、cargo_t は lng-43/45/47 の慣例に合わせDWT"
+    },
+    {
+      "id": "mr-37",
+      "name": "TARANGER",
+      "imo": "9524762",
+      "mmsi": "259982000",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "ヒューストン（米国テキサス）→パナマ運河経由",
+      "departurePort": "USGC",
+      "destination": "横浜沖（東京湾）",
+      "destinationPort": "Yokohama",
+      "distanceToJapan_nm": 9200,
+      "speed_knots": 5.0,
+      "eta_days": 1,
+      "cargo_t": 45372,
+      "cargoType": "化学品/石油製品（米国発・パナマ運河経由／非中東調達）",
+      "status": "航行中",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "Chemical/Oil Products Tanker（MR）。ノルウェー籍・2011年建造・29,712GT・DWT 45,372・183m×32m・Call sign LAMI7。IMO 9524762／MMSI 259982000（MID 259 が旗国と整合）。船主・管理 WESTFAL-LARSEN（MagicPort）。海保VTS浦賀水道航路 10/2 12:15 横浜沖入航予定として検出（10/1・**GT 29,712 がVTS掲載値と完全一致**）。寄港履歴（MaritimeOptima／MyShipTracking）: 米東岸 8/9-13 → **ヒューストン 8/21-26** → クリストバル（パナマ運河）8/31〜9/2 → 横浜。MyShipTracking 2026-10-01 11:00 UTC（AIS約20分前）: 野島崎南方（34.588°N／140.295°E）で 9/30 13:01 UTC から漂泊した後、11:00 に5kn で動き出した。08:06 UTC にAIS目的地を「JP CHB」から「JP YOK OFF」へ変更・ETA 10/2 03:00 UTC。喫水11.5m（満載喫水12.3m）。**AIS目的地とVTSの横浜沖が一致**。積荷が化学品か石油製品かは公開DBで判別できない。distanceToJapan_nm は総航程の概算"
+    },
+    {
+      "id": "mr-38",
+      "name": "HAFNIA TAGUS",
+      "imo": "9766205",
+      "mmsi": "563016100",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "ソハール（オマーン・ホルムズ海峡外側）",
+      "departurePort": "Sohar",
+      "destination": "市原・五井（千葉）",
+      "destinationPort": "Chiba",
+      "distanceToJapan_nm": 6150,
+      "speed_knots": 0.0,
+      "eta_days": 0,
+      "cargo_t": 74151,
+      "cargoType": "石油製品（LR1・オマーン ソハール発／ホルムズ海峡外の中東）",
+      "status": "入港済",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "LR1プロダクトタンカー。シンガポール籍・2017年建造・43,072GT・DWT 74,151・228m×32m・Call sign 9V3757。IMO 9766205／MMSI 563016100（MID 563 が旗国と整合）。船主 BW ALDRICH、商業管理 HAFNIA（MagicPort）。海保VTS浦賀水道航路 10/2 11:00 市原入航予定として検出（10/1・**GT 43,072 がVTS掲載値と完全一致**）。寄港履歴（MaritimeOptima）: **ソハール（オマーン）8/22 23:08〜9/8 22:28 UTC → 五井 10/1 02:18 UTC 着**。TankerMap の航跡ではソハール沖で待機（9/1-5）した後に港寄りへ移動（9/6-8）し、マラッカ海峡（9/19-21）経由で東京湾へ入った。AIS目的地は航海中「OM SOH>JP CHB」で、着く直前に「JP CHB COS10」（コスモ千葉製油所のバースとみられる・推定）へ変わった。VesselFinder 2026-10-01 05:44 UTC（AIS約5.5時間前）: 喫水11.8m（満載喫水13.7m）。**ソハールはホルムズ海峡の外側（オマーン湾）**。留保: (1) AIS上は 10/1 に着桟済みで、VTS掲載の 10/2 より先行 (2) ソハール入港（8/22）より前の寄港地は公開DBに表示がなく、過去1年にルワイス（UAE・ペルシャ湾内）寄港の実績があるため、ソハール以前のホルムズ通過は否定できない。AIS目的地の書式とソハールでの沖待ち→接岸の動きから、積地はソハールと判断した"
+    },
+    {
+      "id": "mr-39",
+      "name": "LV ESTIA",
+      "imo": "9327035",
+      "mmsi": "538012187",
+      "aisTracked": true,
+      "type": "MR",
+      "departure": "蔚山→麗水（韓国）",
+      "departurePort": "Yeosu",
+      "destination": "姉崎（千葉）",
+      "destinationPort": "Anegasaki",
+      "distanceToJapan_nm": 800,
+      "speed_knots": 0.0,
+      "eta_days": 0,
+      "cargo_t": 73711,
+      "cargoType": "石油製品（LR1・韓国発／非中東調達）",
+      "status": "入港済",
+      "arrivalProbability": {
+        "insurance": 1.0,
+        "route": 1.0,
+        "military": 1.0,
+        "combined": 1.0
+      },
+      "note": "LR1プロダクトタンカー。マーシャル諸島籍・2007年建造・42,048GT・DWT 73,711・228m×32m・Call sign V7A4083（旧名 ESTIA・バハマ籍時代のMMSIは311044000）。IMO 9327035／MMSI 538012187。管理 BERNHARD SCHULTE、商業管理 HAFNIA POOLS（MagicPort）。海保VTS浦賀水道航路 10/2 18:45 姉崎入航予定として検出（10/1・**GT 42,048 がVTS掲載値と完全一致**）。寄港履歴（MyShipTracking／MaritimeOptima）: 姉崎 9/3-5・四日市 9/6-7 で前航海の揚荷 → 温山（韓国）9/16 → **蔚山 9/23-24 → 麗水 9/25-27** → 姉崎（9/30 23:48 UTC 沖着・10/1 03:14 UTC 係留）。VesselFinder 2026-10-01 11:16 UTC（AIS 2分前）: 姉崎で係留、喫水9.8m、AIS目的地「JPCHB OFF」。韓国の製油所3港で積んだ石油製品の輸入便とみられる。留保: (1) 喫水9.8m は満載喫水14.3m に対して浅く部分積み (2) AIS上は 10/1 に着桟済みで、VTS掲載の 10/2 より先行。distanceToJapan_nm は概算"
     }
   ]
 }
