@@ -11,6 +11,7 @@ import {
   TRANSFER_HUBS,
   type RouteType,
 } from "../lib/tankerPosition";
+import { JAPAN_DEST_PORTS } from "../lib/japanPorts";
 import { DataBadge } from "./DataBadge";
 import { WORLD_LAND_PATH } from "../data/world-land";
 
@@ -79,13 +80,6 @@ function smoothPath(pts: [number, number][]): string {
 const HORMUZ_PORTS = new Set([
   "Ras Tanura", "Jubail", "Kharg Island",
   "Ras Laffan", "Mina Al Ahmadi", "Basrah",
-]);
-
-/** 日本の到着港 */
-const JAPAN_DEST_PORTS = new Set([
-  "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
-  "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
-  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
 ]);
 
 const isDimmed = (

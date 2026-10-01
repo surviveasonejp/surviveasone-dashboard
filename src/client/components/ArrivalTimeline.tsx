@@ -3,6 +3,7 @@ import type { TankerInfo, FlowSimulationResult, FlowState } from "../../shared/t
 import { useApiData } from "../hooks/useApiData";
 import { useTheme } from "../hooks/useTheme";
 import { SectionHeading } from "./SectionHeading";
+import { JAPAN_DEST_PORTS } from "../lib/japanPorts";
 
 // ─── 定数 ─────────────────────────────────────────────
 
@@ -15,12 +16,6 @@ const HORMUZ_PORTS = new Set([
 ]);
 
 const NON_MIDEAST_PORTS = new Set(["Ingleside", "NonMideast"]);
-
-const JAPAN_DEST_PORTS = new Set([
-  "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
-  "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
-  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
-]);
 
 // ─── カテゴリ定義 ──────────────────────────────────────
 
