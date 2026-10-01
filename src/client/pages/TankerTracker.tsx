@@ -10,6 +10,7 @@ import { useTankerData } from "../hooks/useTankerData";
 import { getAlertLevel, getAlertColor } from "../lib/alertHelpers";
 import { formatDecimal, formatNumber, formatDistance, formatDepletionDate } from "../lib/formatters";
 import { ALL_ROUTES } from "../lib/tankerPosition";
+import { JAPAN_DEST_PORTS } from "../lib/japanPorts";
 import { Badge } from "../components/Badge";
 import { PageHero } from "../components/PageHero";
 import { SectionHeading } from "../components/SectionHeading";
@@ -23,15 +24,6 @@ const US_ORIGIN_PORTS = new Set([
 const HORMUZ_PORTS = new Set([
   "Ras Tanura", "Jubail", "Kharg Island",
   "Ras Laffan", "Mina Al Ahmadi", "Basrah",
-]);
-
-/** 日本の到着港 */
-const JAPAN_DEST_PORTS = new Set([
-  "Japan", "Kawasaki", "Hiroshima", "Chiba", "Yokkaichi", "Sakai",
-  "Mizushima", "Kiire", "Futtsu", "Chita", "Kitakyushu", "Himeji",
-  "Sodegaura", "Sendai", "Naha", "Kashima", "Negishi", "Oita", "Ehime",
-  "Yokohama", "Hitachi", "Sakai/Izumiotsu",
-  "Ogishima", "Anegasaki", "Yokosuka", "Fukuyama", "Nagoya", "Tomakomai",
 ]);
 
 /** 米国産ルート種別 */
